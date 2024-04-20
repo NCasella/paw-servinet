@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Appointment;
+import ar.edu.itba.paw.model.AppointmentInfo;
 import ar.edu.itba.paw.services.AppointmentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,11 +22,22 @@ public class AppointmentDaoJdbc implements AppointmentDao {
     private static final RowMapper<Appointment> ROW_MAPPER = (rs, rowNum) -> new Appointment(rs.getInt("appointmentid"), rs.getInt("serviceid"), rs.getInt("userid"),
             rs.getTimestamp("startDate").toLocalDateTime(), rs.getTimestamp("endDate").toLocalDateTime(),rs.getString("location") ,rs.getBoolean("confirmed"));
 
+    private static final RowMapper<AppointmentInfo> APPOINTMENT_INFO_ROW_MAPPER = (rs, rowNum) -> new AppointmentInfo(rs.getInt("appointmentid"),
+            rs.getInt("serviceid"), rs.getString("serviceName"),
+            rs.getString("businessName"), rs.getString("location"),
+            rs.getTimestamp("startDate").toLocalDateTime(), rs.getBoolean("confirmed"),
+            rs.getString("email"), rs.getString("telephone"));
     @Autowired
     public AppointmentDaoJdbc(final DataSource ds){
         jdbcTemplate = new JdbcTemplate(ds);
         simpleJdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName("appointments").usingGeneratedKeyColumns("appointmentid");
+    }
+
+    @Override
+    public List<AppointmentInfo> getAppointmentsByUser(long userid){
+        final List<AppointmentInfo> list =jdbcTemplate.query("SELECT a.appointmentid, a.serviceid, s.servicename as serviceName, b.name as businessName, a.location, a.startDate, a.confirmed, b.email, b.telephone FROM appointments a JOIN services s ON a.serviceid = s.id JOIN business b ON s.businessid = b.businessid WHERE a.userid = ?", new Object[] {userid}, APPOINTMENT_INFO_ROW_MAPPER);
+        return list;
     }
 
     @Override
@@ -54,7 +66,6 @@ public class AppointmentDaoJdbc implements AppointmentDao {
         final Number generatedId = simpleJdbcInsert.executeAndReturnKey(appointmentData);
         return new Appointment(generatedId.longValue(), serviceid, userid, startDate, endDate, location, false);
     }
-
 
     @Override
     public void confirmAppointment(long appointmentid) {
