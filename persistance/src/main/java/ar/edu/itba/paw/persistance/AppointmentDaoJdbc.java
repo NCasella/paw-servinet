@@ -26,7 +26,7 @@ public class AppointmentDaoJdbc implements AppointmentDao {
             rs.getInt("serviceid"), rs.getString("serviceName"),
             rs.getString("businessName"), rs.getString("location"),
             rs.getTimestamp("startDate").toLocalDateTime(), rs.getBoolean("confirmed"),
-            rs.getString("email"), rs.getString("telephone"));
+            rs.getString("businessemail"), rs.getString("businesstelephone"));
     @Autowired
     public AppointmentDaoJdbc(final DataSource ds){
         jdbcTemplate = new JdbcTemplate(ds);
@@ -36,7 +36,7 @@ public class AppointmentDaoJdbc implements AppointmentDao {
 
     @Override
     public List<AppointmentInfo> getAppointmentsByUser(long userid){
-        final List<AppointmentInfo> list =jdbcTemplate.query("SELECT a.appointmentid, a.serviceid, s.servicename as serviceName, b.name as businessName, a.location, a.startDate, a.confirmed, b.email, b.telephone FROM appointments a JOIN services s ON a.serviceid = s.id JOIN business b ON s.businessid = b.businessid WHERE a.userid = ?", new Object[] {userid}, APPOINTMENT_INFO_ROW_MAPPER);
+        final List<AppointmentInfo> list =jdbcTemplate.query("SELECT a.appointmentid, a.serviceid, s.servicename as serviceName, businessName, a.location, a.startDate, a.confirmed, businessemail, businesstelephone FROM appointments a JOIN services s ON a.serviceid = s.id JOIN business b ON s.businessid = b.businessid WHERE a.userid = ?", new Object[] {userid}, APPOINTMENT_INFO_ROW_MAPPER);
         return list;
     }
 
