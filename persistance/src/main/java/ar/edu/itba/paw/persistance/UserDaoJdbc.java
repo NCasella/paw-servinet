@@ -2,7 +2,10 @@ package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.services.UserDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -22,6 +25,7 @@ public class UserDaoJdbc implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private Logger LOGGER = LoggerFactory.getLogger(UserDaoJdbc.class);
 
     @Autowired
     public UserDaoJdbc(final DataSource ds) {
@@ -70,11 +74,19 @@ public class UserDaoJdbc implements UserDao {
     }
     @Override
     public void changeUserType(long userid){
-        jdbcTemplate.update("update users set isprovider = not isprovider where userid = ?",userid);
+        try {
+            jdbcTemplate.update("update users set isprovider = not isprovider where userid = ?", userid);
+        }catch(DataAccessException e){
+            LOGGER.warn("Error changing user type: {}", e.getMessage());
+        }
     }
 
     private void changeField(final String field,long userid,String value){//CONSULTAR: si se puede concatenar asi el field
-        jdbcTemplate.update(String.format("update users set  %s  = ? where userid = ? ", field),value,userid);//deberia ser seguro, pues field es un parametro que no viene del usuario
+        try {
+            jdbcTemplate.update(String.format("update users set  %s  = ? where userid = ? ", field), value, userid);//deberia ser seguro, pues field es un parametro que no viene del usuario
+        }catch(DataAccessException e){
+            LOGGER.warn("Error changing field '{}': {}", field, e.getMessage());
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 import ar.edu.itba.paw.model.exceptions.ForbiddenOperation;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthUserDetails;
 import ar.edu.itba.paw.webapp.form.BusinessForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +29,19 @@ public class BusinessController {
     private final ServiceService serviceService;
     private final AppointmentService appointmentService;
     private final UserService userService;
-    private final SecurityService securityService;
+    private final ServinetAuthControl authControl;
 
     List<Neighbourhoods> neighbourhoods = Arrays.asList(Neighbourhoods.values());
     @Autowired
     public BusinessController(@Qualifier("BusinessServiceImpl") final BusinessService businessService,  @Qualifier("serviceServiceImpl") final ServiceService serviceService,
                               @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService,
                               @Qualifier("userServiceImpl") final UserService userService,
-                              @Qualifier("securityServiceImpl") final SecurityService securityService) {
+                              @Qualifier("servinetAuthControl") final ServinetAuthControl authControl){
         this.businessService = businessService;
         this.serviceService = serviceService;
         this.appointmentService = appointmentService;
         this.userService = userService;
-        this.securityService = securityService;
+        this.authControl = authControl;
 
     }
 
@@ -48,7 +49,7 @@ public class BusinessController {
     @RequestMapping(method = RequestMethod.GET, path="/registrar-negocio")
     public ModelAndView registerBusiness(@ModelAttribute("BusinessForm") final BusinessForm form) {
         final ModelAndView mav = new ModelAndView("postBusiness");
-        User user = securityService.getCurrentUser().orElseThrow(UserNotFoundException::new);
+        User user = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
         form.setBusinessEmail(user.getEmail());
         form.setBusinessTelephone(user.getTelephone());
         mav.addObject("neighbours",neighbourhoods);
@@ -68,7 +69,7 @@ public class BusinessController {
             return new ModelAndView("redirect:/login");
         }
          */
-        long userid = securityService.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
+        long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
         Business business = businessService.createBusiness(form.getBusinessName(),userid, form.getBusinessEmail(),form.getBusinessTelephone(),form.getBusinessLocation());
         return new ModelAndView("redirect:/negocio/"+ business.getBusinessid());
     }

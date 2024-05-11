@@ -2,7 +2,10 @@ package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.services.BusinessDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -19,6 +22,7 @@ public class BusinessDaoJdbc implements BusinessDao {
     private static final RowMapper<Business> ROW_MAPPER = (rs, rowNum) -> new Business(rs.getLong("businessid"),
             rs.getString("businessname"), rs.getLong("userid"), rs.getString("businessTelephone"), rs.getString("businessEmail"),
             rs.getString("businessLocation"));
+    private final Logger LOGGER = LoggerFactory.getLogger(BusinessDaoJdbc.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
@@ -48,10 +52,20 @@ public class BusinessDaoJdbc implements BusinessDao {
 
     @Override
     public void deleteBusiness(long businessid) {
-        jdbcTemplate.update("delete from business where businessid = ?", businessid);
+        try {
+            jdbcTemplate.update("delete from business where businessid = ?", businessid);
+            LOGGER.info("Business successfully deleted");
+        }catch (DataAccessException e){
+            LOGGER.warn("Error deleting business: {}", e.getMessage());
+        }
     }
     private void changeField(final String field, long businessId, String value) {
-        jdbcTemplate.update(String.format("update business set %s = ? where businessid = ?", field), value, businessId);
+        try {
+            jdbcTemplate.update(String.format("update business set %s = ? where businessid = ?", field), value, businessId);
+            LOGGER.info("Field '{}' successfully changed", field);
+        } catch (DataAccessException e) {
+            LOGGER.warn("Error changing field '{}': {}", field, e.getMessage());
+        }
     }
 
     @Override

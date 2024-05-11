@@ -2,6 +2,8 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.PasswordRecoveryCode;
 import ar.edu.itba.paw.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ public class PasswordRecoveryCodeServiceImpl implements PasswordRecoveryCodeServ
     private final PasswordRecoveryCodeDao passwordRecoveryCodeDao;
     private final EmailService emailService;
     private final UserService userService;
+    private final Logger LOGGER = LoggerFactory.getLogger(PasswordRecoveryCodeServiceImpl.class);
 
     @Autowired
     public PasswordRecoveryCodeServiceImpl(PasswordRecoveryCodeDao passwordRecoveryCodeDao, EmailService emailService, UserService userService){
@@ -25,7 +28,7 @@ public class PasswordRecoveryCodeServiceImpl implements PasswordRecoveryCodeServ
 
     @Transactional
     @Override
-    public void sendCode(String email) throws MessagingException {
+    public void sendCode(String email) {
         User user = userService.findByEmail(email).get();
         PasswordRecoveryCode passwordRecoveryCode = generateCode(user.getUserId());
         emailService.recoverPassword(user, passwordRecoveryCode);
@@ -37,6 +40,7 @@ public class PasswordRecoveryCodeServiceImpl implements PasswordRecoveryCodeServ
         passwordRecoveryCodeDao.deleteCode(userid);
         UUID newCode = UUID.randomUUID();
         passwordRecoveryCodeDao.saveCode(userid, newCode);
+        LOGGER.info("Recovery code succesfully generated");
         return new PasswordRecoveryCode(userid, newCode, LocalDateTime.now().plusHours(1));
     }
 
@@ -59,6 +63,7 @@ public class PasswordRecoveryCodeServiceImpl implements PasswordRecoveryCodeServ
         }
         User user = userService.findById(passwordRecoveryCode.getUserId()).get();
         userService.changePassword(user.getEmail(), newPassword);
+        LOGGER.info("Password changed successfully");
         deleteCode(passwordRecoveryCode.getUserId());
         emailService.confirmNewPassword(user);
     }

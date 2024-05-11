@@ -2,6 +2,8 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +22,7 @@ public class ServiceServiceImpl implements ServiceService {
     private final UserService userService;
     private final BusinessDao businessDao;
     private final ImageService imageService;
+    private final Logger LOGGER = LoggerFactory.getLogger(ServiceServiceImpl.class);
 
     @Autowired
     public ServiceServiceImpl(final ServiceDao serviceDao, final EmailService emailService,
@@ -54,11 +57,7 @@ public class ServiceServiceImpl implements ServiceService {
         long imageId = image.isEmpty()? 0 : imageService.addImage(image.getBytes()).getImageId();
 
         Service service = serviceDao.create(business.getBusinessid(), name, description, homeservice,location,neighbourhood, category,minimalduration ,pricing, price, additionalCharges,imageId);
-        try {
-            emailService.createdService(service, business);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+        emailService.createdService(service, business);
         return service;
     }
 
@@ -95,21 +94,13 @@ public class ServiceServiceImpl implements ServiceService {
              for ( Appointment appointment : appointmentList){
                  User client = userService.findById( appointment.getUserid()).get();
 
-                 try {
-                     if (appointment.getConfirmed())
-                         emailService.cancelledAppointment(appointment,service,business,client,true);
-                     else
-                         emailService.deniedAppointment(appointment,service,business,client,true);
-                 } catch (MessagingException e){
-                     throw new RuntimeException(e);
-                 }
+                if (appointment.getConfirmed())
+                    emailService.cancelledAppointment(appointment,service,business,client,true);
+                else
+                    emailService.deniedAppointment(appointment,service,business,client,true);
              }
         serviceDao.delete(service.getId());
-        try {
-            emailService.deletedService(service,business);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+        emailService.deletedService(service,business);
     }
 
 

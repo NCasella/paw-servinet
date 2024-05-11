@@ -70,9 +70,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(final String username,final String name, final String surname, final String password, final String email, final String telephone) {
         User user = userDao.findByEmail(email).orElse(null);
-        if (user!= null){
+        /*if (user!= null){
             throw new IllegalArgumentException("User already exists");
         }
+        */
 
         user= userDao.create(username,name,surname, passwordEncoder.encode(password), email, telephone,false);
         Set<GrantedAuthority> authorities= Set.of(new SimpleGrantedAuthority("ROLE_USER"));

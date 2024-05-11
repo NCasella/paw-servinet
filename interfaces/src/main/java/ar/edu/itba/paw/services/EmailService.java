@@ -12,24 +12,24 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface EmailService {
 
-    void requestAppointment(Appointment appointment, Service service, Business business, User client) throws MessagingException;
-    void recoverPassword(User user, PasswordRecoveryCode passwordRecoveryCode) throws MessagingException;
+    void requestAppointment(Appointment appointment, Service service, Business business, User client) ;
+    void recoverPassword(User user, PasswordRecoveryCode passwordRecoveryCode) ;
 
-    void confirmNewPassword(User user) throws MessagingException;
+    void confirmNewPassword(User user) ;
 
-    void confirmedAppointment(Appointment appointment, Service service, Business business, User client) throws MessagingException;
+    void confirmedAppointment(Appointment appointment, Service service, Business business, User client) ;
 
-    void cancelledAppointment(Appointment appointment, Service service, Business business, User client, boolean isServiceDeleted) throws MessagingException;
+    void cancelledAppointment(Appointment appointment, Service service, Business business, User client, boolean isServiceDeleted) ;
 
-    void deniedAppointment(Appointment appointment, Service service, Business business, User client, boolean isServiceDeleted) throws MessagingException;
+    void deniedAppointment(Appointment appointment, Service service, Business business, User client, boolean isServiceDeleted) ;
 
-    void deletedService(Service service, Business business) throws MessagingException;
+    void deletedService(Service service, Business business) ;
 
-    void createdService(Service service, Business business) throws MessagingException;
+    void createdService(Service service, Business business) ;
 
-    void createdBusiness(Business business) throws MessagingException;
+    void createdBusiness(Business business) ;
 
-    void deletedBusiness(Business business) throws MessagingException;
+    void deletedBusiness(Business business) ;
 
     void answeredQuestion(Service service, Business business, User client, String response) throws MessagingException;
 

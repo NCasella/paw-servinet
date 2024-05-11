@@ -2,6 +2,8 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +22,7 @@ public class BusinessServiceImpl implements BusinessService{
     private final ServiceService serviceService;
     private final UserService userService;
     private final EmailService emailService;
+    private final Logger LOGGER = LoggerFactory.getLogger(BusinessServiceImpl.class);
 
     @Autowired
     public BusinessServiceImpl(final BusinessDao businessDao, final ServiceService serviceService,
@@ -61,11 +64,8 @@ public class BusinessServiceImpl implements BusinessService{
         List<Service> servicesList = serviceService.getAllBusinessServices(businessid);
             for ( Service service : servicesList)
                 serviceService.delete(service, business );
-        try {
-            emailService.deletedBusiness(business);
-        } catch (MessagingException e){
-            throw new RuntimeException(e);
-        }
+
+        emailService.deletedBusiness(business);
         businessDao.deleteBusiness(businessid);
     }
 
@@ -74,24 +74,11 @@ public class BusinessServiceImpl implements BusinessService{
     public Business createBusiness(String businessName, long userId, String telephone, String email, String location){
         Business business = businessDao.createBusiness(businessName,userId,telephone,email,location);
 
-        try {
-            emailService.createdBusiness(business);
-        } catch (MessagingException e){
-            throw new RuntimeException(e);
-        }
+        emailService.createdBusiness(business);
         User user= userService.findById(userId).orElseThrow(UserNotFoundException::new);
         userService.makeProvider(user);
         return business;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public boolean isBusinessOwner(long businessId, long userId){
-        Business business = businessDao.findById(businessId).orElse(null);
-        if(business == null){
-            return false;
-        }
-        return business.getUserId() == userId;
-    }
 
 }

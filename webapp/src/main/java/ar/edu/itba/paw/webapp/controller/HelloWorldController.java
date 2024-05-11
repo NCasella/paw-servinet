@@ -6,7 +6,10 @@ import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.services.ServiceService;
+import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.form.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -24,23 +27,23 @@ public class HelloWorldController {
 
     private UserService us;
     private ServiceService ss;
-    private final SecurityService securityService;
+    private final ServinetAuthControl authControl;
     private final PasswordRecoveryCodeService passwordRecoveryCodeService;
     private static final String TBDPricing = PricingTypes.TBD.getValue();
 
-
+    private Logger LOGGER = LoggerFactory.getLogger(HelloWorldController.class);
 
     @Autowired
     public HelloWorldController(
             @Qualifier("userServiceImpl") final UserService us,
             @Qualifier("serviceServiceImpl") final ServiceService ss,
             @Qualifier("passwordRecoveryCodeServiceImpl") final PasswordRecoveryCodeService passwordRecoveryCodeService,
-            @Qualifier("securityServiceImpl") final SecurityService securityService
+            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl
     ){
         this.us = us;
         this.ss = ss;
         this.passwordRecoveryCodeService = passwordRecoveryCodeService;
-        this.securityService = securityService;
+        this.authControl= authControl;
     }
 
     @RequestMapping(path="/login")
@@ -66,12 +69,7 @@ public class HelloWorldController {
         if (errors.hasErrors()){
             return forgotPasswordRequest(form);
         }
-        try{
-            passwordRecoveryCodeService.sendCode(form.getEmail());
-        }catch(MessagingException e){
-            //usar LOGGING
-            System.err.println(e.getMessage());
-        }
+       passwordRecoveryCodeService.sendCode(form.getEmail());
 
         return new ModelAndView("redirect:/login");
     }
@@ -121,7 +119,7 @@ public class HelloWorldController {
     @RequestMapping(method = RequestMethod.GET, path="/publicar")
     public ModelAndView publish() {
         final ModelAndView mav = new ModelAndView("publish");
-        User currentUser = securityService.getCurrentUser().get();
+        User currentUser = authControl.getCurrentUser().get();
         if(!currentUser.isProvider()) {
             return new ModelAndView("redirect:/registrar-negocio");
         }

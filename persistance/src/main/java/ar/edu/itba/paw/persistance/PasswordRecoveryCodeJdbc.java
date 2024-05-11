@@ -2,7 +2,10 @@ package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.PasswordRecoveryCode;
 import ar.edu.itba.paw.services.PasswordRecoveryCodeDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -18,6 +21,7 @@ public class PasswordRecoveryCodeJdbc implements PasswordRecoveryCodeDao {
     private static final RowMapper<PasswordRecoveryCode> ROW_MAPPER = (rs, rowNum) -> new PasswordRecoveryCode(rs.getLong("userid"),
              UUID.fromString(rs.getString("code")), rs.getTimestamp("expirationdate").toLocalDateTime());
     private final JdbcTemplate jdbcTemplate;
+     private Logger LOGGER = LoggerFactory.getLogger(PasswordRecoveryCodeJdbc.class);
 
     @Autowired
     public PasswordRecoveryCodeJdbc(final DataSource ds){
@@ -25,7 +29,11 @@ public class PasswordRecoveryCodeJdbc implements PasswordRecoveryCodeDao {
     }
     @Override
     public void saveCode(long userid, UUID code) {
-        jdbcTemplate.update("INSERT INTO passwordrecoverycodes (userid, code, expirationdate) VALUES (?,?,?)", userid, code, LocalDateTime.now().plusHours(1));
+        try {
+            jdbcTemplate.update("INSERT INTO passwordrecoverycodes (userid, code, expirationdate) VALUES (?,?,?)", userid, code, LocalDateTime.now().plusHours(1));
+        }catch(DataAccessException e){
+            LOGGER.warn("Error saving password recovery code: {}", e.getMessage());
+        }
     }
 
     @Override
@@ -41,6 +49,10 @@ public class PasswordRecoveryCodeJdbc implements PasswordRecoveryCodeDao {
 
     @Override
     public void deleteCode(long userid) {
-        jdbcTemplate.update("DELETE FROM passwordrecoverycodes WHERE userid= ?", userid);
+        try {
+            jdbcTemplate.update("DELETE FROM passwordrecoverycodes WHERE userid= ?", userid);
+        }catch(DataAccessException e){
+            LOGGER.warn("Error deleting password recovery code: {}", e.getMessage());
+        }
     }
 }

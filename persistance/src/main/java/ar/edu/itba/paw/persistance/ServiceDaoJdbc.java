@@ -2,7 +2,10 @@ package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.services.ServiceDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -32,6 +35,7 @@ public class ServiceDaoJdbc implements ServiceDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final Logger LOGGER = LoggerFactory.getLogger(ServiceDaoJdbc.class);
 
    @Autowired
    public ServiceDaoJdbc(final DataSource ds){
@@ -64,12 +68,14 @@ public class ServiceDaoJdbc implements ServiceDao {
         userData.put("additionalcharges", additionalCharges);
         userData.put("imageid", imageId != 0 ? imageId : null);
         final Number generatedId = simpleJdbcInsert.executeAndReturnKey(userData);
-        if(!homeservice) { //TODO: implementar esto bien con spring security
+        if(!homeservice) {
+            LOGGER.info("Adding neighbourhood: {}", neighbourhoods[0]);
             jdbcTemplate.update("insert into nbservices (serviceid,neighbourhood) values (?,?)", generatedId, neighbourhoods[0].getValue());
         }
         else {
             for (Neighbourhoods n : neighbourhoods) {
-                jdbcTemplate.update("insert into nbservices (serviceid,neighbourhood) values (?,?)", generatedId, n.getValue());
+               LOGGER.info("Adding neighbourhood: {}", n);
+               jdbcTemplate.update("insert into nbservices (serviceid,neighbourhood) values (?,?)", generatedId, n.getValue());
             }
         }
         return new Service(generatedId.longValue(), businessid, name, description, homeservice, location, Arrays.stream(neighbourhoods).map(Enum::name).toArray(String[]::new), category, minimalduration, pricing, price, additionalCharges, imageId);
@@ -78,7 +84,6 @@ public class ServiceDaoJdbc implements ServiceDao {
     @Override
     public List<Service> getAllServices(){
         return jdbcTemplate.query("select s.* ,array_agg(nb.neighbourhood) as neighbourhoods from services s inner join nbservices nb on s.id=nb.serviceid group by s.id ;", ROW_MAPPER);
-
     }
 
     @Override
@@ -97,11 +102,14 @@ public class ServiceDaoJdbc implements ServiceDao {
            return findById(serviceid).get();
     }
 
-    //TODO: consultar si es mejor manejar dataAccessExceptions sin salir de persistence (lo catcheo y devuelvo un boolean)
-    // o se propaga la excepcion hasta que en el controller se maneje como en el ejemplo de userNotFoundExcaption
     @Override
     public void delete(long serviceid) {
-            jdbcTemplate.update("delete from services where id= ? ", serviceid);
+       try {
+           jdbcTemplate.update("delete from services where id= ? ", serviceid);
+           LOGGER.info("Service successfully deleted");
+       }catch(DataAccessException e){
+           LOGGER.warn("Error deleting service: {}", e.getMessage());
+       }
     }
 
     @Override

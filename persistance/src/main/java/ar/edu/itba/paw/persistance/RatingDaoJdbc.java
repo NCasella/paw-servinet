@@ -2,7 +2,10 @@ package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.services.RatingDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -19,6 +22,7 @@ public class RatingDaoJdbc implements RatingDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final Logger LOGGER = LoggerFactory.getLogger(RatingDaoJdbc.class);
 
     @Autowired
     public RatingDaoJdbc(final DataSource ds) {
@@ -69,7 +73,11 @@ public class RatingDaoJdbc implements RatingDao {
 
     @Override
     public void edit(long ratingid, int rating, String comment) {
-        jdbcTemplate.update("UPDATE ratings SET rating = ?, comment = ?, date = ? WHERE ratingid = ?", rating, comment, new Date(), ratingid);
+        try {
+            jdbcTemplate.update("UPDATE ratings SET rating = ?, comment = ?, date = ? WHERE ratingid = ?", rating, comment, new Date(), ratingid);
+        }catch(DataAccessException e){
+            LOGGER.warn("Error editing rating: {}", e.getMessage());
+        }
     }
 
 }

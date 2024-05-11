@@ -3,6 +3,8 @@ package ar.edu.itba.paw.persistance;
 import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.model.AppointmentInfo;
 import ar.edu.itba.paw.services.AppointmentDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,6 +21,7 @@ public class AppointmentDaoJdbc implements AppointmentDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final Logger LOGGER = LoggerFactory.getLogger(AppointmentDaoJdbc.class);
 
     private static final RowMapper<Appointment> APPOINTMENT_ROW_MAPPER = (rs, rowNum) -> new Appointment(rs.getInt("appointmentid"), rs.getInt("serviceid"), rs.getInt("userid"),
             rs.getTimestamp("startDate").toLocalDateTime(), rs.getTimestamp("endDate").toLocalDateTime(),rs.getString("location") ,rs.getBoolean("confirmed"));
@@ -99,13 +102,20 @@ public class AppointmentDaoJdbc implements AppointmentDao {
             throw new NoSuchElementException(); //AppointmentNotFoundException;
         }
         */
-        jdbcTemplate.update("UPDATE appointments SET confirmed=TRUE WHERE appointmentid = ?", appointmentid);
+        try {
+            jdbcTemplate.update("UPDATE appointments SET confirmed=TRUE WHERE appointmentid = ?", appointmentid);
+        }catch(Exception e){
+            LOGGER.warn("Error while updating appointment status: {}", e.getMessage());
+        }
 
     }
 
     @Override
     public void cancelAppointment(long appointmentid) {
-        //TODO: Falta excep
-        jdbcTemplate.update("DELETE FROM appointments WHERE appointmentid = ?", appointmentid);
+        try {
+            jdbcTemplate.update("DELETE FROM appointments WHERE appointmentid = ?", appointmentid);
+        }catch(Exception e){
+            LOGGER.warn("Error while deleting appointment: {}", e.getMessage());
+        }
     }
 }

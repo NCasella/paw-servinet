@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.form.QuestionForm;
 import ar.edu.itba.paw.webapp.form.ResponseForm;
 import ar.edu.itba.paw.webapp.form.ReviewsForm;
@@ -19,7 +20,7 @@ public class RatingsQuestionsController {
     private final  QuestionService question;
     private final ServiceController serviceController;
     private final UserController userController;
-    private final SecurityService securityService;
+    private final ServinetAuthControl authControl;
 
     @Autowired
     public RatingsQuestionsController(
@@ -27,12 +28,13 @@ public class RatingsQuestionsController {
             @Qualifier("userController") final UserController userController,
             @Qualifier("QuestionServiceImpl") final QuestionService question,
             @Qualifier("RatingServiceImpl") final RatingService rating,
-            @Qualifier("securityServiceImpl") final SecurityService securityService){
+            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl
+        ){
         this.serviceController = serviceController;
         this.rating = rating;
         this.question = question;
         this.userController = userController;
-        this.securityService = securityService;
+        this.authControl= authControl;
 }
 
     @RequestMapping(method = RequestMethod.POST, path = "/preguntar/{serviceId:\\d+}")
@@ -43,7 +45,7 @@ public class RatingsQuestionsController {
         if(errors.hasErrors()) {
             return serviceController.service(serviceId, form, null, "qst", 0, 0);
         }
-        long userid = securityService.getCurrentUser().get().getUserId();
+        long userid = authControl.getCurrentUser().get().getUserId();
         question.create(serviceId, userid, form.getQuestion());
         return new ModelAndView("redirect:/servicio/" + serviceId + "/?opcion=qst");
     }
@@ -70,7 +72,7 @@ public class RatingsQuestionsController {
         if(errors.hasErrors()) {
             return serviceController.service(serviceId, null, form, "rw", 0, 0);
         }
-        long userid = securityService.getCurrentUser().get().getUserId();
+        long userid = authControl.getCurrentUser().get().getUserId();
         if(rating.hasAlreadyRated(userid, serviceId) == null) {
             rating.create(serviceId, userid, form.getRating(), form.getComment());
         }

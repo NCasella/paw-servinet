@@ -2,7 +2,10 @@ package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Question;
 import ar.edu.itba.paw.services.QuestionDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -19,6 +22,7 @@ public class QuestionDaoJdbc implements QuestionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final Logger LOGGER = LoggerFactory.getLogger(QuestionDaoJdbc.class);
 
     @Autowired
     public QuestionDaoJdbc(final DataSource ds) {
@@ -52,7 +56,11 @@ public class QuestionDaoJdbc implements QuestionDao {
 
     @Override
     public void addResponse(long id, String response) {
-        jdbcTemplate.update("UPDATE questions SET response = ? WHERE questionid = ?", response, id);
+        try {
+            jdbcTemplate.update("UPDATE questions SET response = ? WHERE questionid = ?", response, id);
+        }catch(DataAccessException e){
+           LOGGER.warn("Error adding response to question: {}", e.getMessage());
+        }
     }
 
     @Override

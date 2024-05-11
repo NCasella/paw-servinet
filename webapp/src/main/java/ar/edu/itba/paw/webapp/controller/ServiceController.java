@@ -5,6 +5,7 @@ import ar.edu.itba.paw.model.exceptions.ForbiddenOperation;
 import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.form.AppointmentForm;
 import ar.edu.itba.paw.webapp.form.QuestionForm;
 import ar.edu.itba.paw.webapp.form.ReviewsForm;
@@ -29,7 +30,7 @@ public class ServiceController {
     private final UserService us;
     private final AppointmentService as;
     private BusinessService bs;
-    private final SecurityService securityService;
+    private final ServinetAuthControl authControl;
     private RatingService rating;
     private QuestionService question;
     private static final String TBDPricing = PricingTypes.TBD.getValue();
@@ -44,15 +45,15 @@ public class ServiceController {
             @Qualifier("BusinessServiceImpl") final BusinessService bs,
             @Qualifier("QuestionServiceImpl") final QuestionService question,
             @Qualifier("RatingServiceImpl") final RatingService rating,
-            @Qualifier("securityServiceImpl") final SecurityService securityService
+            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl
     ) {
         this.ss = serviceService;
         this.us = userService;
         this.as = appointmentService;
-        this.securityService = securityService;
         this.bs = bs;
         this.rating = rating;
         this.question = question;
+        this.authControl = authControl;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/servicios")
@@ -80,7 +81,7 @@ public class ServiceController {
     @RequestMapping(method = RequestMethod.GET, path="/crear-servicio")
     public ModelAndView selectBusinessForService() {
         final ModelAndView mav = new ModelAndView("businessesForNewService");
-        long userid = securityService.getCurrentUser().get().getUserId();
+        long userid = authControl.getCurrentUser().get().getUserId();
         User currentUser = us.findById(userid).orElseThrow(UserNotFoundException::new);
         List<Business> businessList = bs.findByAdminId(currentUser.getUserId());
         mav.addObject("user",currentUser);
@@ -90,9 +91,6 @@ public class ServiceController {
 
     @RequestMapping(method = RequestMethod.GET, path="/crear-servicio/{businessId:\\d+}")
     public ModelAndView registerService(@PathVariable("businessId")long businessId, @ModelAttribute("serviceForm") final ServiceForm form) {
-        if(!bs.isBusinessOwner(businessId, securityService.getCurrentUser().get().getUserId())){
-            throw new ForbiddenOperation();
-        }
         final ModelAndView mav = new ModelAndView("postService");
         mav.addObject("durationTypes",DurationTypes.values());
         return mav;
@@ -125,7 +123,7 @@ public class ServiceController {
             @RequestParam(value = "rwPag", required = false) Integer reviewPage
     ) {
         final ModelAndView mav = new ModelAndView("service");
-        Optional<User> currentUser = securityService.getCurrentUser();
+        Optional<User> currentUser = authControl.getCurrentUser();
         Long userId = currentUser.isPresent() ? currentUser.get().getUserId() : null;
         Service serv;
         if(questionPage == null) questionPage = 0;

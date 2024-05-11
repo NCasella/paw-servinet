@@ -5,6 +5,7 @@ import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.model.exceptions.ForbiddenOperation;
 import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
 import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.form.AppointmentForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,7 +23,7 @@ public class AppointmentController {
 
     private final ServiceService serviceService;
     private final AppointmentService appointmentService;
-    private final SecurityService securityService;
+    private final ServinetAuthControl authControl;
     private final ImageService is;
     private final BusinessService businessService;
 
@@ -30,18 +31,19 @@ public class AppointmentController {
     public AppointmentController(
         @Qualifier("imageServiceImpl") final ImageService is, @Qualifier("serviceServiceImpl") final ServiceService serviceService,
         @Qualifier("BusinessServiceImpl") final BusinessService businessService, @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService,
-        @Qualifier("securityServiceImpl") final SecurityService securityService){
+        @Qualifier("servinetAuthControl") final ServinetAuthControl authControl
+    ){
         this.serviceService = serviceService;
         this.is = is;   // TODO: debe ir en ServiceService, en create() paso MultipartFile como param
         this.businessService = businessService;
         this.appointmentService = appointmentService;
-        this.securityService = securityService;
+        this.authControl= authControl;
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/contratar-servicio/{serviceId:\\d+}")
     public ModelAndView appointment(@PathVariable("serviceId") final long serviceId, @Valid @ModelAttribute("appointmentForm") AppointmentForm form, BindingResult errors) {
         //todo: manejo de errores de ingreso del formulario (se lanzarían excepciones a nivel sql)
-        User user = securityService.getCurrentUser().get();
+        User user = authControl.getCurrentUser().get();
 
         Appointment createdAppointment = appointmentService.create(serviceId,user.getName(),user.getSurname(),user.getEmail(),form.getLocation(),user.getEmail(), form.getDate().toString());
         return new ModelAndView("redirect:/turno/"+ serviceId + "/" + createdAppointment.getId());
@@ -109,7 +111,7 @@ public class AppointmentController {
         }
 
         Appointment app = appointmentService.findById(appointmentId).get();
-        User user = securityService.getCurrentUser().get();
+        User user = authControl.getCurrentUser().get();
 
         Service service = serviceService.findById(app.getServiceid()).orElseThrow(ServiceNotFoundException::new);
         final ModelAndView mav = new ModelAndView("appointment");

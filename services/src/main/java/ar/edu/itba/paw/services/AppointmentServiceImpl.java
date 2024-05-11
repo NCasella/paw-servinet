@@ -4,6 +4,8 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.AppointmentAlreadyConfirmed;
 import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ public class AppointmentServiceImpl implements AppointmentService{
     private final ServiceDao serviceDao;
     private final BusinessDao businessDao;
     private final UserService userService;
+
+    private final Logger LOGGER = LoggerFactory.getLogger(AppointmentServiceImpl.class);
     @Autowired
     public AppointmentServiceImpl(final AppointmentDao appointmentDao, final EmailService emailService,
                                     final BusinessDao businessDao, ServiceDao serviceDao, final UserService userService) {
@@ -59,13 +63,9 @@ public class AppointmentServiceImpl implements AppointmentService{
         LocalDateTime startDate = LocalDateTime.parse(date);
         Appointment appointment = appointmentDao.create(service.getId(), newuser.getUserId(), startDate, startDate.plusMinutes(service.getDuration()), location);
         Business business = businessDao.findById(service.getBusinessid()).get();
-        try {
             //* si ya tiene el Service => ya lo paso x param
-            emailService.requestAppointment(appointment, service, business, newuser);
-
-        } catch (MessagingException e) {
-            System.err.println(e.getMessage());
-        }
+        emailService.requestAppointment(appointment, service, business, newuser);
+        LOGGER.info("Appointment request email sent successfully.");
         return appointment;
     }
     @Transactional
@@ -83,12 +83,8 @@ public class AppointmentServiceImpl implements AppointmentService{
 
         Business business = businessDao.findById( service.getBusinessid()).get();
         appointmentDao.confirmAppointment(appointment.getId());
-        try {
-            emailService.confirmedAppointment(appointment, service, business, client);
-
-        } catch (MessagingException e) {
-            System.err.println(e.getMessage());
-        }
+        emailService.confirmedAppointment(appointment, service, business, client);
+        LOGGER.info("Appointment confirmation email sent successfully.");
         return service.getId();
     }
     @Transactional
@@ -106,11 +102,8 @@ public class AppointmentServiceImpl implements AppointmentService{
 
         Business business = businessDao.findById( service.getBusinessid()).get();
         appointmentDao.cancelAppointment(appointment.getId());
-        try {
-            emailService.deniedAppointment(appointment, service, business, client,false);
-        } catch (MessagingException e) {
-            System.err.println(e.getMessage());
-        }
+        emailService.deniedAppointment(appointment, service, business, client,false);
+        LOGGER.info("Denied appointment email sent successfully.");
 
         return service.getId();
     }
@@ -126,12 +119,8 @@ public class AppointmentServiceImpl implements AppointmentService{
 
         Business business = businessDao.findById( service.getBusinessid()).get();
         appointmentDao.cancelAppointment(appointment.getId());
-        try {
-            emailService.cancelledAppointment(appointment, service,business, client,false);
-
-        } catch (MessagingException e) {
-            System.err.println(e.getMessage());
-        }
+        emailService.cancelledAppointment(appointment, service,business, client,false);
+        LOGGER.info("Cancel Appointment email sent successfully.");
 
         return service.getId();
     }
