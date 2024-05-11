@@ -56,7 +56,7 @@ public class PasswordRecoveryCodeServiceImpl implements PasswordRecoveryCodeServ
     }
 
     @Transactional
-    public void changePassword(UUID code, String newPassword) throws MessagingException{
+    public void changePassword(UUID code, String newPassword) {
         PasswordRecoveryCode passwordRecoveryCode = passwordRecoveryCodeDao.getCode(code).orElse(null);
         if (passwordRecoveryCode == null){
             return;

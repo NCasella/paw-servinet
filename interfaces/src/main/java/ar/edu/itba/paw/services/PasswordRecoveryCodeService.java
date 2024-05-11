@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public interface PasswordRecoveryCodeService {
 
-    void sendCode(String email) throws MessagingException;
+    void sendCode(String email) ;
     PasswordRecoveryCode generateCode(long userid);
-    void changePassword(UUID code, String newPassword) throws MessagingException;
+    void changePassword(UUID code, String newPassword) ;
     void deleteCode(long userid);
     boolean validateCode(UUID code);
 }

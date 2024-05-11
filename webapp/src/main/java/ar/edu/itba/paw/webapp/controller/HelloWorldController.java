@@ -90,11 +90,7 @@ public class HelloWorldController {
         if (errors.hasErrors()){
             return resetPasswordRequest(token, form);
         }
-        try {
-            passwordRecoveryCodeService.changePassword(UUID.fromString(token), form.getPassword());
-        } catch (MessagingException e) {
-            System.err.println(e.getMessage());
-        }
+        passwordRecoveryCodeService.changePassword(UUID.fromString(token), form.getPassword());
         return new ModelAndView("redirect:/login");
     }
 
