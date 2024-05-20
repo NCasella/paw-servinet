@@ -59,7 +59,7 @@ public class AppointmentServiceImplTest {
     public void testCreate() {
         // 1. Precondiciones
 
-        Mockito.when(userService.findByEmail(Mockito.eq(EMAIL))).thenReturn(Optional.of(new User(USERID,USERNAME,PASSWORD,NAME,SURNAME,EMAIL,TELEPHONE,true,LOCALE)));
+        Mockito.when(userService.findByEmail(Mockito.eq(EMAIL))).thenReturn(Optional.of(new User(USERNAME,PASSWORD,NAME,SURNAME,EMAIL,TELEPHONE,true,LOCALE)));
         Mockito.when(appointmentDao.create(Mockito.eq(SERVICEID),Mockito.eq(USERID),Mockito.eq(STARTDATE),Mockito.any(),Mockito.eq(LOCATION))).thenReturn(createAppointment());
         Mockito.when(businessDao.findById(Mockito.eq(BUSINESSID))).thenReturn(Optional.of(createBusiness()));
 
@@ -76,7 +76,7 @@ public class AppointmentServiceImplTest {
     public void testDenyAlreadyCondirmed(){
         Mockito.when(appointmentService.findById(Mockito.eq(APPOINTMENTID))).thenReturn(Optional.of(new Appointment(APPOINTMENTID,SERVICEID,USERID,STARTDATE,ENDDATE,LOCATION,true)));
         Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(createService()));
-        Mockito.when(userService.findById(Mockito.anyLong())).thenReturn(Optional.of(new User(USERID,USERNAME,PASSWORD,NAME,SURNAME,EMAIL,TELEPHONE,true,LOCALE)));
+        Mockito.when(userService.findById(Mockito.anyLong())).thenReturn(Optional.of(new User(USERNAME,PASSWORD,NAME,SURNAME,EMAIL,TELEPHONE,true,LOCALE)));
 
         appointmentService.denyAppointment(APPOINTMENTID);
         Assert.fail();
@@ -86,7 +86,7 @@ public class AppointmentServiceImplTest {
     public void testCreateExisting(){
         Mockito.when(appointmentService.findById(Mockito.eq(APPOINTMENTID))).thenReturn(Optional.of(new Appointment(APPOINTMENTID,SERVICEID,USERID,STARTDATE,ENDDATE,LOCATION,true)));
         Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(createService()));
-        Mockito.when(userService.findById(Mockito.anyLong())).thenReturn(Optional.of(new User(USERID,USERNAME,PASSWORD,NAME,SURNAME,EMAIL,TELEPHONE,true,LOCALE)));
+        Mockito.when(userService.findById(Mockito.anyLong())).thenReturn(Optional.of(new User(USERNAME,PASSWORD,NAME,SURNAME,EMAIL,TELEPHONE,true,LOCALE)));
 
         appointmentService.confirmAppointment(APPOINTMENTID);
         Assert.fail();

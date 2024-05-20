@@ -3,8 +3,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
-import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
-import net.bytebuddy.ClassFileVersion;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
-import java.awt.*;
-import java.io.IOException;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
@@ -102,7 +99,7 @@ public class ServiceServiceImplTest {
         return new Service(SERVICEID,BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION, Arrays.stream(NEIGHBOURHOODS).map(Enum::name).toArray(String[]::new),CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,1);
     }
     private static User createUser(){
-        return new User(PROVIDERID, USERNAME, PASSWORD,USERNAME,SURNAME, EMAIL, TELEPHONE, false,LOCALE);
+        return new User(USERNAME, PASSWORD,USERNAME,SURNAME, EMAIL, TELEPHONE, false,LOCALE);
     }
     static Business createBusiness(){
         return new Business(BUSINESSID, BUSINESS_NAME, PROVIDERID, TELEPHONE,EMAIL, LOCATION );

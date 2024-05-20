@@ -40,7 +40,7 @@ public class BusinessServiceImplTest {
 
     @Test
     public void testCreate(){
-        Mockito.when(userService.findById(USER_ID)).thenReturn(Optional.of(new User(USER_ID, USERNAME, PASSWORD, NAME,SURNAME , EMAIL, TELEPHONE, false,LOCALE)));
+        Mockito.when(userService.findById(USER_ID)).thenReturn(Optional.of(new User(USERNAME, PASSWORD, NAME,SURNAME , EMAIL, TELEPHONE, false,LOCALE)));
         Mockito.when(businessDao.createBusiness(BUSINESS_NAME,USER_ID,TELEPHONE,EMAIL,LOCATION)).thenReturn(new Business(2,BUSINESS_NAME,USER_ID,TELEPHONE,EMAIL,LOCATION));
 
         Business biz= businessService.createBusiness(BUSINESS_NAME, USER_ID, TELEPHONE, EMAIL, LOCATION);
