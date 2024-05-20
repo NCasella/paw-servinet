@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.Locale;
+
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public boolean isProvider(long userid){
-        return userDao.isProvider(userid);
+        return findById(userid).orElseThrow(UserNotFoundException::new).getProvider();
     }
 
     @Transactional(readOnly = true)
@@ -54,9 +54,10 @@ public class UserServiceImpl implements UserService {
         return userDao.findByUsername(username);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public String getUserLocale(long id){
-        return userDao.getUserLocale(id).orElseThrow(UserNotFoundException::new);
+        return findById(id).orElseThrow(UserNotFoundException::new).getLocale();
     }
     @Transactional
     @Override
@@ -80,10 +81,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User create(final String username,final String name, final String surname, final String password, final String email, final String telephone) {
-        User user = userDao.findByEmail(email).orElse(null);
         String locale = LocaleContextHolder.getLocale().getLanguage();
 
-        user= userDao.create(username,name,surname, passwordEncoder.encode(password), email, telephone,false,locale);
+        User user= userDao.create(username,name,surname, passwordEncoder.encode(password), email, telephone,false,locale);
         Set<GrantedAuthority> authorities= Set.of(new SimpleGrantedAuthority("ROLE_USER"));
         org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, authorities));

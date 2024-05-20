@@ -35,7 +35,7 @@ public class UserDaoJdbcTest {
     private static final String LOCALE = "en";
 
     @Autowired
-    private UserDaoJdbc userDao;
+    private UserDaoJpa userDao;
 
     @Autowired
     private DataSource ds;
