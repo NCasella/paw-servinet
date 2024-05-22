@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.Business;
+import ar.edu.itba.paw.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,7 @@ public interface BusinessDao {
 
      Optional<Business> findByBusinessName(String businessName);
 
-     List<Business> findByAdminId(long adminId);
+     List<Business> findByUser(User user);
 
      Optional<String> getBusinessEmail(long businessid);
      void changeBusinessLocation(long businessId,String value);
