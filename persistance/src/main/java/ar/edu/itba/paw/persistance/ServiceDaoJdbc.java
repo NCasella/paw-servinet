@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.*;
 
+/*
 @Repository
 public class ServiceDaoJdbc implements ServiceDao {
     private static final RowMapper<Service> ROW_MAPPER = (rs, rowNum) ->{
@@ -149,5 +150,6 @@ public class ServiceDaoJdbc implements ServiceDao {
     public void editService(long serviceId, String newDescription, int newDuration, PricingTypes newPricingType, String newPrice, boolean newAdditionalCharges) {
         jdbcTemplate.update("UPDATE services SET servicedescription = ?, minimalduration = ?, pricingtype = ?, price = ?, additionalcharges = ? WHERE id = ?", newDescription, newDuration, newPricingType.getValue(), newPrice, newAdditionalCharges, serviceId);
     }
-
 }
+
+ */

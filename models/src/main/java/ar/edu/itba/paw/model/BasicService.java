@@ -28,8 +28,7 @@ public class BasicService {
         public BasicService() {
         }
 
-        public BasicService(long id, long businessid, String name, String location,long imageId) {
-            this.id = id;
+        public BasicService(long businessid, String name, String location,long imageId) {
             this.businessid = businessid;
             this.name = name;
             this.location = location;

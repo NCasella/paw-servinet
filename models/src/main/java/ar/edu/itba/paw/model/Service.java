@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "services")
@@ -33,11 +35,14 @@ public class Service extends BasicService {
     @Column(name = "additionalcharges")
     private boolean additionalCharges;
 
+    @OneToMany(mappedBy = "serviceId")
+    private List<Nbservice> nbservices = new ArrayList<>();
+
     public Service() {
     }
 
-    public Service(long id, long businessid, String name, String description, boolean homeService, String location,String[] neighbourhoodAvailable, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,long imageId) {
-        super(id, businessid, name, location, imageId);
+    public Service(long businessid, String name, String description, boolean homeService, String location,String[] neighbourhoodAvailable, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,long imageId) {
+        super(businessid, name, location, imageId);
         this.description = description;
         this.homeService = homeService;
         this.neighbourhoodAvailable = neighbourhoodAvailable;
