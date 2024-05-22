@@ -13,7 +13,7 @@ public abstract class BasicAppointment {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointments_appointmentid_seq")
     @SequenceGenerator(name = "appointments_appointmentid_seq",sequenceName = "appointments_appointmentid_seq",allocationSize = 1)
-    @Column(name = "appoinmentid", nullable = false)
+    @Column(name = "appoinmentid")
     private long id;
     @Column(name = "serviceid", nullable = false )    
     private long serviceid;
@@ -33,8 +33,7 @@ public abstract class BasicAppointment {
     private final String HOMESERVICE="-";
 
 
-    public BasicAppointment(long id, long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
-        this.id = id;
+    public BasicAppointment(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
         this.serviceid = serviceid;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -84,6 +83,10 @@ public abstract class BasicAppointment {
 
     public void setConfirmed(boolean confirmed) {
         this.confirmed = confirmed;
+    }
+
+    public void setConfirmed() {
+        this.confirmed = true;
     }
 
     public boolean getHomeService(){

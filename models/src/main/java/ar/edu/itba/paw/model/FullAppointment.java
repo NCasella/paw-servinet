@@ -46,8 +46,7 @@ public class FullAppointment {
 
     //! para q sea lazy tengo q construirlo con Hibernate.initialize(Object obj); ?
     //! tengo q pasar Service en vez de serviceid en el constructor?
-    public FullAppointment(long id, long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
-        this.id = id;
+    public FullAppointment(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
         this.serviceid = serviceid;
         this.startDate = startDate;
         this.endDate = endDate;

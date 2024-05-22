@@ -12,8 +12,8 @@ public class Appointment extends BasicAppointment{
     @Column(name = "userid", nullable = false)
     private long userid;
 
-    public Appointment(long id, long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
-        super(id, serviceid, startDate, endDate, location, confirmed);
+    public Appointment(long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
+        super(serviceid, startDate, endDate, location, confirmed);
         this.userid = userid;
     }
 

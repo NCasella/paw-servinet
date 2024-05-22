@@ -25,9 +25,9 @@ public class AppointmentInfo extends BasicAppointment {
     private String businessTelephone;
 
 
-    public AppointmentInfo(long id, long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed,
+    public AppointmentInfo(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed,
                            String serviceName, String businessEmail, String businessTelephone ) {
-        super(id, serviceid, startDate, endDate, location, confirmed);
+        super(serviceid, startDate, endDate, location, confirmed);
         this.serviceName = serviceName;
         this.businessEmail = businessEmail;
         this.businessTelephone = businessTelephone;
