@@ -1,12 +1,32 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "services")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class BasicService {
 
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "services_id_seq")
+        @SequenceGenerator(name = "services_id_seq", sequenceName = "services_id_seq", allocationSize = 1)
+        @Column(name = "id")
         private long id;
+
+        @Column(name = "businessid", nullable = false)
         private long businessid;
+
+        @Column(name = "servicename", nullable = false, length = 255)
         private String name;
+
+        @Column(name = "location", nullable = false, length = 255)
         private String location;
+
+        @Column(name = "imageId")
         private long imageId;
+
+        public BasicService() {
+        }
 
         public BasicService(long id, long businessid, String name, String location,long imageId) {
             this.id = id;

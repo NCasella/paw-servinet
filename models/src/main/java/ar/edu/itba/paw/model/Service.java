@@ -1,15 +1,40 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "services")
 public class Service extends BasicService {
 
+    @Column(name = "servicedescription", length = 255)
     private String description;
+
+    @Column(name = "homeservice")
     private boolean homeService;
+
+    // REVISAR
+    @Column(name = "neighbourhood")
     private final String[] neighbourhoodAvailable;
+
+    @Column(name = "minimalduration")
     private int duration;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pricingtype")
     private PricingTypes pricing;
+
+    @Column(name = "price", length = 255)
     private String price;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category")
     private Categories category;
+
+    @Column(name = "additionalcharges")
     private boolean additionalCharges;
+
+    public Service() {
+    }
 
     public Service(long id, long businessid, String name, String description, boolean homeService, String location,String[] neighbourhoodAvailable, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,long imageId) {
         super(id, businessid, name, location, imageId);
