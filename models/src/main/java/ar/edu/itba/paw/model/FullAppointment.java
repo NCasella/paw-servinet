@@ -7,16 +7,22 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "appointments")
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class BasicAppointment {
+public class FullAppointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointments_appointmentid_seq")
     @SequenceGenerator(name = "appointments_appointmentid_seq",sequenceName = "appointments_appointmentid_seq",allocationSize = 1)
     @Column(name = "appoinmentid", nullable = false)
     private long id;
-    @Column(name = "serviceid", nullable = false )    
-    private long serviceid;
+
+    @ManyToOne(optional = false)                        // orphan removal va aca o solo cuando estas creando, y cascade?)
+    @JoinColumn(name = "serviceid")                     // si @Column => va a poner todo Service en la tabla
+    private Service service;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "userid", nullable = false)
+    private User user;
+
     @Column(name = "startDate", nullable = false)
     private LocalDateTime startDate;
     @Column(name = "endDate")
@@ -26,14 +32,21 @@ public abstract class BasicAppointment {
     @Column(name = "confirmed")
     private boolean confirmed;
 
+
+    //! businessid lo obtiene de service, eso es posible?
+    @ManyToOne()                                        //no uso @Column asi no lo agrega a table
+    @JoinColumn(name = "businessid", nullable = false)
+    private Business business;
+
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE dd MMMM");
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("EEE dd MMMM yyyy, HH:mm");
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
     private String startDateString;
     private final String HOMESERVICE="-";
 
-
-    public BasicAppointment(long id, long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
+    //! para q sea lazy tengo q construirlo con Hibernate.initialize(Object obj); ?
+    //! tengo q pasar Service en vez de serviceid en el constructor?
+    public FullAppointment(long id, long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
         this.id = id;
         this.serviceid = serviceid;
         this.startDate = startDate;
@@ -43,7 +56,7 @@ public abstract class BasicAppointment {
         this.startDateString = startDate.format(dateFormat);
     }
 
-    public BasicAppointment() {
+    public FullAppointment() {
 
     }
 
