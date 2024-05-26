@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
-
+/*
 @Repository
 public class AppointmentDaoJdbc implements AppointmentDao {
 
@@ -95,13 +95,13 @@ public class AppointmentDaoJdbc implements AppointmentDao {
 
     @Override
     public void confirmAppointment(long appointmentid) {
-        /*
+        *
         try {
             jdbcTemplate.update("UPDATE appointments SET confirmed=TRUE WHERE appointmentid = ?", appointmentid);
         } catch (DataAccessException e) {
             throw new NoSuchElementException(); //AppointmentNotFoundException;
         }
-        */
+        *
         try {
             jdbcTemplate.update("UPDATE appointments SET confirmed=TRUE WHERE appointmentid = ?", appointmentid);
         }catch(Exception e){
@@ -119,3 +119,4 @@ public class AppointmentDaoJdbc implements AppointmentDao {
         }
     }
 }
+*/

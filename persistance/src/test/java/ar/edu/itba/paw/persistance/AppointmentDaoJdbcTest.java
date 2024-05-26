@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 public class AppointmentDaoJdbcTest {
 
     @Autowired
-    private AppointmentDaoJdbc appointmentDao;
+    private AppointmentDaoJpa appointmentDao;
 
     @Autowired
     private DataSource ds;

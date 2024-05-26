@@ -1,30 +1,25 @@
 package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name="business")
 public class Business {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "business_businessid_seq")
-    @SequenceGenerator(sequenceName = "users_userid_seq",name="users_userid_seq",allocationSize = 1)
+    @SequenceGenerator(sequenceName = "business_businessid_seq",name="business_businessid_seq",allocationSize = 1)
     private Long businessid;
-
+    @Column(nullable = false)
     private String businessName;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User ownedBy;
-
-    @Column(nullable = false)
+    @Column(name="businesstelephone")
     private String telephone;
-
-    @Column(nullable = false)
+    @Column(name="businessemail")
     private String email;
-
-    @OneToMany
-    private List<Service> servicesProvided;
-
+    @Column(name="businesslocation")
     private String location;
+
     public long getBusinessid() {
         return businessid;
     }
@@ -49,19 +44,34 @@ public class Business {
         return location;
     }
 
-    public User getOwnedBy(){return ownedBy;}
+    public User getOwnedBy() {
+        return ownedBy;
+    }
 
+    protected Business() {}
 
-    protected Business(){}
-
-    public Business(long businessid, String businessName, User ownedBy,String telephone, String email, String location) {
-        this.businessid = businessid;
-        this.ownedBy=ownedBy;
+    public Business(String businessName, User ownedBy,String telephone, String email, String location) {
+        this.ownedBy = ownedBy;
         this.businessName = businessName;
         this.telephone = telephone;
         this.email = email;
         this.location = location;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }
