@@ -16,23 +16,22 @@ public class Service extends BasicService {
     private boolean homeService;
 
 
-    @OneToMany(mappedBy = "serviceIn")
+    @OneToMany(mappedBy = "serviceIn",fetch = FetchType.EAGER)
     private List<Nbservices> neighbourhoodAvailable;
 
 
     @Column(name = "minimalduration")
     private int duration;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "pricingtype")
-    private PricingTypes pricing;
+    private String pricing;
 
     @Column(name = "price", length = 255)
     private String price;
 
-    @Enumerated(EnumType.STRING)
+
     @Column(name = "category")
-    private Categories category;
+    private String category;
 
     @Column(name = "additionalcharges")
     private boolean additionalCharges;
@@ -45,9 +44,9 @@ public class Service extends BasicService {
         super(businessid, name, location, imageId);
         this.description = description;
         this.homeService = homeService;
-        this.category = category;
+        this.category = category.getValue();
         this.duration = duration;
-        this.pricing = pricingType;
+        this.pricing = pricingType.getValue();
         this.price = price;
         this.additionalCharges = additionalCharges;
     }
@@ -61,11 +60,11 @@ public class Service extends BasicService {
     }
 
     public Categories getCategory() {
-        return category;
+        return Categories.findByValue(category);
     }
 
     public void setCategory(String category) {
-        this.category = Categories.findByValue(category);
+        this.category = category;
     }
 
     public boolean getHomeService() {
@@ -87,7 +86,7 @@ public class Service extends BasicService {
     public List<String> getNeighbourhoodAvailable() {
         List<String> list=new ArrayList<>();
         for(Nbservices n: neighbourhoodAvailable){
-            list.add(n.getNeighbourhood().getValue());
+            list.add(n.getNeighbourhood());
         }
         return list;
     }
@@ -95,11 +94,11 @@ public class Service extends BasicService {
 
 
     public PricingTypes getPricing() {
-        return pricing;
+        return PricingTypes.findByValue(pricing);
     }
 
     public void setPricing(String pricing) {
-        this.pricing = PricingTypes.findByValue(pricing);
+        this.pricing = pricing;
     }
 
     public String getPrice() {
@@ -118,4 +117,7 @@ public class Service extends BasicService {
         this.additionalCharges = additionalCharges;
     }
 
+    public void setNeighbourhoodAvailable(List<Nbservices> neighbourhoodAvailable) {
+        this.neighbourhoodAvailable = neighbourhoodAvailable;
+    }
 }

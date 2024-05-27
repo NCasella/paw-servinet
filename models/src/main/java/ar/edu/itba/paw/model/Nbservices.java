@@ -16,8 +16,7 @@ public class Nbservices {
     private Service serviceIn;
 
     @Column(name = "neighbourhood")
-    @Enumerated(EnumType.STRING)
-    private Neighbourhoods neighbourhood;
+    private String neighbourhood;
 
 
     public Nbservices() {
@@ -25,7 +24,7 @@ public class Nbservices {
 
     public Nbservices(Service serviceIn,Neighbourhoods neighbourhood) {
         this.serviceIn=serviceIn;
-        this.neighbourhood = neighbourhood;
+        this.neighbourhood = neighbourhood.getValue();
     }
 
     public long getId() {
@@ -33,12 +32,12 @@ public class Nbservices {
     }
 
 
-    public Neighbourhoods getNeighbourhood() {
+    public String getNeighbourhood() {
         return neighbourhood;
     }
 
     public void setNeighbourhood(Neighbourhoods neighbourhood) {
-        this.neighbourhood = neighbourhood;
+        this.neighbourhood = neighbourhood.getValue();
     }
 
 }

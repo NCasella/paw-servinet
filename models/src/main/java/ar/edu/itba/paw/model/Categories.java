@@ -40,7 +40,11 @@ public enum Categories {
                 return category;
             }
         }
-        return null;
+        throw new IllegalArgumentException();
     }
 
+    @Override
+    public String toString(){
+        return value;
+    }
 }
