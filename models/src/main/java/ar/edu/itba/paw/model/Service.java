@@ -2,21 +2,23 @@ package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
 @Table(name = "services")
 public class Service extends BasicService {
 
-    @Column(name = "servicedescription", length = 255)
+    @Column(name = "servicedescription")
     private String description;
 
     @Column(name = "homeservice")
     private boolean homeService;
 
-    // REVISAR
-    @Column(name = "neighbourhood")
-    private final String[] neighbourhoodAvailable;
+
+    @OneToMany(mappedBy = "serviceIn")
+    private List<Nbservices> neighbourhoodAvailable;
+
 
     @Column(name = "minimalduration")
     private int duration;
@@ -35,17 +37,14 @@ public class Service extends BasicService {
     @Column(name = "additionalcharges")
     private boolean additionalCharges;
 
-    @OneToMany(mappedBy = "serviceId")
-    private List<Nbservice> nbservices = new ArrayList<>();
 
     public Service() {
     }
 
-    public Service(long businessid, String name, String description, boolean homeService, String location,String[] neighbourhoodAvailable, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,long imageId) {
+    public Service(long businessid, String name, String description, boolean homeService, String location, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,long imageId) {
         super(businessid, name, location, imageId);
         this.description = description;
         this.homeService = homeService;
-        this.neighbourhoodAvailable = neighbourhoodAvailable;
         this.category = category;
         this.duration = duration;
         this.pricing = pricingType;
@@ -85,8 +84,12 @@ public class Service extends BasicService {
         this.duration = duration;
     }
 
-    public String[] getNeighbourhoodAvailable() {
-        return neighbourhoodAvailable;
+    public List<String> getNeighbourhoodAvailable() {
+        List<String> list=new ArrayList<>();
+        for(Nbservices n: neighbourhoodAvailable){
+            list.add(n.getNeighbourhood().getValue());
+        }
+        return list;
     }
 
 

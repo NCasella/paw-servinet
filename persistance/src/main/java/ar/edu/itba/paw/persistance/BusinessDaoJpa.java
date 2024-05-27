@@ -34,9 +34,9 @@ public class BusinessDaoJpa implements BusinessDao {
     }
 
     @Override
-    public List<Business> findByUser(User user){
-        return em.createQuery("from Business as b where b.user = :user", Business.class)
-                .setParameter("user", user)
+    public List<Business> findByUser(long user){
+        return em.createQuery("from Business as b where b.ownedBy.userId = :userId", Business.class)
+                .setParameter("userId", user)
                 .getResultList();
     }
 

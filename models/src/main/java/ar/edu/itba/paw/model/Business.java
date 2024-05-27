@@ -47,7 +47,9 @@ public class Business {
     public User getOwnedBy() {
         return ownedBy;
     }
-
+    public long getUserId(){
+        return ownedBy.getUserId();
+    }
     protected Business() {}
 
     public Business(String businessName, User ownedBy,String telephone, String email, String location) {

@@ -3,26 +3,28 @@ package ar.edu.itba.paw.model;
 import javax.persistence.*;
 
 @Entity
-public class Nbservice {
+public class Nbservices {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "services_id_seq")
     @SequenceGenerator(name = "services_id_seq", sequenceName = "services_id_seq", allocationSize = 1)
     @Column(name = "insertid")
-    private long id;
+    private Long id;
 
-    @Column(name = "serviceid")
-    private long serviceId;
+    @ManyToOne
+    @JoinColumn(name="serviceid")
+    private Service serviceIn;
 
     @Column(name = "neighbourhood")
-    private String neighbourhood;
+    @Enumerated(EnumType.STRING)
+    private Neighbourhoods neighbourhood;
 
-    public Nbservice() {
 
+    public Nbservices() {
     }
 
-    public Nbservice(long serviceId, String neighbourhood) {
-        this.serviceId = serviceId;
+    public Nbservices(Service serviceIn,Neighbourhoods neighbourhood) {
+        this.serviceIn=serviceIn;
         this.neighbourhood = neighbourhood;
     }
 
@@ -30,19 +32,13 @@ public class Nbservice {
         return id;
     }
 
-    public long getServiceId() {
-        return serviceId;
-    }
 
-    public String getNeighbourhood() {
+    public Neighbourhoods getNeighbourhood() {
         return neighbourhood;
     }
 
-    public void setNeighbourhood(String neighbourhood) {
+    public void setNeighbourhood(Neighbourhoods neighbourhood) {
         this.neighbourhood = neighbourhood;
     }
 
-    public void setServiceId(long serviceId) {
-        this.serviceId = serviceId;
-    }
 }

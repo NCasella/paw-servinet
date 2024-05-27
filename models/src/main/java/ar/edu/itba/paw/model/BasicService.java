@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "services")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class BasicService {
 
         @Id
