@@ -5,9 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-@Entity
-@Table(name = "appointments")
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public abstract class BasicAppointment {
 
     @Id
