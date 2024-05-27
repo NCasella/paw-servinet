@@ -8,17 +8,18 @@ public class Business {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "business_businessid_seq")
     @SequenceGenerator(sequenceName = "business_businessid_seq",name="business_businessid_seq",allocationSize = 1)
-    private long businessid;
+    private Long businessid;
     @Column(nullable = false)
     private String businessName;
     @ManyToOne(optional = false)
-    private User user;
-    @Column
+    private User ownedBy;
+    @Column(name="businesstelephone")
     private String telephone;
-    @Column
+    @Column(name="businessemail")
     private String email;
-    @Column
+    @Column(name="businesslocation")
     private String location;
+
     public long getBusinessid() {
         return businessid;
     }
@@ -43,14 +44,16 @@ public class Business {
         return location;
     }
 
-    public User getUser() {
-        return user;
+    public User getOwnedBy() {
+        return ownedBy;
     }
-
+    public long getUserId(){
+        return ownedBy.getUserId();
+    }
     protected Business() {}
 
-    public Business(String businessName, User user,String telephone, String email, String location) {
-        this.user = user;
+    public Business(String businessName, User ownedBy,String telephone, String email, String location) {
+        this.ownedBy = ownedBy;
         this.businessName = businessName;
         this.telephone = telephone;
         this.email = email;
@@ -61,9 +64,6 @@ public class Business {
         this.email = email;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;

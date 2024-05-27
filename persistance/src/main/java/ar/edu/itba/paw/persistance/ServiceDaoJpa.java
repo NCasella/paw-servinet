@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistance;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
 import ar.edu.itba.paw.services.ServiceDao;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class ServiceDaoJpa implements ServiceDao {
 
     @PersistenceContext
@@ -31,18 +33,11 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public Service create(long businessid, String name, String description, boolean homeservice, String location, Neighbourhoods[] neighbourhoods, Categories category, int minimalduration, PricingTypes pricing, String price, boolean additionalCharges, long imageId) {
-        Service service = new Service(businessid, name, description, homeservice, location, Arrays.stream(neighbourhoods).map(Enum::name).toArray(String[]::new), category, minimalduration, pricing, price, additionalCharges, imageId);
+        Service service = new Service(businessid, name, description, homeservice, location, category, minimalduration, pricing, price, additionalCharges, imageId);
         em.persist(service);
-
-        long serviceId = service.getId();
-        if (!homeservice) {
-            Nbservice nbservice = new Nbservice(serviceId, neighbourhoods[0].getValue());
-            em.persist(nbservice);
-        } else {
-            for (Neighbourhoods n : neighbourhoods) {
-                Nbservice nbservice = new Nbservice(serviceId, n.getValue());
-                em.persist(nbservice);
-            }
+        for (Neighbourhoods n : neighbourhoods) {
+            Nbservices nbservices = new Nbservices(service, n);
+            em.persist(nbservices);
         }
         return service;
     }

@@ -11,7 +11,7 @@ public interface BusinessDao {
 
      Optional<Business> findByBusinessName(String businessName);
 
-     List<Business> findByUser(User user);
+     List<Business> findByUser(long userId);
 
      Optional<String> getBusinessEmail(long businessid);
      void changeBusinessLocation(long businessId,String value);
