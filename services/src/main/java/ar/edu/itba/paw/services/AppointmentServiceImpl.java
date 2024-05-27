@@ -50,7 +50,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
     @Transactional(readOnly = true)
     @Override
-    public List<AppointmentInfo> getAllUpcomingUserAppointments(long userid, boolean confirmed) {
+    public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed) {
         return appointmentDao.getAllUpcomingUserAppointments(userid, confirmed);
     }
     @Transactional

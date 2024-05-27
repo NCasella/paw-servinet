@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public Optional<BasicService> findBasicServiceById(long id) {
-        TypedQuery<BasicService> query = em.createQuery("from BasicService as s where s.id = :id", BasicService.class);
+        TypedQuery<BasicService> query = em.createQuery("from Service as s where s.id = :id", BasicService.class);
         query.setParameter("id", id);
         final List<BasicService> list = query.getResultList();
         return list.stream().findFirst();
@@ -43,6 +43,12 @@ public class ServiceDaoJpa implements ServiceDao {
     }
 
     @Override
+    public List<ServiceContactInfo> getServicesContactInfo(Collection<Long> serviceids){
+        TypedQuery<ServiceContactInfo> query = em.createQuery("from Service as s JOIN Business where s.id in :serviceids", ServiceContactInfo.class);
+        return query.getResultList();
+    }
+
+    @Override
     public List<Service> getAllServices() {
         TypedQuery<Service> query = em.createQuery("from Service", Service.class);
         return query.getResultList();
@@ -57,7 +63,7 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public List<BasicService> getAllBusinessBasicServices(long businessId) {
-        TypedQuery<BasicService> query = em.createQuery("from BasicService as s WHERE s.businessid = :businessId", BasicService.class);
+        TypedQuery<BasicService> query = em.createQuery("from Service as s WHERE s.businessid = :businessId", BasicService.class);
         query.setParameter("businessId", businessId);
         return query.getResultList();
     }

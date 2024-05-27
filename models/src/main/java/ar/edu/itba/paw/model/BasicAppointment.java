@@ -11,7 +11,7 @@ public abstract class BasicAppointment {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointments_appointmentid_seq")
     @SequenceGenerator(name = "appointments_appointmentid_seq",sequenceName = "appointments_appointmentid_seq",allocationSize = 1)
-    @Column(name = "appoinmentid")
+    @Column(name = "appointmentid")
     private long id;
     @Column(name = "serviceid", nullable = false )    
     private long serviceid;

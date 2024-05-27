@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Appointment;
-import ar.edu.itba.paw.model.AppointmentInfo;
 import ar.edu.itba.paw.services.AppointmentDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
