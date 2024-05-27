@@ -44,7 +44,7 @@ public class UserController {
 
         List<Business> businessList = Collections.emptyList();
         if ( user.isProvider() )
-            businessList = businessService.findByAdminId(user.getUserId());
+            businessList = user.getBusinessOwned();
         mav.addObject("businessList", businessList);
         mav.addObject("user", user);
         return mav;
@@ -55,7 +55,7 @@ public class UserController {
         final ModelAndView mav = new ModelAndView("userBusiness");
 
         User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
-        List<Business> businessList= businessService.findByAdminId(currentUser.getUserId());
+        List<Business> businessList= currentUser.getBusinessOwned();
 
         mav.addObject("user",currentUser);
         mav.addObject("businessList", businessList);

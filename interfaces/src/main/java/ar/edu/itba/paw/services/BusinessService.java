@@ -11,7 +11,7 @@ public interface BusinessService {
 
     Optional<Business> findByBusinessName(String businessName);
 
-    List<Business> findByAdminId(long adminId);
+    List<Business> findByAdminId(User admin);
 
     Optional<String> getBusinessEmail(long businessid);
 

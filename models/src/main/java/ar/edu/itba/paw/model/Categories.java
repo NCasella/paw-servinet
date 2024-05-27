@@ -40,7 +40,7 @@ public enum Categories {
                 return category;
             }
         }
-        throw new IllegalArgumentException();
+        return null;
     }
 
     @Override
