@@ -2,6 +2,7 @@ package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="users")
@@ -27,7 +28,7 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "ownedBy")
+    @OneToMany(mappedBy = "ownedBy",fetch = FetchType.EAGER)
     private List<Business> businessOwned;
 
     private String telephone;
@@ -120,6 +121,22 @@ public class User {
     public void setLocale(String locale) {
         this.locale = locale;
     }
+    @Override
+    public boolean equals(Object o){
+        if(this==o)
+            return true;
+        if(!(o instanceof User us))
+            return false;
+        return Objects.equals(this.userId,us.userId);
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hashCode(userId);
+    }
 
     public void setEmail(String email){this.email=email;}
+
+    public List<Business> getBusinessOwned() {
+        return businessOwned;
+    }
 }
