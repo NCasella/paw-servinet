@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +39,17 @@ public class Service extends BasicService {
     @Column(name = "additionalcharges")
     private boolean additionalCharges;
 
+    @OneToMany(mappedBy = "service")
+    private List<Question> questions;
+    @OneToMany(mappedBy = "service")
+    private List<Rating> ratings;
 
+    @Formula("(select coalesce(avg(r.rating),0) from ratings r where r.serviceid = id)")
+    private double ratingAvg;
+    @Formula("(select count(r.rating) from ratings r where r.serviceid = id)")
+    private int ratingsCount;
+    @Formula("(select count(q.questionid) from questions q where q.serviceid = id)")
+    private int questionsCount;
     public Service() {
     }
 
@@ -92,7 +104,9 @@ public class Service extends BasicService {
         return list;
     }
 
-
+    public List<Question> getQuestions() {
+        return questions;
+    }
 
     public PricingTypes getPricing() {
         return pricing;
@@ -118,4 +132,19 @@ public class Service extends BasicService {
         this.additionalCharges = additionalCharges;
     }
 
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public double getRatingAvg() {
+        return ratingAvg;
+    }
+
+    public int getQuestionsCount() {
+        return questionsCount;
+    }
+
+    public int getRatingsCount() {
+        return ratingsCount;
+    }
 }
