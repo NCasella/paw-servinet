@@ -1,13 +1,24 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "images")
 public class ImageModel {
 
-
-    private final long imageId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "images_imageid_seq")
+    @SequenceGenerator(sequenceName = "images_imageid_seq",name="images_imageid_seq",allocationSize = 1)
+    private long imageId;
+    @Column(nullable = false)
     private byte[] imageBytes;
 
+    protected ImageModel() {}
+    public ImageModel(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+    }
     public ImageModel(long imageId, byte[] imageBytes) {
-        this.imageId=imageId;
+        this.imageId = imageId;
         this.imageBytes = imageBytes;
     }
 
