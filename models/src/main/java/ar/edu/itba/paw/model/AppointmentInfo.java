@@ -1,27 +1,21 @@
 package ar.edu.itba.paw.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.SecondaryTable;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 // sino q sea solo sea usado por services, osea no un entity
 
-@Entity
-/*
-@SecondaryTable(name = "business")
-@SecondaryTable(name = "services") */
+
 public class AppointmentInfo extends BasicAppointment {
 
-    @JoinColumn(name = "servicename", nullable = false)
+
     private String serviceName;
 
     // ! como sabe de que tabla hablo?
-    @JoinColumn(name = "businessEmail")
+
     private String businessEmail;
 
-    @JoinColumn(name = "businessTelephone")
+
     private String businessTelephone;
 
 
