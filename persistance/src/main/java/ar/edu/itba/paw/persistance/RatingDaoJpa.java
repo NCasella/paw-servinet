@@ -1,0 +1,74 @@
+package ar.edu.itba.paw.persistance;
+
+import ar.edu.itba.paw.model.Question;
+import ar.edu.itba.paw.model.Rating;
+import ar.edu.itba.paw.model.Service;
+import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.services.RatingDao;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.*;
+import java.util.stream.Stream;
+
+public class RatingDaoJpa implements RatingDao {
+    @PersistenceContext
+    private EntityManager em;
+
+    @Override
+    public List<Rating> getAllRatings(long serviceid, int page, int pageSize) {
+        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid", Rating.class).setParameter("serviceid", serviceid);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+
+        @SuppressWarnings("unchecked")
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+
+        TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList", Rating.class);
+        query.setParameter("idList", idList);
+        return query.getResultList();
+    }
+
+    @Override
+    public Optional<Rating> findById(long id) {
+        return Optional.of(em.find(Rating.class, id));
+    }
+
+    @Override
+    public Rating create(long serviceid, long userid, int rating, String comment) {
+        Rating newRating = new Rating(em.find(Service.class, serviceid), em.find(User.class, userid), rating, comment, null);
+        em.persist(newRating);
+        return newRating;
+    }
+
+    @Override
+    public double getRatingsAvg(long serviceid) {
+        Service service = em.find(Service.class, serviceid);
+        return service.getRatingAvg();
+    }
+
+    @Override
+    public int getRatingsCount(long serviceid) {
+        Service service = em.find(Service.class, serviceid);
+        return service.getRatingsCount();
+    }
+
+    @Override
+    public Optional<Rating> hasAlreadyRated(long userid, long serviceid) {
+        TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.user.id = :userid AND r.service.id = :serviceid", Rating.class);
+        query.setParameter("userid", userid);
+        query.setParameter("serviceid", serviceid);
+        return query.getResultList().stream().findFirst();
+    }
+
+    @Override
+    public void edit(long ratingid, int rating, String comment) {
+        Rating ratingToEdit = em.find(Rating.class, ratingid);
+        ratingToEdit.setRating(rating);
+        ratingToEdit.setComment(comment);
+        em.persist(ratingToEdit);
+    }
+
+}

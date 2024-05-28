@@ -1,19 +1,30 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "ratings")
 public class Rating {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "ratings_ratingid_seq")
+    @SequenceGenerator(sequenceName = "ratings_ratingid_seq",name="ratings_ratingid_seq",allocationSize = 1)
     private long id;
-    private long serviceid;
-    private long userid;
+    @ManyToOne(optional = false)
+    private Service service;
+    @ManyToOne(optional = false)
+    private User user;
+    @Column(nullable = false)
     private int rating;
+    @Column
     private String comment;
+    @Column(nullable = false)
     private LocalDate date;
+    protected Rating() {}
 
-    public Rating(long id, long serviceid, long userid, int rating, String comment, LocalDate date) {
-        this.id = id;
-        this.serviceid = serviceid;
-        this.userid = userid;
+    public Rating(Service service, User user, int rating, String comment, LocalDate date) {
+        this.service = service;
+        this.user = user;
         this.rating = rating;
         this.comment = comment;
         this.date = date;
@@ -24,11 +35,11 @@ public class Rating {
     }
 
     public long getServiceid() {
-        return serviceid;
+        return service.getId();
     }
 
     public long getUserid() {
-        return userid;
+        return user.getUserId();
     }
 
     public int getRating() {
@@ -41,5 +52,13 @@ public class Rating {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

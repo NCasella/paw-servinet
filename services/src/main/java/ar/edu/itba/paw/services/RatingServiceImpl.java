@@ -21,7 +21,8 @@ public class RatingServiceImpl implements RatingService {
     @Transactional(readOnly = true)
     @Override
     public List<Rating> getAllRatings(long serviceid, int page) {
-        return ratingDao.getAllRatings(serviceid, page);
+        //TODO: manejar tamaño de pagina
+        return ratingDao.getAllRatings(serviceid, page,10);
     }
 
     @Transactional(readOnly = true)
