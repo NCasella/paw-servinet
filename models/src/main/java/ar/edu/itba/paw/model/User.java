@@ -35,6 +35,13 @@ public class User {
     @Column(nullable = false)
     private boolean isProvider;
 
+    @OneToOne(mappedBy = "requestedBy", fetch = FetchType.LAZY)
+    private PasswordRecoveryCode passwordRecoveryCode;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Question> questions;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Rating> ratings;
 
     private String locale;
     public String getName() {
