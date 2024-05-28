@@ -44,7 +44,8 @@ public class QuestionServiceImpl implements  QuestionService {
     @Override
     public List<Question> getAllQuestions(long serviceid, int page) {
         List<Question> questions;
-        questions = questionDao.getAllQuestions(serviceid, page);
+        //TODO: manejar tamaño de pagina
+        questions = questionDao.getAllQuestions(serviceid, page, 10);
         return questions;
     }
 

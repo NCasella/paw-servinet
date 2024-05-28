@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface QuestionDao {
-    List<Question> getAllQuestions(long serviceid, int page);
+    List<Question> getAllQuestions(long serviceid, int page, int pageSize);
     Optional<Question> findById(long id);
     Question create(long serviceid, long userid, String question);
     void addResponse(long id, String response);

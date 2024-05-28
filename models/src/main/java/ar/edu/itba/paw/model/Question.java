@@ -1,19 +1,31 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "questions")
 public class Question {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "questions_questionid_seq")
+    @SequenceGenerator(sequenceName = "questions_questionid_seq",name="questions_questionid_seq",allocationSize = 1)
     private long id;
-    private long serviceid;
-    private long userid;
+    @ManyToOne
+    private Service service;
+    @ManyToOne
+    private User user;
+    @Column(nullable = false)
     private String question;
+    @Column
     private String response;
+    @Column(nullable = false)
     private LocalDate date;
 
-    public Question(long id, long serviceid, long userid, String question, String response, LocalDate date) {
-        this.id = id;
-        this.serviceid = serviceid;
-        this.userid = userid;
+    protected Question() {}
+
+    public Question( Service service, User user, String question, String response, LocalDate date) {
+        this.service = service;
+        this.user = user;
         this.question = question;
         this.response = response;
         this.date = date;
@@ -24,11 +36,11 @@ public class Question {
     }
 
     public long getServiceid() {
-        return serviceid;
+        return service.getId();
     }
 
     public long getUserid() {
-        return userid;
+        return user.getUserId();
     }
 
     public String getQuestion() {
@@ -41,5 +53,25 @@ public class Question {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
     }
 }
