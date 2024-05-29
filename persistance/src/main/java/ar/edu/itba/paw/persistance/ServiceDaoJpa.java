@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +47,8 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public List<ServiceContactInfo> getServicesContactInfo(Collection<Long> serviceids){
-        TypedQuery<ServiceContactInfo> query = em.createQuery("from Service as s JOIN Business where s.id in :serviceids", ServiceContactInfo.class);
+        TypedQuery<ServiceContactInfo> query = em.createQuery("select new ar.edu.itba.paw.model.ServiceContactInfo(s.id, s.name, b.email, b.telephone) from Service as s JOIN s.business as b where s.id in :serviceids", ServiceContactInfo.class);
+        query.setParameter("serviceids", new ArrayList<>(serviceids));
         return query.getResultList();
     }
 

@@ -75,7 +75,8 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public Map<Long,ServiceContactInfo> getServicesContactInfo(Collection<Long> serviceids){
         Map<Long,ServiceContactInfo> result = new HashMap<>();
-        for ( ServiceContactInfo s : serviceDao.getServicesContactInfo(serviceids) ){
+        List<ServiceContactInfo> l =  serviceDao.getServicesContactInfo(serviceids);
+        for ( ServiceContactInfo s : l ){
             result.putIfAbsent(s.getServiceId(), s);
         }
         return result;

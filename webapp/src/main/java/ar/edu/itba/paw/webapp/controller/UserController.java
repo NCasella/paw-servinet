@@ -82,7 +82,7 @@ public class UserController {
         List<Appointment> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed);
         Set<Long> serviceids = new HashSet<>();
         for ( Appointment a : appointmentList){
-            serviceids.add(a.getId());
+            serviceids.add(a.getServiceid());
         }
         Map<Long,ServiceContactInfo> serviceContactInfoMap = serviceService.getServicesContactInfo(serviceids);
         mav.addObject("appointmentList", appointmentList);
