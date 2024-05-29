@@ -19,7 +19,7 @@ public class RegisterUserForm {
 
    @NotNull
    @NotEmpty
-   @Email
+   @Email(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
    @EmailNotUsed
    @Size(max=255)
    private String email;

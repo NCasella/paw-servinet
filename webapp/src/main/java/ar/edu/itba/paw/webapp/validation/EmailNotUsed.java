@@ -16,11 +16,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
     @Retention(RUNTIME)
 
 public @interface EmailNotUsed {
-   String EMAIL_REGEX = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
    String message() default "{ar.edu.itba.paw.webapp.validation.EmailNotUsedValidator.message}";
 
-   String regex() default EMAIL_REGEX;
 
    Class<?>[] groups() default {};
 
