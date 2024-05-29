@@ -1,10 +1,5 @@
 package ar.edu.itba.paw.persistance;
 
-import com.sun.xml.fastinfoset.util.StringArray;
-import org.hibernate.jpa.TypedParameterValue;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.type.CustomType;
-import org.hibernate.type.StringType;
 
 import javax.persistence.Query;
 import java.util.*;
