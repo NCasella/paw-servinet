@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Appointment;
-import ar.edu.itba.paw.model.AppointmentInfo;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
@@ -46,15 +45,17 @@ public class AppointmentDaoJpa implements AppointmentDao {
         return query.getResultList();
     }
 
+    //query.setParameter("serviceids",new ArrayList<>(servicesIds));
     //todo: duda sobre si usar directo Appointment o AppointmentInfo
     @Override
-    public List<AppointmentInfo> getAllUpcomingUserAppointments(long userid, boolean confirmed) {
-        /*
-        TypedQuery<AppointmentInfo> query = em.createQuery("from Appointment where serviceid in :serviceids and startDate > :currentDate ", Appointment.class);
-        query.setParameter("serviceids",new ArrayList<>(servicesIds));
+    public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed) {
+
+        TypedQuery<Appointment> query = em.createQuery("from Appointment where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Appointment.class);
+
         query.setParameter("currentDate", LocalDateTime.now());
-        return query.getResultList(); */
-        return null;
+        query.setParameter("userid", userid);
+        query.setParameter("confirmed", confirmed);
+        return query.getResultList();
     }
 
     @Override

@@ -4,10 +4,13 @@ import ar.edu.itba.paw.model.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ServiceService {
+
     List<Service> getAllServices();
     Service editServiceName(long serviceId, String name);
     Optional<Service> findById(long id);
@@ -16,6 +19,7 @@ public interface ServiceService {
     void editService(long serviceId, String newDescription, int newDuration, PricingTypes newPricingType, String newPrice, boolean newAdditionalCharges);
     void delete(Service service, Business business);
     void delete(long serviceId);
+    Map<Long,ServiceContactInfo> getServicesContactInfo(Collection<Long> serviceids);
     List<Service> services(int page,String category,String[] location, String rating, String query);
     int getServiceCount(String category, String[] location, String rating, String searchQuery);
     int getPageCount(String category, String[] location, String rating, String searchQuery);

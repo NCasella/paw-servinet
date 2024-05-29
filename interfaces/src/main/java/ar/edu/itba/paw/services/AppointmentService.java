@@ -14,7 +14,7 @@ public interface AppointmentService {
 
     List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> serviceIds, boolean confirmed);
 
-    List<AppointmentInfo> getAllUpcomingUserAppointments(long userid, boolean confirmed);
+    List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed);
 
     Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date);
 

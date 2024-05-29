@@ -23,6 +23,11 @@ public class BasicService {
         @Column(name = "imageId")
         private Long imageId;
 
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "businessid", insertable = false, updatable = false)
+        private Business business;
+
+
         public BasicService() {
         }
 
@@ -73,4 +78,9 @@ public class BasicService {
         public void setImageId(long imageId) {
             this.imageId = imageId;
         }
+
+        public Business getBusiness(){
+            return business;
+        }
+
 }

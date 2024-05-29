@@ -20,19 +20,21 @@ public class UserController {
     private final QuestionService questionService;
     private final ServinetAuthControl authControl;
     private final AppointmentService appointmentService;
+    private final ServiceService serviceService;
 
     @Autowired
     public UserController (@Qualifier("BusinessServiceImpl") final BusinessService businessService,
                            @Qualifier("userServiceImpl") final UserService userService,
                            @Qualifier("QuestionServiceImpl") final QuestionService questionService,
                            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl,
+                           @Qualifier("serviceServiceImpl") final ServiceService serviceService,
                            @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService){
-
         this.businessService = businessService;
         this.userService = userService;
         this.questionService = questionService;
         this.authControl= authControl;
         this.appointmentService = appointmentService;
+        this.serviceService=serviceService;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/perfil")
@@ -77,9 +79,14 @@ public class UserController {
 
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
 
-        List<AppointmentInfo> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed);
-
+        List<Appointment> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed);
+        Set<Long> serviceids = new HashSet<>();
+        for ( Appointment a : appointmentList){
+            serviceids.add(a.getServiceid());
+        }
+        Map<Long,ServiceContactInfo> serviceContactInfoMap = serviceService.getServicesContactInfo(serviceids);
         mav.addObject("appointmentList", appointmentList);
+        mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("confirmed",confirmed);
         mav.addObject("userId", userid);
         return mav;

@@ -23,8 +23,8 @@
         <c:forEach items="${appointmentList}" var="appointment" varStatus="loop">
             <c:set var="appointment" value="${appointment}" scope="request" />
             <c:set var="loop" value="${loop}" scope="request" />
-            <c:set var="serviceName" value="${appointment.serviceName}" scope="request" />
-            <c:set var="email" value="${appointment.businessEmail}" scope="request" />
+            <c:set var="serviceName" value="${serviceContactInfoMap[appointment.serviceid].serviceName}" scope="request" />
+            <c:set var="email" value="${serviceContactInfoMap[appointment.serviceid].businessEmail}" scope="request" />
             <jsp:include page="components/appointmentContainer.jsp"/>
         </c:forEach>
         <c:if test="${ empty appointmentList}">
