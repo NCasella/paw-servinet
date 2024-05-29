@@ -28,9 +28,9 @@ public class ImageController {
         this.is = is;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/images/{imageId:\\d+}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] images(@RequestParam("imageId") final Integer imageId) {
-        final Optional<ImageModel> image = is.getImageById(imageId);
+    @RequestMapping(method = RequestMethod.GET, path = "/images/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] images(@PathVariable("imageId") final long imageId) {
+        Optional<ImageModel> image = is.getImageById(imageId);
         if(image.isEmpty()){
             try{
                 return StreamUtils.copyToByteArray(defaultImage.getInputStream());

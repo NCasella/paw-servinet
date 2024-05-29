@@ -15,7 +15,7 @@ public class ImageDaoJpa implements ImageDao {
 
     @Override
     public Optional<ImageModel> getImageById(long id)  {
-        return Optional.of(em.find(ImageModel.class, id));
+        return Optional.ofNullable(em.find(ImageModel.class, id));
     }
 
     @Override

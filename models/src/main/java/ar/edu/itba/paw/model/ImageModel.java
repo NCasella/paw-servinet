@@ -9,7 +9,7 @@ public class ImageModel {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "images_imageid_seq")
     @SequenceGenerator(sequenceName = "images_imageid_seq",name="images_imageid_seq",allocationSize = 1)
-    private long imageId;
+    private Long imageId;
     @Column(nullable = false)
     private byte[] imageBytes;
 

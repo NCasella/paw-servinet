@@ -14,10 +14,10 @@ public class BasicService {
         @Column(name = "businessid", nullable = false)
         private long businessid;
 
-        @Column(name = "servicename", nullable = false, length = 255)
+        @Column(name = "servicename", nullable = false)
         private String name;
 
-        @Column(name = "location", nullable = false, length = 255)
+        @Column(name = "location", nullable = false)
         private String location;
 
         @Column(name = "imageId")
@@ -72,7 +72,7 @@ public class BasicService {
         }
 
         public Long getImageId() {
-            return imageId;
+            return imageId!=null ?imageId:-1;
         }
 
         public void setImageId(long imageId) {
