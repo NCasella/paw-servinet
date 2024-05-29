@@ -57,10 +57,10 @@ public class QuestionDaoJpa implements QuestionDao {
     }
 
     @Override
-    public Optional<Map<Question, String>> getQuestionsToRespond(long userid) {
+    public Map<Question, String> getQuestionsToRespond(User user) {
         //agrego business en BasicService en vez del id
-        List<Question> questions = em.createQuery("SELECT q FROM Question q JOIN q.service s JOIN s.business b WHERE b.user.id = :userid AND q.response IS NULL ORDER BY q.date DESC", Question.class)
-                .setParameter("userid", userid).getResultList();
+        List<Question> questions = em.createQuery("SELECT q FROM Question q JOIN q.service s JOIN s.business b WHERE b.ownedBy = :user AND q.response IS NULL ORDER BY q.date DESC", Question.class)
+                .setParameter("user", user).getResultList();
 
         Map<Question, String> questionServiceMap = new HashMap<>();
 
@@ -68,7 +68,7 @@ public class QuestionDaoJpa implements QuestionDao {
             String serviceName = getServiceNameForQuestion(question.getServiceid());
             questionServiceMap.put(question, serviceName);
         }
-        return Optional.of(questionServiceMap);
+        return questionServiceMap;
     }
 
     private String getServiceNameForQuestion(long serviceId) {

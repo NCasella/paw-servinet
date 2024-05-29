@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -86,13 +86,8 @@ public class QuestionServiceImpl implements  QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public Map<Question, String> getQuestionsToRespond(long userid) {
-        Map<Question, String> questions;
-        if(questionDao.getQuestionsToRespond(userid).isPresent()) {
-            questions = questionDao.getQuestionsToRespond(userid).get();
-            if(questions.isEmpty()) questions = null;
-        } else questions = null;
-        return questions;
+    public Map<Question, String> getQuestionsToRespond(User user) {
+        return questionDao.getQuestionsToRespond(user);
     }
 
 }

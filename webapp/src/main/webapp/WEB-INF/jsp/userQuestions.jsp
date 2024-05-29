@@ -14,7 +14,7 @@
     <h2><spring:message code="questions"/></h2>
 
     <c:choose>
-        <c:when test="${pendingQst!=null}">
+        <c:when test="${not empty pendingQst}">
             <h4 class="notification-header"><i class="material-icons notification-icon">notifications_active</i><spring:message code="questions.new"/></h4>
             <c:forEach items="${pendingQst}" var="qst">
                 <div class="question-box">
