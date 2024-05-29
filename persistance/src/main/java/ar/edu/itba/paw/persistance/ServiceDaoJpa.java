@@ -7,10 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class ServiceDaoJpa implements ServiceDao {
@@ -25,14 +27,14 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public Optional<BasicService> findBasicServiceById(long id) {
-        TypedQuery<BasicService> query = em.createQuery("from BasicService as s where s.id = :id", BasicService.class);
+        TypedQuery<BasicService> query = em.createQuery("from Service as s where s.id = :id", BasicService.class);
         query.setParameter("id", id);
         final List<BasicService> list = query.getResultList();
         return list.stream().findFirst();
     }
 
     @Override
-    public Service create(long businessid, String name, String description, boolean homeservice, String location, Neighbourhoods[] neighbourhoods, Categories category, int minimalduration, PricingTypes pricing, String price, boolean additionalCharges, long imageId) {
+    public Service create(long businessid, String name, String description, boolean homeservice, String location, Neighbourhoods[] neighbourhoods, Categories category, int minimalduration, PricingTypes pricing, String price, boolean additionalCharges, Long imageId) {
         Service service = new Service(businessid, name, description, homeservice, location, category, minimalduration, pricing, price, additionalCharges, imageId);
         em.persist(service);
         for (Neighbourhoods n : neighbourhoods) {
@@ -57,7 +59,7 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public List<BasicService> getAllBusinessBasicServices(long businessId) {
-        TypedQuery<BasicService> query = em.createQuery("from BasicService as s WHERE s.businessid = :businessId", BasicService.class);
+        TypedQuery<BasicService> query = em.createQuery("from Service as s WHERE s.businessid = :businessId", BasicService.class);
         query.setParameter("businessId", businessId);
         return query.getResultList();
     }
@@ -78,43 +80,42 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public List<Service> getServices(int page) {
-        // falta agregar la parte de neighbourhoods
+        // TODO implementar 1+1
         TypedQuery<Service> query = em.createQuery("from Service s order by s.id ASC", Service.class);
         query.setFirstResult(page * 10);
         query.setMaxResults(10);
         return query.getResultList();
     }
 
-    // FUNCION A CHEQUEAR COMPLETAMENTE (y falta lo de neighbourhoods)
     @Override
     public List<Service> getServicesFilteredBy(int page, String category, String[] location, int rating, String searchQuery) {
         FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addPage(page).addRating(rating);
-        String jpqlQuery = "from Service as s where " + filterArgument.formSqlSentence("1=1");
-        TypedQuery<Service> query = em.createQuery(jpqlQuery, Service.class);
-        List<Object> values = filterArgument.getValues();
-        for (int i = 0; i < values.size(); i++) {
-            query.setParameter(i + 1, values.get(i));
-        }
-        return query.getResultList();
+        Query nativeQuery =em.createNativeQuery("select id from services");
+        nativeQuery.setMaxResults(filterArgument.getPageSize());
+        nativeQuery.setFirstResult((page)*filterArgument.getPageSize());
+
+        final List<Long> idList = (List<Long>) nativeQuery.getResultList()
+                .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
+
+        final TypedQuery<Service> query= em.createQuery("from Service as s where id in :ids and "+filterArgument.formSqlSentence(), Service.class);
+        query.setParameter("ids",idList);
+        filterArgument.setQueryParams(query);
+        return  query.getResultList();
     }
 
-    // FUNCION A CHEQUEAR COMPLETAMENTE (y falta lo de neighbourhoods)
+
     @Override
     public int getServiceCount(String category, String[] location, int rating, String searchQuery) {
         FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addRating(rating);
-        String jpqlQuery = "SELECT COUNT(s.id) FROM Service s WHERE " + filterArgument.formSqlSentence("1=1");
-        TypedQuery<Long> query = em.createQuery(jpqlQuery, Long.class);
-        List<Object> values = filterArgument.getValues();
-        for (int i = 0; i < values.size(); i++) {
-            query.setParameter(i + 1, values.get(i));
-        }
-        Long count = query.getSingleResult();
-        return count != null ? count.intValue() : 0;
+        final TypedQuery<Service> query= em.createQuery("from Service as s where "+filterArgument.formSqlSentence(), Service.class);
+        filterArgument.setQueryParams(query);
+        return  query.getResultList().size();
+
     }
 
     @Override
     public List<Service> getRecommendedServices() {
-        // Falta agregarle lo de neighbourhoods
+        // TODO implementar 1+1
         TypedQuery<Service> query = em.createQuery("from Service as s order by s.id desc", Service.class);
         query.setMaxResults(10);
         return query.getResultList();

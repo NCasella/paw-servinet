@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.Question;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.services.QuestionDao;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,7 +13,7 @@ import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
-
+@Repository
 public class QuestionDaoJpa implements QuestionDao {
     @PersistenceContext
     private EntityManager em;

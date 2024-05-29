@@ -2,11 +2,12 @@ package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.ImageModel;
 import ar.edu.itba.paw.services.ImageDao;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Optional;
-
+@Repository
 public class ImageDaoJpa implements ImageDao {
 
     @PersistenceContext

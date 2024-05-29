@@ -11,10 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -32,7 +29,7 @@ public class ImageController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/images/{imageId:\\d+}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] images(@PathVariable("imageId") final int imageId) {
+    public @ResponseBody byte[] images(@RequestParam("imageId") final Integer imageId) {
         final Optional<ImageModel> image = is.getImageById(imageId);
         if(image.isEmpty()){
             try{

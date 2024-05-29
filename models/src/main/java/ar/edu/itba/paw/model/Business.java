@@ -12,6 +12,7 @@ public class Business {
     @Column(nullable = false)
     private String businessName;
     @ManyToOne(optional = false)
+    @JoinColumn(name = "userid")
     private User ownedBy;
     @Column(name="businesstelephone")
     private String telephone;

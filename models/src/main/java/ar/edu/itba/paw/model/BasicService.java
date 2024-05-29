@@ -2,16 +2,14 @@ package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "services")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@MappedSuperclass
 public class BasicService {
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "services_id_seq")
         @SequenceGenerator(name = "services_id_seq", sequenceName = "services_id_seq", allocationSize = 1)
         @Column(name = "id")
-        private long id;
+        private Long id;
 
         @Column(name = "businessid", nullable = false)
         private long businessid;
@@ -23,12 +21,12 @@ public class BasicService {
         private String location;
 
         @Column(name = "imageId")
-        private long imageId;
+        private Long imageId;
 
         public BasicService() {
         }
 
-        public BasicService(long businessid, String name, String location,long imageId) {
+        public BasicService(long businessid, String name, String location,Long imageId) {
             this.businessid = businessid;
             this.name = name;
             this.location = location;
@@ -68,9 +66,9 @@ public class BasicService {
             return businessid;
         }
 
-        public long getImageId() {
-        return imageId;
-    }
+        public Long getImageId() {
+            return imageId;
+        }
 
         public void setImageId(long imageId) {
             this.imageId = imageId;

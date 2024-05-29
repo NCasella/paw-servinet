@@ -56,9 +56,12 @@ public class ServiceServiceImpl implements ServiceService {
                           PricingTypes pricing, String price, boolean additionalCharges, MultipartFile image) {
         Business business = businessDao.findById( businessId).orElseThrow(BusinessNotFoundException::new);
 
-        long imageId=0;
+        Long imageId=null;
         if(!image.isEmpty()){
-                imageId=imageService.addImage(image).getImageId();
+            ImageModel maybeImage = imageService.addImage(image);
+            if (maybeImage != null) {
+                imageId = maybeImage.getImageId();
+            }
         }
 
         Service service = serviceDao.create(business.getBusinessid(), name, description, homeservice,location,neighbourhood, category,minimalduration ,pricing, price, additionalCharges,imageId);

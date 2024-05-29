@@ -38,7 +38,8 @@ public class ImageServiceImpl implements ImageService{
         catch (IOException e){
             LOGGER.warn("Error while reading image file from");
             //podría pasar null en vez de instanciar esto
-            return new ImageModel(0, new byte[1]);
+            //return new ImageModel(0, new byte[1]);
+            return null;
         }
     }
 

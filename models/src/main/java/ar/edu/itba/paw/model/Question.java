@@ -9,10 +9,12 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "questions_questionid_seq")
     @SequenceGenerator(sequenceName = "questions_questionid_seq",name="questions_questionid_seq",allocationSize = 1)
-    private long id;
+    private long questionid;
     @ManyToOne
+    @JoinColumn(name="serviceid")
     private Service service;
     @ManyToOne
+    @JoinColumn(name="userid")
     private User user;
     @Column(nullable = false)
     private String question;
@@ -32,7 +34,7 @@ public class Question {
     }
 
     public long getId() {
-        return id;
+        return questionid;
     }
 
     public long getServiceid() {

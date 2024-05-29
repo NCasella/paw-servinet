@@ -5,6 +5,7 @@ import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.services.RatingDao;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,6 +14,7 @@ import javax.persistence.TypedQuery;
 import java.util.*;
 import java.util.stream.Stream;
 
+@Repository
 public class RatingDaoJpa implements RatingDao {
     @PersistenceContext
     private EntityManager em;

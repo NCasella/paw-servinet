@@ -6,6 +6,7 @@ import ar.edu.itba.paw.services.PasswordRecoveryCodeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class PasswordRecoveryCodeDaoJpa implements PasswordRecoveryCodeDao {
     @PersistenceContext
     private EntityManager em;
