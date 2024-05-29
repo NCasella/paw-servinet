@@ -86,28 +86,22 @@ public class ServiceDaoJpa implements ServiceDao {
         em.remove(service);
     }
 
-    @Override
-    public List<Service> getServices(int page) {
-        // TODO implementar 1+1
-        TypedQuery<Service> query = em.createQuery("from Service s order by s.id ASC", Service.class);
-        query.setFirstResult(page * 10);
-        query.setMaxResults(10);
-        return query.getResultList();
-    }
 
     @Override
     public List<Service> getServicesFilteredBy(int page, String category, String[] location, int rating, String searchQuery) {
         FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addPage(page).addRating(rating);
-        Query nativeQuery =em.createNativeQuery("select id from services");
+        Query nativeQuery =em.createNativeQuery("select s.id from services s  where "+filterArgument.formSqlSentence());
+        filterArgument.setQueryParams(nativeQuery);
+
         nativeQuery.setMaxResults(filterArgument.getPageSize());
         nativeQuery.setFirstResult((page)*filterArgument.getPageSize());
 
         final List<Long> idList = (List<Long>) nativeQuery.getResultList()
                 .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
 
-        final TypedQuery<Service> query= em.createQuery("from Service as s where id in :ids and "+filterArgument.formSqlSentence(), Service.class);
+        final TypedQuery<Service> query= em.createQuery("from Service as s where id in :ids" , Service.class);
         query.setParameter("ids",idList);
-        filterArgument.setQueryParams(query);
+
         return  query.getResultList();
     }
 
@@ -115,15 +109,14 @@ public class ServiceDaoJpa implements ServiceDao {
     @Override
     public int getServiceCount(String category, String[] location, int rating, String searchQuery) {
         FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addRating(rating);
-        final TypedQuery<Service> query= em.createQuery("from Service as s where "+filterArgument.formSqlSentence(), Service.class);
+        final Query query= em.createNativeQuery("select count(s.id) from services s where "+filterArgument.formSqlSentence());
         filterArgument.setQueryParams(query);
-        return  query.getResultList().size();
+        return ((Number)query.getSingleResult()).intValue();
 
     }
 
     @Override
     public List<Service> getRecommendedServices() {
-        // TODO implementar 1+1
         TypedQuery<Service> query = em.createQuery("from Service as s order by s.id desc", Service.class);
         query.setMaxResults(10);
         return query.getResultList();
