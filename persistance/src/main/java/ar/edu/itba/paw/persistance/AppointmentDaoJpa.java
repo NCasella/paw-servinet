@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Appointment;
-import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
-import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
 import ar.edu.itba.paw.services.AppointmentDao;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -39,9 +36,10 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> servicesIds, boolean confirmed) {
-        TypedQuery<Appointment> query = em.createQuery("from Appointment where serviceid in :serviceids and startDate > :currentDate ", Appointment.class);
-        query.setParameter("serviceids",new ArrayList<>(servicesIds));
+        TypedQuery<Appointment> query = em.createQuery("from Appointment where serviceid in :serviceids and startDate > :currentDate and confirmed = :confirmed ", Appointment.class);
+        query.setParameter("serviceids",List.copyOf(servicesIds));
         query.setParameter("currentDate", LocalDateTime.now());
+        query.setParameter("confirmed", confirmed);
         return query.getResultList();
     }
 
