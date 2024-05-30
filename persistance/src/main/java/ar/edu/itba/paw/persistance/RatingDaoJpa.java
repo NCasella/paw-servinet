@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.persistance;
 
-import ar.edu.itba.paw.model.Question;
 import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
@@ -21,7 +20,7 @@ public class RatingDaoJpa implements RatingDao {
 
     @Override
     public List<Rating> getAllRatings(long serviceid, int page, int pageSize) {
-        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid", Rating.class).setParameter("serviceid", serviceid);
+        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid").setParameter("serviceid", serviceid);
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
 
