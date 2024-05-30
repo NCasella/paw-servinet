@@ -4,7 +4,6 @@ import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -18,7 +17,7 @@ public class Service extends BasicService {
     private boolean homeService;
 
 
-    @OneToMany(mappedBy = "serviceIn",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "serviceIn")
     private List<Nbservices> neighbourhoodAvailable;
 
 
