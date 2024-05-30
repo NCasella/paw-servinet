@@ -12,21 +12,22 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 @Repository
 public class QuestionDaoJpa implements QuestionDao {
     @PersistenceContext
     private EntityManager em;
     @Override
     public List<Question> getAllQuestions(long serviceid, int page, int pageSize){
-        Query nativeQuery = em.createNativeQuery("SELECT questionid FROM questions WHERE serviceid = :serviceid", Question.class).setParameter("serviceid", serviceid);
+        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions as q WHERE serviceid = :serviceid").setParameter("serviceid", serviceid);
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
 
         @SuppressWarnings("unchecked")
-        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+        final List<Long> idList = (List<Long>) nativeQuery.getResultList()
+                .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
 
-        TypedQuery<Question> query = em.createQuery("SELECT q FROM Question q WHERE q.id IN :idList", Question.class);
+        final TypedQuery<Question> query = em.createQuery(" from Question as q where q.questionid in :idList ", Question.class);
         query.setParameter("idList", idList);
         return query.getResultList();
     }
@@ -39,7 +40,7 @@ public class QuestionDaoJpa implements QuestionDao {
     @Override
     public Question create(long serviceid, long userid, String question) {
         Question newQuestion = new Question(em.find(Service.class, serviceid), em.find(User.class, userid), question, null, LocalDate.now() );
-        em.persist(question);
+        em.persist(newQuestion);
         return newQuestion;
     }
 
