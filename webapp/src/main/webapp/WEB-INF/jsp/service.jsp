@@ -138,7 +138,7 @@
                 <form:form action="${askUrl}" method="post" modelAttribute="questionForm">
                     <div class="flex">
                         <spring:message code="input.service.question" var="questionPlaceholder"/>
-                        <form:input path="question" type="text" class="input" placeholder="${questionPlaceholder}"/>
+                        <form:textarea path="question" class="input" placeholder="${questionPlaceholder}"/>
                         <input type="submit" value="<spring:message code="service.send"/>" class="send-btn">
                     </div>
                     <form:errors path="question" element="p" cssClass="error"/>
@@ -255,7 +255,7 @@
                                     </div>
                                     <form:input path="editedRating" type="hidden" id="rating" value="${hasAlreadyRated.comment}"/>
                                     <div class="flex">
-                                        <form:input  path="editedComment" type="text" class="input edit-input" placeholder="" value="${hasAlreadyRated.comment}"/>
+                                        <form:textarea path="editedComment" class="input edit-input" placeholder="" value="${hasAlreadyRated.comment}"/>
                                         <input type="submit" value="<spring:message code="service.edit-review"/>" class="send-btn">
                                     </div>
                                 </div>
@@ -275,7 +275,7 @@
                             <form:input path="rating" type="hidden" id="rating" value="0"/>
                             <div class="flex">
                                 <spring:message code="service.write-review" var="writeReviewPlaceholder"/>
-                                <form:input  path="comment" type="text" class="input" placeholder="${writeReviewPlaceholder}"/>
+                                <form:textarea path="comment" class="input" placeholder="${writeReviewPlaceholder}"/>
                                 <input type="submit" value="<spring:message code="service.send"/>" class="send-btn">
                             </div>
                             <form:errors path="rating" element="p" cssClass="error"/>

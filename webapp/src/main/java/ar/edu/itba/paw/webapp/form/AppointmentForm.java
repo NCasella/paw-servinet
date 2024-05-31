@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 public class AppointmentForm {
     private String neighbourhood;
+    @Size(max = 255)
+    private String description;
 
     @NotEmpty
     @Size(max = 255)
@@ -28,6 +30,14 @@ public class AppointmentForm {
 
     public String getDate() {
         return date==null?null:date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setNeighbourhood(String neighbourhood) {
