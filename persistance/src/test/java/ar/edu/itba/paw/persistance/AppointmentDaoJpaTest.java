@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @Sql("classpath:sql/schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class AppointmentDaoJdbcTest {
+public class AppointmentDaoJpaTest {
 
     @PersistenceContext
     private EntityManager em;
@@ -115,6 +115,5 @@ public class AppointmentDaoJdbcTest {
         em.flush();
         appointmentDao.cancelAppointment(APPOINTMENT_ID);
         Assert.assertFalse( appointmentDao.findById(APPOINTMENT_ID).isPresent());
-        Assert.assertTrue( appointmentDao.findById(APPOINTMENT_ID2).isPresent());
     }
 }

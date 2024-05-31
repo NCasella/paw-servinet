@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -39,7 +40,7 @@ public class RatingDaoJpa implements RatingDao {
 
     @Override
     public Rating create(long serviceid, long userid, int rating, String comment) {
-        Rating newRating = new Rating(em.find(Service.class, serviceid), em.find(User.class, userid), rating, comment, null);
+        Rating newRating = new Rating(em.find(Service.class, serviceid), em.find(User.class, userid), rating, comment, LocalDate.now());
         em.persist(newRating);
         return newRating;
     }

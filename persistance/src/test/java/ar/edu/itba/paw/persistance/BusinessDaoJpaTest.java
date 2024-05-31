@@ -25,7 +25,7 @@
  @Sql("classpath:sql/schema.sql")
  @RunWith(SpringJUnit4ClassRunner.class)
  @ContextConfiguration(classes = TestConfig.class)
- public class BusinessDaoJdbcTest {
+ public class BusinessDaoJpaTest {
 
      private static final long BUS_ID =1;
      private static final long BUS_ID_SECONDARY= 2;

@@ -24,7 +24,7 @@ import java.util.Optional;
 @Sql("classpath:sql/schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class UserDaoJdbcTest {
+public class UserDaoJpaTest {
     private static final int USERID = 1;
     private static final String USERNAME = "username";
     private static final String PASSWORD = "mepassword";

@@ -1,3 +1,13 @@
+drop table if exists questions;
+drop table if exists ratings;
+drop table if exists appointments;
+drop table if exists nbservices;
+drop table if exists services;
+drop table if exists images;
+drop table if exists business;
+drop table if exists passwordrecoverycodes;
+drop table if exists users;
+
 CREATE TABLE IF NOT EXISTS users (
     userid SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
