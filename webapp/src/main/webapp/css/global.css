@@ -296,3 +296,7 @@ body {
 .no-style{
     all: unset;
 }
+
+.top-margin{
+    margin: 10px 0 0 0;
+}

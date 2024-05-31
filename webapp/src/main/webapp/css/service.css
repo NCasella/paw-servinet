@@ -40,7 +40,7 @@
 }
 
 .info-text {
-    padding:20px;
+    padding: 10px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -76,7 +76,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    margin-top: 20px;
 }
 
 .rq-container {
@@ -200,6 +200,10 @@
 .qst-text {
     word-wrap: break-word;
 }
+.no-padding-or-margin {
+    margin: 0;
+    padding: 0;
+}
 
 .view-business {
     display: flex;
@@ -243,6 +247,9 @@
     background-color: #f1f1f1;
     transform: translateY(-2px);
 }
+.no-top-margin {
+    margin-top: 0;
+}
 
 .go-back {
     color: #585bfa;
@@ -256,4 +263,11 @@
 .go-back:hover {
     color: #7c7cfd;
     transform: translateY(-2px);
+}
+
+#onhover-additional-charges{
+    visibility: hidden;
+}
+#additional-charges-icon:hover ~ #onhover-additional-charges{
+    visibility: visible;
 }

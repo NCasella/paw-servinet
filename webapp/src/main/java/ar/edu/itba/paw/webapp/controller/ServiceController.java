@@ -120,6 +120,7 @@ public class ServiceController {
         mav.addObject("option", option);
         mav.addObject("avgRating", rating.getRatingsAvg(serviceId));
         mav.addObject("service",serv);
+        mav.addObject("business", business);
         mav.addObject("questions", question.getAllQuestions(serviceId, questionPage));
         mav.addObject("reviews", rating.getAllRatings(serviceId, reviewPage));
         mav.addObject("questionsCount", question.getQuestionsCount(serviceId));

@@ -50,6 +50,13 @@
             </div>
             <div class="info-box">
                 <div class="info-text">
+                    <h2 class="no-padding-or-margin">
+                        <c:url value="/negocio/${service.businessid}" var="businessUrl"/>
+                        <a class="none-decoration" href="${businessUrl}">
+                            <p class="view-business no-padding-or-margin"><i class="material-icons">storefront</i><c:out value="${business.name}"/></p>
+                        </a>
+                    </h2>
+                    <h3 class="no-padding-or-margin"><spring:message code="service.details"/></h3>
                     <div class="flex">
                         <p class="category-text"><spring:message code="${service.category.codeMsg}"/></p>
                         <c:if test="${avgRating>0}">
@@ -59,7 +66,7 @@
                             </div>
                         </c:if>
                     </div>
-                    <p class="text-with-icon"> <i class="material-icons icon">location_on</i>
+                    <p class="text-with-icon no-top-margin"> <i class="material-icons icon">location_on</i>
                         <c:forEach var="neighbour" items="${service.neighbourhoodAvailable}">
                             <c:out value="${neighbour}"/>
                         </c:forEach>
@@ -93,7 +100,7 @@
                     </c:if>
 
                     <c:if test="${!isOwner}">
-                        <div class="btn-container">
+                        <div class="btn-container no-top-margin">
                             <a href="${contratarUrl}" class="none-decoration">
                                 <button class="btn btn-text">
                                     <spring:message code="service.new-appointment"/>
@@ -108,10 +115,6 @@
         <div class="description-box">
             <div class="text-description">
                 <p><c:out value="${service.description}"/></p>
-                <c:url value="/negocio/${service.businessid}" var="businessUrl"/>
-                <a class="none-decoration" href="${businessUrl}">
-                    <p class="view-business"><i class="material-icons">storefront</i><spring:message code="service.view-business"/></p>
-                </a>
             </div>
         </div>
         </c:if>
