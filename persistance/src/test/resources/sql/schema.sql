@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS services (
     pricingtype  VARCHAR(50) CHECK (pricingtype IN ('Por hora', 'Total', 'Producto', 'A determinar')),
     price VARCHAR(255),
     additionalcharges BOOLEAN,
-    imageId INT references images(imageid),
+    imageId INT references images(imageid)
 );
 
 CREATE TABLE IF NOT EXISTS nbservices(insertid serial primary key ,

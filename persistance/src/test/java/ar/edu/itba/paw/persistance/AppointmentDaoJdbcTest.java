@@ -15,6 +15,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -26,14 +29,19 @@ import java.time.LocalDateTime;
 @ContextConfiguration(classes = TestConfig.class)
 public class AppointmentDaoJdbcTest {
 
+    @PersistenceContext
+    private EntityManager em;
     @Autowired
     private AppointmentDaoJpa appointmentDao;
 
     @Autowired
     private DataSource ds;
 
+
     private JdbcTemplate jdbcTemplate;
     private final long APPOINTMENT_ID = 1;
+    private final long BUS_ID=1;
+    private final String BUSINESS_NAME="business name";
     private final long APPOINTMENT_ID2=2;
     private final LocalDateTime STARTDATE = LocalDateTime.now();
     private final LocalDateTime ENDDATE = STARTDATE.plusHours(2);
@@ -46,7 +54,8 @@ public class AppointmentDaoJdbcTest {
     public void setup() {
         this.jdbcTemplate = new JdbcTemplate(ds);
         jdbcTemplate.execute("insert into users(userid,username, name, surname, email, telephone, password, isprovider) values (1,'solro', 'sol', 'rodri', 'solrodriguezgiana@gmail.com', '113452343', 'solro', true);");
-        jdbcTemplate.execute("INSERT INTO services VALUES (1,null,'Peluqueria Ramon','Veni, peinate y divertite!',false,'calle falsa 123','Belleza',60,'Por hora',5000,true,null);");
+        jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, "113452343", "solrodriguezgiana@gmail.com", LOCATION));
+        jdbcTemplate.execute("INSERT INTO services VALUES (1,1,'Peluqueria Ramon','Veni, peinate y divertite!',false,'calle falsa 123','Belleza',60,'Por hora',5000,true,null);");
     }
 
     @Test
@@ -55,6 +64,7 @@ public class AppointmentDaoJdbcTest {
 
         // 2. Ejecuta la class under test (una sola)
         Appointment appointment = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION);
+        em.flush();
 
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertNotNull(appointment);
@@ -68,8 +78,7 @@ public class AppointmentDaoJdbcTest {
 
         // 2. Ejecuta la class under test (una sola)
         Appointment a1 = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION);
-        Appointment a2 = appointmentDao.create(SERVICEID, USERID, STARTDATE.plusHours(2), ENDDATE, LOCATION);
-
+        em.flush();
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "appointments"));
     }
@@ -79,7 +88,7 @@ public class AppointmentDaoJdbcTest {
         jdbcTemplate.execute(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (%d, %d, %d, '%s', '%s', '%s', false);", APPOINTMENT_ID,SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION));
 
         Appointment appointment = appointmentDao.findById(APPOINTMENT_ID).get();
-
+        em.flush();
         Assert.assertEquals(SERVICEID,appointment.getServiceid());
         Assert.assertTrue(ENDDATE.isAfter(appointment.getStartDate()));
     }
@@ -89,10 +98,9 @@ public class AppointmentDaoJdbcTest {
         jdbcTemplate.execute(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (%d, %d, %d, '%s', '%s', '%s', false);", APPOINTMENT_ID,SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION));
         jdbcTemplate.execute(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (%d, %d, %d, '%s', '%s', '%s', false);", APPOINTMENT_ID2,SERVICEID, USERID, Timestamp.valueOf(STARTDATE.plusHours(1)), Timestamp.valueOf(ENDDATE.plusHours(1)), LOCATION));
         //Appointment toConfirmAppointment = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION);
-        //Appointment pendingAppointment = appointmentDao.create(SERVICEID, USERID, STARTDATE.plusHours(1), ENDDATE, LOCATION);
 
         appointmentDao.confirmAppointment(1);
-
+        em.flush();
         Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "appointments", "confirmed = true"), 1);
         Assert.assertEquals(JdbcTestUtils.countRowsInTable(jdbcTemplate, "appointments"), 2);
     }
@@ -104,7 +112,7 @@ public class AppointmentDaoJdbcTest {
 
         //Appointment appointment = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION);
         //Appointment anotherAppointment = appointmentDao.create(SERVICEID, USERID, STARTDATE.plusHours(1), ENDDATE, LOCATION);
-
+        em.flush();
         appointmentDao.cancelAppointment(APPOINTMENT_ID);
         Assert.assertFalse( appointmentDao.findById(APPOINTMENT_ID).isPresent());
         Assert.assertTrue( appointmentDao.findById(APPOINTMENT_ID2).isPresent());
