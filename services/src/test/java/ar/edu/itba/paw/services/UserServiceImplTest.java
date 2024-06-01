@@ -48,7 +48,7 @@ public class UserServiceImplTest {
     @Test
     public void testFindByIdExistingUser() {
         // 1. Precondiciones
-        Mockito.when(userDao.findById(Mockito.eq(USER_ID))).thenReturn(Optional.of(new User(USER_ID, USERNAME,PASSWORD, NAME, SURNAME, EMAIL, TELEPHONE, false,LOCALE)));
+        Mockito.when(userDao.findById(Mockito.eq(USER_ID))).thenReturn(Optional.of(new User(USERNAME,PASSWORD, NAME, SURNAME, EMAIL, TELEPHONE, false,LOCALE)));
 
         // 2. Ejecuta la class under test (una sola)
         Optional<User> maybeUser = userService.findById(USER_ID);

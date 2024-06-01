@@ -38,10 +38,11 @@ CREATE TABLE IF NOT EXISTS services (
     pricingtype  VARCHAR(50) CHECK (pricingtype IN ('Por hora', 'Total', 'Producto', 'A determinar')),
     price VARCHAR(255),
     additionalcharges BOOLEAN,
-    imageId INT references images(imageid),
+    imageId INT references images(imageid)
 );
 
-CREATE TABLE IF NOT EXISTS nbservices(insertid serial primary key ,
+CREATE TABLE IF NOT EXISTS nbservices(
+    insertid serial primary key ,
     serviceid int references services(id) on delete cascade ,
     neighbourhood varchar(60)
 );
@@ -82,6 +83,30 @@ CREATE TABLE IF NOT EXISTS ratings (
     comment VARCHAR(255),
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Sequence for users table
+CREATE SEQUENCE IF NOT EXISTS users_userid_seq;
+
+-- Sequence for business table
+CREATE SEQUENCE IF NOT EXISTS business_businessid_seq;
+
+-- Sequence for images table
+CREATE SEQUENCE IF NOT EXISTS images_imageid_seq;
+
+-- Sequence for services table
+CREATE SEQUENCE IF NOT EXISTS services_id_seq;
+
+-- Sequence for nbservices table
+CREATE SEQUENCE IF NOT EXISTS nbservices_id_seq;
+
+-- Sequence for appointments table
+CREATE SEQUENCE IF NOT EXISTS appointments_appointmentid_seq;
+
+-- Sequence for questions table
+CREATE SEQUENCE IF NOT EXISTS questions_questionid_seq;
+
+-- Sequence for ratings table
+CREATE SEQUENCE IF NOT EXISTS ratings_ratingid_seq;
 -- insert into users(username, name, surname, email, telephone, password, isprovider) values ('solro', 'sol', 'rodri', 'solrodriguezgiana@gmail.com', '113452343', 'solro', true);
 -- insert into business (userid, businessname, businessTelephone, businessEmail, businessLocation) values (1, 'Sol nails shop', '11365335', 'solrodriguezgiana@gmail.com', 'Palermo');
 -- insert into services(businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges) values (1, 'Uñas capping', 'Servicio de uñas, multiples colores y esmaltes de todo tipo. Diseño a eleccion del cliente. Arte en uñas. Consulte por disponibilidad.', FALSE, 'Palermo', 'Belleza', 60, 'Por hora', '10000', TRUE);

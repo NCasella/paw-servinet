@@ -103,8 +103,8 @@ public class ServiceController {
             @ModelAttribute("reviewForm") final ReviewsForm reviewForm,
             @ModelAttribute("editReviewForm") final EditReviewForm editReviewForm,
             @RequestParam(value = "opcion", required = false) final String option,
-            @RequestParam(value = "qstPag", required = false, defaultValue = "0") Integer questionPage,
-            @RequestParam(value = "rwPag", required = false, defaultValue = "0") Integer reviewPage
+            @RequestParam(value = "qstPag", required = false, defaultValue = "1") Integer questionPage,
+            @RequestParam(value = "rwPag", required = false, defaultValue = "1") Integer reviewPage
     ) {
         final ModelAndView mav = new ModelAndView("service");
         Optional<User> currentUser = authControl.getCurrentUser();

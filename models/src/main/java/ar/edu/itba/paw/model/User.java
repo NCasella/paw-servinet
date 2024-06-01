@@ -1,16 +1,53 @@
 package ar.edu.itba.paw.model;
 
-import java.util.Locale;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
+@Entity
+@Table(name="users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "users_userid_seq")
+    @SequenceGenerator(sequenceName = "users_userid_seq",name="users_userid_seq",allocationSize = 1)
+    private Long userId;
+
+    @Column(unique = true,nullable = false)
     private String username;
-    private long userId;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String surname;
+
+    @Column(nullable = false)
     private String email;
+
+    @OneToMany(mappedBy = "ownedBy",fetch = FetchType.LAZY)
+    private List<Business> businessOwned;
+
     private String telephone;
+
+    @Column(nullable = false)
     private boolean isProvider;
+
+    /*
+    @OneToOne(mappedBy = "requestedBy", fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "userid")
+    private PasswordRecoveryCode passwordRecoveryCode;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Question> questions;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Rating> ratings;
+
+     */
+
     private String locale;
     public String getName() {
         return name;
@@ -40,9 +77,10 @@ public class User {
         return isProvider;
     }
 
-    public User(long userId, String username,String password ,String name, String surname, String email, String telephone, boolean isProvider, String locale) {
+    protected User(){}
+
+    public User(String username,String password ,String name, String surname, String email, String telephone, boolean isProvider, String locale) {
         this.username = username;
-        this.userId = userId;
         this.password=password;
         this.name = name;
         this.surname = surname;
@@ -67,7 +105,49 @@ public class User {
         return locale;
     }
 
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public void setProvider(boolean provider) {
+        isProvider = provider;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+    public void setUsername(String username){
+        this.username=username;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+    @Override
+    public boolean equals(Object o){
+        if(this==o)
+            return true;
+        if(!(o instanceof User us))
+            return false;
+        return Objects.equals(this.userId,us.userId);
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hashCode(userId);
+    }
+
+    public void setEmail(String email){this.email=email;}
+
+    public List<Business> getBusinessOwned() {
+        return businessOwned;
     }
 }

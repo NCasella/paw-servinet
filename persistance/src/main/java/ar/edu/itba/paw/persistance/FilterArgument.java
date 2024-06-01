@@ -1,11 +1,14 @@
 package ar.edu.itba.paw.persistance;
 
+
+import javax.persistence.Query;
 import java.util.*;
 
 public class FilterArgument {
 
     private final Map<FilterTypes, Object> filters = new EnumMap<>(FilterTypes.class);//mapa <columna a filtrar,valor del "?">
     private int page=-1;
+    private int pageSize=10;
     public FilterArgument addCategory(String category) {
         return addParameter(FilterTypes.CATEGORY,category);
 
@@ -17,12 +20,6 @@ public class FilterArgument {
 
     private FilterArgument addParameter(FilterTypes type,String value){
         if(value!=null && !value.isEmpty()){
-            filters.put(type,value);
-        }
-        return this;
-    }
-    private FilterArgument addParameter(FilterTypes type,String[] value){
-        if(value!=null && value.length!=0){
             filters.put(type,value);
         }
         return this;
@@ -40,8 +37,12 @@ public class FilterArgument {
         return this;
     }
 
+    public int getPageSize(){return pageSize;}
+
     public FilterArgument addLocation(String[] location) {
-        return addParameter(FilterTypes.LOCATION,location);
+        if(location!=null && location.length!=0)
+            filters.put(FilterTypes.LOCATION,Arrays.asList(location));
+        return this;
     }
 
     public FilterArgument addSearch(String search) {
@@ -51,16 +52,21 @@ public class FilterArgument {
         return this;
     }
 
+    public String formSqlSentence(){
+        return formSqlSentence("");
+    }
     public String formSqlSentence(String subquery) {
         StringBuilder sql = new StringBuilder(subquery);
-        sql.append("as s where true ");//(p ^ 1) === p
+        sql.append("2=2 ");//(p ^ 1) === p
         for (Map.Entry<FilterTypes, Object> entries : filters.entrySet()) {
                 sql.append("and ").append(entries.getKey()).append(" ");
         }
-        if(page!=-1){
-            sql.append(" ORDER BY id ASC OFFSET ? LIMIT 10");
-        }
         return sql.toString();
+    }
+    public void setQueryParams(Query query){
+        for (Map.Entry<FilterTypes, Object> entries : filters.entrySet()) {
+            query.setParameter(entries.getKey().param,entries.getValue());
+        }
     }
 
     public List<Object> getValues() {
@@ -72,15 +78,17 @@ public class FilterArgument {
     }
 
         private enum FilterTypes {
-            CATEGORY("category = ? "),
-            LOCATION("? && neighbourhoods "),
-            RATING("s.id IN (SELECT serviceid FROM ratings GROUP BY serviceid HAVING AVG(rating) >= ?)"),
-            SERVICE_SEARCH("lower(servicename) like concat('%',lower(?),'%')");
+            CATEGORY("category = :cat ","cat"),
+            LOCATION("s.id in (select serviceid from nbservices where neighbourhood in :loc ) ","loc"),
+            RATING("s.id IN (SELECT serviceid FROM ratings GROUP BY serviceid HAVING AVG(rating) >= :rate)","rate"),
+            SERVICE_SEARCH("( lower(servicename) like concat('%',lower( :search ),'%') or lower(servicedescription) like concat('%',lower( :search ),'%') )","search");
 
-            private final String value; //valores a ser filtrados/buscados en SQL
+            private final String value;
+            private final String param;//valores a ser filtrados/buscados en SQL
 
-            FilterTypes(String value) {
+            FilterTypes(String value,String param) {
                 this.value = value;
+                this.param=param;
             }
 
             @Override

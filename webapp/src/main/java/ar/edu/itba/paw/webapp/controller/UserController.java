@@ -20,19 +20,21 @@ public class UserController {
     private final QuestionService questionService;
     private final ServinetAuthControl authControl;
     private final AppointmentService appointmentService;
+    private final ServiceService serviceService;
 
     @Autowired
     public UserController (@Qualifier("BusinessServiceImpl") final BusinessService businessService,
                            @Qualifier("userServiceImpl") final UserService userService,
                            @Qualifier("QuestionServiceImpl") final QuestionService questionService,
                            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl,
+                           @Qualifier("serviceServiceImpl") final ServiceService serviceService,
                            @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService){
-
         this.businessService = businessService;
         this.userService = userService;
         this.questionService = questionService;
         this.authControl= authControl;
         this.appointmentService = appointmentService;
+        this.serviceService=serviceService;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/perfil")
@@ -42,7 +44,7 @@ public class UserController {
 
         List<Business> businessList = Collections.emptyList();
         if ( user.isProvider() )
-            businessList = businessService.findByAdminId(user.getUserId());
+            businessList = user.getBusinessOwned();
         mav.addObject("businessList", businessList);
         mav.addObject("user", user);
         return mav;
@@ -61,7 +63,7 @@ public class UserController {
         final ModelAndView mav = new ModelAndView("userBusiness");
 
         User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
-        List<Business> businessList= businessService.findByAdminId(currentUser.getUserId());
+        List<Business> businessList= currentUser.getBusinessOwned();
 
         mav.addObject("user",currentUser);
         mav.addObject("businessList", businessList);
@@ -71,9 +73,8 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, path = "/negocios/consultas")
     public ModelAndView userServicesQuestions(@ModelAttribute("responseForm") final ResponseForm responseForm) {
         final ModelAndView mav = new ModelAndView("userQuestions");
-        long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
-
-        mav.addObject("pendingQst", questionService.getQuestionsToRespond(userid));
+        User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
+        mav.addObject("pendingQst", questionService.getQuestionsToRespond(currentUser));
         return mav;
     }
 
@@ -85,9 +86,14 @@ public class UserController {
 
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
 
-        List<AppointmentInfo> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed);
-
+        List<Appointment> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed);
+        Set<Long> serviceids = new HashSet<>();
+        for ( Appointment a : appointmentList){
+            serviceids.add(a.getServiceid());
+        }
+        Map<Long,ServiceContactInfo> serviceContactInfoMap = serviceService.getServicesContactInfo(serviceids);
         mav.addObject("appointmentList", appointmentList);
+        mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("confirmed",confirmed);
         mav.addObject("userId", userid);
         return mav;

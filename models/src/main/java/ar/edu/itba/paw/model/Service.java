@@ -1,24 +1,63 @@
 package ar.edu.itba.paw.model;
 
+import org.hibernate.annotations.Formula;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "services")
 public class Service extends BasicService {
 
+    @Column(name = "servicedescription")
     private String description;
+
+    @Column(name = "homeservice")
     private boolean homeService;
-    private final String[] neighbourhoodAvailable;
+
+
+    @OneToMany(mappedBy = "serviceIn")
+    private List<Nbservices> neighbourhoodAvailable;
+
+
+    @Column(name = "minimalduration")
     private int duration;
-    private PricingTypes pricing;
+
+    @Column(name = "pricingtype")
+    private String pricing;
+
+    @Column(name = "price", length = 255)
     private String price;
-    private Categories category;
+
+
+    @Column(name = "category")
+    private String category;
+
+    @Column(name = "additionalcharges")
     private boolean additionalCharges;
 
-    public Service(long id, long businessid, String name, String description, boolean homeService, String location,String[] neighbourhoodAvailable, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,long imageId) {
-        super(id, businessid, name, location, imageId);
+    @OneToMany(mappedBy = "service")
+    private List<Question> questions;
+    @OneToMany(mappedBy = "service")
+    private List<Rating> ratings;
+
+    @Formula("(select coalesce(avg(r.rating),0) from ratings r where r.serviceid = id)")
+    private double ratingAvg;
+    @Formula("(select count(r.rating) from ratings r where r.serviceid = id)")
+    private int ratingsCount;
+    @Formula("(select count(q.questionid) from questions q where q.serviceid = id)")
+    private int questionsCount;
+    public Service() {
+    }
+
+    public Service(long businessid, String name, String description, boolean homeService, String location, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,Long imageId) {
+        super(businessid, name, location, imageId);
         this.description = description;
         this.homeService = homeService;
-        this.neighbourhoodAvailable = neighbourhoodAvailable;
-        this.category = category;
+        this.category = category.getValue();
         this.duration = duration;
-        this.pricing = pricingType;
+        this.pricing = pricingType.getValue();
         this.price = price;
         this.additionalCharges = additionalCharges;
     }
@@ -32,11 +71,11 @@ public class Service extends BasicService {
     }
 
     public Categories getCategory() {
-        return category;
+        return Categories.findByValue(category);
     }
 
     public void setCategory(String category) {
-        this.category = Categories.findByValue(category);
+        this.category = category;
     }
 
     public boolean getHomeService() {
@@ -55,18 +94,24 @@ public class Service extends BasicService {
         this.duration = duration;
     }
 
-    public String[] getNeighbourhoodAvailable() {
-        return neighbourhoodAvailable;
+    public List<String> getNeighbourhoodAvailable() {
+        List<String> list=new ArrayList<>();
+        for(Nbservices n: neighbourhoodAvailable){
+            list.add(n.getNeighbourhood());
+        }
+        return list;
     }
 
-
+    public List<Question> getQuestions() {
+        return questions;
+    }
 
     public PricingTypes getPricing() {
-        return pricing;
+        return PricingTypes.findByValue(pricing);
     }
 
     public void setPricing(String pricing) {
-        this.pricing = PricingTypes.findByValue(pricing);
+        this.pricing = pricing;
     }
 
     public String getPrice() {
@@ -85,4 +130,22 @@ public class Service extends BasicService {
         this.additionalCharges = additionalCharges;
     }
 
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public double getRatingAvg() {
+        return ratingAvg;
+    }
+
+    public int getQuestionsCount() {
+        return questionsCount;
+    }
+
+    public int getRatingsCount() {
+        return ratingsCount;
+    }
+    public void setNeighbourhoodAvailable(List<Nbservices> neighbourhoodAvailable) {
+        this.neighbourhoodAvailable = neighbourhoodAvailable;
+    }
 }

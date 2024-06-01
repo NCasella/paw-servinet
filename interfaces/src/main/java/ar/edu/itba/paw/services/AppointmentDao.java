@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.Appointment;
-import ar.edu.itba.paw.model.AppointmentInfo;
+
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -16,7 +16,7 @@ public interface AppointmentDao {
 
     List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> servicesIds, boolean confirmed);
 
-    List<AppointmentInfo> getAllUpcomingUserAppointments(long userid, boolean confirmed);
+    List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed);
 
     Appointment create(long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location);
 

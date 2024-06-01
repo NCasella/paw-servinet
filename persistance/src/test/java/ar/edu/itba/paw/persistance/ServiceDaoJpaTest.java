@@ -19,6 +19,8 @@
  import org.springframework.test.jdbc.JdbcTestUtils;
  import org.springframework.transaction.annotation.Transactional;
 
+ import javax.persistence.EntityManager;
+ import javax.persistence.PersistenceContext;
  import javax.sql.DataSource;
  import java.util.List;
 
@@ -27,7 +29,7 @@
  @Rollback
  @RunWith(SpringJUnit4ClassRunner.class)
  @ContextConfiguration(classes = TestConfig.class)
- public class ServiceDaoJdbcTest {
+ public class ServiceDaoJpaTest {
      private static final String NAME = "name";
      private static final long SERVICEID=1;
      private static final long BUSINESSID = 1;
@@ -45,8 +47,10 @@
      private static final Boolean ADDITIONALCHARGES = false;
      private static final PricingTypes PRICING = PricingTypes.PER_TOTAL;
 
+     @PersistenceContext
+     private EntityManager em;
     @Autowired
-    private ServiceDaoJdbc serviceDao;
+    private ServiceDaoJpa serviceDao;
     @Autowired
     private DataSource ds;
     private JdbcTemplate jdbcTemplate;
@@ -54,13 +58,14 @@
     @Before
     public void setup(){
         this.jdbcTemplate = new JdbcTemplate(ds);
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone')");
+        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',false)");
         jdbcTemplate.execute("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')");
     }
 
     @Test
      public void testCreate() {
-        Service service = serviceDao.create(BUSINESSID, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,0);
+        Service service = serviceDao.create(BUSINESSID, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,null);
+        em.flush();
 
         Assert.assertNotNull(service);
         Assert.assertEquals(BUSINESSID, service.getBusinessid());
@@ -98,7 +103,7 @@
 
    @Test
     public void testDelete() {
-       Service service = serviceDao.create(BUSINESSID, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,0);
+       Service service = serviceDao.create(BUSINESSID, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,null);
         serviceDao.delete(service.getId());
 
         Assert.assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "services"));
@@ -122,7 +127,7 @@
     }
 
     private void Populate(){
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone) VALUES (2, 'username2', 'password2', 'name2', 'surname2', 'email2', 'telephone2')");
+        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (2, 'username2', 'password2', 'name2', 'surname2', 'email2', 'telephone2',false)");
         jdbcTemplate.execute("insert into business (businessid,userid, businessname, businessTelephone, businessEmail, businessLocation) values (2,2, 'Sol nails shop', '11365335', 'mailfalso@gmail.com', 'Palermo')");
         jdbcTemplate.execute("insert into services(id,businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges) values (1,2, 'Uñas capping', 'Servicio de uñas, multiples colores y esmaltes de todo tipo. Diseño a eleccion del cliente. Arte en uñas. Consulte por disponibilidad.', FALSE, 'Palermo', 'Belleza', 60, 'Por hora', '10000', TRUE)");
         jdbcTemplate.execute("insert into services(id,businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges) values (2,2, 'Uñas francecita', 'Servicio de uñas francesitas.', FALSE, 'Palermo', 'Belleza', 60, 'Por hora', '5000', TRUE)");

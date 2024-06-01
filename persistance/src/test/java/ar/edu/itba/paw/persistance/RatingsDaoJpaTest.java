@@ -17,6 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.util.Optional;
 
@@ -25,7 +27,7 @@ import java.util.Optional;
 @Sql("classpath:sql/schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class RatingsDaoJdbcTest {
+public class RatingsDaoJpaTest {
     private static final String COMMENT = "This is a comment";
     private static final int RATING5 = 5;
     private static final int RATING3 = 3;
@@ -35,9 +37,10 @@ public class RatingsDaoJdbcTest {
     private static final long USERID3=3;
     private static final long SERVICEID = 1;
 
-
+    @PersistenceContext
+    private EntityManager em;
     @Autowired
-    private RatingDaoJdbc ratingDao;
+    private RatingDaoJpa ratingDao;
 
     @Autowired
     private DataSource ds;
@@ -57,7 +60,7 @@ public class RatingsDaoJdbcTest {
     @Test
     public void testCreate() {
         Rating rating = ratingDao.create(SERVICEID, USERID, RATING1, COMMENT);
-
+        em.flush();
         Assert.assertNotNull(rating);
         Assert.assertEquals(SERVICEID, rating.getServiceid());
         Assert.assertEquals(USERID, rating.getUserid());
@@ -80,7 +83,7 @@ public class RatingsDaoJdbcTest {
     }
 
     @Test
-    public void testRatingCount() {
+   public void testRatingCount() {
         jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (1, %d, %d, %d, '%s')", SERVICEID, USERID, RATING5, COMMENT));
 
         Assert.assertEquals(1, ratingDao.getRatingsCount(SERVICEID));
@@ -89,7 +92,7 @@ public class RatingsDaoJdbcTest {
     public void testRatingAvg(){
         jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (1, %d, %d, %d, '%s')", SERVICEID, USERID, RATING5, COMMENT));
         jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (2, %d, %d, %d, '%s')", SERVICEID, USERID2, RATING1, COMMENT));
-        jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (3, %d, %d, %d, '%s')", SERVICEID, USERID3, RATING3, COMMENT));
+       jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (3, %d, %d, %d, '%s')", SERVICEID, USERID3, RATING3, COMMENT));
         double avg= (double) (RATING5 + RATING1 + RATING3) /3;
         Assert.assertEquals(avg, ratingDao.getRatingsAvg(SERVICEID), 0.0001);
     }

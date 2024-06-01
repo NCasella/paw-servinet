@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RatingDao {
-    List<Rating> getAllRatings(long serviceid, int page);
+    List<Rating> getAllRatings(long serviceid, int page, int pageSize);
     Optional<Rating> findById(long id);
     Rating create(long serviceid, long userid, int rating, String comment);
     double getRatingsAvg(long serviceid);

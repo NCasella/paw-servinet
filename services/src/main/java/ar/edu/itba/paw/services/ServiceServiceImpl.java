@@ -10,8 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @org.springframework.stereotype.Service("serviceServiceImpl")
 
@@ -56,9 +55,12 @@ public class ServiceServiceImpl implements ServiceService {
                           PricingTypes pricing, String price, boolean additionalCharges, MultipartFile image) {
         Business business = businessDao.findById( businessId).orElseThrow(BusinessNotFoundException::new);
 
-        long imageId=0;
+        Long imageId=null;
         if(!image.isEmpty()){
-                imageId=imageService.addImage(image).getImageId();
+            ImageModel maybeImage = imageService.addImage(image);
+            if (maybeImage != null) {
+                imageId = maybeImage.getImageId();
+            }
         }
 
         Service service = serviceDao.create(business.getBusinessid(), name, description, homeservice,location,neighbourhood, category,minimalduration ,pricing, price, additionalCharges,imageId);
@@ -70,6 +72,17 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public Service editServiceName(long serviceid, String newvalue) {
         return serviceDao.editServiceName(serviceid,newvalue);
+    }
+
+    @Transactional
+    @Override
+    public Map<Long,ServiceContactInfo> getServicesContactInfo(Collection<Long> serviceids){
+        Map<Long,ServiceContactInfo> result = new HashMap<>();
+        List<ServiceContactInfo> l =  serviceDao.getServicesContactInfo(serviceids);
+        for ( ServiceContactInfo s : l ){
+            result.putIfAbsent(s.getServiceId(), s);
+        }
+        return result;
     }
 
     @Transactional(readOnly = true)

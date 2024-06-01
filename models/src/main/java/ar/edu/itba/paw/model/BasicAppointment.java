@@ -1,30 +1,47 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+@MappedSuperclass
 public abstract class BasicAppointment {
-    private final long id;
-    private final long serviceid;
-    private final LocalDateTime startDate;
-    private final LocalDateTime endDate;
-    private final String location;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointments_appointmentid_seq")
+    @SequenceGenerator(name = "appointments_appointmentid_seq",sequenceName = "appointments_appointmentid_seq",allocationSize = 1)
+    @Column(name = "appointmentid")
+    private long id;
+    @Column(name = "serviceid", nullable = false )    
+    private long serviceid;
+    @Column(name = "startDate", nullable = false)
+    private LocalDateTime startDate;
+    @Column(name = "endDate")
+    private LocalDateTime endDate;
+    @Column(name = "location")
+    private String location;
+    @Column(name = "confirmed")
     private boolean confirmed;
+
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE dd MMMM");
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("EEE dd MMMM yyyy, HH:mm");
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
-    private final String startDateString;
+    private String startDateString;
     private final String HOMESERVICE="-";
 
-    public BasicAppointment(long id, long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
-        this.id = id;
+
+    public BasicAppointment(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
         this.serviceid = serviceid;
         this.startDate = startDate;
         this.endDate = endDate;
         this.confirmed = confirmed;
         this.location = location;
         this.startDateString = startDate.format(dateFormat);
+    }
+
+    public BasicAppointment() {
+
     }
 
     public long getId() {
@@ -64,6 +81,10 @@ public abstract class BasicAppointment {
 
     public void setConfirmed(boolean confirmed) {
         this.confirmed = confirmed;
+    }
+
+    public void setConfirmed() {
+        this.confirmed = true;
     }
 
     public boolean getHomeService(){

@@ -43,8 +43,8 @@ public class BusinessServiceImpl implements BusinessService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Business> findByAdminId(long adminId){
-        return businessDao.findByAdminId(adminId);
+    public List<Business> findByAdminId(User admin){
+        return businessDao.findByUser(admin);
     }
 
     @Transactional

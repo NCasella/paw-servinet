@@ -3,6 +3,7 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Question;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.persistance.config.TestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,15 +18,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-import java.time.LocalDate;
 
 @Transactional
 @Rollback
 @Sql("classpath:sql/schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class QuestionsDaoJdbcTest {
+public class QuestionsDaoJpaTest {
     private static final String QUESTION = "This is a question";
     private static final String RESPONSE = "This is a response";
     private static final String RESPONSE2 = "This is a response2";
@@ -36,7 +38,9 @@ public class QuestionsDaoJdbcTest {
 
 
     @Autowired
-    private QuestionDaoJdbc questionDao;
+    private QuestionDaoJpa questionDao;
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
     private DataSource ds;
@@ -53,7 +57,7 @@ public class QuestionsDaoJdbcTest {
     @Test
     public void testCreate() {
         Question qst = questionDao.create(SERVICEID, USERID, QUESTION);
-
+        em.flush();
         Assert.assertNotNull(qst);
         Assert.assertEquals(SERVICEID, qst.getServiceid());
         Assert.assertEquals(USERID, qst.getUserid());
@@ -67,6 +71,7 @@ public class QuestionsDaoJdbcTest {
         jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1, 1, 'question', null, '2024-01-01')");
         questionDao.addResponse(1, RESPONSE);
         questionDao.addResponse(2,RESPONSE2);
+        em.flush();
         String response = jdbcTemplate.queryForObject("SELECT response FROM questions WHERE questionid = 1", String.class);
         String response2 = jdbcTemplate.queryForObject("SELECT response FROM questions WHERE questionid = 2", String.class);
         Assert.assertEquals(RESPONSE, response);
@@ -76,10 +81,10 @@ public class QuestionsDaoJdbcTest {
 
     @Test
     public void testQuestionsToRespond() {
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1, 1, 'question', 'responded', '2024-01-01')");
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1, 1, 'question', null, '2024-01-01')");
-
-        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(USERID).stream().count());
+        User user = em.find(User.class, USERID);
+        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1,"+ user.getUserId() +", 'question', 'responded', '2024-01-01')");
+        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1,"+ user.getUserId() +", 'question', null, '2024-01-01')");
+        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user).size());
     }
 
     @Test

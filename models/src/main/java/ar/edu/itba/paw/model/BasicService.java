@@ -1,15 +1,37 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
+
+@MappedSuperclass
 public class BasicService {
 
-        private long id;
-        private long businessid;
-        private String name;
-        private String location;
-        private long imageId;
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "services_id_seq")
+        @SequenceGenerator(name = "services_id_seq", sequenceName = "services_id_seq", allocationSize = 1)
+        @Column(name = "id")
+        private Long id;
 
-        public BasicService(long id, long businessid, String name, String location,long imageId) {
-            this.id = id;
+        @Column(name = "businessid", nullable = false)
+        private long businessid;
+
+        @Column(name = "servicename", nullable = false)
+        private String name;
+
+        @Column(name = "location", nullable = false)
+        private String location;
+
+        @Column(name = "imageId")
+        private Long imageId;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "businessid", insertable = false, updatable = false)
+        private Business business;
+
+
+        public BasicService() {
+        }
+
+        public BasicService(long businessid, String name, String location,Long imageId) {
             this.businessid = businessid;
             this.name = name;
             this.location = location;
@@ -49,11 +71,16 @@ public class BasicService {
             return businessid;
         }
 
-        public long getImageId() {
-        return imageId;
-    }
+        public Long getImageId() {
+            return imageId!=null ?imageId:-1;
+        }
 
         public void setImageId(long imageId) {
             this.imageId = imageId;
         }
+
+        public Business getBusiness(){
+            return business;
+        }
+
 }
