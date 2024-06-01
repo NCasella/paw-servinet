@@ -6,8 +6,8 @@ import javax.persistence.*;
 public class Nbservices {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nbservices_id_seq")
-    @SequenceGenerator(name = "nbservices_id_seq", sequenceName = "nbservices_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nbservices_insertid_seq")
+    @SequenceGenerator(name = "nbservices_insertid_seq", sequenceName = "nbservices_insertid_seq", allocationSize = 1)
     @Column(name = "insertid")
     private Long id;
 
