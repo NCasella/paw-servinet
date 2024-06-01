@@ -23,6 +23,8 @@ public abstract class BasicAppointment {
     private String location;
     @Column(name = "confirmed")
     private boolean confirmed;
+    @Column(name = "description")
+    private String description;
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE dd MMMM");
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("EEE dd MMMM yyyy, HH:mm");
@@ -31,13 +33,14 @@ public abstract class BasicAppointment {
     private final String HOMESERVICE="-";
 
 
-    public BasicAppointment(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed) {
+    public BasicAppointment(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed, String description){
         this.serviceid = serviceid;
         this.startDate = startDate;
         this.endDate = endDate;
         this.confirmed = confirmed;
         this.location = location;
         this.startDateString = startDate.format(dateFormat);
+        this.description = description;
     }
 
     public BasicAppointment() {
@@ -75,6 +78,14 @@ public abstract class BasicAppointment {
     }
     public String getLocation() {
         return location;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setEndDate(){}

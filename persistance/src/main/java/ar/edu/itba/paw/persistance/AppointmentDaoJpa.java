@@ -57,8 +57,8 @@ public class AppointmentDaoJpa implements AppointmentDao {
     }
 
     @Override
-    public Appointment create(long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location) {
-        Appointment appointment = new Appointment( serviceid,userid,startDate,endDate,location,false);
+    public Appointment create(long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location, String description) {
+        Appointment appointment = new Appointment( serviceid,userid,startDate,endDate,location,false, description);
         em.persist(appointment);
 
         return appointment;

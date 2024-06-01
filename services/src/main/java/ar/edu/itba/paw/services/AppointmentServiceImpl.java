@@ -55,11 +55,11 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
     @Transactional
     @Override
-    public Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date) {
+    public Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date, String description) {
         Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
         User newuser = userService.findByEmail(email).orElseThrow(UserNotFoundException::new);
         LocalDateTime startDate = LocalDateTime.parse(date);
-        Appointment appointment = appointmentDao.create(service.getId(), newuser.getUserId(), startDate, startDate.plusMinutes(service.getDuration()), location);
+        Appointment appointment = appointmentDao.create(service.getId(), newuser.getUserId(), startDate, startDate.plusMinutes(service.getDuration()), location, description);
         Business business = businessDao.findById(service.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
 
         emailService.requestAppointment(appointment, service, business, newuser, getBusinessLocale(business.getUserId()));

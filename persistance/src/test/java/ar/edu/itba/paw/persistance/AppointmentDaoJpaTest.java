@@ -48,6 +48,7 @@ public class AppointmentDaoJpaTest {
     private final long SERVICEID = 1;
     private final long USERID = 1;
     private final String LOCATION = "calle falsa 123";
+    private final String DESCRIPTION = "generic description";
 
 
     @Before
@@ -63,9 +64,7 @@ public class AppointmentDaoJpaTest {
         // 1. Precondiciones (una sola)
 
         // 2. Ejecuta la class under test (una sola)
-        Appointment appointment = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION);
-        em.flush();
-
+        Appointment appointment = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION, DESCRIPTION); em.flush();
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertNotNull(appointment);
         Assert.assertFalse(appointment.getConfirmed());
@@ -77,7 +76,7 @@ public class AppointmentDaoJpaTest {
         // 1. Precondiciones (una sola)
 
         // 2. Ejecuta la class under test (una sola)
-        Appointment a1 = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION);
+        Appointment a1 = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION, DESCRIPTION);
         em.flush();
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "appointments"));
