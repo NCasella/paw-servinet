@@ -50,12 +50,6 @@
             </div>
             <div class="info-box">
                 <div class="info-text">
-                    <h2 class="no-padding-or-margin">
-                        <c:url value="/negocio/${service.businessid}" var="businessUrl"/>
-                        <a class="none-decoration" href="${businessUrl}">
-                            <p class="view-business no-padding-or-margin"><i class="material-icons">storefront</i><c:out value="${business.name}"/></p>
-                        </a>
-                    </h2>
                     <h3 class="no-padding-or-margin"><spring:message code="service.details"/></h3>
                     <div class="flex">
                         <p class="category-text"><spring:message code="${service.category.codeMsg}"/></p>
@@ -98,6 +92,11 @@
                     <c:if test="${service.additionalCharges}">
                         <p class="text-with-icon warning-text"><i class="material-icons icon">warning</i><spring:message code="service.additional-costs"/></p>
                     </c:if>
+
+                    <c:url value="/negocio/${service.businessid}" var="businessUrl"/>
+                    <a class="none-decoration" href="${businessUrl}">
+                        <p class="view-business"><i class="material-icons icon">storefront</i><c:out value="${business.name}"/></p>
+                    </a>
 
                     <c:if test="${!isOwner}">
                         <div class="btn-container no-top-margin">
