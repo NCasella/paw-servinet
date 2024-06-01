@@ -76,4 +76,13 @@ public class UserDaoJpa implements UserDao {
         }
     }
 
+    @Override
+    public void changeLocale(long userid,String locale){
+        Optional<User> optUser=findById(userid);
+        if(optUser.isPresent()){
+            final User user=optUser.get();
+            user.setLocale(locale);
+            em.persist(user);
+        }
+    }
 }
