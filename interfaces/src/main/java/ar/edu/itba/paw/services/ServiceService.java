@@ -26,4 +26,5 @@ public interface ServiceService {
     List<Service> getRecommendedServices();
     List<BasicService> getAllBusinessBasicServices(long businessId);
     List<Service> getAllBusinessServices(long businessId);
+    List<String> getAvailableNeighbourhoods(String category);
 }

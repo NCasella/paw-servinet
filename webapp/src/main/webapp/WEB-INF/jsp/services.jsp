@@ -168,15 +168,15 @@
                 </a>
             </c:forEach>
             <h3><spring:message code="services.filter-location"/></h3>
-            <c:forEach items="${neighbourhoods}" var="neighbourhood">
+            <c:forEach items="${availableNb}" var="neighbourhood">
                 <c:url value="/servicios" var="locationChange">
                     <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
                     <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
                     <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}"/></c:if>
-                    <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:if test="${ubicaciones != neighbourhood.value}"><c:param name="ubicacion" value="${ubicaciones}"/></c:if> </c:forEach>
-                    <c:param name="ubicacion" value="${neighbourhood.value}"/>
+                    <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:if test="${ubicaciones != neighbourhood}"><c:param name="ubicacion" value="${ubicaciones}"/></c:if> </c:forEach>
+                    <c:param name="ubicacion" value="${neighbourhood}"/>
                 </c:url>
-                <a class="none-decoration filter-text" href="${locationChange}"><c:out value="${neighbourhood.value}"/></a>
+                <a class="none-decoration filter-text" href="${locationChange}"><c:out value="${neighbourhood}"/></a>
             </c:forEach>
         </div>
         </div>

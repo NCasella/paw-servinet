@@ -132,4 +132,17 @@ public class ServiceDaoJpa implements ServiceDao {
         service.setAdditionalCharges(newAdditionalCharges);
         em.merge(service);
     }
+
+    @Override
+    public List<String> getAvailableNeighbourhoods() {
+        TypedQuery<String> query = em.createQuery("SELECT DISTINCT nb.neighbourhood FROM Service s JOIN s.neighbourhoodAvailable nb", String.class);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<String> getAvailableNeighbourhoodsByCategory(String category) {
+        TypedQuery<String> query = em.createQuery("SELECT DISTINCT nb.neighbourhood FROM Service s JOIN s.neighbourhoodAvailable nb WHERE s.category = :category", String.class);
+        query.setParameter("category", category);
+        return query.getResultList();
+    }
 }

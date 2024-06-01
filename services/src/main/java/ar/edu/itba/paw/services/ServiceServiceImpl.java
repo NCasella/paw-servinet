@@ -169,4 +169,13 @@ public class ServiceServiceImpl implements ServiceService {
         serviceDao.editService(serviceId, newDescription, newDuration, newPricingType, newPrice, newAdditionalCharges);
     }
 
+    @Transactional
+    @Override
+    public List<String> getAvailableNeighbourhoods(String category) {
+        if(category == null) {
+            return serviceDao.getAvailableNeighbourhoods();
+        }
+        return serviceDao.getAvailableNeighbourhoodsByCategory(category);
+    }
+
 }

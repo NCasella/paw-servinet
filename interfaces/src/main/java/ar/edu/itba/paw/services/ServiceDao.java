@@ -25,4 +25,7 @@ public interface ServiceDao {
     int getServiceCount(String category, String[] neighbourhoods, int rating, String query);
     List<Service> getRecommendedServices();
 
+    List<String> getAvailableNeighbourhoods();
+    List<String> getAvailableNeighbourhoodsByCategory(String category);
+
 }
