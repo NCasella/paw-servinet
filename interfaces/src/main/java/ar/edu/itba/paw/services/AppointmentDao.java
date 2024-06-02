@@ -18,6 +18,8 @@ public interface AppointmentDao {
 
     List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed);
 
+    List<Appointment> getPreviousUserAppointments(long userid);
+
     Appointment create(long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location, String description);
 
     void confirmAppointment(long appointmentid);

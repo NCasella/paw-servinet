@@ -53,6 +53,12 @@ public class AppointmentServiceImpl implements AppointmentService{
     public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed) {
         return appointmentDao.getAllUpcomingUserAppointments(userid, confirmed);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Appointment> getPreviousUserAppointments(long userid) {
+        return appointmentDao.getPreviousUserAppointments(userid);
+    }
     @Transactional
     @Override
     public Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date, String description) {

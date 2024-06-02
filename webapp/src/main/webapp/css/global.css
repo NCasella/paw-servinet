@@ -251,6 +251,12 @@ body {
     cursor: pointer;
 }
 
+.rounded-btn {
+    box-shadow: 0 0 15px rgba(92, 99, 105, 0.15);
+    margin-right: 10px;
+    border-radius: 20px;
+}
+
 .btn-basic:hover {
     background-color: #d5d5d5;
 }

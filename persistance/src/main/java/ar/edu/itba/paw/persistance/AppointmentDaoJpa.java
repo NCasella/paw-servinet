@@ -43,8 +43,6 @@ public class AppointmentDaoJpa implements AppointmentDao {
         return query.getResultList();
     }
 
-    //query.setParameter("serviceids",new ArrayList<>(servicesIds));
-    //todo: duda sobre si usar directo Appointment o AppointmentInfo
     @Override
     public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed) {
 
@@ -53,6 +51,16 @@ public class AppointmentDaoJpa implements AppointmentDao {
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);
         query.setParameter("confirmed", confirmed);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Appointment> getPreviousUserAppointments(long userid) {
+
+        TypedQuery<Appointment> query = em.createQuery("from Appointment where userid = :userid and confirmed = TRUE and startDate < :currentDate ", Appointment.class);
+
+        query.setParameter("currentDate", LocalDateTime.now());
+        query.setParameter("userid", userid);
         return query.getResultList();
     }
 
