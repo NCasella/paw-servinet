@@ -43,12 +43,26 @@
             <c:set var="email" value="${serviceContactInfoMap[appointment.serviceid].businessEmail}" scope="request" />
             <jsp:include page="components/appointmentContainer.jsp"/>
         </c:forEach>
-        <c:if test="${ empty appointmentList}">
-            <c:set var="urlCallToAction" value="${pageContext.request.contextPath}/" scope="request" />
-            <c:set var="textCallToAction" scope="request"><spring:message code="services.look-for-services"/></c:set>
-            <jsp:include page="components/noResults.jsp"/>
-        </c:if>
+        <c:choose>
+            <c:when test="${ empty appointmentList}">
+                <c:set var="urlCallToAction" value="${pageContext.request.contextPath}/" scope="request" />
+                <c:set var="textCallToAction" scope="request"><spring:message code="services.look-for-services"/></c:set>
+                <jsp:include page="components/noResults.jsp"/>
+            </c:when>
+            <c:otherwise>
+                <c:if test="${pageCount > 1}">
+                    <div class="pagination-box">
+                        <c:set var="page" value="${page}" scope="request" />
+                        <c:set var="pageCount" value="${pageCount}" scope="request" />
+                        <c:set var="path" value="${pageContext.request.contextPath}/turnos/historial?" scope="request" />
+                        <jsp:include page="components/pagination.jsp"/>
+                    </div>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
+
     </div>
+
 
 </div>
 </body>

@@ -100,7 +100,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/turnos/historial")
     public ModelAndView userPreviousAppointments(
-            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
+            @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page
     ) {
 
         final ModelAndView mav = new ModelAndView("userAppointments");
@@ -116,6 +116,8 @@ public class UserController {
         mav.addObject("appointmentList", appointmentList);
         mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("history",true);
+        mav.addObject("page",page);
+        mav.addObject("pageCount",2); //todo: appointmentService.getPreviousUserAppointmentsPageCount(userid));
         return mav;
     }
 

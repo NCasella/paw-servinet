@@ -60,7 +60,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
     public List<Appointment> getPreviousUserAppointments(long userid, int page, int pageSize) {
 
         TypedQuery<Long> nativeQuery = em.createQuery("SELECT id FROM Appointment as a where userid = :userid and confirmed = TRUE and startDate < :currentDate ", Long.class);
-        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
         nativeQuery.setMaxResults(pageSize);
         nativeQuery.setParameter("currentDate", LocalDateTime.now());
         nativeQuery.setParameter("userid", userid);
