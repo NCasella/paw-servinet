@@ -153,9 +153,9 @@
 
     document.querySelectorAll('select[multiple][checkboxes] option').forEach(option => {
         if (option.selected) {
-            option.textContent = '☑️ ' + option.textContent;
+            option.textContent = '✅' + option.textContent;
         } else {
-            option.textContent = '🔳 ' + option.textContent;
+            option.textContent = '⏹' + option.textContent;
         }
     });
 
@@ -165,9 +165,9 @@
         if (e.target.tagName !== 'OPTION') return;
         e.target.selected = !e.target.selected;
         if (e.target.selected) {
-            e.target.textContent = e.target.textContent.replace('🔳', '☑️');
+            e.target.textContent = e.target.textContent.replace('⏹', '✅');
         } else if (!e.target.selected) {
-            e.target.textContent = e.target.textContent.replace('☑️', '🔳');
+            e.target.textContent = e.target.textContent.replace('✅', '⏹');
         }
         setTimeout(() => {
             e.target.parentElement.scrollTop = initialPosition;
