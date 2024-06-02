@@ -26,7 +26,9 @@
             <div class="decision-container appointment-field">
                 <c:choose>
                     <c:when test="${history}">
-                        <button class="decision-btn accept-btn" ><i class="material-icons  icon accept-icon">event_repeat</i></button>
+                        <a class="none-decoration" href="${pageContext.request.contextPath}/contratar-servicio/${appointment.serviceid}">
+                            <button class="decision-btn accept-btn" ><i class="material-icons  icon accept-icon">event_repeat</i></button>
+                        </a>
                     </c:when>
                     <c:when test="${confirmed || isUser}">
                         <button onclick="showPopUpApp(${popUpId})" class="decision-btn accept-btn" ><i class="material-icons  icon cancel-icon">delete</i></button>
