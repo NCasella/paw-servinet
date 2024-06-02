@@ -116,17 +116,23 @@
                                         </div>
                                         <div class="service-info">
                                             <div class="service-header">
-                                                <h3> <c:out value="${item.name}"/></h3>
+                                                <p class="item comment">${item.category.value}</p>
                                                 <p class="align-right">$
                                                     <c:choose>
-                                                        <c:when test="${item.pricing.value == TBDPricing}">
-                                                            <p class="TBD-comment"><spring:message code="pricing.tbd"/></p>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:out value="${item.price}"/>
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                    <c:when test="${item.pricing.value == TBDPricing}">
+                                                <p class="TBD-comment"><spring:message code="pricing.tbd"/></p>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:out value="${item.price}"/>
+                                                </c:otherwise>
+                                                </c:choose>
                                                 </p>
+                                            </div>
+                                            <div class="service-header">
+                                                <h3 class="service-title"> <c:out value="${item.name}"/></h3>
+                                                <c:set value="${item.ratingAvg}" var="ratingAvg"/>
+                                                <spring:message code="service.unrated" var="noRatings"/>
+                                                <p class="align-right">${ratingAvg > 0? ratingAvg:noRatings}<i class="material-icons yellow-star">star</i></p>
                                             </div>
                                             <p class="item"> <i class="material-icons">location_on</i>
                                                 <c:if test="${not empty item.location}">
@@ -136,7 +142,6 @@
                                                     <c:out value=" ${neighbour}"/>
                                                 </c:forEach>
                                             </p>
-                                            <p class="item"> <c:out value="${item.description}"/></p>
                                         </div>
                                     </div>
                                 </a>

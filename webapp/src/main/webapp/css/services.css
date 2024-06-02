@@ -48,13 +48,22 @@
     align-items: center;
 }
 
+.yellow-star {
+    color: #ffd528;
+    font-size: 20px !important;
+}
+
+.service-title {
+    margin: 15px 0;
+    padding: 0;
+}
+
 p {
     margin: 0;
     padding: 0;
 }
 
 .item {
-    margin-bottom: 20px;
     display: flex;
     align-items: center;
     line-height: 1.7;

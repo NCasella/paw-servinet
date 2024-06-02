@@ -53,12 +53,11 @@
                     <h3 class="no-padding-or-margin"><spring:message code="service.details"/></h3>
                     <div class="flex">
                         <p class="category-text"><spring:message code="${service.category.codeMsg}"/></p>
-                        <c:if test="${avgRating>0}">
-                            <div class="align-right service-rate">
-                                <p><c:out value="${avgRating}"/></p>
-                                <i class="material-icons yellow-star service-rate-star">star</i>
-                            </div>
-                        </c:if>
+                        <spring:message code="service.unrated" var="unrated"/>
+                        <div class="align-right service-rate">
+                            <p>${avgRating > 0? avgRating:unrated}</p>
+                            <i class="material-icons yellow-star service-rate-star">star</i>
+                        </div>
                     </div>
                     <p class="text-with-icon no-top-margin"> <i class="material-icons icon">location_on</i>
                         <c:forEach var="neighbour" items="${service.neighbourhoodAvailable}">
