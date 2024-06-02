@@ -7,11 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class AppointmentDaoJpa implements AppointmentDao {
@@ -55,12 +57,19 @@ public class AppointmentDaoJpa implements AppointmentDao {
     }
 
     @Override
-    public List<Appointment> getPreviousUserAppointments(long userid) {
+    public List<Appointment> getPreviousUserAppointments(long userid, int page, int pageSize) {
 
-        TypedQuery<Appointment> query = em.createQuery("from Appointment where userid = :userid and confirmed = TRUE and startDate < :currentDate order by startDate desc ", Appointment.class);
+        TypedQuery<Long> nativeQuery = em.createQuery("SELECT id FROM Appointment as a where userid = :userid and confirmed = TRUE and startDate < :currentDate ", Long.class);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+        nativeQuery.setParameter("currentDate", LocalDateTime.now());
+        nativeQuery.setParameter("userid", userid);
 
-        query.setParameter("currentDate", LocalDateTime.now());
-        query.setParameter("userid", userid);
+        final List<Long> idList = nativeQuery.getResultList();
+
+        TypedQuery<Appointment> query = em.createQuery("from Appointment where id in :idList order by startDate desc ", Appointment.class);
+        query.setParameter("idList",idList);
+
         return query.getResultList();
     }
 

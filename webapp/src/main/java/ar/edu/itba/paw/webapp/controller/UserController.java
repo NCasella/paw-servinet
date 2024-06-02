@@ -99,13 +99,15 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/turnos/historial")
-    public ModelAndView userPreviousAppointments( ) {
+    public ModelAndView userPreviousAppointments(
+            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
+    ) {
 
         final ModelAndView mav = new ModelAndView("userAppointments");
 
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
 
-        List<Appointment> appointmentList = appointmentService.getPreviousUserAppointments(userid);
+        List<Appointment> appointmentList = appointmentService.getPreviousUserAppointments(userid,page);
         Set<Long> serviceids = new HashSet<>();
         for ( Appointment a : appointmentList){
             serviceids.add(a.getServiceid());

@@ -16,7 +16,7 @@ public interface AppointmentService {
 
     List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed);
 
-    List<Appointment> getPreviousUserAppointments(long userid);
+    List<Appointment> getPreviousUserAppointments(long userid, int page);
 
     Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date, String description);
 

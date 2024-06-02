@@ -22,6 +22,8 @@ public class AppointmentServiceImpl implements AppointmentService{
     private final BusinessDao businessDao;
     private final UserService userService;
 
+    private final static int PAGESIZE = 10;
+
     private final Logger LOGGER = LoggerFactory.getLogger(AppointmentServiceImpl.class);
     @Autowired
     public AppointmentServiceImpl(final AppointmentDao appointmentDao, final EmailService emailService,
@@ -56,8 +58,8 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Appointment> getPreviousUserAppointments(long userid) {
-        return appointmentDao.getPreviousUserAppointments(userid);
+    public List<Appointment> getPreviousUserAppointments(long userid, int page) {
+        return appointmentDao.getPreviousUserAppointments(userid,page, PAGESIZE);
     }
     @Transactional
     @Override
