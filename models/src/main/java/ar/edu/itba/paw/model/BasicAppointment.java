@@ -27,6 +27,7 @@ public abstract class BasicAppointment {
     private String description;
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE dd MMMM");
+    private static final DateTimeFormatter dateWithYearFormat = DateTimeFormatter.ofPattern("dd MMMM yyyy");
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("EEE dd MMMM yyyy, HH:mm");
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
     private final static String HOMESERVICE="-";
@@ -58,6 +59,9 @@ public abstract class BasicAppointment {
     public String getStartDateString() {
         return startDate.format(dateFormat);
     }
+    public String getStartDateWithYearString(){
+        return startDate.format(dateWithYearFormat);
+    }
     public String getStartDateWithTimeString(){
         return startDate.format(dateTimeFormat);
     }
@@ -67,6 +71,7 @@ public abstract class BasicAppointment {
     public String getEndDateTimeString(){
         return endDate.format(timeFormat);
     }
+
     public LocalDateTime getEndDate() {
         return endDate;
     }
