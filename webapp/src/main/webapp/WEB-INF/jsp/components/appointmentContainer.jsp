@@ -25,11 +25,11 @@
 
             <div class="decision-container appointment-field">
                 <c:choose>
-                    <c:when test="${confirmed || isUser}">
-                        <button onclick="showPopUpApp(${popUpId})" class="decision-btn accept-btn" ><i class="material-icons  icon cancel-icon">delete</i></button>
-                    </c:when>
                     <c:when test="${history}">
                         <button class="decision-btn accept-btn" ><i class="material-icons  icon accept-icon">event_repeat</i></button>
+                    </c:when>
+                    <c:when test="${confirmed || isUser}">
+                        <button onclick="showPopUpApp(${popUpId})" class="decision-btn accept-btn" ><i class="material-icons  icon cancel-icon">delete</i></button>
                     </c:when>
                     <c:otherwise>
                         <button onclick="acceptAppointment(${appointment.id},true,${loop.count})" class="decision-btn accept-btn" ><i class="material-icons  icon accept-icon">check</i></button>

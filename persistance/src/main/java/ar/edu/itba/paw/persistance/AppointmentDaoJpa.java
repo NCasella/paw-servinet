@@ -57,7 +57,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
     @Override
     public List<Appointment> getPreviousUserAppointments(long userid) {
 
-        TypedQuery<Appointment> query = em.createQuery("from Appointment where userid = :userid and confirmed = TRUE and startDate < :currentDate ", Appointment.class);
+        TypedQuery<Appointment> query = em.createQuery("from Appointment where userid = :userid and confirmed = TRUE and startDate < :currentDate order by startDate desc ", Appointment.class);
 
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);

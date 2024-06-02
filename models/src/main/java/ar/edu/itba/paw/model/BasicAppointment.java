@@ -29,8 +29,7 @@ public abstract class BasicAppointment {
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE dd MMMM");
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("EEE dd MMMM yyyy, HH:mm");
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
-    private String startDateString;
-    private final String HOMESERVICE="-";
+    private final static String HOMESERVICE="-";
 
 
     public BasicAppointment(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed, String description){
@@ -39,7 +38,6 @@ public abstract class BasicAppointment {
         this.endDate = endDate;
         this.confirmed = confirmed;
         this.location = location;
-        this.startDateString = startDate.format(dateFormat);
         this.description = description;
     }
 
