@@ -36,6 +36,8 @@ public class ServiceForm {
 
    private Neighbourhoods[] neighbourhoods;
 
+   private Neighbourhoods[] uniqueNeighbourhood;
+
    private PricingTypes pricingtype;
 
    @Size(max=255)
@@ -77,6 +79,10 @@ public class ServiceForm {
       return neighbourhoods;
    }
 
+   public Neighbourhoods[] getUniqueNeighbourhood() {
+      return uniqueNeighbourhood;
+   }
+
    public int getMinimalduration() {
       return minimalduration;
    }
@@ -114,6 +120,11 @@ public class ServiceForm {
    public void setNeighbourhood(Neighbourhoods[] neighbourhood){
        this.neighbourhoods = neighbourhood;
    }
+
+   public void setUniqueNeighbourhood(Neighbourhoods[] uniqueNeighbourhood) {
+      this.uniqueNeighbourhood = uniqueNeighbourhood;
+   }
+
    public void setLocation(String location) {
       this.location = location;
    }

@@ -86,7 +86,7 @@ public class ServiceController {
         if (errors.hasErrors()) {
             return registerService(businessId, form);
         }
-        Service newService = ss.create(businessId,form.getTitle(),form.getDescription(),form.getHomeserv(),form.getNeighbourhood(),form.getLocation(),form.getCategory(),form.getMinimalduration(),form.getPricingtype(),form.getPrice(),form.getAdditionalCharges(), form.getImage());
+        Service newService = ss.create(businessId,form.getTitle(),form.getDescription(),form.getHomeserv(),form.getNeighbourhood(), form.getUniqueNeighbourhood(), form.getLocation(),form.getCategory(),form.getMinimalduration(),form.getPricingtype(),form.getPrice(),form.getAdditionalCharges(), form.getImage());
         return new ModelAndView("redirect:/servicio/"+newService.getId());
     }
 

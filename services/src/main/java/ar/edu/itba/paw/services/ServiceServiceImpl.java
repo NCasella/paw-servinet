@@ -51,7 +51,7 @@ public class ServiceServiceImpl implements ServiceService {
     @Transactional
     @Override
     public Service create(long businessId, String name, String description, boolean homeservice,
-                          Neighbourhoods[] neighbourhood, String location, Categories category, int minimalduration,
+                          Neighbourhoods[] neighbourhood, Neighbourhoods[] uniqueNeighbourhood, String location, Categories category, int minimalduration,
                           PricingTypes pricing, String price, boolean additionalCharges, MultipartFile image) {
         Business business = businessDao.findById( businessId).orElseThrow(BusinessNotFoundException::new);
 
@@ -63,7 +63,7 @@ public class ServiceServiceImpl implements ServiceService {
             }
         }
 
-        Service service = serviceDao.create(business.getBusinessid(), name, description, homeservice,location,neighbourhood, category,minimalduration ,pricing, price, additionalCharges,imageId);
+        Service service = serviceDao.create(business.getBusinessid(), name, description, homeservice, homeservice? "":location, homeservice? neighbourhood:uniqueNeighbourhood, category, minimalduration ,pricing, price, additionalCharges, imageId);
         emailService.createdService(service, business, userService.getUserLocale(business.getUserId()));
         return service;
     }

@@ -15,10 +15,9 @@ public class LocationFormattedValidator implements ConstraintValidator<LocationF
     }
     @Override
     public boolean isValid(ServiceForm form, ConstraintValidatorContext context) {
-        Neighbourhoods[] neighbourhoods = form.getNeighbourhood();
         boolean homeserv=form.getHomeserv();//Neighbourhoods[] neighbourhoods1 = (Neighbourhoods[]) new BeanWrapperImpl(value).getPropertyValue(neighbourhoods);
+        Neighbourhoods[] neighbourhoods = homeserv? form.getNeighbourhood():form.getUniqueNeighbourhood();
         return neighbourhoods!=null && ((homeserv && neighbourhoods.length > 0) || (!homeserv && neighbourhoods.length==1 ) );//Boolean hasHomeService1 = (Boolean) new BeanWrapperImpl(value).getPropertyValue(hasHomeService);
-
     }
 
 }

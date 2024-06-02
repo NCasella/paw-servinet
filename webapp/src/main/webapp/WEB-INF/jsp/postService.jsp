@@ -23,32 +23,46 @@
       <div class="service-div">
         <label>
             <p> <spring:message code="input.service.image"/> </p>
-            <form:input type="file" class="input" path="image" accept=".png, .jpg, .jpeg"/>
+            <form:input type="file" class="input file-input" path="image" accept=".png, .jpg, .jpeg"/>
             <form:errors path="image" cssClass="error"/>
         </label>
-        </div>
+      </div>
         <label>
             <p> <spring:message code="service.description"/> </p>
             <spring:message code="input.service.description" var="serviceDescription"/>
             <form:errors path="description" cssClass="error"/>
             <form:input type="text" class="input" path="description" placeholder="${serviceDescription}"/>
         </label>
-            <p><spring:message code="service.location"/></p>
-                <form:checkbox id="homeservice" path="homeserv" />
-                <form:errors path="homeserv" cssClass="error"/>
-                <label for="homeservice"><spring:message code="service.home-service"/></label>
-            <div class="service-div">
-                <form:select path="neighbourhood" multiple="true" checkboxes="true" class="input" >
-                    <c:forEach items="${neighbourhoods}" var="item">
-                        <form:option value="${item}"><c:out value="${item.value}"/></form:option>
-                    </c:forEach>
-                </form:select>
-                <form:errors path="neighbourhood" cssClass="error"/>
-                <spring:message code="input.service.location" var="serviceLocation"/>
-                <form:errors path="location" cssClass="error"/>
-                <form:input type="text" class="input" path="location" value="" id="locationInput" placeholder="${serviceLocation}"/>
-            </div>
-            <form:errors path="" cssClass="error"/>
+        <p><spring:message code="service.location"/></p>
+        <form:checkbox id="homeservice" path="homeserv" onclick="toggleHomeService()"/>
+        <form:errors path="homeserv" cssClass="error"/>
+        <label for="homeservice"><spring:message code="service.home-service"/></label>
+        <p id="homeDescription"><spring:message code="input.service.noneHomeService"/></p>
+        <div class="service-div">
+            <form:select path="neighbourhood" multiple="true" checkboxes="false" class="input transparent" id="neighbourhoods">
+                <c:forEach items="${neighbourhoods}" var="item">
+                    <form:option value="${item}"><c:out value="${item.value}"/></form:option>
+                </c:forEach>
+            </form:select>
+            <form:errors path="neighbourhood" cssClass="error"/>
+            <spring:message code="input.service.location" var="serviceLocation"/>
+            <form:errors path="location" cssClass="error"/>
+
+            <form:select path="uniqueNeighbourhood" multiple="false" id="uniqueNeighbourhood" class="input">
+                <spring:message code="input.service.select-neighbourhood" var="selectNeighbourhood"/>
+                <form:option value="" label="${selectNeighbourhood}"/>
+                <c:forEach items="${neighbourhoods}" var="item">
+                    <form:option value="${item}"><c:out value="${item.value}"/></form:option>
+                </c:forEach>
+            </form:select>
+
+            <form:errors path="neighbourhood" cssClass="error"/>
+            <spring:message code="input.service.location" var="serviceLocation"/>
+            <form:errors path="location" cssClass="error"/>
+
+            <form:input type="text" class="input" path="location" value="" id="locationInput" placeholder="${serviceLocation}"/>
+        </div>
+        <form:errors path="" cssClass="error"/>
         <label>
             <p class="label"><spring:message code="service.price"/></p>
             <label>
@@ -99,6 +113,25 @@
 <script>
     const homeservice = document.getElementById('homeservice');
     const locationInput = document.getElementById('locationInput');
+    const neighbourhood = document.getElementById('neighbourhoods');
+    const uniqueNeighbourhood = document.getElementById('uniqueNeighbourhood');
+    const homeDescription = document.getElementById('homeDescription');
+    const noneHomeDescription = document.getElementById('noneHomeDescription');
+    var homeText = "<spring:message code='input.service.homeService'/>";
+    var noneHomeText = "<spring:message code='input.service.noneHomeService'/>";
+
+    function toggleHomeService() {
+        if(homeDescription.textContent === homeText) {
+            homeDescription.textContent = noneHomeText;
+            uniqueNeighbourhood.style.display = 'block';
+            neighbourhood.style.display = 'none';
+        } else {
+            homeDescription.textContent = homeText;
+            uniqueNeighbourhood.style.display = 'none';
+            neighbourhood.style.display = 'block';
+        }
+    }
+
     homeservice.addEventListener('change', () => {
         if (homeservice.checked) {
             locationInput.style.display = 'none';
