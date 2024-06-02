@@ -33,18 +33,22 @@ public class BusinessController {
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final ServinetAuthControl authControl;
+    private final RatingService ratingService;
 
     List<Neighbourhoods> neighbourhoods = Arrays.asList(Neighbourhoods.values());
     @Autowired
     public BusinessController(@Qualifier("BusinessServiceImpl") final BusinessService businessService,  @Qualifier("serviceServiceImpl") final ServiceService serviceService,
                               @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService,
                               @Qualifier("userServiceImpl") final UserService userService,
-                              @Qualifier("servinetAuthControl") final ServinetAuthControl authControl){
+                              @Qualifier("servinetAuthControl") final ServinetAuthControl authControl,
+                              @Qualifier("RatingServiceImpl") final RatingService ratingService
+    ){
         this.businessService = businessService;
         this.serviceService = serviceService;
         this.appointmentService = appointmentService;
         this.userService = userService;
         this.authControl = authControl;
+        this.ratingService = ratingService;
     }
 
 
@@ -143,6 +147,7 @@ public class BusinessController {
         mav.addObject("business",business);
         mav.addObject("serviceList", serviceList);
         mav.addObject("isOwner", isOwner);
+        mav.addObject("avgRating", ratingService.getBussinessRatingsAvg(businessId));
         return mav;
     }
 
@@ -158,6 +163,18 @@ public class BusinessController {
         businessService.changeBusinessLocation(businessId, form.getBusinessLocation());
         businessService.changeBusinessTelephone(businessId, form.getBusinessTelephone());
         return new ModelAndView("redirect:/negocio/"+businessId);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/negocio/opiniones/{businessID:\\d+}")
+    public ModelAndView businessReviews (
+            @PathVariable("businessID") final long businessId
+    ) {
+        final ModelAndView mav = new ModelAndView("businessReviews");
+        Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
+        mav.addObject("business", business);
+        mav.addObject("reviews", ratingService.getAllBusinessRatings(businessId));
+        mav.addObject("avgRating", ratingService.getBussinessRatingsAvg(businessId));
+        return mav;
     }
 
 }

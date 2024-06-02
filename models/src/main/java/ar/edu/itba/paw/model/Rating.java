@@ -63,4 +63,11 @@ public class Rating {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public Service getService() {
+        return service;
+    }
+    public User getUser() {
+        return user;
+    }
 }

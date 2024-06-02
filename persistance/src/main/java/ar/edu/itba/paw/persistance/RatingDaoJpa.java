@@ -73,4 +73,23 @@ public class RatingDaoJpa implements RatingDao {
         em.persist(ratingToEdit);
     }
 
+    @Override
+    public double getBussinessRatingsAvg(long businessId) {
+        String jpql = "select coalesce(round(avg(r.rating), 1), 0) " +
+                "from Service s join s.ratings r " +
+                "where s.business.businessid = :businessId";
+        TypedQuery<Double> query = em.createQuery(jpql, Double.class);
+        query.setParameter("businessId", businessId);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public List<Rating> getAllBusinessRatings(long businessId) {
+        String jpql = "select r " +
+                "from Rating r join r.service s " +
+                "where s.business.businessid = :businessId";
+        TypedQuery<Rating> query = em.createQuery(jpql, Rating.class);
+        query.setParameter("businessId", businessId);
+        return query.getResultList();
+    }
 }

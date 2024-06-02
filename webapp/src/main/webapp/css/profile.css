@@ -253,3 +253,52 @@
     border: none;
     cursor: pointer;
 }
+
+.business-star {
+    color: #ffd528;
+    font-size: 30px !important;
+    margin-left: 15px;
+}
+
+.business-rating {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.owner-business-star {
+    color: #ffd528;
+    font-size: 26px !important;
+    margin-left: 5px;
+}
+
+.owner-business-rating {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    color: #595959;
+}
+
+.reviews-btn {
+    border: none;
+    background-color: #f1f1f1;
+    font-family: 'Poppins', sans-serif;
+    padding: 0 20px;
+    border-radius: 20px;
+    height: 35px;
+    margin: 0 20px;
+    cursor: pointer;
+    color: #626262;
+    font-weight: bold;
+}
+
+.reviews-btn:hover {
+    background-color: #e1e1e1;
+    transform: translateY(-2px);
+}
+
+.reviews-box {
+    align-items: center;
+    display: flex;
+}

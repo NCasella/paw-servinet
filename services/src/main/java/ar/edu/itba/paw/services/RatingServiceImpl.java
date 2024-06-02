@@ -67,4 +67,15 @@ public class RatingServiceImpl implements RatingService {
         ratingDao.edit(ratingid, rating, comment);
     }
 
+    @Transactional
+    @Override
+    public double getBussinessRatingsAvg(long businessId) {
+        return ratingDao.getBussinessRatingsAvg(businessId);
+    }
+
+    @Transactional
+    @Override
+    public List<Rating> getAllBusinessRatings(long businessId) {
+        return ratingDao.getAllBusinessRatings(businessId);
+    }
 }
