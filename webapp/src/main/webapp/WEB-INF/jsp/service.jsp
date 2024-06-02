@@ -304,6 +304,7 @@
                                 <c:set value="${review.rating}" var="rate"/>
                                 <div class="question-box">
                                     <div class="flex">
+                                        <label class="user">@${review.user.username}</label>
                                         <div class="stars-container">
                                             <c:forEach begin="1" end="${rate}" var="i">
                                                 <i class="material-icons yellow-star">star</i>

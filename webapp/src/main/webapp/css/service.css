@@ -269,6 +269,13 @@
 #onhover-additional-charges{
     visibility: hidden;
 }
+
 #additional-charges-icon:hover ~ #onhover-additional-charges{
     visibility: visible;
+}
+
+.user {
+    color: #6c6c6c;
+    margin-right: 20px;
+    font-style: italic;
 }
