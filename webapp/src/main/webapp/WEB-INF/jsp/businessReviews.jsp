@@ -35,6 +35,14 @@
             <p class="text"><c:out value="${review.comment}"/></p>
         </div>
     </c:forEach>
+
+    <c:if test="${ empty reviews}">
+        <c:url var="urlGoBack" value="/negocio/${business.businessid}"/>
+        <c:set var="urlCallToAction" value="${urlGoBack}" scope="request" />
+        <c:set var="message" scope="request"><spring:message code="reviews.not-found" arguments="${business.name}"/></c:set>
+        <c:set var="textCallToAction" scope="request"><spring:message code="business.go"/></c:set>
+        <jsp:include page="components/noResults.jsp"/>
+    </c:if>
 </div>
 </body>
 </html>

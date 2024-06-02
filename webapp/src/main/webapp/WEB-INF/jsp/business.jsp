@@ -29,9 +29,11 @@
     <spring:message code="service.unrated" var="noRatings"/>
     <c:if test="${!isOwner}">
       <div class="align-right reviews-box">
-        <a href="${pageContext.request.contextPath}/negocio/opiniones/${businessId}">
-          <button class="reviews-btn"><spring:message code="review.see"/></button>
-        </a>
+        <c:if test="${avgRating > 0}">
+          <a href="${pageContext.request.contextPath}/negocio/opiniones/${businessId}">
+            <button class="reviews-btn"><spring:message code="review.see"/></button>
+          </a>
+        </c:if>
         <p class="business-rating">${avgRating > 0? avgRating:noRatings}<i class="material-icons business-star">star</i></p>
       </div>
     </c:if>
@@ -55,9 +57,11 @@
   <c:if test="${isOwner}">
     <div class="reviews-box">
       <p class="owner-business-rating">${avgRating > 0? avgRating:noRatings}<i class="material-icons owner-business-star">star</i></p>
+      <c:if test="${avgRating > 0}">
       <a href="${pageContext.request.contextPath}/negocio/opiniones/${businessId}">
         <button class="reviews-btn"><spring:message code="review.see"/></button>
       </a>
+      </c:if>
     </div>
   </c:if>
 
