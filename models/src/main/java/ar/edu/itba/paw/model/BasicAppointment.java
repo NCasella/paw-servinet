@@ -27,10 +27,10 @@ public abstract class BasicAppointment {
     private String description;
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE dd MMMM");
+    private static final DateTimeFormatter dateWithYearFormat = DateTimeFormatter.ofPattern("dd MMMM yyyy");
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("EEE dd MMMM yyyy, HH:mm");
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
-    private String startDateString;
-    private final String HOMESERVICE="-";
+    private final static String HOMESERVICE="-";
 
 
     public BasicAppointment(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed, String description){
@@ -39,7 +39,6 @@ public abstract class BasicAppointment {
         this.endDate = endDate;
         this.confirmed = confirmed;
         this.location = location;
-        this.startDateString = startDate.format(dateFormat);
         this.description = description;
     }
 
@@ -60,6 +59,9 @@ public abstract class BasicAppointment {
     public String getStartDateString() {
         return startDate.format(dateFormat);
     }
+    public String getStartDateWithYearString(){
+        return startDate.format(dateWithYearFormat);
+    }
     public String getStartDateWithTimeString(){
         return startDate.format(dateTimeFormat);
     }
@@ -69,6 +71,7 @@ public abstract class BasicAppointment {
     public String getEndDateTimeString(){
         return endDate.format(timeFormat);
     }
+
     public LocalDateTime getEndDate() {
         return endDate;
     }
