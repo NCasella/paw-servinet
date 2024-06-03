@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service("RatingServiceImpl")
 public class RatingServiceImpl implements RatingService {
@@ -83,6 +81,32 @@ public class RatingServiceImpl implements RatingService {
     @Transactional
     @Override
     public Map<Integer, Double> getRatingsAvgByRate(long serviceId) {
-        return ratingDao.getRatingsAvgByRate(serviceId);
+        return orderRatings(ratingDao.getRatingsAvgByRate(serviceId));
+    }
+
+    @Transactional
+    @Override
+    public Map<Integer, Double> getBusinessRatingsAvgByRate(long businessId) {
+        return orderRatings(ratingDao.getBusinessRatingsAvgByRate(businessId));
+    }
+
+    private Map<Integer, Double> orderRatings(List<Object[]> results) {
+        Map<Integer, Double> tempRatings = new HashMap<>();
+        for (Object[] result : results) {
+            Integer rating = (Integer) result[0];
+            Double count = ((Long) result[1]).doubleValue();
+            tempRatings.put(rating, count);
+        }
+        Map<Integer, Double> ratings = new LinkedHashMap<>();
+        for (int i = 5; i > 0; i--) {
+            ratings.put(i, tempRatings.getOrDefault(i, 0.0));
+        }
+        return ratings;
+    }
+
+    @Transactional
+    @Override
+    public int getBusinessRatingsCount(long businessId) {
+        return ratingDao.getBusinessRatingsCount(businessId);
     }
 }

@@ -10,12 +10,22 @@
     <title><spring:message code="title.businessReviews" arguments="${business.name}"/></title>
 </head>
 <body>
-<div class="page">
+<div class="page reviews-page">
     <h2><spring:message code="review.business" arguments="${business.name}"/></h2>
+
+    <c:if test="${!empty reviews}">
+        <c:set var="rating" value="${avgRating}" scope="request"/>
+        <c:set var="allRatingCount" value="${ratingsCount}" scope="request"/>
+        <c:set var="ratingCountList" value="${ratingCountList}" scope="request"/>
+        <jsp:include page="./components/reviews.jsp" />
+    </c:if>
+
+    <h3 class="recent-reviews-title"><spring:message code="reviews.recent"/></h3>
 
     <c:forEach items="${reviews}" var="review">
         <c:set value="${review.rating}" var="rate"/>
         <div class="review-box">
+            <div class="review-content">
             <p class="user-comment"><spring:message code="review.user" arguments="${review.user.username}"/>
                 <a href="${pageContext.request.contextPath}/servicio/${review.serviceid}" class="none-decoration">
                     <span class="review-service">${review.service.name}</span>
@@ -33,6 +43,7 @@
                 <p class="date"><c:out value="${review.date}"/></p>
             </div>
             <p class="text"><c:out value="${review.comment}"/></p>
+            </div>
         </div>
     </c:forEach>
 

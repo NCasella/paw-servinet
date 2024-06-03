@@ -4,6 +4,9 @@
     width: 100%;
     box-shadow: 0 0 15px rgba(92, 99, 105, 0.15);
     border-radius: 15px;
+}
+
+.review-content {
     padding: 15px 25px;
 }
 
@@ -84,4 +87,12 @@ progress::-webkit-progress-value {
 
 .ratingAvg-info {
     text-align: center;
+}
+
+.reviews-page {
+    margin: 0 5%;
+}
+
+.recent-reviews-title {
+    margin-top: 35px;
 }

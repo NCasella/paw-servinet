@@ -16,4 +16,6 @@ public interface RatingService {
     Rating hasAlreadyRated(long userid, long serviceid);
     void edit(long ratingid, int rating, String comment);
     Map<Integer, Double> getRatingsAvgByRate(long serviceId);
+    Map<Integer, Double> getBusinessRatingsAvgByRate(long businessId);
+    int getBusinessRatingsCount(long businessId);
 }

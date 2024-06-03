@@ -15,5 +15,7 @@ public interface RatingDao {
     double getBussinessRatingsAvg(long businessId);
     Optional<Rating> hasAlreadyRated(long userid, long serviceid);
     void edit(long ratingid, int rating, String comment);
-    Map<Integer, Double> getRatingsAvgByRate(long serviceId);
+    List<Object[]> getRatingsAvgByRate(long serviceId);
+    List<Object[]> getBusinessRatingsAvgByRate(long businessId);
+    int getBusinessRatingsCount(long businessId);
 }
