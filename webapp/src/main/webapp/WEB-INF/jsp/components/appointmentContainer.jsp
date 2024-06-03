@@ -9,7 +9,7 @@
 </head>
 <body>
 <c:set var="popUpId" value="-${loop.count}"/>
-
+<c:set var="renewTitle"><spring:message code="appointments.renew.title"/></c:set>
     <div class="appointment-container" id="${loop.count}">
         <div class="box appointment-box">
             <span class="appointment-field day"><c:out value="${history? appointment.startDateWithYearString : appointment.startDateString}"/></span>
@@ -27,7 +27,7 @@
                 <c:choose>
                     <c:when test="${history}">
                         <a class="none-decoration" href="${pageContext.request.contextPath}/contratar-servicio/${appointment.serviceid}">
-                            <button class="decision-btn accept-btn" ><i class="material-icons  icon accept-icon">event_repeat</i></button>
+                            <button class="decision-btn accept-btn" ><i class="material-icons  icon accept-icon" title="${renewTitle}">event_repeat</i></button>
                         </a>
                     </c:when>
                     <c:when test="${confirmed || isUser}">

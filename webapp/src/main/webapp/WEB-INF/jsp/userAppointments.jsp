@@ -11,7 +11,7 @@
 <body>
 <c:set var="isUser" value="true" scope="request" />
 <c:set var="history" value="${history}" scope="request"/>
-
+<c:set var="historyTitle"><spring:message code="appointments.history.title"/> </c:set>
 <div class="page">
     <div class="header">
         <c:choose>
@@ -24,7 +24,7 @@
                 <h2><spring:message code="appointments.my-appointments"/></h2>
                 <div class="flex">
                     <a href="${pageContext.request.contextPath}/turnos/historial">
-                        <button class="btn-basic rounded-btn"><i class="material-icons icon">history</i></button></a>
+                        <button class="btn-basic rounded-btn"><i class="material-icons icon" title="${historyTitle}">history</i></button></a>
                     <div class="switch-btn">
                         <a href="${pageContext.request.contextPath}/turnos/?confirmados=true">
                             <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}" ><spring:message code="appointments.next"/></button></a>
