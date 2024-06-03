@@ -44,14 +44,19 @@ public class AppointmentDaoJpa implements AppointmentDao {
     }
 
     @Override
-    public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed) {
-
-        TypedQuery<Appointment> query = em.createQuery("from Appointment where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Appointment.class);
-
+    public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize) {
+        TypedQuery<Long> query = em.createQuery("SELECT id FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate", Long.class);
+        query.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
+        query.setMaxResults(pageSize);
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);
         query.setParameter("confirmed", confirmed);
-        return query.getResultList();
+
+        final List<Long> idList = query.getResultList();
+        TypedQuery<Appointment> queryPage = em.createQuery("from Appointment where id in :idList ", Appointment.class);
+        queryPage.setParameter("idList",idList);
+
+        return queryPage.getResultList();
     }
 
     @Override
@@ -72,8 +77,8 @@ public class AppointmentDaoJpa implements AppointmentDao {
     }
 
     @Override
-    public int getUserAppointmentCount(long userid, boolean confirmed ){
-        TypedQuery<Integer> query = em.createQuery("SELECT count(id) FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Integer.class);
+    public long getUserAppointmentCount(long userid, boolean confirmed ){
+        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Long.class);
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);
         query.setParameter("confirmed", confirmed);

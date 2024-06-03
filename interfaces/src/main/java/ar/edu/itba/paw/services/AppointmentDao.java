@@ -16,11 +16,11 @@ public interface AppointmentDao {
 
     List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> servicesIds, boolean confirmed);
 
-    List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed);
+    List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize);
 
     List<Appointment> getPreviousUserAppointments(long userid, int page, int pageSize);
 
-    int getUserAppointmentCount(long userid, boolean confirmed);
+    long getUserAppointmentCount(long userid, boolean confirmed);
 
     long getPreviousUserAppointmentCount(long userid);
 

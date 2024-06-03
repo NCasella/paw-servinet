@@ -14,7 +14,9 @@ public interface AppointmentService {
 
     List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> serviceIds, boolean confirmed);
 
-    List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed);
+    List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed,int page);
+
+    long getUserAppointmentPageCount(long userid, boolean confirmed);
 
     List<Appointment> getPreviousUserAppointments(long userid, int page);
 

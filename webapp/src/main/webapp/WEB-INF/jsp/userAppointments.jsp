@@ -17,7 +17,7 @@
         <c:choose>
             <c:when test="${history}">
                 <h2><spring:message code="appointments.history"/></h2>
-                <a href="${pageContext.request.contextPath}/turnos/?confirmados=true">
+                <a href="${pageContext.request.contextPath}/turnos/confirmados=true">
                     <button class="btn-basic rounded-btn"><spring:message code="appointments.next-appointments"/></button></a>
             </c:when>
             <c:otherwise>
@@ -26,9 +26,9 @@
                     <a href="${pageContext.request.contextPath}/turnos/historial">
                         <button class="btn-basic rounded-btn"><i class="material-icons icon" title="${historyTitle}">history</i></button></a>
                     <div class="switch-btn">
-                        <a href="${pageContext.request.contextPath}/turnos/?confirmados=true">
+                        <a href="${pageContext.request.contextPath}/turnos?confirmados=true">
                             <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}" ><spring:message code="appointments.next"/></button></a>
-                        <a href="${pageContext.request.contextPath}/turnos/?confirmados=false">
+                        <a href="${pageContext.request.contextPath}/turnos?confirmados=false">
                             <button class="btn-basic btn-right ${!confirmed? 'btn-selected':''}" ><spring:message code="appointments.requested"/></button></a>
                     </div>
                 </div>
@@ -51,10 +51,12 @@
             </c:when>
             <c:otherwise>
                 <c:if test="${pageCount > 1}">
+                    <c:set var="historyUrl" value="/historial?" />
+                    <c:set var="confirmedUrl" value="?confirmados=${confirmed}&"/>
                     <div class="pagination-box">
                         <c:set var="page" value="${page}" scope="request" />
                         <c:set var="pageCount" value="${pageCount}" scope="request" />
-                        <c:set var="path" value="${pageContext.request.contextPath}/turnos/historial?" scope="request" />
+                        <c:set var="path" value="${pageContext.request.contextPath}/turnos${history? historyUrl:confirmedUrl}" scope="request" />
                         <jsp:include page="components/pagination.jsp"/>
                     </div>
                 </c:if>

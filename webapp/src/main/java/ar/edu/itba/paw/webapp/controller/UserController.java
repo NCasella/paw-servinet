@@ -80,13 +80,14 @@ public class UserController {
 
 
     @RequestMapping(method = RequestMethod.GET, path = "/turnos")
-    public ModelAndView userAppointments( @RequestParam(name = "confirmados") final boolean confirmed) {
+    public ModelAndView userAppointments( @RequestParam(name = "confirmados") final boolean confirmed,
+                                          @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page) {
 
         final ModelAndView mav = new ModelAndView("userAppointments");
 
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
 
-        List<Appointment> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed);
+        List<Appointment> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed,page);
         Set<Long> serviceids = new HashSet<>();
         for ( Appointment a : appointmentList){
             serviceids.add(a.getServiceid());
@@ -95,6 +96,8 @@ public class UserController {
         mav.addObject("appointmentList", appointmentList);
         mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("confirmed",confirmed);
+        mav.addObject("page",page);
+        mav.addObject("pageCount", appointmentService.getUserAppointmentPageCount(userid,confirmed));
         return mav;
     }
 
