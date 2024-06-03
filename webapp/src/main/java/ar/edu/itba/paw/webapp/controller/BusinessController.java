@@ -88,8 +88,9 @@ public class BusinessController {
 
 
 
-    @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/turnos/")
-    public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId, @RequestParam(name = "confirmados") final boolean confirmed) {
+    @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/turnos")
+    public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId, @RequestParam(name = "confirmados") final boolean confirmed,
+                                               @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page) {
 
         Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);

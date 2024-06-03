@@ -31,11 +31,25 @@
             <c:set var="name" value="${userMap[appointment.userid].fullName}" scope="request"/>
             <jsp:include page="components/appointmentContainer.jsp"/>
         </c:forEach>
+        <c:choose>
+            <c:when test="${ empty appointmentList}">
+                <jsp:include page="components/noResults.jsp"/>
+            </c:when>
+            <c:otherwise>
+                <c:if test="${pageCount > 1}">
+                    <div class="pagination-box">
+                        <c:set var="page" value="${page}" scope="request" />
+                        <c:set var="pageCount" value="${pageCount}" scope="request" />
+                        <c:set var="path" value="${pageContext.request.contextPath}/turnos?confirmados=${confirmed}&" scope="request" />
+                        <jsp:include page="components/pagination.jsp"/>
+                    </div>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </div>
 
-    <c:if test="${ empty appointmentList}">
-        <jsp:include page="components/noResults.jsp"/>
-    </c:if>
+
+
 </div>
 
 </body>
