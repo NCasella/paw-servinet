@@ -63,7 +63,7 @@ public class ServiceServiceImpl implements ServiceService {
             }
         }
 
-        Service service = serviceDao.create(business.getBusinessid(), name, description, homeservice, homeservice? "":location, homeservice? neighbourhood:uniqueNeighbourhood, category, minimalduration ,pricing, price, additionalCharges, imageId);
+        Service service = serviceDao.create(business, name, description, homeservice, homeservice? "":location, homeservice? neighbourhood:uniqueNeighbourhood, category, minimalduration ,pricing, price, additionalCharges, imageId);
         emailService.createdService(service, business, userService.getUserLocale(business.getUserId()));
         return service;
     }

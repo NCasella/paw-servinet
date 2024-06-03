@@ -97,7 +97,7 @@ CREATE SEQUENCE IF NOT EXISTS images_imageid_seq;
 CREATE SEQUENCE IF NOT EXISTS services_id_seq;
 
 -- Sequence for nbservices table
-CREATE SEQUENCE IF NOT EXISTS nbservices_id_seq;
+CREATE SEQUENCE IF NOT EXISTS nbservices_insertid_seq;
 
 -- Sequence for appointments table
 CREATE SEQUENCE IF NOT EXISTS appointments_appointmentid_seq;

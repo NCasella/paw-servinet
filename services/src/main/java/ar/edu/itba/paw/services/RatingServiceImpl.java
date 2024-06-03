@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service("RatingServiceImpl")
 public class RatingServiceImpl implements RatingService {
@@ -39,17 +38,12 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional(readOnly = true)
     @Override
-    public double getRatingsAvg(long serviceid) {
-        double avg = ratingDao.getRatingsAvg(serviceid);
+    public double getRatingsAvg(ar.edu.itba.paw.model.Service service) {
+        double avg = service.getRatingAvg();
         avg = Math.round(avg * 10) / 10.0;
         return avg;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public int getRatingsCount(long serviceid) {
-        return ratingDao.getRatingsCount(serviceid);
-    }
 
     @Transactional(readOnly = true)
     @Override
@@ -67,15 +61,36 @@ public class RatingServiceImpl implements RatingService {
         ratingDao.edit(ratingid, rating, comment);
     }
 
-    @Transactional
-    @Override
-    public double getBussinessRatingsAvg(long businessId) {
-        return ratingDao.getBussinessRatingsAvg(businessId);
-    }
 
     @Transactional
     @Override
     public List<Rating> getAllBusinessRatings(long businessId) {
         return ratingDao.getAllBusinessRatings(businessId);
+    }
+
+    @Transactional
+    @Override
+    public Map<Integer, Double> getRatingsAvgByRate(long serviceId) {
+        return orderRatings(ratingDao.getRatingsAvgByRate(serviceId));
+    }
+
+    @Transactional
+    @Override
+    public Map<Integer, Double> getBusinessRatingsAvgByRate(long businessId) {
+        return orderRatings(ratingDao.getBusinessRatingsAvgByRate(businessId));
+    }
+
+    private Map<Integer, Double> orderRatings(List<Object[]> results) {
+        Map<Integer, Double> tempRatings = new HashMap<>();
+        for (Object[] result : results) {
+            Integer rating = (Integer) result[0];
+            Double count = ((Long) result[1]).doubleValue();
+            tempRatings.put(rating, count);
+        }
+        Map<Integer, Double> ratings = new LinkedHashMap<>();
+        for (int i = 5; i > 0; i--) {
+            ratings.put(i, tempRatings.getOrDefault(i, 0.0));
+        }
+        return ratings;
     }
 }

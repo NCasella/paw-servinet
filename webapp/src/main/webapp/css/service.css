@@ -98,24 +98,8 @@
     margin-top: 10px;
 }
 
-.text {
-    padding: 0;
-    margin: 0;
-    word-wrap: break-word;
-}
-
 .question-box {
     margin-bottom: 25px;
-}
-
-.gray-star {
-    color: #b9b9b9;
-    font-size: 20px !important;
-}
-
-.yellow-star {
-    color: #ffd528;
-    font-size: 20px !important;
 }
 
 .star {
@@ -140,13 +124,6 @@
 
 .send-btn:hover {
     background-color: #7c7cfd;
-}
-
-.date {
-    color: gray;
-    margin: 0 30px;
-    padding: 0;
-    font-size: 14px;
 }
 
 .service-rate {

@@ -82,25 +82,8 @@ public class RatingsDaoJpaTest {
         Assert.assertEquals(RATING1, ratingFound.get().getRating());
     }
 
-    @Test
-   public void testRatingCount() {
-        jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (1, %d, %d, %d, '%s')", SERVICEID, USERID, RATING5, COMMENT));
 
-        Assert.assertEquals(1, ratingDao.getRatingsCount(SERVICEID));
-    }
-    @Test
-    public void testRatingAvg(){
-        jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (1, %d, %d, %d, '%s')", SERVICEID, USERID, RATING5, COMMENT));
-        jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (2, %d, %d, %d, '%s')", SERVICEID, USERID2, RATING1, COMMENT));
-       jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment) values (3, %d, %d, %d, '%s')", SERVICEID, USERID3, RATING3, COMMENT));
-        double avg= (double) (RATING5 + RATING1 + RATING3) /3;
-        Assert.assertEquals(avg, ratingDao.getRatingsAvg(SERVICEID), 0.0001);
-    }
-    @Test
-    public void testEmptyRatingAvg(){
 
-        Assert.assertEquals(0.0, ratingDao.getRatingsAvg(SERVICEID), 0.0001);
-    }
 
 
 }

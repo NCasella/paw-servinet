@@ -5,6 +5,7 @@
 <html>
 <head>
     <link href="${pageContext.request.contextPath}/css/service.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/css/reviews.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/css/global.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title><spring:message code="title.service" arguments="${service.name}"/> </title>
@@ -220,6 +221,14 @@
                 </c:choose>
 
                 <h3><spring:message code="service.reviews"/></h3>
+
+                <c:if test="${!empty reviews}">
+                    <c:set var="rating" value="${service.ratingAvg}" scope="request"/>
+                    <c:set var="allRatingCount" value="${service.ratingsCount}" scope="request"/>
+                    <c:set var="ratingCountList" value="${ratingCountList}" scope="request"/>
+                    <jsp:include page="./components/reviews.jsp" />
+                </c:if>
+
                 <c:if test="${!isOwner}">
                 <c:choose>
                     <c:when test="${hasAlreadyRated != null}">
@@ -304,7 +313,7 @@
                                 <c:set value="${review.rating}" var="rate"/>
                                 <div class="question-box">
                                     <div class="flex">
-                                        <label class="user">@${review.user.username}</label>
+                                        <label class="user">@ <c:out value="${review.user.username}"/></label>
                                         <div class="stars-container">
                                             <c:forEach begin="1" end="${rate}" var="i">
                                                 <i class="material-icons yellow-star">star</i>
