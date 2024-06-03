@@ -130,6 +130,7 @@ public class ServiceController {
         mav.addObject("reviewPage", reviewPage);
         mav.addObject("TBDPricing", TBDPricing);
         mav.addObject("hasAlreadyRated", (userId==null)? null : rating.hasAlreadyRated(userId, serviceId));
+        mav.addObject("ratingCountList", rating.getRatingsAvgByRate(serviceId));
         return mav;
     }
 

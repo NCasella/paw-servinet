@@ -3,7 +3,7 @@
 <jsp:include page="navbar.jsp" />
 <html>
 <head>
-    <link href="${pageContext.request.contextPath}/css/businessReviews.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/css/reviews.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/css/global.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
@@ -16,7 +16,7 @@
     <c:forEach items="${reviews}" var="review">
         <c:set value="${review.rating}" var="rate"/>
         <div class="review-box">
-            <p class="comment"><spring:message code="review.user" arguments="${review.user.username}"/>
+            <p class="user-comment"><spring:message code="review.user" arguments="${review.user.username}"/>
                 <a href="${pageContext.request.contextPath}/servicio/${review.serviceid}" class="none-decoration">
                     <span class="review-service">${review.service.name}</span>
                 </a>

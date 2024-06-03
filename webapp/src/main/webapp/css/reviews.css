@@ -1,0 +1,87 @@
+
+.review-box {
+    margin-bottom: 25px;
+    width: 100%;
+    box-shadow: 0 0 15px rgba(92, 99, 105, 0.15);
+    border-radius: 15px;
+    padding: 15px 25px;
+}
+
+.gray-star {
+    color: #b9b9b9;
+    font-size: 20px !important;
+}
+
+.yellow-star {
+    color: #ffd528;
+    font-size: 20px !important;
+}
+
+.text {
+    padding: 0;
+    margin: 0;
+    word-wrap: break-word;
+}
+
+.date {
+    color: gray;
+    margin: 0 30px;
+    padding: 0;
+    font-size: 14px;
+}
+
+.user-comment {
+    color: gray;
+}
+
+.review-service {
+    font-weight: bold;
+    color: #7c7cfd;
+}
+
+.review-service:hover {
+    color: #585bfa;
+}
+
+progress {
+    width: 90%;
+    height: 12px;
+    appearance: none;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+    background-color: #ffd528;
+    border-radius: 10px;
+    transition: width 0.2s ease;
+}
+
+.rating-counts {
+    width: 30%;
+    margin-right: 10%;
+}
+
+.progress-box {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+.progress-rate {
+    width: 30px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.ratingAvg {
+    padding: 0;
+    margin: 0;
+}
+
+.ratingAvg-info {
+    text-align: center;
+}

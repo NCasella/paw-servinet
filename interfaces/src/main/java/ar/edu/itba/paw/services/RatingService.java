@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.Rating;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface RatingService {
@@ -14,5 +15,5 @@ public interface RatingService {
     double getBussinessRatingsAvg(long businessId);
     Rating hasAlreadyRated(long userid, long serviceid);
     void edit(long ratingid, int rating, String comment);
-
+    Map<Integer, Double> getRatingsAvgByRate(long serviceId);
 }

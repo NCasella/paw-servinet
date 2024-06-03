@@ -92,4 +92,27 @@ public class RatingDaoJpa implements RatingDao {
         query.setParameter("businessId", businessId);
         return query.getResultList();
     }
+
+    @Override
+    public Map<Integer, Double> getRatingsAvgByRate(long serviceId) {
+        String jpql = "select r.rating, count(r.rating) from Rating r where r.service.id = :serviceId group by r.rating";
+        TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
+        query.setParameter("serviceId", serviceId);
+
+        List<Object[]> results = query.getResultList();
+        Map<Integer, Double> tempRatings = new HashMap<>();
+
+        for (Object[] result : results) {
+            Integer rating = (Integer) result[0];
+            Double count = ((Long) result[1]).doubleValue();
+            tempRatings.put(rating, count);
+        }
+
+        Map<Integer, Double> ratings = new LinkedHashMap<>();
+        for (int i = 5; i > 0; i--) {
+            ratings.put(i, tempRatings.getOrDefault(i, 0.0));
+        }
+
+        return ratings;
+    }
 }
