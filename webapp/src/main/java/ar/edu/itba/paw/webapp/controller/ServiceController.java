@@ -23,10 +23,10 @@ public class ServiceController {
     private final ServiceService ss;
     private final UserService us;
     private final AppointmentService as;
-    private BusinessService bs;
+    private final BusinessService bs;
     private final ServinetAuthControl authControl;
-    private RatingService rating;
-    private QuestionService question;
+    private final RatingService rating;
+    private final QuestionService question;
     private static final String TBDPricing = PricingTypes.TBD.getValue();
 
 
@@ -116,7 +116,9 @@ public class ServiceController {
         serv = ss.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
         Business business = bs.findById(serv.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
         boolean isOwner = userId != null && business.getUserId()==userId;
-
+        Rating oldRating = userId != null ? rating.hasAlreadyRated(userId,serviceId) :null;
+        if(oldRating !=null)
+            editReviewForm.setEditedComment(oldRating.getComment());
         mav.addObject("isOwner", isOwner);
         mav.addObject("option", option);
         mav.addObject("avgRating", rating.getRatingsAvg(serviceId));

@@ -18,6 +18,8 @@ public interface AppointmentService {
 
     List<Appointment> getPreviousUserAppointments(long userid, int page);
 
+    long getPreviousUserAppointmentPageCount(long userid);
+
     Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date, String description);
 
     long confirmAppointment(long appointmentid);

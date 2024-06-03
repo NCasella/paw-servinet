@@ -260,7 +260,7 @@
                                             <i class="material-icons star" onclick="selectRate(${i})">star</i>
                                         </c:forEach>
                                         <div class="align-right">
-                                            <button class="edit-btn" onclick="toggleUserReview()"><spring:message code="service.cancel"/></button>
+                                            <button type="button" class="edit-btn" onclick="toggleUserReview()"><spring:message code="service.cancel"/></button>
                                         </div>
                                     </div>
                                     <form:input path="editedRating" type="hidden" id="rating" value="${hasAlreadyRated.comment}"/>
@@ -313,7 +313,7 @@
                                 <c:set value="${review.rating}" var="rate"/>
                                 <div class="question-box">
                                     <div class="flex">
-                                        <label class="user">@${review.user.username}</label>
+                                        <label class="user">@ <c:out value="${review.user.username}"/></label>
                                         <div class="stars-container">
                                             <c:forEach begin="1" end="${rate}" var="i">
                                                 <i class="material-icons yellow-star">star</i>

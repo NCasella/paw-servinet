@@ -59,7 +59,7 @@ public class RatingDaoJpa implements RatingDao {
 
     @Override
     public Optional<Rating> hasAlreadyRated(long userid, long serviceid) {
-        TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.user.id = :userid AND r.service.id = :serviceid", Rating.class);
+        TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.user.userId= :userid AND r.service.id = :serviceid", Rating.class);
         query.setParameter("userid", userid);
         query.setParameter("serviceid", serviceid);
         return query.getResultList().stream().findFirst();
