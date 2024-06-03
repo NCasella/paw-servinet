@@ -17,7 +17,7 @@
         <c:choose>
             <c:when test="${history}">
                 <h2><spring:message code="appointments.history"/></h2>
-                <a href="${pageContext.request.contextPath}/turnos/confirmados=true">
+                <a href="${pageContext.request.contextPath}/turnos?confirmados=true">
                     <button class="btn-basic rounded-btn"><spring:message code="appointments.next-appointments"/></button></a>
             </c:when>
             <c:otherwise>
