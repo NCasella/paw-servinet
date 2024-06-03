@@ -20,6 +20,10 @@ public interface AppointmentDao {
 
     List<Appointment> getPreviousUserAppointments(long userid, int page, int pageSize);
 
+    int getUserAppointmentCount(long userid, boolean confirmed);
+
+    long getPreviousUserAppointmentCount(long userid);
+
     Appointment create(long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location, String description);
 
     void confirmAppointment(long appointmentid);

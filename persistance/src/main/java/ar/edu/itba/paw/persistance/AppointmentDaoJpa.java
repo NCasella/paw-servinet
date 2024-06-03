@@ -7,13 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class AppointmentDaoJpa implements AppointmentDao {
@@ -71,6 +69,22 @@ public class AppointmentDaoJpa implements AppointmentDao {
         query.setParameter("idList",idList);
 
         return query.getResultList();
+    }
+
+    @Override
+    public int getUserAppointmentCount(long userid, boolean confirmed ){
+        TypedQuery<Integer> query = em.createQuery("SELECT count(id) FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Integer.class);
+        query.setParameter("currentDate", LocalDateTime.now());
+        query.setParameter("userid", userid);
+        query.setParameter("confirmed", confirmed);
+        return query.getResultList().getFirst();
+    }
+    @Override
+    public long getPreviousUserAppointmentCount(long userid){
+        TypedQuery<Long> query = em.createQuery("SELECT count(*) FROM Appointment as a where userid = :userid and confirmed = TRUE and startDate < :currentDate ", Long.class);
+        query.setParameter("currentDate", LocalDateTime.now());
+        query.setParameter("userid", userid);
+        return query.getSingleResult();
     }
 
     @Override
