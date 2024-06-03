@@ -130,6 +130,10 @@ public class ServiceController {
         mav.addObject("reviewPage", reviewPage);
         mav.addObject("TBDPricing", TBDPricing);
         mav.addObject("hasAlreadyRated", (userId==null)? null : rating.hasAlreadyRated(userId, serviceId));
+        if (userId != null) {
+            Rating previousRating = rating.hasAlreadyRated(userId, serviceId);
+            editReviewForm.setEditedComment(previousRating.getComment());
+        }
         return mav;
     }
 
