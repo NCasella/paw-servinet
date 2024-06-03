@@ -12,9 +12,11 @@ public interface AppointmentService {
 
     List<Appointment> getAllUpcomingServiceAppointments(long serviceid);
 
-    List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> serviceIds, boolean confirmed);
+    List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> serviceIds, boolean confirmed, int page);
 
-    List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed,int page);
+    long getServicesAppointmentCount(Collection<Long> serviceIds, boolean confirmed);
+
+    List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page);
 
     long getUserAppointmentPageCount(long userid, boolean confirmed);
 

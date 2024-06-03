@@ -47,9 +47,18 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
     @Transactional(readOnly = true)
     @Override
-    public List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> serviceIds, boolean confirmed) {
-        return appointmentDao.getAllUpcomingServicesAppointments(serviceIds,confirmed);
+    public List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> serviceIds, boolean confirmed, int page) {
+        return appointmentDao.getAllUpcomingServicesAppointments(serviceIds,confirmed, page, PAGESIZE);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public long getServicesAppointmentCount(Collection<Long> serviceIds, boolean confirmed) {
+        long appointmentCount = appointmentDao.getServicesAppointmentCount(serviceIds,confirmed);
+        return correctPageCount(appointmentCount);
+
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page) {

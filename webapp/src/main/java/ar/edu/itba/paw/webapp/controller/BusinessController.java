@@ -98,7 +98,8 @@ public class BusinessController {
 
         Map<Long, BasicService> serviceMap = new HashMap<>();
         services.forEach(service -> serviceMap.put(service.getId(), service));
-        appointmentList = appointmentService.getAllUpcomingServicesAppointments( serviceMap.keySet(), confirmed);
+        Set<Long> serviceIds =  serviceMap.keySet();
+        appointmentList = appointmentService.getAllUpcomingServicesAppointments(serviceIds, confirmed, page);
 
         final ModelAndView mav = new ModelAndView("businessAppointments");
         Map<Long, User> userMap = new HashMap<>();
@@ -114,6 +115,8 @@ public class BusinessController {
         mav.addObject("serviceMap", serviceMap );
         mav.addObject("appointmentList", appointmentList);
         mav.addObject("confirmed",confirmed);
+        mav.addObject("page",page);
+        mav.addObject("pageCount", appointmentService.getServicesAppointmentCount(serviceIds,confirmed));
         return mav;
     }
 

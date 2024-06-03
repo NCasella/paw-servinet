@@ -40,7 +40,7 @@
                     <div class="pagination-box">
                         <c:set var="page" value="${page}" scope="request" />
                         <c:set var="pageCount" value="${pageCount}" scope="request" />
-                        <c:set var="path" value="${pageContext.request.contextPath}/turnos?confirmados=${confirmed}&" scope="request" />
+                        <c:set var="path" value="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=${confirmed}&" scope="request" />
                         <jsp:include page="components/pagination.jsp"/>
                     </div>
                 </c:if>
