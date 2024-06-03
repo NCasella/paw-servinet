@@ -251,7 +251,7 @@
                                             <i class="material-icons star" onclick="selectRate(${i})">star</i>
                                         </c:forEach>
                                         <div class="align-right">
-                                            <button class="edit-btn" onclick="toggleUserReview()"><spring:message code="service.cancel"/></button>
+                                            <button type="button" class="edit-btn" onclick="toggleUserReview()"><spring:message code="service.cancel"/></button>
                                         </div>
                                     </div>
                                     <form:input path="editedRating" type="hidden" id="rating" value="${hasAlreadyRated.comment}"/>
