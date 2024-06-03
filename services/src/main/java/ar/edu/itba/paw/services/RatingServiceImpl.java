@@ -40,17 +40,12 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional(readOnly = true)
     @Override
-    public double getRatingsAvg(long serviceid) {
-        double avg = ratingDao.getRatingsAvg(serviceid);
+    public double getRatingsAvg(ar.edu.itba.paw.model.Service service) {
+        double avg = service.getRatingAvg();
         avg = Math.round(avg * 10) / 10.0;
         return avg;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public int getRatingsCount(long serviceid) {
-        return ratingDao.getRatingsCount(serviceid);
-    }
 
     @Transactional(readOnly = true)
     @Override
@@ -68,11 +63,6 @@ public class RatingServiceImpl implements RatingService {
         ratingDao.edit(ratingid, rating, comment);
     }
 
-    @Transactional
-    @Override
-    public double getBussinessRatingsAvg(long businessId) {
-        return ratingDao.getBussinessRatingsAvg(businessId);
-    }
 
     @Transactional
     @Override

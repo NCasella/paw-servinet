@@ -45,17 +45,7 @@ public class RatingDaoJpa implements RatingDao {
         return newRating;
     }
 
-    @Override
-    public double getRatingsAvg(long serviceid) {
-        Service service = em.find(Service.class, serviceid);
-        return service.getRatingAvg();
-    }
 
-    @Override
-    public int getRatingsCount(long serviceid) {
-        Service service = em.find(Service.class, serviceid);
-        return service.getRatingsCount();
-    }
 
     @Override
     public Optional<Rating> hasAlreadyRated(long userid, long serviceid) {
@@ -73,15 +63,6 @@ public class RatingDaoJpa implements RatingDao {
         em.persist(ratingToEdit);
     }
 
-    @Override
-    public double getBussinessRatingsAvg(long businessId) {
-        String jpql = "select coalesce(round(avg(r.rating), 1), 0) " +
-                "from Service s join s.ratings r " +
-                "where s.business.businessid = :businessId";
-        TypedQuery<Double> query = em.createQuery(jpql, Double.class);
-        query.setParameter("businessId", businessId);
-        return query.getSingleResult();
-    }
 
     @Override
     public List<Rating> getAllBusinessRatings(long businessId) {

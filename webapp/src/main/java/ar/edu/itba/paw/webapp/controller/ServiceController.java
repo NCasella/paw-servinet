@@ -110,24 +110,21 @@ public class ServiceController {
         final ModelAndView mav = new ModelAndView("service");
         Optional<User> currentUser = authControl.getCurrentUser();
         Long userId = currentUser.isPresent() ? currentUser.get().getUserId() : null;
-        Service serv;
-
-
-        serv = ss.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
-        Business business = bs.findById(serv.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
+        Service serv = ss.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        Business business = serv.getBusiness();
         boolean isOwner = userId != null && business.getUserId()==userId;
         Rating oldRating = userId != null ? rating.hasAlreadyRated(userId,serviceId) :null;
         if(oldRating !=null)
             editReviewForm.setEditedComment(oldRating.getComment());
         mav.addObject("isOwner", isOwner);
         mav.addObject("option", option);
-        mav.addObject("avgRating", rating.getRatingsAvg(serviceId));
+        mav.addObject("avgRating", rating.getRatingsAvg(serv));
         mav.addObject("service",serv);
         mav.addObject("business", business);
         mav.addObject("questions", question.getAllQuestions(serviceId, questionPage));
         mav.addObject("reviews", rating.getAllRatings(serviceId, reviewPage));
         mav.addObject("questionsCount", question.getQuestionsCount(serviceId));
-        mav.addObject("reviewsCount", rating.getRatingsCount(serviceId));
+        mav.addObject("reviewsCount", serv.getRatingsCount());
         mav.addObject("questionPage", questionPage);
         mav.addObject("reviewPage", reviewPage);
         mav.addObject("TBDPricing", TBDPricing);
