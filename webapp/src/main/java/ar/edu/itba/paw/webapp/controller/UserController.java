@@ -117,7 +117,7 @@ public class UserController {
         mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("history",true);
         mav.addObject("page",page);
-        mav.addObject("pageCount",2); //todo: appointmentService.getPreviousUserAppointmentsPageCount(userid));
+        mav.addObject("pageCount", appointmentService.getPreviousUserAppointmentPageCount(userid));
         return mav;
     }
 

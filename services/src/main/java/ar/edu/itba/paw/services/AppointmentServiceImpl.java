@@ -61,6 +61,19 @@ public class AppointmentServiceImpl implements AppointmentService{
     public List<Appointment> getPreviousUserAppointments(long userid, int page) {
         return appointmentDao.getPreviousUserAppointments(userid,page, PAGESIZE);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public long getPreviousUserAppointmentPageCount(long userid) {
+        long appointmentCount = appointmentDao.getPreviousUserAppointmentCount(userid);
+        return correctPageCount(appointmentCount);
+
+    }
+
+    private long correctPageCount(long count){
+        return count / PAGESIZE + (( count % PAGESIZE !=0 )? 1:0 );
+    }
+
     @Transactional
     @Override
     public Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date, String description) {
