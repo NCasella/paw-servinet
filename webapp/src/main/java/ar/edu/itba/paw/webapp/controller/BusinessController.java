@@ -147,7 +147,7 @@ public class BusinessController {
         mav.addObject("business",business);
         mav.addObject("serviceList", serviceList);
         mav.addObject("isOwner", isOwner);
-        mav.addObject("avgRating", ratingService.getBussinessRatingsAvg(businessId));
+        mav.addObject("avgRating", business.getBusinessRatingAvg());
         return mav;
     }
 
@@ -173,8 +173,6 @@ public class BusinessController {
         Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         mav.addObject("business", business);
         mav.addObject("reviews", ratingService.getAllBusinessRatings(businessId));
-        mav.addObject("avgRating", ratingService.getBussinessRatingsAvg(businessId));
-        mav.addObject("ratingsCount", ratingService.getBusinessRatingsCount(businessId));
         mav.addObject("ratingCountList", ratingService.getBusinessRatingsAvgByRate(businessId));
         return mav;
     }

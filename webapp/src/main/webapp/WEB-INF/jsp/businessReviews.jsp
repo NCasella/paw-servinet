@@ -14,8 +14,8 @@
     <h2><spring:message code="review.business" arguments="${business.name}"/></h2>
 
     <c:if test="${!empty reviews}">
-        <c:set var="rating" value="${avgRating}" scope="request"/>
-        <c:set var="allRatingCount" value="${ratingsCount}" scope="request"/>
+        <c:set var="rating" value="${business.businessRatingAvg}" scope="request"/>
+        <c:set var="allRatingCount" value="${business.businessRatingCount}" scope="request"/>
         <c:set var="ratingCountList" value="${ratingCountList}" scope="request"/>
         <jsp:include page="./components/reviews.jsp" />
     </c:if>

@@ -51,8 +51,8 @@ public class Service extends BasicService {
     public Service() {
     }
 
-    public Service(long businessid, String name, String description, boolean homeService, String location, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,Long imageId) {
-        super(businessid, name, location, imageId);
+    public Service(Business business, String name, String description, boolean homeService, String location, Categories category, int duration, PricingTypes pricingType, String price, boolean additionalCharges,Long imageId) {
+        super(business, name, location, imageId);
         this.description = description;
         this.homeService = homeService;
         this.category = category.getValue();

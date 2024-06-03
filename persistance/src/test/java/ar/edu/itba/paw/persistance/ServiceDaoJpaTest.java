@@ -1,10 +1,7 @@
  package ar.edu.itba.paw.persistance;
 
 
- import ar.edu.itba.paw.model.Categories;
- import ar.edu.itba.paw.model.Neighbourhoods;
- import ar.edu.itba.paw.model.PricingTypes;
- import ar.edu.itba.paw.model.Service;
+ import ar.edu.itba.paw.model.*;
  import ar.edu.itba.paw.persistance.config.TestConfig;
  import org.junit.Assert;
  import org.junit.Before;
@@ -31,6 +28,7 @@
  @ContextConfiguration(classes = TestConfig.class)
  public class ServiceDaoJpaTest {
      private static final String NAME = "name";
+     private static final long USERID=1;
      private static final long SERVICEID=1;
      private static final long BUSINESSID = 1;
      private static final String DESCRIPTION = "description";
@@ -46,6 +44,8 @@
      private static final String PRICE = "ARS 1000";
      private static final Boolean ADDITIONALCHARGES = false;
      private static final PricingTypes PRICING = PricingTypes.PER_TOTAL;
+     private  User USER;
+     private  Business BUSINESS ;
 
      @PersistenceContext
      private EntityManager em;
@@ -60,13 +60,14 @@
         this.jdbcTemplate = new JdbcTemplate(ds);
         jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',false)");
         jdbcTemplate.execute("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')");
+        USER=em.find(User.class,USERID);
+        BUSINESS=em.find(Business.class,BUSINESSID);
     }
 
     @Test
      public void testCreate() {
-        Service service = serviceDao.create(BUSINESSID, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,null);
+        Service service = serviceDao.create(BUSINESS, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,null);
         em.flush();
-
         Assert.assertNotNull(service);
         Assert.assertEquals(BUSINESSID, service.getBusinessid());
         Assert.assertEquals(NAME, service.getName());
@@ -103,7 +104,7 @@
 
    @Test
     public void testDelete() {
-       Service service = serviceDao.create(BUSINESSID, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,null);
+       Service service = serviceDao.create(BUSINESS, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,null);
         serviceDao.delete(service.getId());
 
         Assert.assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "services"));
