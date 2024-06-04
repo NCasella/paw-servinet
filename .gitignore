@@ -30,7 +30,7 @@ target/
 
 # JetBrains IDE
 .idea/
-
+*.iml
 # Unit test reports
 TEST*.xml
 
