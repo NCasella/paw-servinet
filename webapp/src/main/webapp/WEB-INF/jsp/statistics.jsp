@@ -15,12 +15,29 @@
         <h2><spring:message code="statistics.title"/></h2>
         <div class="flex">
             <a href="${urlFilter}semanal">
-                <button class="btn-basic rounded-btn" id="w"><spring:message code="statistics.week"/></button></a>
+                <button class="btn-basic rounded-btn btn-selected" id="w"><spring:message code="statistics.week"/></button></a>
             <a href="${urlFilter}semanal">
                 <button class="btn-basic rounded-btn" id="m"><spring:message code="statistics.month"/></button></a>
             <a href="${urlFilter}semanal">
                 <button class="btn-basic rounded-btn" id="y"><spring:message code="statistics.year"/></button></a>
         </div>
+    </div>
+    <div class="boxes-container ">
+        <div class="box service-box flex">
+            <div class="service-box-text">
+                <p class=""><spring:message code="statistics.total-requests"/></p>
+                <h1 class="appointment-counter"><c:out value="${appointmentCountMap.size}"/>20</h1>
+            </div>
+        </div>
+        <div class="box service-box flex">
+            <div class="service-box-text">
+                <p class=""><spring:message code="statistics.finished-appointments"/></p>
+                <h1 class="appointment-counter"><c:out value="${appointmentCountMap.size}"/>20</h1>
+            </div>
+        </div>
+    </div>
+    <div class="header">
+        <h3><spring:message code="statistics.appointments-per-service"/></h3>
     </div>
     <div class="boxes-container ">
         <c:forEach items="${serviceList}" var="service" varStatus="loop">

@@ -28,7 +28,7 @@
 
 .service-box-name {
     color: #6c6fff;
-    font-weight: bold;
+    /*font-weight: bold;*/
     text-overflow: ellipsis;
     margin-top: -15px;
 }
