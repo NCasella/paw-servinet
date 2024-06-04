@@ -8,9 +8,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class ErrorsController {
+
+    @RequestMapping("/400")
+    @ResponseStatus(value= HttpStatus.BAD_REQUEST)
+    public ModelAndView badRequest(){
+        return new ModelAndView("/errors/400");
+    }
+
+
     @RequestMapping("/404")
     @ResponseStatus(value= HttpStatus.NOT_FOUND)
-    public ModelAndView badRequest(){
+    public ModelAndView notFound(){
         return new ModelAndView("/errors/404");
     }
 

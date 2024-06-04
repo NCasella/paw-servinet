@@ -21,7 +21,7 @@
 <c:set var="url" value="${deleteUrl}" scope="request"/>
 
 <jsp:include page="components/popUp.jsp" />
-
+<c:set var="statisticsTitle"><spring:message code="statistics.title"/></c:set>
 <c:set var="urlCreateService" value="${pageContext.request.contextPath}/crear-servicio/${businessId}" />
 <div class="page">
   <div class="header">
@@ -42,6 +42,8 @@
         <button class="cancelBtn" id="deleteBtn" onclick="showPopUp()" >
           <i class="material-icons ">delete</i>
         </button>
+        <a href="${pageContext.request.contextPath}/negocio/${businessId}/estadisticas">
+          <button class="btn-basic rounded-btn"><i class="material-icons icon" title="${statisticsTitle}">equalizer</i></button></a>
         <a href="${urlCreateService}" class="none-decoration mr">
           <button class="btn center-vertically"><i class="material-icons ">add</i> <spring:message code="business.add-service"/></button>
         </a>

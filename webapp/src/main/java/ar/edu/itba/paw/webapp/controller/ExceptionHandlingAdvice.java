@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ar.edu.itba.paw.model.exceptions.InvalidOperationException;
@@ -11,4 +12,8 @@ public class ExceptionHandlingAdvice {
         return new ModelAndView("redirect:/operacion-invalida/?argumento="+ ex.getArgument());
     }
 
+    @ExceptionHandler(InvalidFilterException.class)
+    public ModelAndView invalidFilter(){
+        return new ModelAndView("redirect:/400");
+    }
 }

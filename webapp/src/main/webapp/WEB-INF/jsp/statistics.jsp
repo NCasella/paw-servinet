@@ -9,16 +9,16 @@
     <title><spring:message code="title.statistics"/></title>
 </head>
 <body>
-<c:set var="urlFilter" value="${pageContext.request.contextPath}/statistics?filtro="/>
+<c:set var="urlFilter" value="${pageContext.request.contextPath}/negocio/${businessId}/estadisticas?filtro="/>
 <div class="page">
     <div class="header">
         <h2><spring:message code="statistics.title"/></h2>
         <div class="flex">
-            <a href="${urlFilter}semanal">
-                <button class="btn-basic rounded-btn btn-selected" id="w"><spring:message code="statistics.week"/></button></a>
-            <a href="${urlFilter}semanal">
+            <a href="${urlFilter}w">
+                <button class="btn-basic rounded-btn" id="w"><spring:message code="statistics.week"/></button></a>
+            <a href="${urlFilter}m">
                 <button class="btn-basic rounded-btn" id="m"><spring:message code="statistics.month"/></button></a>
-            <a href="${urlFilter}semanal">
+            <a href="${urlFilter}y">
                 <button class="btn-basic rounded-btn" id="y"><spring:message code="statistics.year"/></button></a>
         </div>
     </div>
@@ -40,13 +40,14 @@
         <h3><spring:message code="statistics.appointments-per-service"/></h3>
     </div>
     <div class="boxes-container margin-auto">
-        <c:forEach items="${serviceList}" var="service" varStatus="loop">
+        <c:forEach items="${serviceAppointmentCountList}" var="pair" varStatus="loop">
+            <c:set var="service" value="${serviceMap[pair.key]}"/>
             <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${service.id}">
                 <div class="box service-box flex">
                     <img class="service-box-img" src="${pageContext.request.contextPath}/images/${service.imageId}" alt=<spring:message code="business.service-image"/>>
 
                     <div class="service-box-text">
-                        <h2 class="appointment-counter"><c:out value="${appointmentCountMap[service.id]}"/>20</h2>
+                        <h2 class="appointment-counter"><c:out value="${pair.value}"/></h2>
                         <p class="service-box-name"><c:out value="${service.name}"/></p>
                     </div>
                 </div>
@@ -58,4 +59,6 @@
 </html>
 <script>
     //id add class to btn w m y
+    document.getElementById('${filter}').classList.add('btn-selected')
+
 </script>
