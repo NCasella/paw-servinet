@@ -100,7 +100,7 @@ public class BusinessController {
         Map<Long, BasicService> serviceMap = new HashMap<>();
         services.forEach(service -> serviceMap.put(service.getId(), service));
 
-        List<Pair<Long,Long>> serviceAppointmentCount = appointmentService.getServicesFinishedAppointmentCount(serviceMap.keySet(),DateIntervalFilter.LASTWEEK);
+        List<Pair<Long,Long>> serviceAppointmentCount = appointmentService.getServicesFinishedAppointmentCount(serviceMap.keySet(),filter);
 
         final ModelAndView mav = new ModelAndView("statistics");
         mav.addObject("serviceAppointmentCountList", serviceAppointmentCount);
