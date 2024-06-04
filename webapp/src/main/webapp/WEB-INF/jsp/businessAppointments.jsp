@@ -16,9 +16,9 @@
     <div class="header">
         <h2><c:out value="${business.businessName}"/></h2>
         <div>
-            <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos/?confirmados=true">
+            <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=true">
                 <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}"><spring:message code="business.next"/></button></a>
-            <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos/?confirmados=false">
+            <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=false">
                 <button class="btn-basic btn-right ${!confirmed? 'btn-selected':''}"><spring:message code="business.requests"/></button></a>
         </div>
     </div>
@@ -31,11 +31,25 @@
             <c:set var="name" value="${userMap[appointment.userid].fullName}" scope="request"/>
             <jsp:include page="components/appointmentContainer.jsp"/>
         </c:forEach>
+        <c:choose>
+            <c:when test="${ empty appointmentList}">
+                <jsp:include page="components/noResults.jsp"/>
+            </c:when>
+            <c:otherwise>
+                <c:if test="${pageCount > 1}">
+                    <div class="pagination-box">
+                        <c:set var="page" value="${page}" scope="request" />
+                        <c:set var="pageCount" value="${pageCount}" scope="request" />
+                        <c:set var="path" value="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=${confirmed}&" scope="request" />
+                        <jsp:include page="components/pagination.jsp"/>
+                    </div>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </div>
 
-    <c:if test="${ empty appointmentList}">
-        <jsp:include page="components/noResults.jsp"/>
-    </c:if>
+
+
 </div>
 
 </body>

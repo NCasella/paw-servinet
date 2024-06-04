@@ -46,7 +46,7 @@
           <button class="btn center-vertically"><i class="material-icons ">add</i> <spring:message code="business.add-service"/></button>
         </a>
         <c:if test="${not empty serviceList}" >
-          <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos/?confirmados=false" class="none-decoration">
+          <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=false" class="none-decoration">
             <button class="btn center-vertically"><i class="material-icons ">calendar_today</i> <spring:message code="business.appointments"/></button>
           </a>
         </c:if>

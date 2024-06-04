@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 
 @Entity
@@ -20,6 +22,10 @@ public class Business {
     private String email;
     @Column(name="businesslocation")
     private String location;
+    @Formula("( select coalesce(round(avg(r.rating), 1), 0) from services s join ratings r on s.id=r.serviceid where s.businessid = businessid )")
+    private double businessRatingAvg;
+    @Formula("(select count(r.rating) from services s join ratings r on s.id=r.serviceid where s.businessid = businessid)")
+    private double businessRatingCount;
 
     public long getBusinessid() {
         return businessid;
@@ -65,6 +71,9 @@ public class Business {
         this.email = email;
     }
 
+    public double getBusinessRatingAvg(){return businessRatingAvg;}
+
+    public double getBusinessRatingCount() {return businessRatingCount;}
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;

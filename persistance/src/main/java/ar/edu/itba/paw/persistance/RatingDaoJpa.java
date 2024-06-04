@@ -45,17 +45,7 @@ public class RatingDaoJpa implements RatingDao {
         return newRating;
     }
 
-    @Override
-    public double getRatingsAvg(long serviceid) {
-        Service service = em.find(Service.class, serviceid);
-        return service.getRatingAvg();
-    }
 
-    @Override
-    public int getRatingsCount(long serviceid) {
-        Service service = em.find(Service.class, serviceid);
-        return service.getRatingsCount();
-    }
 
     @Override
     public Optional<Rating> hasAlreadyRated(long userid, long serviceid) {
@@ -73,15 +63,6 @@ public class RatingDaoJpa implements RatingDao {
         em.persist(ratingToEdit);
     }
 
-    @Override
-    public double getBussinessRatingsAvg(long businessId) {
-        String jpql = "select coalesce(round(avg(r.rating), 1), 0) " +
-                "from Service s join s.ratings r " +
-                "where s.business.businessid = :businessId";
-        TypedQuery<Double> query = em.createQuery(jpql, Double.class);
-        query.setParameter("businessId", businessId);
-        return query.getSingleResult();
-    }
 
     @Override
     public List<Rating> getAllBusinessRatings(long businessId) {
@@ -89,6 +70,22 @@ public class RatingDaoJpa implements RatingDao {
                 "from Rating r join r.service s " +
                 "where s.business.businessid = :businessId";
         TypedQuery<Rating> query = em.createQuery(jpql, Rating.class);
+        query.setParameter("businessId", businessId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> getRatingsAvgByRate(long serviceId) {
+        String jpql = "select r.rating, count(r.rating) from Rating r where r.service.id = :serviceId group by r.rating";
+        TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
+        query.setParameter("serviceId", serviceId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> getBusinessRatingsAvgByRate(long businessId) {
+        String jpql = "select r.rating, count(r.rating) from Rating r where r.service.business.businessid = :businessId group by r.rating";
+        TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
         query.setParameter("businessId", businessId);
         return query.getResultList();
     }

@@ -11,8 +11,6 @@ public class BasicService {
         @Column(name = "id")
         private Long id;
 
-        @Column(name = "businessid", nullable = false)
-        private long businessid;
 
         @Column(name = "servicename", nullable = false)
         private String name;
@@ -24,15 +22,15 @@ public class BasicService {
         private Long imageId;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "businessid", insertable = false, updatable = false)
+        @JoinColumn(name = "businessid", updatable = false)
         private Business business;
 
 
         public BasicService() {
         }
 
-        public BasicService(long businessid, String name, String location,Long imageId) {
-            this.businessid = businessid;
+        public BasicService(Business business, String name, String location,Long imageId) {
+            this.business= business;
             this.name = name;
             this.location = location;
             this.imageId= imageId;
@@ -63,12 +61,12 @@ public class BasicService {
             this.location = location;
         }
 
-        public void setBusinessid(long businessid) {
-            this.businessid = businessid;
+        public void setBusiness(Business business) {
+            this.business = business;
         }
 
         public long getBusinessid() {
-            return businessid;
+            return business.getBusinessid();
         }
 
         public Long getImageId() {

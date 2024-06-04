@@ -40,7 +40,7 @@
                     <p class="nav-item"><spring:message code="navbar.account"/></p>
                     <div class="dropdown-content">
                         <a href="${pageContext.request.contextPath}/perfil"><spring:message code="navbar.profile"/></a>
-                        <a href="${pageContext.request.contextPath}/turnos/?confirmados=true"><spring:message code="navbar.appointments"/></a>
+                        <a href="${pageContext.request.contextPath}/turnos?confirmados=true"><spring:message code="navbar.appointments"/></a>
                         <c:choose>
                             <c:when test="${isProvider}">
                                 <a href="${pageContext.request.contextPath}/negocios"><spring:message code="navbar.businesses"/></a>

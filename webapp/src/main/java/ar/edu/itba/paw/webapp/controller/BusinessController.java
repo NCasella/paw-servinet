@@ -88,8 +88,9 @@ public class BusinessController {
 
 
 
-    @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/turnos/")
-    public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId, @RequestParam(name = "confirmados") final boolean confirmed) {
+    @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/turnos")
+    public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId, @RequestParam(name = "confirmados") final boolean confirmed,
+                                               @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page) {
 
         Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
@@ -97,7 +98,8 @@ public class BusinessController {
 
         Map<Long, BasicService> serviceMap = new HashMap<>();
         services.forEach(service -> serviceMap.put(service.getId(), service));
-        appointmentList = appointmentService.getAllUpcomingServicesAppointments( serviceMap.keySet(), confirmed);
+        Set<Long> serviceIds =  serviceMap.keySet();
+        appointmentList = appointmentService.getAllUpcomingServicesAppointments(serviceIds, confirmed, page);
 
         final ModelAndView mav = new ModelAndView("businessAppointments");
         Map<Long, User> userMap = new HashMap<>();
@@ -113,6 +115,8 @@ public class BusinessController {
         mav.addObject("serviceMap", serviceMap );
         mav.addObject("appointmentList", appointmentList);
         mav.addObject("confirmed",confirmed);
+        mav.addObject("page",page);
+        mav.addObject("pageCount", appointmentService.getServicesAppointmentCount(serviceIds,confirmed));
         return mav;
     }
 
@@ -147,7 +151,7 @@ public class BusinessController {
         mav.addObject("business",business);
         mav.addObject("serviceList", serviceList);
         mav.addObject("isOwner", isOwner);
-        mav.addObject("avgRating", ratingService.getBussinessRatingsAvg(businessId));
+        mav.addObject("avgRating", business.getBusinessRatingAvg());
         return mav;
     }
 
@@ -173,7 +177,7 @@ public class BusinessController {
         Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         mav.addObject("business", business);
         mav.addObject("reviews", ratingService.getAllBusinessRatings(businessId));
-        mav.addObject("avgRating", ratingService.getBussinessRatingsAvg(businessId));
+        mav.addObject("ratingCountList", ratingService.getBusinessRatingsAvgByRate(businessId));
         return mav;
     }
 

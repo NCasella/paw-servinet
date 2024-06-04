@@ -35,23 +35,53 @@ public class AppointmentDaoJpa implements AppointmentDao {
     }
 
     @Override
-    public List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> servicesIds, boolean confirmed) {
-        TypedQuery<Appointment> query = em.createQuery("from Appointment where serviceid in :serviceids and startDate > :currentDate and confirmed = :confirmed ", Appointment.class);
+    public List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> servicesIds, boolean confirmed, int page, int pageSize) {
+        TypedQuery<Long> query = em.createQuery("SELECT id from Appointment where serviceid in :serviceids and confirmed = :confirmed and startDate > :currentDate ", Long.class);
         query.setParameter("serviceids",List.copyOf(servicesIds));
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("confirmed", confirmed);
-        return query.getResultList();
+        query.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
+        query.setMaxResults(pageSize);
+
+        final List<Long> idList = query.getResultList();
+        TypedQuery<Appointment> queryPage = em.createQuery("from Appointment where id in :idList ", Appointment.class);
+        queryPage.setParameter("idList", idList);
+
+        return queryPage.getResultList();
     }
 
     @Override
-    public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed) {
+    public long getServicesAppointmentCount(Collection<Long> servicesIds, boolean confirmed ){
+        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment as a where serviceid in :serviceids and confirmed = :confirmed and startDate > :currentDate ", Long.class);
+        query.setParameter("currentDate", LocalDateTime.now());
+        query.setParameter("serviceids", servicesIds);
+        query.setParameter("confirmed", confirmed);
+        return query.getResultList().getFirst();
+    }
 
-        TypedQuery<Appointment> query = em.createQuery("from Appointment where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Appointment.class);
-
+    @Override
+    public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize) {
+        TypedQuery<Long> query = em.createQuery("SELECT id FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate", Long.class);
+        query.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
+        query.setMaxResults(pageSize);
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);
         query.setParameter("confirmed", confirmed);
-        return query.getResultList();
+
+        final List<Long> idList = query.getResultList();
+        TypedQuery<Appointment> queryPage = em.createQuery("from Appointment where id in :idList ", Appointment.class);
+        queryPage.setParameter("idList",idList);
+
+        return queryPage.getResultList();
+    }
+
+    @Override
+    public long getUserAppointmentCount(long userid, boolean confirmed ){
+        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Long.class);
+        query.setParameter("currentDate", LocalDateTime.now());
+        query.setParameter("userid", userid);
+        query.setParameter("confirmed", confirmed);
+        return query.getResultList().getFirst();
     }
 
     @Override
@@ -71,14 +101,6 @@ public class AppointmentDaoJpa implements AppointmentDao {
         return query.getResultList();
     }
 
-    @Override
-    public int getUserAppointmentCount(long userid, boolean confirmed ){
-        TypedQuery<Integer> query = em.createQuery("SELECT count(id) FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Integer.class);
-        query.setParameter("currentDate", LocalDateTime.now());
-        query.setParameter("userid", userid);
-        query.setParameter("confirmed", confirmed);
-        return query.getResultList().getFirst();
-    }
     @Override
     public long getPreviousUserAppointmentCount(long userid){
         TypedQuery<Long> query = em.createQuery("SELECT count(*) FROM Appointment as a where userid = :userid and confirmed = TRUE and startDate < :currentDate ", Long.class);

@@ -35,8 +35,8 @@ public class ServiceDaoJpa implements ServiceDao {
     }
 
     @Override
-    public Service create(long businessid, String name, String description, boolean homeservice, String location, Neighbourhoods[] neighbourhoods, Categories category, int minimalduration, PricingTypes pricing, String price, boolean additionalCharges, Long imageId) {
-        Service service = new Service(businessid, name, description, homeservice, location, category, minimalduration, pricing, price, additionalCharges, imageId);
+    public Service create(Business business, String name, String description, boolean homeservice, String location, Neighbourhoods[] neighbourhoods, Categories category, int minimalduration, PricingTypes pricing, String price, boolean additionalCharges, Long imageId) {
+        Service service = new Service(business, name, description, homeservice, location, category, minimalduration, pricing, price, additionalCharges, imageId);
         em.persist(service);
         for (Neighbourhoods n : neighbourhoods) {
             Nbservices nbservices = new Nbservices(service, n);
@@ -60,14 +60,14 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public List<Service> getAllBusinessServices(long businessId) {
-        TypedQuery<Service> query = em.createQuery("from Service as s where s.businessid = :businessId", Service.class);
+        TypedQuery<Service> query = em.createQuery("from Service as s where s.business.businessid = :businessId", Service.class);
         query.setParameter("businessId", businessId);
         return query.getResultList();
     }
 
     @Override
     public List<BasicService> getAllBusinessBasicServices(long businessId) {
-        TypedQuery<BasicService> query = em.createQuery("from Service as s WHERE s.businessid = :businessId", BasicService.class);
+        TypedQuery<BasicService> query = em.createQuery("from Service as s WHERE s.business.businessid = :businessId", BasicService.class);
         query.setParameter("businessId", businessId);
         return query.getResultList();
     }
