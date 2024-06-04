@@ -22,7 +22,7 @@
                 <button class="btn-basic rounded-btn" id="y"><spring:message code="statistics.year"/></button></a>
         </div>
     </div>
-    <div class="boxes-container ">
+    <div class="boxes-container margin-auto">
         <div class="box service-box flex">
             <div class="service-box-text">
                 <p class=""><spring:message code="statistics.total-requests"/></p>
@@ -39,7 +39,7 @@
     <div class="header">
         <h3><spring:message code="statistics.appointments-per-service"/></h3>
     </div>
-    <div class="boxes-container ">
+    <div class="boxes-container margin-auto">
         <c:forEach items="${serviceList}" var="service" varStatus="loop">
             <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${service.id}">
                 <div class="box service-box flex">
