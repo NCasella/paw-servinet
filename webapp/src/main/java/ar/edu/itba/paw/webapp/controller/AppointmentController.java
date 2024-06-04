@@ -126,7 +126,7 @@ public class AppointmentController {
         Appointment app = appointmentService.findById(appointmentId).orElseThrow(AppointmentNonExistentException::new);
         User user = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
 
-        Service service = serviceService.findById(app.getServiceid()).orElseThrow(ServiceNotFoundException::new);
+        Service service = app.getServiceAppointed();
         final ModelAndView mav = new ModelAndView("appointment");
         mav.addObject("appointment", app);
         mav.addObject("user", user);

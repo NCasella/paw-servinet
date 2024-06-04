@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Appointment;
+import ar.edu.itba.paw.model.Service;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.services.AppointmentDao;
 import org.springframework.stereotype.Repository;
@@ -27,7 +29,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public List<Appointment> getAllUpcomingServiceAppointments(long serviceid) {
-        TypedQuery<Appointment> query = em.createQuery("from Appointment where serviceid = :serviceid and startDate > :currentDate ", Appointment.class);
+        TypedQuery<Appointment> query = em.createQuery("from Appointment where serviceAppointed.id = :serviceid and startDate > :currentDate ", Appointment.class);
         query.setParameter("serviceid",serviceid);
         query.setParameter("currentDate", LocalDateTime.now());
         return query.getResultList();
@@ -36,7 +38,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> servicesIds, boolean confirmed, int page, int pageSize) {
-        TypedQuery<Long> query = em.createQuery("SELECT id from Appointment where serviceid in :serviceids and confirmed = :confirmed and startDate > :currentDate ", Long.class);
+        TypedQuery<Long> query = em.createQuery("SELECT id from Appointment where serviceAppointed.id in :serviceids and confirmed = :confirmed and startDate > :currentDate ", Long.class);
         query.setParameter("serviceids",List.copyOf(servicesIds));
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("confirmed", confirmed);
@@ -52,7 +54,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public long getServicesAppointmentCount(Collection<Long> servicesIds, boolean confirmed ){
-        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment as a where serviceid in :serviceids and confirmed = :confirmed and startDate > :currentDate ", Long.class);
+        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment as a where serviceAppointed.id in :serviceids and confirmed = :confirmed and startDate > :currentDate ", Long.class);
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("serviceids", servicesIds);
         query.setParameter("confirmed", confirmed);
@@ -61,7 +63,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize) {
-        TypedQuery<Long> query = em.createQuery("SELECT id FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate", Long.class);
+        TypedQuery<Long> query = em.createQuery("SELECT id FROM Appointment as a where appointedBy.userId = :userid and confirmed = :confirmed and startDate > :currentDate", Long.class);
         query.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
         query.setMaxResults(pageSize);
         query.setParameter("currentDate", LocalDateTime.now());
@@ -77,7 +79,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public long getUserAppointmentCount(long userid, boolean confirmed ){
-        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment as a where userid = :userid and confirmed = :confirmed and startDate > :currentDate ", Long.class);
+        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment as a where appointedBy.userId = :userid and confirmed = :confirmed and startDate > :currentDate ", Long.class);
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);
         query.setParameter("confirmed", confirmed);
@@ -87,7 +89,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
     @Override
     public List<Appointment> getPreviousUserAppointments(long userid, int page, int pageSize) {
 
-        TypedQuery<Long> nativeQuery = em.createQuery("SELECT id FROM Appointment as a where userid = :userid and confirmed = TRUE and startDate < :currentDate ", Long.class);
+        TypedQuery<Long> nativeQuery = em.createQuery("SELECT id FROM Appointment as a where appointedBy.userId = :userid and confirmed = TRUE and startDate < :currentDate ", Long.class);
         nativeQuery.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
         nativeQuery.setMaxResults(pageSize);
         nativeQuery.setParameter("currentDate", LocalDateTime.now());
@@ -103,15 +105,15 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public long getPreviousUserAppointmentCount(long userid){
-        TypedQuery<Long> query = em.createQuery("SELECT count(*) FROM Appointment as a where userid = :userid and confirmed = TRUE and startDate < :currentDate ", Long.class);
+        TypedQuery<Long> query = em.createQuery("SELECT count(*) FROM Appointment as a where appointedBy.userId = :userid and confirmed = TRUE and startDate < :currentDate ", Long.class);
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);
         return query.getSingleResult();
     }
 
     @Override
-    public Appointment create(long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location, String description) {
-        Appointment appointment = new Appointment( serviceid,userid,startDate,endDate,location,false, description);
+    public Appointment create(Service service, User user, LocalDateTime startDate, LocalDateTime endDate, String location, String description) {
+        Appointment appointment = new Appointment( service,user,startDate,endDate,location,false, description);
         em.persist(appointment);
 
         return appointment;
