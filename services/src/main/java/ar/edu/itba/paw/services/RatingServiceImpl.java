@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.RatingsFilters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,5 +112,14 @@ public class RatingServiceImpl implements RatingService {
             ratings.put(i, tempRatings.getOrDefault(i, 0.0));
         }
         return ratings;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getBusinessRatingsPageCount(Business business) {
+        int serviceCount = (int) business.getBusinessRatingCount();
+        int pageCount = serviceCount / 10;
+        if(serviceCount % 10 != 0) pageCount++;
+        return pageCount;
     }
 }

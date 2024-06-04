@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.RatingsFilters;
 import ar.edu.itba.paw.model.Service;
@@ -20,4 +21,5 @@ public interface RatingService {
     void edit(long ratingid, int rating, String comment);
     Map<Integer, Double> getRatingsAvgByRate(long serviceId);
     Map<Integer, Double> getBusinessRatingsAvgByRate(long businessId);
+    int getBusinessRatingsPageCount(Business business);
 }

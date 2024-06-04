@@ -27,8 +27,8 @@
                     <spring:message code="reviews.recent"/>
                 </c:when>
                 <c:otherwise>
-                    <spring:message code="${currentFilter.codeMsg}" var="currentFilter"/>
-                    <spring:message code="reviews.title" arguments="${currentFilter}"/>
+                    <spring:message code="${currentFilter.codeMsg}" var="currentFilterMsg"/>
+                    <spring:message code="reviews.title" arguments="${currentFilterMsg}"/>
                 </c:otherwise>
             </c:choose>
         </h3>
@@ -39,7 +39,6 @@
                 <c:forEach items="${availableFilters}" var="filter">
                     <c:url value="/negocio/opiniones/${business.businessid}/" var="filterChange">
                         <c:param name="rwFilter" value="${filter.filter}"/>
-                        <c:param name="opcion" value="rw"/>
                     </c:url>
                     <option class="review-option" value="${filterChange}"><spring:message code="${filter.codeMsg}"/></option>
                 </c:forEach>
@@ -71,6 +70,42 @@
             </div>
         </div>
     </c:forEach>
+
+    <c:url value="/negocio/opiniones/${business.businessid}/" var="filtersPath">
+        <c:if test="${currentFilter != null}"> <c:param name="rwFilter" value="${currentFilter.filter}"/> </c:if>
+    </c:url>
+
+    <c:choose>
+        <c:when test="${currentFilter == null}">
+            <c:set value="${filtersPath}?" var="paginationFiltersPath"/>
+        </c:when>
+        <c:otherwise>
+            <c:set value="${filtersPath}&" var="paginationFiltersPath"/>
+        </c:otherwise>
+    </c:choose>
+
+    <div class="align-center">
+            <c:choose>
+                <c:when test="${page > 1}">
+                    <a class="none-decoration" href="${paginationFiltersPath}pagina=${page-1}">
+                        <p class="page-text"><spring:message code="pagination.previous"/></p>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <p class="none-page-text"><spring:message code="pagination.none-previous"/></p>
+                </c:otherwise>
+            </c:choose>
+            <c:choose>
+                <c:when test="${pageCount > page}">
+                    <a class="none-decoration" href="${paginationFiltersPath}pagina=${page+1}">
+                        <p class="page-text"><spring:message code="pagination.next"/></p>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <p class="none-page-text"><spring:message code="pagination.none-next"/></p>
+                </c:otherwise>
+            </c:choose>
+    </div>
 
     <c:if test="${ empty reviews}">
         <c:url var="urlGoBack" value="/negocio/${business.businessid}"/>

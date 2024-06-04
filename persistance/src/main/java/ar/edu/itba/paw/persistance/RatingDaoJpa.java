@@ -36,7 +36,12 @@ public class RatingDaoJpa implements RatingDao {
 
     @Override
     public List<Rating> getAllRatingsFiltered(long serviceid, int page, int pageSize, RatingsFilters filter) {
-        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid");
+        Query nativeQuery;
+        if(filter.isDateType(filter)) {
+            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid ORDER BY date " + filter.getOrder());
+        } else {
+            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid ORDER BY rating " + filter.getOrder());
+        }
         nativeQuery.setParameter("serviceid", serviceid);
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
@@ -97,7 +102,12 @@ public class RatingDaoJpa implements RatingDao {
 
     @Override
     public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, int pageSize, RatingsFilters filter) {
-        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings where serviceid IN (SELECT id FROM services WHERE businessid = :businessId)");
+        Query nativeQuery;
+        if(filter.isDateType(filter)) {
+            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings where serviceid IN (SELECT id FROM services WHERE businessid = :businessId) ORDER BY date " + filter.getOrder());
+        } else {
+            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings where serviceid IN (SELECT id FROM services WHERE businessid = :businessId) ORDER BY rating " + filter.getOrder());
+        }
         nativeQuery.setParameter("businessId", businessid);
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
