@@ -56,7 +56,7 @@
                         <p class="category-text"><spring:message code="${service.category.codeMsg}"/></p>
                         <spring:message code="service.unrated" var="unrated"/>
                         <div class="align-right service-rate">
-                            <p>${avgRating > 0? avgRating:unrated}</p>
+                            <p>${service.ratingAvg > 0? service.ratingAvg:unrated}</p>
                             <i class="material-icons yellow-star service-rate-star">star</i>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
 
                     <c:url value="/negocio/${service.businessid}" var="businessUrl"/>
                     <a class="none-decoration" href="${businessUrl}">
-                        <p class="view-business"><i class="material-icons icon">storefront</i><c:out value="${business.name}"/></p>
+                        <p class="view-business"><i class="material-icons icon">storefront</i><c:out value="${service.business.name}"/></p>
                     </a>
 
                     <c:if test="${!isOwner}">
@@ -117,10 +117,6 @@
             </div>
         </div>
         </c:if>
-
-        <!--form action="${deleteUrl}" method="post">
-            <input type="submit" value="Borrar servicio" class="deleteBtn"/>
-        </form-->
 
         <c:if test="${option==null}">
             <div class="align-center">
@@ -179,14 +175,14 @@
                 <div class="align-center">
                     <c:choose>
                         <c:when test="${option==null}">
-                            <c:if test="${questionsCount > questionPage*10}">
+                            <c:if test="${service.questionsCount > questionPage*10}">
                             <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=qst">
                                 <p class="page-text"><spring:message code="home.show-more"/></p>
                             </a>
                             </c:if>
                         </c:when>
                         <c:otherwise>
-                            <c:if test="${questionPage > 1 || questionsCount > questionPage*10}">
+                            <c:if test="${questionPage > 1 || service.questionsCount > questionPage*10}">
                             <c:choose>
                                 <c:when test="${questionPage > 1}">
                                     <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=qst&qstPag=${questionPage-1}">
@@ -198,7 +194,7 @@
                                 </c:otherwise>
                             </c:choose>
                             <c:choose>
-                                <c:when test="${questionsCount > questionPage*10}">
+                                <c:when test="${service.questionsCount > questionPage*10}">
                                     <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=qst&qstPag=${questionPage+1}">
                                         <p class="page-text"><spring:message code="pagination.next"/></p>
                                     </a>
@@ -334,14 +330,14 @@
                 <div class="align-center">
                 <c:choose>
                     <c:when test="${option==null}">
-                        <c:if test="${reviewsCount > reviewPage*10}">
+                        <c:if test="${service.ratingsCount > reviewPage*10}">
                         <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=rw">
                             <p class="page-text"><spring:message code="home.show-more"/></p>
                         </a>
                         </c:if>
                     </c:when>
                     <c:otherwise>
-                        <c:if test="${reviewPage > 1 || reviewsCount > reviewPage*10}">
+                        <c:if test="${reviewPage > 1 || service.ratingsCount > reviewPage*10}">
                         <c:choose>
                             <c:when test="${reviewPage > 1}">
                                 <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=rw&rwPag=${reviewPage-1}">
@@ -353,7 +349,7 @@
                             </c:otherwise>
                         </c:choose>
                         <c:choose>
-                            <c:when test="${reviewsCount > reviewPage*10}">
+                            <c:when test="${service.ratingsCount > reviewPage*10}">
                                 <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=rw&rwPag=${reviewPage+1}">
                                     <p class="page-text"><spring:message code="pagination.next"/></p>
                                 </a>

@@ -26,6 +26,15 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<Rating> getAllRatingsFiltered(long serviceid, int page, String filter, boolean isDateType) {
+        if(filter == null || filter.isEmpty()) {
+            return getAllRatings(serviceid, page);
+        }
+        return ratingDao.getAllRatingsFiltered(serviceid, page, 10, filter, isDateType);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public Optional<Rating> findById(long id) {
         return ratingDao.findById(id);
     }

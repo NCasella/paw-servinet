@@ -34,6 +34,25 @@ public class RatingDaoJpa implements RatingDao {
     }
 
     @Override
+    public List<Rating> getAllRatingsFiltered(long serviceid, int page, int pageSize, String filter, boolean isDateType) {
+        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid ORDER BY date " + filter);
+        nativeQuery.setParameter("serviceid", serviceid);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+        @SuppressWarnings("unchecked")
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+
+        TypedQuery<Rating> query;
+        if(isDateType) {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.date " + filter, Rating.class);
+        } else {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.rating " + filter, Rating.class);
+        }
+        query.setParameter("idList", idList);
+        return query.getResultList();
+    }
+
+    @Override
     public Optional<Rating> findById(long id) {
         return Optional.of(em.find(Rating.class, id));
     }
@@ -62,7 +81,6 @@ public class RatingDaoJpa implements RatingDao {
         ratingToEdit.setComment(comment);
         em.persist(ratingToEdit);
     }
-
 
     @Override
     public List<Rating> getAllBusinessRatings(long businessId) {

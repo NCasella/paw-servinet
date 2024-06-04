@@ -45,7 +45,7 @@ public class RatingsQuestionsController {
             @PathVariable("serviceId") final long serviceId
     ){
         if(errors.hasErrors()) {
-            return serviceController.service(serviceId, form, null, null, "qst", 0, 0);
+            return serviceController.service(serviceId, form, null, null, "qst", 0, 0, null, false);
         }
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
         question.create(serviceId, userid, form.getQuestion());
@@ -72,7 +72,7 @@ public class RatingsQuestionsController {
             @PathVariable("serviceId") final long serviceId
     ){
         if(errors.hasErrors()) {
-            return serviceController.service(serviceId, null, form, null,"rw", 0, 0);
+            return serviceController.service(serviceId, null, form, null,"rw", 0, 0, null, false);
         }
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
         if(rating.hasAlreadyRated(userid, serviceId) == null) {
@@ -89,7 +89,7 @@ public class RatingsQuestionsController {
             @PathVariable("serviceId") final long serviceId
     ){
         if(errors.hasErrors()) {
-            return serviceController.service(serviceId, null, null, form, "rw", 0, 0);
+            return serviceController.service(serviceId, null, null, form, "rw", 0, 0, null, false);
         }
         rating.edit(ratingId, form.getEditedRating(), form.getEditedComment());
         return new ModelAndView("redirect:/servicio/" + serviceId + "/?opcion=rw");
