@@ -5,7 +5,6 @@
   <link href="${pageContext.request.contextPath}/css/global.css" rel="stylesheet" />
   <link href="${pageContext.request.contextPath}/css/pagination.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <title><spring:message code="title.pagination"/></title>
 </head>
 <body>
 

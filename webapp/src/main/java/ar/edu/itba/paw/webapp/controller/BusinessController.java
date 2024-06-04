@@ -86,7 +86,18 @@ public class BusinessController {
         return new ModelAndView("redirect:/negocios");
     }
 
+    //todo: available only for business admin
+    @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/estadisticas")
+    public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId) {
+        Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
+        List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
+        final ModelAndView mav = new ModelAndView("statistics");
 
+        Map<Long, Integer> appointmentCountMap = new HashMap<>();
+        mav.addObject("appointmentCountMap",appointmentCountMap);
+        mav.addObject("serviceList", services );
+        return mav;
+    }
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/turnos")
     public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId, @RequestParam(name = "confirmados") final boolean confirmed,
@@ -180,5 +191,6 @@ public class BusinessController {
         mav.addObject("ratingCountList", ratingService.getBusinessRatingsAvgByRate(businessId));
         return mav;
     }
+
 
 }

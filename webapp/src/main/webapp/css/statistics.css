@@ -1,0 +1,34 @@
+.service-box {
+    width: 250px;
+    border-radius: 15px;
+    padding-inline: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px ;
+    margin-inline: 20px;
+    margin-top: 20px;
+}
+
+.service-box-img {
+    width: 120px;
+    height: 80px;
+
+    border-radius: 15px;
+}
+
+.service-box-text {
+    white-space: nowrap;
+    overflow: hidden;
+    margin-left: 20px ;
+}
+
+.appointment-counter {
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+}
+
+.service-box-name {
+    color: #6c6fff;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    margin-top: -15px;
+}
