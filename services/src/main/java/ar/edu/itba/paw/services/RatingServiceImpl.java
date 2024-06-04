@@ -74,15 +74,15 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional
     @Override
-    public List<Rating> getAllBusinessRatings(long businessId) {
-        return ratingDao.getAllBusinessRatings(businessId);
+    public List<Rating> getAllBusinessRatings(long businessId, int page) {
+        return ratingDao.getAllBusinessRatings(businessId, page, 10);
     }
 
     @Transactional
     @Override
     public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, RatingsFilters filter) {
         if(filter == null) {
-            return getAllBusinessRatings(businessid);
+            return getAllBusinessRatings(businessid, page);
         }
         return ratingDao.getAllBusinessRatingsFiltered(businessid, page, 10, filter);
     }

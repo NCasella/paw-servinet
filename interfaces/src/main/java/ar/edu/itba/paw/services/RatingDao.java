@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface RatingDao {
     List<Rating> getAllRatings(long serviceid, int page, int pageSize);
     List<Rating> getAllRatingsFiltered(long serviceid, int page, int pageSize, RatingsFilters filter);
-    List<Rating> getAllBusinessRatings(long businessId);
+    List<Rating> getAllBusinessRatings(long businessId, int page, int pageSize);
     List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, int pageSize, RatingsFilters filter);
     Optional<Rating> findById(long id);
     Rating create(long serviceid, long userid, int rating, String comment);

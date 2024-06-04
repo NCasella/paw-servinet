@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface RatingService {
     List<Rating> getAllRatings(long serviceid, int page);
     List<Rating> getAllRatingsFiltered(long serviceid, int page, RatingsFilters filter);
-    List<Rating> getAllBusinessRatings(long businessId);
+    List<Rating> getAllBusinessRatings(long businessId, int page);
     List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, RatingsFilters filter);
     Optional<Rating> findById(long id);
     Rating create(long serviceid, long userid, int rating, String comment);

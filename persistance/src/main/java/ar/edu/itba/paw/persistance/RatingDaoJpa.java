@@ -84,14 +84,16 @@ public class RatingDaoJpa implements RatingDao {
     }
 
     @Override
-    public List<Rating> getAllBusinessRatings(long businessId) {
-        String jpql = "select r " +
-                "from Rating r join r.service s " +
-                "where s.business.businessid = :businessId";
-        TypedQuery<Rating> query = em.createQuery(jpql, Rating.class);
-        query.setParameter("businessId", businessId);
-        return query.getResultList();
-    }
+    public List<Rating> getAllBusinessRatings(long businessId, int page, int pageSize) {
+        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings where serviceid IN (SELECT id FROM services WHERE businessid = :businessId)");
+        nativeQuery.setParameter("businessId", businessId);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+        TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList", Rating.class);
+        query.setParameter("idList", idList);
+        return query.getResultList();    }
 
     @Override
     public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, int pageSize, RatingsFilters filter) {
