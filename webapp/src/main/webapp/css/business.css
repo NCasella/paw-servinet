@@ -141,3 +141,17 @@ body {
     align-items: start;
     width: 450px;
 }
+
+.description-span {
+    background-color: #efefef;
+    margin: 0;
+    padding: 5px;
+    border-radius: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.description-field {
+    width: 600px;
+}

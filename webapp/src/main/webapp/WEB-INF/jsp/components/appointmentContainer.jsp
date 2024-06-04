@@ -58,7 +58,7 @@
                     <span class=" accordion-field"><i class="material-icons icon">mail</i> <c:out value="${email}"/></span>
                 </div>
             </c:if>
-            <div class="appointment-field contact-container">
+            <div class="appointment-field contact-container description-field">
                 <span class="appointment-field accordion-field"><i class="material-icons icon">house</i>
                     <c:choose>
                         <c:when test="${appointment.homeService}" >
@@ -66,6 +66,14 @@
                         <c:otherwise> <spring:message code="service.at-professional-house"/> </c:otherwise>
                     </c:choose>
                 </span>
+                <c:choose>
+                    <c:when test="${appointment.description != null}">
+                    <span class="accordion-field description-span"><c:out value="${appointment.description}" /></span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="accordion-field description-span"><spring:message code="appointment.no-description"/></span>
+                    </c:otherwise>
+                </c:choose>
             </div>
             <c:if test="${isUser}">
                 <a href="${pageContext.request.contextPath}/turno/${appointment.serviceid}/${appointment.id}" class="none-decoration info-access">
