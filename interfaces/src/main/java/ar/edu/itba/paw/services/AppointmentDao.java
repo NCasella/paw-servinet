@@ -2,12 +2,12 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.model.Pair;
-
+import ar.edu.itba.paw.model.Service;
+import ar.edu.itba.paw.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface AppointmentDao {
@@ -33,7 +33,7 @@ public interface AppointmentDao {
 
     long getPreviousUserAppointmentCount(long userid);
 
-    Appointment create(long serviceid, long userid, LocalDateTime startDate, LocalDateTime endDate, String location, String description);
+    Appointment create(Service service, User user, LocalDateTime startDate, LocalDateTime endDate, String location, String description);
 
     void confirmAppointment(long appointmentid);
 

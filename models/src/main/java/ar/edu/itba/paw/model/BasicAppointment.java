@@ -13,8 +13,9 @@ public abstract class BasicAppointment {
     @SequenceGenerator(name = "appointments_appointmentid_seq",sequenceName = "appointments_appointmentid_seq",allocationSize = 1)
     @Column(name = "appointmentid")
     private long id;
-    @Column(name = "serviceid", nullable = false )    
-    private long serviceid;
+    @ManyToOne(optional = false)
+    @JoinColumn(name="serviceid")
+    private Service serviceAppointed;
     @Column(name = "startDate", nullable = false)
     private LocalDateTime startDate;
     @Column(name = "endDate")
@@ -33,8 +34,8 @@ public abstract class BasicAppointment {
     private final static String HOMESERVICE="-";
 
 
-    public BasicAppointment(long serviceid, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed, String description){
-        this.serviceid = serviceid;
+    public BasicAppointment(Service serviceAppointed, LocalDateTime startDate, LocalDateTime endDate, String location, boolean confirmed, String description){
+        this.serviceAppointed=serviceAppointed;
         this.startDate = startDate;
         this.endDate = endDate;
         this.confirmed = confirmed;
@@ -50,8 +51,9 @@ public abstract class BasicAppointment {
         return id;
     }
 
+    public Service getServiceAppointed(){return serviceAppointed;}
     public long getServiceid() {
-        return serviceid;
+        return serviceAppointed.getId();
     }
     public LocalDateTime getStartDate() {
         return startDate;

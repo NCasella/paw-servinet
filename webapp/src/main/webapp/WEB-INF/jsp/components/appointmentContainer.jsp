@@ -47,6 +47,8 @@
         <c:set var="appointmentId" value="${appointment.id}" scope="request"/>
         <c:set var="id" value="${popUpId}" scope="request"/>
         <jsp:include page="appointmentPopUp.jsp" />
+        <c:set var="appointmentDescription" value="${appointment.description}" scope="request"/>
+        <jsp:include page="descriptionPopUp.jsp" />
 
         <div class="accordion-container">
             <c:if test="${confirmed}">
@@ -58,12 +60,22 @@
                     <span class=" accordion-field"><i class="material-icons icon">mail</i> <c:out value="${email}"/></span>
                 </div>
             </c:if>
-            <div class="appointment-field contact-container">
+            <div class="appointment-field contact-container description-field">
                 <span class="appointment-field accordion-field"><i class="material-icons icon">house</i>
                     <c:choose>
                         <c:when test="${appointment.homeService}" >
                             <c:out value="${appointment.location}"/></c:when>
                         <c:otherwise> <spring:message code="service.at-professional-house"/> </c:otherwise>
+                    </c:choose>
+                </span>
+                <span class="accordion-field description-span">
+                    <c:choose>
+                        <c:when test="${appointment.description != null && appointment.description != ''}">
+                            <c:out value="${appointment.description}" />
+                        </c:when>
+                        <c:otherwise>
+                           <spring:message code="appointment.no-description"/>
+                        </c:otherwise>
                     </c:choose>
                 </span>
             </div>
@@ -72,9 +84,11 @@
                     <button class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="appointment.info"/> </button>
                 </a>
             </c:if>
+            <c:if test="${!isUser}">
+                    <a onclick="showPopUpApp('description-pop-up')" class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="read-more"/> </a>
+            </c:if>
         </div>
     </div>
 </body>
-
 
 

@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Appointment;
+import ar.edu.itba.paw.model.Service;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.persistance.config.TestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,7 +51,8 @@ public class AppointmentDaoJpaTest {
     private final long USERID = 1;
     private final String LOCATION = "calle falsa 123";
     private final String DESCRIPTION = "generic description";
-
+    private User USER;
+    private Service SERVICE;
 
     @Before
     public void setup() {
@@ -57,6 +60,8 @@ public class AppointmentDaoJpaTest {
         jdbcTemplate.execute("insert into users(userid,username, name, surname, email, telephone, password, isprovider) values (1,'solro', 'sol', 'rodri', 'solrodriguezgiana@gmail.com', '113452343', 'solro', true);");
         jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, "113452343", "solrodriguezgiana@gmail.com", LOCATION));
         jdbcTemplate.execute("INSERT INTO services VALUES (1,1,'Peluqueria Ramon','Veni, peinate y divertite!',false,'calle falsa 123','Belleza',60,'Por hora',5000,true,null);");
+        USER=em.find(User.class,USERID);
+        SERVICE=em.find(Service.class,SERVICEID);
     }
 
     @Test
@@ -64,7 +69,7 @@ public class AppointmentDaoJpaTest {
         // 1. Precondiciones (una sola)
 
         // 2. Ejecuta la class under test (una sola)
-        Appointment appointment = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION, DESCRIPTION); em.flush();
+        Appointment appointment = appointmentDao.create(SERVICE, USER, STARTDATE, ENDDATE, LOCATION, DESCRIPTION); em.flush();
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertNotNull(appointment);
         Assert.assertFalse(appointment.getConfirmed());
@@ -76,7 +81,7 @@ public class AppointmentDaoJpaTest {
         // 1. Precondiciones (una sola)
 
         // 2. Ejecuta la class under test (una sola)
-        Appointment a1 = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION, DESCRIPTION);
+        Appointment a1 = appointmentDao.create(SERVICE, USER, STARTDATE, ENDDATE, LOCATION, DESCRIPTION);
         em.flush();
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "appointments"));

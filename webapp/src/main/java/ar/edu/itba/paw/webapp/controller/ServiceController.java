@@ -105,7 +105,8 @@ public class ServiceController {
             @ModelAttribute("editReviewForm") final EditReviewForm editReviewForm,
             @RequestParam(value = "opcion", required = false) final String option,
             @RequestParam(value = "qstPag", required = false, defaultValue = "1") Integer questionPage,
-            @RequestParam(value = "rwPag", required = false, defaultValue = "1") Integer reviewPage
+            @RequestParam(value = "rwPag", required = false, defaultValue = "1") Integer reviewPage,
+            @RequestParam(value = "rwFilter", required = false) String reviewFilter
     ) {
         final ModelAndView mav = new ModelAndView("service");
         Optional<User> currentUser = authControl.getCurrentUser();
@@ -118,18 +119,16 @@ public class ServiceController {
             editReviewForm.setEditedComment(oldRating.getComment());
         mav.addObject("isOwner", isOwner);
         mav.addObject("option", option);
-        mav.addObject("avgRating", rating.getRatingsAvg(serv));
         mav.addObject("service",serv);
-        mav.addObject("business", business);
         mav.addObject("questions", question.getAllQuestions(serviceId, questionPage));
-        mav.addObject("reviews", rating.getAllRatings(serviceId, reviewPage));
-        mav.addObject("questionsCount", question.getQuestionsCount(serviceId));
-        mav.addObject("reviewsCount", serv.getRatingsCount());
+        mav.addObject("reviews", rating.getAllRatingsFiltered(serviceId, reviewPage, RatingsFilters.findByValue(reviewFilter)));
         mav.addObject("questionPage", questionPage);
         mav.addObject("reviewPage", reviewPage);
         mav.addObject("TBDPricing", TBDPricing);
         mav.addObject("hasAlreadyRated", (userId==null)? null : rating.hasAlreadyRated(userId, serviceId));
         mav.addObject("ratingCountList", rating.getRatingsAvgByRate(serviceId));
+        mav.addObject("currentReviewFilter", RatingsFilters.findByValue(reviewFilter));
+        mav.addObject("reviewsFilters", RatingsFilters.values());
         return mav;
     }
 

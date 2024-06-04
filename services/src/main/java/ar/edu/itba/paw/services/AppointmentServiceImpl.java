@@ -111,8 +111,8 @@ public class AppointmentServiceImpl implements AppointmentService{
         Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
         User newuser = userService.findByEmail(email).orElseThrow(UserNotFoundException::new);
         LocalDateTime startDate = LocalDateTime.parse(date);
-        Appointment appointment = appointmentDao.create(service.getId(), newuser.getUserId(), startDate, startDate.plusMinutes(service.getDuration()), location, description);
-        Business business = businessDao.findById(service.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
+        Appointment appointment = appointmentDao.create(service, newuser, startDate, startDate.plusMinutes(service.getDuration()), location, description);
+        Business business = service.getBusiness();
 
         emailService.requestAppointment(appointment, service, business, newuser, getBusinessLocale(business.getUserId()));
         LOGGER.info("Appointment request email sent successfully.");
@@ -124,12 +124,12 @@ public class AppointmentServiceImpl implements AppointmentService{
 
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
         final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
-        final User client = userService.findById( appointment.getUserid()).orElseThrow(UserNotFoundException::new);
+        final User client = appointment.getAppointedBy();
 
         if (appointment.getConfirmed())
             throw new AppointmentAlreadyConfirmed();
 
-        Business business = businessDao.findById( service.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
+        Business business = service.getBusiness();
         appointmentDao.confirmAppointment(appointment.getId());
         emailService.confirmedAppointment(appointment, service, business, client, getBusinessLocale(business.getUserId()) );
         LOGGER.info("Appointment confirmation email sent successfully.");
@@ -140,12 +140,12 @@ public class AppointmentServiceImpl implements AppointmentService{
     public long denyAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
         final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
-        final User client = userService.findById( appointment.getUserid()).orElseThrow(UserNotFoundException::new);
+        final User client = appointment.getAppointedBy();
 
         if (appointment.getConfirmed())
             throw new AppointmentAlreadyConfirmed();
 
-        Business business = businessDao.findById( service.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
+        Business business = service.getBusiness();
         appointmentDao.cancelAppointment(appointment.getId());
         emailService.deniedAppointment(appointment, service, business, client,false, getBusinessLocale(business.getUserId()));
         LOGGER.info("Denied appointment email sent successfully.");
@@ -157,9 +157,9 @@ public class AppointmentServiceImpl implements AppointmentService{
     public long cancelAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
         final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
-        final User client = userService.findById( appointment.getUserid()).orElseThrow(UserNotFoundException::new);
+        final User client = appointment.getAppointedBy();
 
-        Business business = businessDao.findById( service.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
+        Business business = service.getBusiness();
         appointmentDao.cancelAppointment(appointment.getId());
         emailService.cancelledAppointment(appointment, service,business, client,false, getBusinessLocale(business.getUserId()));
         LOGGER.info("Cancel Appointment email sent successfully.");
