@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service("appointmentServiceImpl")
@@ -64,8 +63,14 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public List<Pair<Long,Long>> getServicesFinishedAppointmentCount(Collection<Long> serviceIds, DateIntervalFilter filter) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        List<Pair<Long,Long>> result = appointmentDao.getServicesFinishedAppointmentCount(serviceIds, filter.getEndDate(currentDateTime),currentDateTime);
-        return result;
+        return appointmentDao.getServicesFinishedAppointmentCount(serviceIds, filter.getEndDate(currentDateTime),currentDateTime);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Long getServicesRequestedAppointmentCount(Collection<Long> serviceIds, DateIntervalFilter filter) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        return appointmentDao.getServicesRequestedAppointmentCount(serviceIds, filter.getEndDate(currentDateTime),currentDateTime);
     }
 
     @Transactional(readOnly = true)

@@ -19,6 +19,8 @@ public interface AppointmentService {
 
     List<Pair<Long,Long>> getServicesFinishedAppointmentCount(Collection<Long> serviceIds, DateIntervalFilter filter);
 
+    Long getServicesRequestedAppointmentCount(Collection<Long> serviceIds, DateIntervalFilter filter);
+
     List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page);
 
     long getUserAppointmentPageCount(long userid, boolean confirmed);

@@ -22,6 +22,8 @@ public interface AppointmentDao {
 
     List<Pair<Long,Long>> getServicesFinishedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate , LocalDateTime endDate);
 
+    Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate, LocalDateTime endDate);
+
     List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize);
 
     long getUserAppointmentCount(long userid, boolean confirmed);

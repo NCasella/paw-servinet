@@ -10,9 +10,6 @@ import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 
 import ar.edu.itba.paw.webapp.form.BusinessForm;
-import ar.edu.itba.paw.webapp.form.EditReviewForm;
-import ar.edu.itba.paw.webapp.form.ReviewsForm;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -24,8 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class BusinessController {
@@ -99,13 +95,19 @@ public class BusinessController {
 
         Map<Long, BasicService> serviceMap = new HashMap<>();
         services.forEach(service -> serviceMap.put(service.getId(), service));
+        Set<Long> serviceIds = serviceMap.keySet();
 
-        List<Pair<Long,Long>> serviceAppointmentCount = appointmentService.getServicesFinishedAppointmentCount(serviceMap.keySet(),filter);
+        List<Pair<Long,Long>> serviceAppointmentCount = appointmentService.getServicesFinishedAppointmentCount(serviceIds,filter);
 
         final ModelAndView mav = new ModelAndView("statistics");
         mav.addObject("serviceAppointmentCountList", serviceAppointmentCount);
         mav.addObject("serviceMap", serviceMap );
         mav.addObject("filter",filterId);
+        AtomicLong totalFinishedAppointments = new AtomicLong();
+        serviceAppointmentCount.forEach(pair -> totalFinishedAppointments.addAndGet(pair.getValue()));
+        mav.addObject("finishedAppointments",totalFinishedAppointments.get());
+        Long requestedAppointments = appointmentService.getServicesRequestedAppointmentCount(serviceIds,filter);
+        mav.addObject("requestedAppointments", totalFinishedAppointments.get()+requestedAppointments);
         return mav;
     }
 
