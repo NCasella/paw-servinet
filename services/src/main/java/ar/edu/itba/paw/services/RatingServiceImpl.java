@@ -80,6 +80,15 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional
     @Override
+    public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, RatingsFilters filter) {
+        if(filter == null) {
+            return getAllBusinessRatings(businessid);
+        }
+        return ratingDao.getAllBusinessRatingsFiltered(businessid, page, 10, filter);
+    }
+
+    @Transactional
+    @Override
     public Map<Integer, Double> getRatingsAvgByRate(long serviceId) {
         return orderRatings(ratingDao.getRatingsAvgByRate(serviceId));
     }

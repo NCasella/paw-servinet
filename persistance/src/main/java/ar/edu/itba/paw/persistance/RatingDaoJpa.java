@@ -94,6 +94,25 @@ public class RatingDaoJpa implements RatingDao {
     }
 
     @Override
+    public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, int pageSize, RatingsFilters filter) {
+        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings where serviceid IN (SELECT id FROM services WHERE businessid = :businessId)");
+        nativeQuery.setParameter("businessId", businessid);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+        @SuppressWarnings("unchecked")
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+
+        TypedQuery<Rating> query;
+        if(filter.isDateType(filter)) {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.date " + filter.getOrder(), Rating.class);
+        } else {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.rating " + filter.getOrder(), Rating.class);
+        }
+        query.setParameter("idList", idList);
+        return query.getResultList();
+    }
+
+    @Override
     public List<Object[]> getRatingsAvgByRate(long serviceId) {
         String jpql = "select r.rating, count(r.rating) from Rating r where r.service.id = :serviceId group by r.rating";
         TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);

@@ -256,27 +256,3 @@
     margin-right: 20px;
     font-style: italic;
 }
-
- .disabled-option:disabled {
-    display: none;
-}
-
- .reviews-filter {
-     font-weight: 600;
-     font-family: 'Poppins', sans-serif;
-     font-size: 14px;
-     border: none;
-     border-radius: 20px;
-     background-color: #e1e1e1;
-     padding: 8px;
-     margin-right: 15px;
-     cursor: pointer;
- }
-
- .reviews-filter:hover {
-     background-color: #f1f1f1;
- }
-
- .review-option {
-     padding: 5px 0;
- }

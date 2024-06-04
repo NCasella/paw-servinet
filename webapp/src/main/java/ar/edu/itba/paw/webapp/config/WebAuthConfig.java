@@ -50,7 +50,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/servicios/**").permitAll()
                 .antMatchers("/servicio/**").permitAll()
                 .antMatchers("/negocio/{businessID}").permitAll()
-                .antMatchers("/negocio/opiniones/{businessID}").permitAll()
+                .antMatchers("/negocio/opiniones/{businessID}/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/**").authenticated().and()
             .formLogin()

@@ -20,7 +20,32 @@
         <jsp:include page="./components/reviews.jsp" />
     </c:if>
 
-    <h3 class="recent-reviews-title"><spring:message code="reviews.recent"/></h3>
+    <div class="align-right">
+        <h3 class="recent-reviews-title">
+            <c:choose>
+                <c:when test="${currentFilter == null}">
+                    <spring:message code="reviews.recent"/>
+                </c:when>
+                <c:otherwise>
+                    <spring:message code="${currentFilter.codeMsg}" var="currentFilter"/>
+                    <spring:message code="reviews.title" arguments="${currentFilter}"/>
+                </c:otherwise>
+            </c:choose>
+        </h3>
+
+        <label class="align-right review-filter-container">
+            <select class="reviews-filter" onChange="window.location.href=this.value">
+                <option class="disabled-option" value="" disabled selected><spring:message code="reviews.order-by"/></option>
+                <c:forEach items="${availableFilters}" var="filter">
+                    <c:url value="/negocio/opiniones/${business.businessid}/" var="filterChange">
+                        <c:param name="rwFilter" value="${filter.filter}"/>
+                        <c:param name="opcion" value="rw"/>
+                    </c:url>
+                    <option class="review-option" value="${filterChange}"><spring:message code="${filter.codeMsg}"/></option>
+                </c:forEach>
+            </select>
+        </label>
+    </div>
 
     <c:forEach items="${reviews}" var="review">
         <c:set value="${review.rating}" var="rate"/>
