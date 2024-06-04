@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Rating;
+import ar.edu.itba.paw.model.RatingsFilters;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.services.RatingDao;
@@ -29,6 +30,30 @@ public class RatingDaoJpa implements RatingDao {
         List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
 
         TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList", Rating.class);
+        query.setParameter("idList", idList);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Rating> getAllRatingsFiltered(long serviceid, int page, int pageSize, RatingsFilters filter) {
+        Query nativeQuery;
+        if(filter.isDateType(filter)) {
+            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid ORDER BY date " + filter.getOrder());
+        } else {
+            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid ORDER BY rating " + filter.getOrder());
+        }
+        nativeQuery.setParameter("serviceid", serviceid);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+        @SuppressWarnings("unchecked")
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+
+        TypedQuery<Rating> query;
+        if(filter.isDateType(filter)) {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.date " + filter.getOrder(), Rating.class);
+        } else {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.rating " + filter.getOrder(), Rating.class);
+        }
         query.setParameter("idList", idList);
         return query.getResultList();
     }
@@ -63,14 +88,39 @@ public class RatingDaoJpa implements RatingDao {
         em.persist(ratingToEdit);
     }
 
+    @Override
+    public List<Rating> getAllBusinessRatings(long businessId, int page, int pageSize) {
+        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings where serviceid IN (SELECT id FROM services WHERE businessid = :businessId)");
+        nativeQuery.setParameter("businessId", businessId);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+        TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList", Rating.class);
+        query.setParameter("idList", idList);
+        return query.getResultList();    }
 
     @Override
-    public List<Rating> getAllBusinessRatings(long businessId) {
-        String jpql = "select r " +
-                "from Rating r join r.service s " +
-                "where s.business.businessid = :businessId";
-        TypedQuery<Rating> query = em.createQuery(jpql, Rating.class);
-        query.setParameter("businessId", businessId);
+    public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, int pageSize, RatingsFilters filter) {
+        Query nativeQuery;
+        if(filter.isDateType(filter)) {
+            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings where serviceid IN (SELECT id FROM services WHERE businessid = :businessId) ORDER BY date " + filter.getOrder());
+        } else {
+            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings where serviceid IN (SELECT id FROM services WHERE businessid = :businessId) ORDER BY rating " + filter.getOrder());
+        }
+        nativeQuery.setParameter("businessId", businessid);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+        @SuppressWarnings("unchecked")
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+
+        TypedQuery<Rating> query;
+        if(filter.isDateType(filter)) {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.date " + filter.getOrder(), Rating.class);
+        } else {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.rating " + filter.getOrder(), Rating.class);
+        }
+        query.setParameter("idList", idList);
         return query.getResultList();
     }
 

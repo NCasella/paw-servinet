@@ -171,13 +171,20 @@ public class BusinessController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/opiniones/{businessID:\\d+}")
     public ModelAndView businessReviews (
-            @PathVariable("businessID") final long businessId
+            @PathVariable("businessID") final long businessId,
+            @RequestParam(value = "rwFilter", required = false) final String filter,
+            @RequestParam(value = "pagina", required = false) Integer page
     ) {
         final ModelAndView mav = new ModelAndView("businessReviews");
+        if(page == null) page = 1;
         Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         mav.addObject("business", business);
-        mav.addObject("reviews", ratingService.getAllBusinessRatings(businessId));
+        mav.addObject("reviews", ratingService.getAllBusinessRatingsFiltered(businessId, page, RatingsFilters.findByValue(filter)));
         mav.addObject("ratingCountList", ratingService.getBusinessRatingsAvgByRate(businessId));
+        mav.addObject("currentFilter", RatingsFilters.findByValue(filter));
+        mav.addObject("availableFilters", RatingsFilters.values());
+        mav.addObject("pageCount", ratingService.getBusinessRatingsPageCount(business));
+        mav.addObject("page", page);
         return mav;
     }
 

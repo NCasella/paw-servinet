@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.model.Rating;
+import ar.edu.itba.paw.model.RatingsFilters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,15 @@ public class RatingServiceImpl implements RatingService {
     public List<Rating> getAllRatings(long serviceid, int page) {
         //TODO: manejar tamaño de pagina
         return ratingDao.getAllRatings(serviceid, page,10);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Rating> getAllRatingsFiltered(long serviceid, int page, RatingsFilters filter) {
+        if(filter == null) {
+            return getAllRatings(serviceid, page);
+        }
+        return ratingDao.getAllRatingsFiltered(serviceid, page, 10, filter);
     }
 
     @Transactional(readOnly = true)
@@ -64,8 +75,17 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional
     @Override
-    public List<Rating> getAllBusinessRatings(long businessId) {
-        return ratingDao.getAllBusinessRatings(businessId);
+    public List<Rating> getAllBusinessRatings(long businessId, int page) {
+        return ratingDao.getAllBusinessRatings(businessId, page, 10);
+    }
+
+    @Transactional
+    @Override
+    public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, RatingsFilters filter) {
+        if(filter == null) {
+            return getAllBusinessRatings(businessid, page);
+        }
+        return ratingDao.getAllBusinessRatingsFiltered(businessid, page, 10, filter);
     }
 
     @Transactional
@@ -92,5 +112,14 @@ public class RatingServiceImpl implements RatingService {
             ratings.put(i, tempRatings.getOrDefault(i, 0.0));
         }
         return ratings;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getBusinessRatingsPageCount(Business business) {
+        int serviceCount = (int) business.getBusinessRatingCount();
+        int pageCount = serviceCount / 10;
+        if(serviceCount % 10 != 0) pageCount++;
+        return pageCount;
     }
 }

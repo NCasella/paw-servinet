@@ -64,7 +64,7 @@ progress::-webkit-progress-value {
 }
 
 .rating-counts {
-    width: 30%;
+    width: 40%;
     margin-right: 10%;
 }
 
@@ -95,4 +95,33 @@ progress::-webkit-progress-value {
 
 .recent-reviews-title {
     margin-top: 35px;
+}
+
+.disabled-option:disabled {
+    display: none;
+}
+
+.reviews-filter {
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    border: none;
+    border-radius: 20px;
+    background-color: #e1e1e1;
+    padding: 8px;
+    margin-right: 15px;
+    cursor: pointer;
+    height: 40px;
+}
+
+.reviews-filter:hover {
+    background-color: #f1f1f1;
+}
+
+.review-option {
+    padding: 5px 0;
+}
+
+.review-filter-container {
+    align-items: center;
 }
