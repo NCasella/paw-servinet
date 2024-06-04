@@ -47,6 +47,8 @@
         <c:set var="appointmentId" value="${appointment.id}" scope="request"/>
         <c:set var="id" value="${popUpId}" scope="request"/>
         <jsp:include page="appointmentPopUp.jsp" />
+        <c:set var="appointmentDescription" value="${appointment.description}" scope="request"/>
+        <jsp:include page="descriptionPopUp.jsp" />
 
         <div class="accordion-container">
             <c:if test="${confirmed}">
@@ -66,23 +68,27 @@
                         <c:otherwise> <spring:message code="service.at-professional-house"/> </c:otherwise>
                     </c:choose>
                 </span>
-                <c:choose>
-                    <c:when test="${appointment.description != null}">
-                    <span class="accordion-field description-span"><c:out value="${appointment.description}" /></span>
-                    </c:when>
-                    <c:otherwise>
-                        <span class="accordion-field description-span"><spring:message code="appointment.no-description"/></span>
-                    </c:otherwise>
-                </c:choose>
+                <span class="accordion-field description-span">
+                    <c:choose>
+                        <c:when test="${appointment.description != null && appointment.description != ''}">
+                            <c:out value="${appointment.description}" />
+                        </c:when>
+                        <c:otherwise>
+                           <spring:message code="appointment.no-description"/>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
             </div>
             <c:if test="${isUser}">
                 <a href="${pageContext.request.contextPath}/turno/${appointment.serviceid}/${appointment.id}" class="none-decoration info-access">
                     <button class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="appointment.info"/> </button>
                 </a>
             </c:if>
+            <c:if test="${!isUser}">
+                    <a onclick="showPopUpApp('description-pop-up')" class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="read-more"/> </a>
+            </c:if>
         </div>
     </div>
 </body>
-
 
 
