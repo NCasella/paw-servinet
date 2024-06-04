@@ -303,7 +303,35 @@
                         </c:choose>
                     </c:when>
                     <c:otherwise>
-                        <h4><spring:message code="service.last-reviews"/></h4>
+
+                        <div class="flex">
+
+                            <h4>
+                                <c:choose>
+                                    <c:when test="${currentReviewFilter == null}">
+                                        <spring:message code="service.last-reviews"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <spring:message code="${currentReviewFilter.codeMsg}" var="currentFilter"/>
+                                        <spring:message code="reviews.title" arguments="${currentFilter}"/>
+                                    </c:otherwise>
+                                </c:choose>
+                            </h4>
+
+                            <label class="align-right">
+                                <select class="reviews-filter" onChange="window.location.href=this.value">
+                                    <option class="disabled-option" value="" disabled selected><spring:message code="reviews.order-by"/></option>
+                                    <c:forEach items="${reviewsFilters}" var="filter">
+                                        <c:url value="/servicio/${service.id}/" var="reviewFilterChange">
+                                            <c:param name="rwFilter" value="${filter.filter}"/>
+                                            <c:param name="opcion" value="rw"/>
+                                        </c:url>
+                                        <option class="review-option" value="${reviewFilterChange}"><spring:message code="${filter.codeMsg}"/></option>
+                                    </c:forEach>
+                                </select>
+                            </label>
+                        </div>
+
                         <c:forEach items="${reviews}" var="review">
                             <c:if test="${review.id != hasAlreadyRated.id}">
                                 <c:set value="${review.rating}" var="rate"/>

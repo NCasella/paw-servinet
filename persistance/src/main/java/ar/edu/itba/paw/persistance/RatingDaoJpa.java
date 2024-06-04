@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Rating;
+import ar.edu.itba.paw.model.RatingsFilters;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.services.RatingDao;
@@ -34,8 +35,8 @@ public class RatingDaoJpa implements RatingDao {
     }
 
     @Override
-    public List<Rating> getAllRatingsFiltered(long serviceid, int page, int pageSize, String filter, boolean isDateType) {
-        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid ORDER BY date " + filter);
+    public List<Rating> getAllRatingsFiltered(long serviceid, int page, int pageSize, RatingsFilters filter) {
+        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid");
         nativeQuery.setParameter("serviceid", serviceid);
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
@@ -43,10 +44,10 @@ public class RatingDaoJpa implements RatingDao {
         List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
 
         TypedQuery<Rating> query;
-        if(isDateType) {
-            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.date " + filter, Rating.class);
+        if(filter.isDateType(filter)) {
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.date " + filter.getOrder(), Rating.class);
         } else {
-            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.rating " + filter, Rating.class);
+            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.rating " + filter.getOrder(), Rating.class);
         }
         query.setParameter("idList", idList);
         return query.getResultList();

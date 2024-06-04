@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.Rating;
+import ar.edu.itba.paw.model.RatingsFilters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +27,11 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Rating> getAllRatingsFiltered(long serviceid, int page, String filter, boolean isDateType) {
-        if(filter == null || filter.isEmpty()) {
+    public List<Rating> getAllRatingsFiltered(long serviceid, int page, RatingsFilters filter) {
+        if(filter == null) {
             return getAllRatings(serviceid, page);
         }
-        return ratingDao.getAllRatingsFiltered(serviceid, page, 10, filter, isDateType);
+        return ratingDao.getAllRatingsFiltered(serviceid, page, 10, filter);
     }
 
     @Transactional(readOnly = true)
