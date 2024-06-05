@@ -355,11 +355,16 @@
                     </c:otherwise>
                 </c:choose>
 
+                <c:url value="/servicio/${serviceId}/" var="filtersPath">
+                    <c:if test="${currentReviewFilter != null}"> <c:param name="rwFilter" value="${currentReviewFilter.filter}"/> </c:if>
+                    <c:param name="opcion" value="rw"/>
+                </c:url>
+
                 <div class="align-center">
                 <c:choose>
                     <c:when test="${option==null}">
                         <c:if test="${service.ratingsCount > reviewPage*10}">
-                        <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=rw">
+                        <a class="none-decoration" href="${filtersPath}">
                             <p class="page-text"><spring:message code="home.show-more"/></p>
                         </a>
                         </c:if>
@@ -368,7 +373,7 @@
                         <c:if test="${reviewPage > 1 || service.ratingsCount > reviewPage*10}">
                         <c:choose>
                             <c:when test="${reviewPage > 1}">
-                                <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=rw&rwPag=${reviewPage-1}">
+                                <a class="none-decoration" href="${filtersPath}&rwPag=${reviewPage-1}">
                                     <p class="page-text"><spring:message code="pagination.previous"/></p>
                                 </a>
                             </c:when>
@@ -378,7 +383,7 @@
                         </c:choose>
                         <c:choose>
                             <c:when test="${service.ratingsCount > reviewPage*10}">
-                                <a class="none-decoration" href="${pageContext.request.contextPath}/servicio/${serviceId}/?opcion=rw&rwPag=${reviewPage+1}">
+                                <a class="none-decoration" href="${filtersPath}&rwPag=${reviewPage+1}">
                                     <p class="page-text"><spring:message code="pagination.next"/></p>
                                 </a>
                             </c:when>
