@@ -141,6 +141,7 @@ public class BusinessController {
         mav.addObject("page",page);
         final long totalResults = appointmentService.getServicesAppointmentCount(serviceIds,confirmed);
         mav.addObject("totalResults",totalResults);
+        mav.addObject("otherResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
         mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
         return mav;
     }
