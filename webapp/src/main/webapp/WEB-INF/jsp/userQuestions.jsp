@@ -11,6 +11,7 @@
 </head>
 <body>
 <div class="page">
+    <jsp:include page="./components/backButton.jsp" />
     <h2><spring:message code="questions"/></h2>
 
     <c:choose>
@@ -39,8 +40,13 @@
         </c:when>
         <c:otherwise>
             <h4 class="notification-header"><i class="material-icons notification-icon">notifications_off</i><spring:message code="questions.none"/></h4>
+            <jsp:include page="components/noResults.jsp"/>
         </c:otherwise>
     </c:choose>
 </div>
+
+<script>
+    window.onload = getPreviousPageInfo(document.referrer);
+</script>
 </body>
 </html>

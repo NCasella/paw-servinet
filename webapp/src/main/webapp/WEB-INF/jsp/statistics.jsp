@@ -11,6 +11,7 @@
 <body>
 <c:set var="urlFilter" value="${pageContext.request.contextPath}/negocio/${businessId}/estadisticas?filtro="/>
 <div class="page">
+    <jsp:include page="./components/backButton.jsp" />
     <div class="header">
         <h2><spring:message code="statistics.title"/></h2>
         <div class="flex">
@@ -61,7 +62,6 @@
 </body>
 </html>
 <script>
-    //id add class to btn w m y
     document.getElementById('${filter}').classList.add('btn-selected')
-
+    window.onload = getPreviousPageInfo(document.referrer);
 </script>

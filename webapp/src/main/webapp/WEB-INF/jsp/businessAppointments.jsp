@@ -13,6 +13,7 @@
 <c:set var="isUser" value="false" scope="request" />
 <c:set var="requestForBusiness" value="${!confirmed}" scope="request" />
 <div class="page">
+    <jsp:include page="./components/backButton.jsp" />
     <div class="header">
         <h2><c:out value="${business.businessName}"/></h2>
         <div>
@@ -48,7 +49,9 @@
         </c:choose>
     </div>
 
-
+<script>
+    window.onload = getPreviousPageInfo(document.referrer);
+</script>
 
 </div>
 

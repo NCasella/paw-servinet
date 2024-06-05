@@ -24,6 +24,7 @@
 <c:set var="statisticsTitle"><spring:message code="statistics.title"/></c:set>
 <c:set var="urlCreateService" value="${pageContext.request.contextPath}/crear-servicio/${businessId}" />
 <div class="page">
+  <jsp:include page="./components/backButton.jsp" />
   <div class="header">
     <h2><c:out value="${business.businessName}"/></h2>
     <spring:message code="service.unrated" var="noRatings"/>
@@ -136,9 +137,10 @@
 </body>
 
 <script>
-
   var cancelText = "<spring:message code='service.cancel'/>";
   var editText = "<spring:message code='business.edit'/>";
+
+  window.onload = getPreviousPageInfo(document.referrer);
 
   function showPopUp() {
     document.getElementById("popup").style.display = "block";
@@ -159,6 +161,5 @@
       toggleButton.textContent = cancelText;
     }
   }
-
 </script>
 </html>
