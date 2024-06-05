@@ -40,6 +40,7 @@
         </c:when>
         <c:otherwise>
             <h4 class="notification-header"><i class="material-icons notification-icon">notifications_off</i><spring:message code="questions.none"/></h4>
+            <jsp:include page="components/noResults.jsp"/>
         </c:otherwise>
     </c:choose>
 </div>
