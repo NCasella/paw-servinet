@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AppointmentService {
@@ -15,6 +16,10 @@ public interface AppointmentService {
     List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> serviceIds, boolean confirmed, int page);
 
     long getServicesAppointmentCount(Collection<Long> serviceIds, boolean confirmed);
+
+    List<Pair<Long,Long>> getServicesFinishedAppointmentCount(Collection<Long> serviceIds, DateIntervalFilter filter);
+
+    Long getServicesRequestedAppointmentCount(Collection<Long> serviceIds, DateIntervalFilter filter);
 
     List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page);
 

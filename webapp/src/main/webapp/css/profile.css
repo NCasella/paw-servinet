@@ -68,6 +68,10 @@
     padding-bottom: 50px;
 }
 
+.margin-auto {
+    margin: auto;
+}
+
 .preview-box-text {
     text-align: center;
     text-overflow: ellipsis;

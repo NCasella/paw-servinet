@@ -4,14 +4,12 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 
+import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 
 import ar.edu.itba.paw.webapp.form.BusinessForm;
-import ar.edu.itba.paw.webapp.form.EditReviewForm;
-import ar.edu.itba.paw.webapp.form.ReviewsForm;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -23,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class BusinessController {
@@ -86,7 +84,32 @@ public class BusinessController {
         return new ModelAndView("redirect:/negocios");
     }
 
+    //todo: available only for business admin
+    @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/estadisticas")
+    public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId,
+                                               @RequestParam(name = "filtro", required = false, defaultValue = "w") String filterId) {
+        final Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
+        DateIntervalFilter filter = DateIntervalFilter.of(filterId);
+        if (filter==null) throw new InvalidFilterException();
+        final List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
 
+        Map<Long, BasicService> serviceMap = new HashMap<>();
+        services.forEach(service -> serviceMap.put(service.getId(), service));
+        Set<Long> serviceIds = serviceMap.keySet();
+
+        List<Pair<Long,Long>> serviceAppointmentCount = appointmentService.getServicesFinishedAppointmentCount(serviceIds,filter);
+
+        final ModelAndView mav = new ModelAndView("statistics");
+        mav.addObject("serviceAppointmentCountList", serviceAppointmentCount);
+        mav.addObject("serviceMap", serviceMap );
+        mav.addObject("filter",filterId);
+        AtomicLong totalFinishedAppointments = new AtomicLong();
+        serviceAppointmentCount.forEach(pair -> totalFinishedAppointments.addAndGet(pair.getValue()));
+        mav.addObject("finishedAppointments",totalFinishedAppointments.get());
+        Long requestedAppointments = appointmentService.getServicesRequestedAppointmentCount(serviceIds,filter);
+        mav.addObject("requestedAppointments", totalFinishedAppointments.get()+requestedAppointments);
+        return mav;
+    }
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/turnos")
     public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId, @RequestParam(name = "confirmados") final boolean confirmed,
@@ -187,5 +210,6 @@ public class BusinessController {
         mav.addObject("page", page);
         return mav;
     }
+
 
 }

@@ -1,9 +1,9 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.Appointment;
+import ar.edu.itba.paw.model.Pair;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
-
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -19,6 +19,10 @@ public interface AppointmentDao {
     List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> servicesIds, boolean confirmed, int page, int pageSize);
 
     long getServicesAppointmentCount(Collection<Long> servicesIds, boolean confirmed);
+
+    List<Pair<Long,Long>> getServicesFinishedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate , LocalDateTime endDate);
+
+    Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate, LocalDateTime endDate);
 
     List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize);
 

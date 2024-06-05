@@ -1,19 +1,22 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.Appointment;
+
+import ar.edu.itba.paw.model.Pair;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.services.AppointmentDao;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class AppointmentDaoJpa implements AppointmentDao {
@@ -59,6 +62,31 @@ public class AppointmentDaoJpa implements AppointmentDao {
         query.setParameter("serviceids", servicesIds);
         query.setParameter("confirmed", confirmed);
         return query.getResultList().getFirst();
+    }
+
+    @Override
+    public List<Pair<Long,Long>> getServicesFinishedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate, LocalDateTime endDate){
+        TypedQuery<Tuple> query = em.createQuery("SELECT serviceAppointed.id as serviceId,count(id) as countAppointments FROM Appointment where serviceid in :serviceids and confirmed = TRUE and startDate between :startDate and :endDate " +
+                "group by serviceid order by countAppointments desc", Tuple.class);
+        query.setParameter("serviceids", servicesIds);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+
+        List<Pair<Long,Long>> result = query.getResultList().stream()
+                .map(tuple -> new Pair<>(
+                 ((Number) tuple.get("serviceId")).longValue(),
+                 ((Number) tuple.get("countAppointments")).longValue()
+        )).collect(Collectors.toList());
+        return result;
+    }
+
+    @Override
+    public Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate, LocalDateTime endDate){
+        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment where serviceAppointed.id in :serviceids and confirmed = FALSE and startDate between :startDate and :endDate",Long.class);
+        query.setParameter("serviceids", servicesIds);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        return query.getSingleResult();
     }
 
     @Override

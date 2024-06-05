@@ -15,6 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.util.Optional;
 
@@ -37,6 +39,8 @@ public class UserDaoJpaTest {
     @Autowired
     private UserDaoJpa userDao;
 
+    @PersistenceContext
+    private EntityManager em;
     @Autowired
     private DataSource ds;
 
@@ -53,8 +57,8 @@ public class UserDaoJpaTest {
 
         // 2. Ejecuta la class under test (una sola)
         User user = userDao.create(USERNAME, NAME, SURNAME,PASSWORD, EMAIL, TELEPHONE, false, LOCALE);
-
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
+        em.flush();
         Assert.assertNotNull(user);
         Assert.assertEquals(USERNAME, user.getUsername());
         Assert.assertEquals(NAME, user.getName());
@@ -79,7 +83,7 @@ public class UserDaoJpaTest {
 
         // 2. Ejecuta la class under test (una sola)
         userDao.changeUsername(USERID,"newUsername");
-
+        em.flush();
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "users", "username = 'newUsername'"));
     }
