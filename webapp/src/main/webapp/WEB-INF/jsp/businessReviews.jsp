@@ -11,6 +11,7 @@
 </head>
 <body>
 <div class="page reviews-page">
+    <jsp:include page="./components/backButton.jsp" />
     <h2><spring:message code="review.business" arguments="${business.name}"/></h2>
 
     <c:if test="${!empty reviews}">
@@ -114,6 +115,10 @@
         <c:set var="textCallToAction" scope="request"><spring:message code="business.go"/></c:set>
         <jsp:include page="components/noResults.jsp"/>
     </c:if>
+
+    <script>
+        window.onload = getPreviousPageInfo(document.referrer);
+    </script>
 </div>
 </body>
 </html>

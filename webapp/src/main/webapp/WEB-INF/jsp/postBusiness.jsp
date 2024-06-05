@@ -12,36 +12,44 @@
 </head>
 <body>
 <c:url value="/registrar-negocio" var="postUrl"/>
-<div class="postForm page">
-    <form:form action="${postUrl}" modelAttribute="BusinessForm" method="post" class="form">
-    <h2 class="form-title highlight-text"><spring:message code="register.create-business"/></h2>
-    <label>
-        <p class="label"><spring:message code="business-name"/></p>
-        <spring:message code="input.business" var="inputName"/>
-        <form:input type="text" class="input" path="businessName" placeholder="${inputName}" />
-        <form:errors path="businessName" cssClass="error" element="p"/>
-    </label>
-    <label>
-        <p class="label"><spring:message code="business-email"/></p>
-        <spring:message code="input.business-email" var="inputEmail"/>
-        <form:input class="input" path="businessEmail" placeholder="${inputEmail}" />
-        <form:errors path="businessEmail" cssClass="error" element="p"/>
-    </label>
-    <label>
-        <p class="label"><spring:message code="telephone"/></p>
-        <spring:message code="input.telephone" var="inputTelephone"/>
-        <form:input type="text" class="input" path="businessTelephone" placeholder="${inputTelephone}" value="+54 9 "/>
-        <form:errors path="businessTelephone" cssClass="error" element="p"/>
-    </label>
-    <label>
-        <p class="label"><spring:message code="address"/></p>
-        <spring:message code="input.business-address" var="inputAddress"/>
-        <form:input type="text" class="input" path="businessLocation" placeholder="${inputAddress}" />
-        <form:errors path="businessLocation" cssClass="error" element="p"/>
-    </label>
-    <div class="align-center">
-        <input type="submit" value="<spring:message code="register.submit"/>" class="btn submit-btn">
-    </div>
-    </form:form>
+<div class="page">
+
+    <jsp:include page="./components/backButton.jsp" />
+
+    <div class="postForm">
+        <form:form action="${postUrl}" modelAttribute="BusinessForm" method="post" class="form">
+            <h2 class="form-title highlight-text"><spring:message code="register.create-business"/></h2>
+            <label>
+                <p class="label"><spring:message code="business-name"/></p>
+                <spring:message code="input.business" var="inputName"/>
+                <form:input type="text" class="input" path="businessName" placeholder="${inputName}" />
+                <form:errors path="businessName" cssClass="error" element="p"/>
+            </label>
+            <label>
+                <p class="label"><spring:message code="business-email"/></p>
+                <spring:message code="input.business-email" var="inputEmail"/>
+                <form:input class="input" path="businessEmail" placeholder="${inputEmail}" />
+                <form:errors path="businessEmail" cssClass="error" element="p"/>
+            </label>
+            <label>
+                <p class="label"><spring:message code="telephone"/></p>
+                <spring:message code="input.telephone" var="inputTelephone"/>
+                <form:input type="text" class="input" path="businessTelephone" placeholder="${inputTelephone}" value="+54 9 "/>
+                <form:errors path="businessTelephone" cssClass="error" element="p"/>
+            </label>
+            <label>
+                <p class="label"><spring:message code="address"/></p>
+                <spring:message code="input.business-address" var="inputAddress"/>
+                <form:input type="text" class="input" path="businessLocation" placeholder="${inputAddress}" />
+                <form:errors path="businessLocation" cssClass="error" element="p"/>
+            </label>
+            <div class="align-center">
+                <input type="submit" value="<spring:message code="register.submit"/>" class="btn submit-btn">
+            </div>
+            </form:form>
+        </div>
+    <script>
+        window.onload = getPreviousPageInfo(document.referrer);
+    </script>
 </body>
 </html>

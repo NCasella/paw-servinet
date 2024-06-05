@@ -11,6 +11,7 @@
 </head>
 <body>
 <div class="page">
+    <jsp:include page="./components/backButton.jsp" />
     <h2><spring:message code="questions"/></h2>
 
     <c:choose>
@@ -42,5 +43,9 @@
         </c:otherwise>
     </c:choose>
 </div>
+
+<script>
+    window.onload = getPreviousPageInfo(document.referrer);
+</script>
 </body>
 </html>

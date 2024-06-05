@@ -16,6 +16,7 @@
     <div class="header">
         <c:choose>
             <c:when test="${history}">
+                <jsp:include page="./components/backButton.jsp" />
                 <h2><spring:message code="appointments.history"/></h2>
                 <a href="${pageContext.request.contextPath}/turnos?confirmados=true">
                     <button class="btn-basic rounded-btn"><spring:message code="appointments.next-appointments"/></button></a>
@@ -65,7 +66,9 @@
 
     </div>
 
-
+<script>
+    window.onload = getPreviousPageInfo(document.referrer);
+</script>
 </div>
 </body>
 </html>

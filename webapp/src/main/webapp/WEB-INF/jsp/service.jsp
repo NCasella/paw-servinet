@@ -24,7 +24,9 @@
 
     <div class="page">
 
-        <c:if test="${option!=null}">
+    <jsp:include page="./components/backButton.jsp" />
+
+    <c:if test="${option!=null}">
             <a href="${pageContext.request.contextPath}/servicio/${serviceId}" class="none-decoration">
                 <label class="go-back">
                     <i class="material-icons icon">arrow_back</i>
@@ -402,6 +404,8 @@
     </div>
 
     <script>
+        window.onload = getPreviousPageInfo(document.referrer);
+
         function toggleQuestions() {
             var showQuestions = document.getElementById('questions');
             var showReviews = document.getElementById('reviews');
