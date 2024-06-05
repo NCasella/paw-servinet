@@ -101,12 +101,12 @@ public class ServiceServiceImpl implements ServiceService {
         final Service service = optionalService.get();
         final Business business = businessDao.findById(service.getBusinessid()).orElseThrow(UserNotFoundException::new);
 
-        delete(service,business);
+        delete(service,business,true);
     }
 
     @Transactional
     @Override
-    public void delete(Service service, Business business) {
+    public void delete(Service service, Business business, boolean sendEmailToBusiness) {
         String businessLocale = userService.getUserLocale(business.getUserId());
         List<Appointment> appointmentList = appointmentService.getAllUpcomingServiceAppointments(service.getId());
              for ( Appointment appointment : appointmentList){
@@ -118,7 +118,8 @@ public class ServiceServiceImpl implements ServiceService {
                     emailService.deniedAppointment(appointment,service,business,client,true,businessLocale);
              }
         serviceDao.delete(service.getId());
-        emailService.deletedService(service,business,businessLocale);
+         if (sendEmailToBusiness)
+            emailService.deletedService(service,business,businessLocale);
     }
 
 

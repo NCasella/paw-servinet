@@ -75,7 +75,7 @@ public class BusinessServiceImpl implements BusinessService{
         final Business business = findById(businessid).orElseThrow(BusinessNotFoundException::new);
         List<Service> servicesList = serviceService.getAllBusinessServices(businessid);
             for ( Service service : servicesList)
-                serviceService.delete(service, business );
+                serviceService.delete(service, business,false);
 
         boolean isStillProvider = businessDao.deleteBusiness(businessid);
         emailService.deletedBusiness(business,getBusinessLocale(business.getUserId()));

@@ -17,7 +17,7 @@ public interface ServiceService {
     Optional<BasicService> findBasicServiceById(long id);
     Service create(long businessId, String name, String description, boolean homeservice, Neighbourhoods[] neighbourhood, Neighbourhoods[] uniqueNeighbourhood, String location, Categories category, int minimalduration, PricingTypes pricing, String price, boolean additionalCharges, MultipartFile image);
     void editService(long serviceId, String newDescription, int newDuration, PricingTypes newPricingType, String newPrice, boolean newAdditionalCharges);
-    void delete(Service service, Business business);
+    void delete(Service service, Business business, boolean sendEmailToBusiness);
     void delete(long serviceId);
     Map<Long,ServiceContactInfo> getServicesContactInfo(Collection<Long> serviceids);
     List<Service> services(int page,String category,String[] location, String rating, String query);
