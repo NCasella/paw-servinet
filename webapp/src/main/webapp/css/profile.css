@@ -115,6 +115,7 @@
     align-self: center;
     align-items: center;
     cursor: pointer;
+    background-color: #efefef;
 }
 
 .info-access {

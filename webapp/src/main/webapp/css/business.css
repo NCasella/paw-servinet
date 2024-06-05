@@ -150,8 +150,13 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 550px;
+    padding-inline: 10px;
 }
 
 .description-field {
     width: 600px;
+}
+
+.smaller-box {
+    width: 300px;
 }
