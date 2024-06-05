@@ -109,8 +109,8 @@
 
             <div th:case="'DENIED'">
                 <span th:text="${isClient}? #{template.your}: #{template.the-fem}"/> <span th:text="#{template.appointment.request-of}"/>
-                <span th:replace="html/appointment.html :: datetime"></span> <span th:text="#{template.appointment.denied(${isClient ? 'a' : 'o'})}"/><span th:if="${isServiceDeleted}" th:fragment="serviceDeleted"
-                th:text="#{template.appointment.fragment-service-deleted}"/>.
+                <span th:replace="html/appointment.html :: datetime"></span> <span th:text="#{template.appointment.denied(${isClient ? 'a' : 'o'})}"/> <span th:if="${isServiceDeleted}" th:fragment="serviceDeleted"
+                th:text="#{template.appointment.fragment-service-deleted}"/>
                 <p th:if="${isClient}" th:fragment="newAppointment">
                     <span th:if="!${isServiceDeleted}">
                         <span th:text="#{template.appointment.new-request}"/>
@@ -121,7 +121,7 @@
             </div>
 
             <div th:case="'CANCELLED'">
-                <span th:text="#{template.the}"/> <span th:replace="html/appointment.html :: datetime"></span> <span th:text="#{template.appointment.cancelled}"/><span th:replace="html/appointment.html :: serviceDeleted"></span>.
+                <span th:text="#{template.the}"/> <span th:replace="html/appointment.html :: datetime"></span> <span th:text="#{template.appointment.cancelled}"/> <span th:replace="html/appointment.html :: serviceDeleted"></span>.
                 <p th:replace="html/appointment.html :: newAppointment"></p>
             </div>
         </div>
