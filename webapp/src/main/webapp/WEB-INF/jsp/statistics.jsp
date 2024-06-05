@@ -37,7 +37,7 @@
         </div>
     </div>
     <div class="header">
-        <h3><spring:message code="statistics.appointments-per-service"/></h3>
+        <h3><spring:message code="statistics.finished-appointments"/> <spring:message code="statistics.appointments-per-service"/></h3>
     </div>
     <div class="boxes-container margin-auto">
         <c:forEach items="${serviceAppointmentCountList}" var="pair" varStatus="loop">
@@ -53,6 +53,9 @@
                 </div>
             </a>
         </c:forEach>
+        <c:if test="${empty serviceAppointmentCountList}">
+            <jsp:include page="components/noResults.jsp"/>
+        </c:if>
     </div>
 </div>
 </body>

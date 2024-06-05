@@ -9,6 +9,8 @@
 </head>
 <body>
 <c:set var="popUpId" value="-${loop.count}"/>
+<c:set var="descId" value="d${loop.count}"/>
+<c:set var="description" value="${appointment.description}"/>
 <c:set var="renewTitle"><spring:message code="appointments.renew.title"/></c:set>
     <div class="appointment-container" id="${loop.count}">
         <div class="box appointment-box">
@@ -47,7 +49,8 @@
         <c:set var="appointmentId" value="${appointment.id}" scope="request"/>
         <c:set var="id" value="${popUpId}" scope="request"/>
         <jsp:include page="appointmentPopUp.jsp" />
-        <c:set var="appointmentDescription" value="${appointment.description}" scope="request"/>
+        <c:set var="appointmentDescription" value="${description}" scope="request"/>
+        <c:set var="id2" value="${descId}" scope="request"/>
         <jsp:include page="descriptionPopUp.jsp" />
 
         <div class="accordion-container">
@@ -84,8 +87,8 @@
                     <button class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="appointment.info"/> </button>
                 </a>
             </c:if>
-            <c:if test="${!isUser}">
-                    <a onclick="showPopUpApp('description-pop-up')" class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="read-more"/> </a>
+            <c:if test="${!isUser && appointment.description !=null && appointment.description != '' } ">
+                    <a onclick="showPopUpApp('d${loop.count}')" class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="read-more"/> </a>
             </c:if>
         </div>
     </div>
