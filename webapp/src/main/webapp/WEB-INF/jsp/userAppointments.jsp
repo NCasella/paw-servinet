@@ -28,9 +28,9 @@
                         <button class="btn-basic rounded-btn"><i class="material-icons icon" title="${historyTitle}">history</i></button></a>
                     <div class="switch-btn">
                         <a href="${pageContext.request.contextPath}/turnos?confirmados=true">
-                            <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}" ><spring:message code="appointments.next"/></button></a>
+                            <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}" ><spring:message code="appointments.next"/> (<c:out value="${confirmed ?totalResults : otherFilterResults}" />)</button></a>
                         <a href="${pageContext.request.contextPath}/turnos?confirmados=false">
-                            <button class="btn-basic btn-right ${!confirmed? 'btn-selected':''}" ><spring:message code="appointments.requested"/></button></a>
+                            <button class="btn-basic btn-right ${!confirmed? 'btn-selected':''}" ><spring:message code="appointments.requested"/> (<c:out value="${!confirmed ?totalResults : otherFilterResults}" />)</button></a>
                     </div>
                 </div>
             </c:otherwise>

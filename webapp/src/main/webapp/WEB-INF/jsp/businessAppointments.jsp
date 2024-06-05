@@ -18,9 +18,9 @@
         <h2><c:out value="${business.businessName}"/></h2>
         <div>
             <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=true">
-                <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}"><spring:message code="business.next"/></button></a>
+                <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}"><spring:message code="business.next"/> (<c:out value="${confirmed? totalResults: otherResults}" />)</button></a>
             <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=false">
-                <button class="btn-basic btn-right ${!confirmed? 'btn-selected':''}"><spring:message code="business.requests"/></button></a>
+                <button class="btn-basic btn-right ${!confirmed? 'btn-selected':''}"><spring:message code="business.requests"/> (<c:out value="${!confirmed? totalResults: otherResults}"/>)</button></a>
         </div>
     </div>
     <div class="appointments-container">
