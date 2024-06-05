@@ -160,3 +160,11 @@ body {
 .smaller-box {
     width: 300px;
 }
+
+.description-pop-up {
+    background-color: #efefef;
+    padding: 5px;
+    border-radius: 15px;
+    width: 550px;
+    word-wrap: break-word;
+}

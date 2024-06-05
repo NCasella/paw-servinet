@@ -14,7 +14,7 @@
     <div class="popup">
 
         <h2><spring:message code="appointment.description"/></h2>
-        <p class="description-span"> <c:out value="${ appointmentDescription}"/> </p>
+        <p class="description-pop-up"> <c:out value="${ appointmentDescription}"/> </p>
 
         <div class="btns-box">
             <button class="cancelLinedBtn" onclick="closePopup('${id2}')"><spring:message code="close"/></button>
