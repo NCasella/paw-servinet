@@ -24,8 +24,6 @@
 
     <div class="page">
 
-    <jsp:include page="./components/backButton.jsp" />
-
     <c:if test="${option!=null}">
             <a href="${pageContext.request.contextPath}/servicio/${serviceId}" class="none-decoration">
                 <label class="go-back">
@@ -36,6 +34,7 @@
         </c:if>
 
         <c:if test="${option==null}">
+        <jsp:include page="./components/backButton.jsp" />
         <div class="header">
             <h2><c:out value="${service.name}"/></h2>
             <c:if test="${isOwner}">
