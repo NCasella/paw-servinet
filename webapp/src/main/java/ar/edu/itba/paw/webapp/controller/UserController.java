@@ -97,7 +97,10 @@ public class UserController {
         mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("confirmed",confirmed);
         mav.addObject("page",page);
-        mav.addObject("pageCount", appointmentService.getUserAppointmentPageCount(userid,confirmed));
+        mav.addObject("otherFilterResults",appointmentService.getUserAppointmentCount(userid,!confirmed));
+        final long totalResults = appointmentService.getUserAppointmentCount(userid,confirmed);
+        mav.addObject("totalResults",totalResults);
+        mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
         return mav;
     }
 
@@ -120,7 +123,9 @@ public class UserController {
         mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("history",true);
         mav.addObject("page",page);
-        mav.addObject("pageCount", appointmentService.getPreviousUserAppointmentPageCount(userid));
+        final long totalResults = appointmentService.getPreviousUserAppointmentCount(userid);
+        mav.addObject("totalResults",totalResults);
+        mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
         return mav;
     }
 

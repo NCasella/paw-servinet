@@ -10,14 +10,14 @@
 </head>
 <body>
 
-<div class="popup-contenedor" id="description-pop-up">
+<div class="popup-contenedor" id="${id2}">
     <div class="popup">
 
         <h2><spring:message code="appointment.description"/></h2>
-        <p class="description-span"> <c:out value="${appointmentDescription}"/> </p>
+        <p class="description-span"> <c:out value="${ appointmentDescription}"/> </p>
 
         <div class="btns-box">
-            <button class="cancelLinedBtn" onclick="closePopup('description-pop-up')"><spring:message code="close"/></button>
+            <button class="cancelLinedBtn" onclick="closePopup('${id2}')"><spring:message code="close"/></button>
         </div>
     </div>
 </div>

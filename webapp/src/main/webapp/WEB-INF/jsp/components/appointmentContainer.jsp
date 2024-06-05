@@ -9,6 +9,8 @@
 </head>
 <body>
 <c:set var="popUpId" value="-${loop.count}"/>
+<c:set var="descId" value="d${loop.count}"/>
+<c:set var="description" value="${appointment.description}"/>
 <c:set var="renewTitle"><spring:message code="appointments.renew.title"/></c:set>
     <div class="appointment-container" id="${loop.count}">
         <div class="box appointment-box">
@@ -47,7 +49,8 @@
         <c:set var="appointmentId" value="${appointment.id}" scope="request"/>
         <c:set var="id" value="${popUpId}" scope="request"/>
         <jsp:include page="appointmentPopUp.jsp" />
-        <c:set var="appointmentDescription" value="${appointment.description}" scope="request"/>
+        <c:set var="appointmentDescription" value="${description}" scope="request"/>
+        <c:set var="id2" value="${descId}" scope="request"/>
         <jsp:include page="descriptionPopUp.jsp" />
 
         <div class="accordion-container">
@@ -68,25 +71,30 @@
                         <c:otherwise> <spring:message code="service.at-professional-house"/> </c:otherwise>
                     </c:choose>
                 </span>
-                <span class="accordion-field description-span">
-                    <c:choose>
-                        <c:when test="${appointment.description != null && appointment.description != ''}">
-                            <c:out value="${appointment.description}" />
-                        </c:when>
-                        <c:otherwise>
-                           <spring:message code="appointment.no-description"/>
-                        </c:otherwise>
-                    </c:choose>
-                </span>
+                <c:if test="${!isUser}">
+                    <span class="accordion-field description-span ${confirmed? 'smaller-box':''} ">
+                        <c:choose>
+                            <c:when test="${appointment.description != null && appointment.description != ''}">
+                                <c:out value="${appointment.description}" />
+                            </c:when>
+                            <c:otherwise>
+                               <spring:message code="appointment.no-description"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </span>
+                </c:if>
             </div>
-            <c:if test="${isUser}">
-                <a href="${pageContext.request.contextPath}/turno/${appointment.serviceid}/${appointment.id}" class="none-decoration info-access">
-                    <button class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="appointment.info"/> </button>
-                </a>
-            </c:if>
-            <c:if test="${!isUser}">
-                    <a onclick="showPopUpApp('description-pop-up')" class=" center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="read-more"/> </a>
-            </c:if>
+            <c:choose>
+                <c:when test="${isUser}">
+                    <a href="${pageContext.request.contextPath}/turno/${appointment.serviceid}/${appointment.id}" class="none-decoration info-access">
+                        <button class="info-access center-vertically info-btn"><i class="material-icons icon info-icon ">info</i> <spring:message code="appointment.info"/> </button>
+                    </a>
+                </c:when>
+                <c:when test="${not empty appointmentDescription}">
+                    <a onclick="showPopUpApp('d${loop.count}')" class=" center-vertically info-btn info-access"><i class="material-icons icon info-icon ">info</i> <spring:message code="read-more"/> </a>
+                </c:when>
+            </c:choose>
+
         </div>
     </div>
 </body>

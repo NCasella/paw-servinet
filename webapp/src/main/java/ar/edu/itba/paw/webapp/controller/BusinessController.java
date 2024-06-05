@@ -86,7 +86,7 @@ public class BusinessController {
 
     //todo: available only for business admin
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/estadisticas")
-    public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId,
+    public ModelAndView appointmentStatistics(@PathVariable("businessId") final long businessId,
                                                @RequestParam(name = "filtro", required = false, defaultValue = "w") String filterId) {
         final Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         DateIntervalFilter filter = DateIntervalFilter.of(filterId);
@@ -139,7 +139,9 @@ public class BusinessController {
         mav.addObject("appointmentList", appointmentList);
         mav.addObject("confirmed",confirmed);
         mav.addObject("page",page);
-        mav.addObject("pageCount", appointmentService.getServicesAppointmentCount(serviceIds,confirmed));
+        final long totalResults = appointmentService.getServicesAppointmentCount(serviceIds,confirmed);
+        mav.addObject("totalResults",totalResults);
+        mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
         return mav;
     }
 
