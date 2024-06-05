@@ -106,7 +106,7 @@ public class EmailServiceImpl implements EmailService{
         setLocale(businessLocale);
         final Context ctx = getContext(appointment,service,isServiceDeleted, client, business);
 
-        if (!isServiceDeleted) {
+        if (!isServiceDeleted && !emailType.equals(EmailTypes.DENIED) ) {
             LOGGER.info("Preparing {} mail for business owner.", emailType.getType());
             try {
                 sendMailToBusiness(emailType, business.getEmail(), ctx);
