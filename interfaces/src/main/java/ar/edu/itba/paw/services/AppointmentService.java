@@ -23,11 +23,13 @@ public interface AppointmentService {
 
     List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page);
 
-    long getUserAppointmentPageCount(long userid, boolean confirmed);
+    long getUserAppointmentCount(long userid, boolean confirmed);
 
     List<Appointment> getPreviousUserAppointments(long userid, int page);
 
-    long getPreviousUserAppointmentPageCount(long userid);
+    long getPreviousUserAppointmentCount(long userid);
+
+    long getPageCount(long count);
 
     Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date, String description);
 

@@ -54,9 +54,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Transactional(readOnly = true)
     @Override
     public long getServicesAppointmentCount(Collection<Long> serviceIds, boolean confirmed) {
-        long appointmentCount = appointmentDao.getServicesAppointmentCount(serviceIds,confirmed);
-        return correctPageCount(appointmentCount);
-
+        return appointmentDao.getServicesAppointmentCount(serviceIds,confirmed);
     }
 
     @Transactional(readOnly = true)
@@ -79,12 +77,11 @@ public class AppointmentServiceImpl implements AppointmentService{
         return appointmentDao.getAllUpcomingUserAppointments(userid, confirmed, page, PAGESIZE);
     }
 
+
     @Transactional(readOnly = true)
     @Override
-    public long getUserAppointmentPageCount(long userid, boolean confirmed) {
-        long appointmentCount = appointmentDao.getUserAppointmentCount(userid,confirmed);
-        return correctPageCount(appointmentCount);
-
+    public long getUserAppointmentCount(long userid, boolean confirmed) {
+        return appointmentDao.getUserAppointmentCount(userid,confirmed);
     }
 
     @Transactional(readOnly = true)
@@ -95,13 +92,13 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Transactional(readOnly = true)
     @Override
-    public long getPreviousUserAppointmentPageCount(long userid) {
-        long appointmentCount = appointmentDao.getPreviousUserAppointmentCount(userid);
-        return correctPageCount(appointmentCount);
-
+    public long getPreviousUserAppointmentCount(long userid) {
+        return appointmentDao.getPreviousUserAppointmentCount(userid);
     }
 
-    private long correctPageCount(long count){
+    @Transactional(readOnly = true)
+    @Override
+    public long getPageCount(long count){
         return count / PAGESIZE + (( count % PAGESIZE !=0 )? 1:0 );
     }
 

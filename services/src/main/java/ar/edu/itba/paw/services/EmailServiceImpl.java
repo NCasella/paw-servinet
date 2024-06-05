@@ -35,6 +35,7 @@ public class EmailServiceImpl implements EmailService{
         this.messageSource = messageSource;
     }
     @Async
+    @Override
     public void recoverPassword(User user, PasswordRecoveryCode code) {
         setLocale(user.getLocale());
         final Context ctx = new Context(LOCALE);
