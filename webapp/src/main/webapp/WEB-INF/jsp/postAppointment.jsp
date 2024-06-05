@@ -67,12 +67,14 @@
         <label>
             <p class="label"><spring:message code="appointment.description"/></p>
             <spring:message code="input.appointment.description" var="description"/>
-            <form:textarea class="input" maxlength="250" path="description" id="description" placeholder="${description}"/>
+            <form:textarea class="input" maxlength="255" path="description" id="description" placeholder="${description}"/>
+            <!--
             <spring:message code="progressbar.chars" var="chars"/>
             <div id="progress">
                 <div id="progress-bar"></div>
                 <p id="remaining-chars"></p>
             </div>
+            -->
             <form:errors path="description" cssClass="error" element="p"/>
         </label>
         <c:if test="${service.duration > 0}">
@@ -91,27 +93,4 @@
     </form:form>
 </div>
 </body>
-<script>
-    const textarea = document.getElementById("description");
-    const progressBar = document.getElementById("progress-bar");
-    const remChars = document.getElementById("remaining-chars");
-    function charCounter(inputField) {
-     const maxLength = 250;
-     const currentLength = inputField.value.length;
-     const progressWidth = (currentLength / maxLength) * 100;
-
-     progressBar.style.width = `${progressWidth}%`;
-     remChars.style.display = "none";
-
-     if (progressWidth <= 60) {
-         progressBar.style.backgroundColor = "rgb(19, 160, 19)";
-     } else if (progressWidth > 60 && progressWidth < 85) {
-         progressBar.style.backgroundColor = "rgb(236, 157, 8)";
-     } else {
-         progressBar.style.backgroundColor = "rgb(241, 9, 9)";
-         remChars.style.display = "block";
-     }
-    }
-    textarea.oninput = () => charCounter(textarea);
-</script>
 </html>

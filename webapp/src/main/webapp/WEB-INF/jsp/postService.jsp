@@ -34,7 +34,7 @@
                 <p> <spring:message code="service.description"/> </p>
                 <spring:message code="input.service.description" var="serviceDescription"/>
                 <form:errors path="description" cssClass="error"/>
-                <form:input type="text" class="input" path="description" placeholder="${serviceDescription}"/>
+                <form:textarea maxlength="255" class="input" path="description" placeholder="${serviceDescription}"/>
             </label>
             <p><spring:message code="service.location"/></p>
             <form:checkbox id="homeservice" path="homeserv" onclick="toggleHomeService()"/>
