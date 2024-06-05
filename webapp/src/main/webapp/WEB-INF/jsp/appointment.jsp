@@ -12,6 +12,7 @@
 </head>
 <body>
 <div class="page">
+    <jsp:include page="./components/backButton.jsp" />
     <div class="appointment-container">
         <div class="title">
             <h1 class="form-title"><spring:message code="appointment.detail" arguments="${appointment.id}"/></h1>
@@ -85,6 +86,8 @@
 </body>
 
 <script>
+    window.onload = getPreviousPageInfo(document.referrer);
+
     function showPopUp() {
         document.getElementById("popup").style.display = "block";
     }

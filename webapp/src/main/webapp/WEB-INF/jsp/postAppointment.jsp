@@ -84,7 +84,7 @@
 
         <div class="align-center btns-container">
             <spring:message code="cancel" var="cancel"/>
-            <a href="${pageContext.request.contextPath}/"><input type="button" value="${cancel}" class="cancelBtn"></a>
+            <a href="${pageContext.request.contextPath}/servicio/${serviceId}"><input type="button" value="${cancel}" class="cancelBtn"></a>
             <spring:message code="appointment.submit" var="submit"/>
             <input type="submit" value="${submit}" class="btn submit-btn">
         </div>

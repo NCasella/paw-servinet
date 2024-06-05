@@ -1,26 +1,26 @@
 package ar.edu.itba.paw.services;
 
 
-import ar.edu.itba.paw.model.Rating;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-
-
-import java.time.LocalDate;
-import java.util.Optional;
-
-@RunWith(MockitoJUnitRunner.class)
-public class RatingServiceImplTest {
-    private static final String COMMENT = "This is a comment";
-    private static final int RATING5 = 5;
-    private static final long USERID = 1;
-    private static final long SERVICEID = 1;
-
+//import ar.edu.itba.paw.model.Rating;
+//import org.junit.Assert;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.Mockito;
+//import org.mockito.junit.MockitoJUnitRunner;
+//
+//
+//import java.time.LocalDate;
+//import java.util.Optional;
+//
+//@RunWith(MockitoJUnitRunner.class)
+//public class RatingServiceImplTest {
+//    private static final String COMMENT = "This is a comment";
+//    private static final int RATING5 = 5;
+//    private static final long USERID = 1;
+//    private static final long SERVICEID = 1;
+//
 //    @InjectMocks
 //    private  RatingServiceImpl ratingService;
 //
@@ -51,5 +51,5 @@ public class RatingServiceImplTest {
 //        Assert.assertNull(rating);
 //
 //    }
-
-}
+//
+//}

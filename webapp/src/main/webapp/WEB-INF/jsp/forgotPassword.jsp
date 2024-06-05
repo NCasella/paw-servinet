@@ -13,6 +13,7 @@
 <c:url value="/olvide-mi-clave" var="postUrl"/>
 <body>
 <div class="postForm page">
+    <jsp:include page="./components/backButton.jsp" />
     <form:form modelAttribute="requestPasswordRecoveryForm" action="${postUrl}" method="post" class="form">
     <h2 class="form-title highlight-text"><spring:message code="recover-password"/></h2>
     <label>
@@ -28,5 +29,9 @@
         </div>
     </form:form>
 </div>
+
+<script>
+    window.onload = getPreviousPageInfo(document.referrer);
+</script>
 </body>
 </html>

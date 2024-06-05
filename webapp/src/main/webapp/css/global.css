@@ -310,3 +310,20 @@ body {
 .pagination-box {
     margin-top: 40px;
 }
+
+.back-container {
+    display: flex;
+    align-items: center;
+    color: #9f9f9f;
+    cursor: default;
+}
+
+.back-arrow {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.back-text {
+    font-weight: bold;
+    cursor: pointer;
+}
