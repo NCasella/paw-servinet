@@ -7,10 +7,7 @@ import ar.edu.itba.paw.webapp.validation.LocationFormatted;
 import ar.edu.itba.paw.webapp.validation.ValidImageFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @LocationFormatted
 public class ServiceForm {
@@ -40,7 +37,8 @@ public class ServiceForm {
 
    private PricingTypes pricingtype;
 
-   @Size(max=255)
+   @Size(max=10)
+   @Pattern(regexp = "[0-9]+(\\.[0-9]{1,2})?$")
    private String price;
 
    @Positive
