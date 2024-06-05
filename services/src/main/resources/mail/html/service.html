@@ -9,6 +9,7 @@
                 border: none;
                 padding: 10px;
                 margin-bottom: 5px;
+                cursor: pointer;
             }
             .header {
                 color: #585bfa;
@@ -37,6 +38,7 @@
                 padding: 10px;
                 color: white;
                 padding-inline: 20px;
+                cursor: pointer;
             }
             .confirm {
                 background-color: #585bfa;
@@ -44,6 +46,9 @@
             .btn-container {
                 text-align: center;
                 margin-top: 30px;
+            }
+            .align-center{
+                text-align: center;
             }
         </style>
 </head>
@@ -58,7 +63,6 @@
             <span th:text="#{template.service(${serviceName})}"/> <span th:switch="${type}">
                 <span th:case="'CREATED'">
                     <span th:text="#{template.operation(#{template.created})}"/>. <span th:text="#{template.id(${serviceId})}"/>
-                    <span th:text="#{template.url}"/> <a th:href="${url}+'servicio/'+${serviceId}" th:text="${url}+'servicio/'+${serviceId}"/>.
                 </span>
                 <span th:case="*">
                     <span th:text="#{template.operation(#{template.deleted})}"/>. <span th:text="#{template.service.deleted-appointments}"/>
@@ -70,6 +74,7 @@
                     <a th:href="${url}+'servicio/'+${serviceId}">
                         <button class="btn confirm" th:text="#{template.service.view-btn}"/>
                     </a>
+                    <p><em><span class="align-center" th:text="#{template.url}"/> <a th:href="${url}+'servicio/'+${serviceId}" th:text="${url}+'servicio/'+${serviceId}"/>.</em></p>
                 </div>
                 <p th:case="*">
                     <span th:text="#{template.service.url.view-all}"/> <a th:href="${url}+'negocios'" th:text="#{template.here}"/>.
