@@ -47,7 +47,7 @@ public class FilterArgument {
 
     public FilterArgument addSearch(String search) {
         if(search!=null && !search.isEmpty()){
-            filters.put(FilterTypes.SERVICE_SEARCH,search.replace("%","\\%"));
+            filters.put(FilterTypes.SERVICE_SEARCH,search.replace("%","\\%").replace("_","\\_"));
         }
         return this;
     }
