@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice
-public class ModelAttributeController {
+public class ModelAttributesControllerAdvice {
 
     private final ServinetAuthControl authControl;
 
     @Autowired
-    public ModelAttributeController(final ServinetAuthControl authControl) {
+    public ModelAttributesControllerAdvice(final ServinetAuthControl authControl) {
         this.authControl = authControl;
     }
 
