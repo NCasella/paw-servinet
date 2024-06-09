@@ -121,7 +121,7 @@
             </div>
 
             <div th:case="'CANCELLED'">
-                <span th:text="#{template.the}"/> <span th:replace="html/appointment.html :: datetime"></span> <span th:text="#{template.appointment.cancelled}"/> <span th:replace="html/appointment.html :: serviceDeleted"></span>.
+                <span th:text="#{template.the}"/> <span th:replace="html/appointment.html :: datetime"></span> <span th:text="#{template.appointment.cancelled}"/> <span th:replace="html/appointment.html :: serviceDeleted"></span>
                 <p th:replace="html/appointment.html :: newAppointment"></p>
             </div>
         </div>
