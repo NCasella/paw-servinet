@@ -2,6 +2,7 @@
 
 
  import ar.edu.itba.paw.model.Business;
+ import ar.edu.itba.paw.model.User;
  import ar.edu.itba.paw.persistance.config.TestConfig;
  import org.junit.Assert;
  import org.junit.Before;
@@ -47,12 +48,12 @@
      @Before
      public void setup() {
          this.jdbcTemplate = new JdbcTemplate(ds);
+         jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)");
      }
 
      @Test
      public void testCreateBusiness() {
          // 1. Precondiciones
-         jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)");
 
          // 2. Ejecuta la class under test (una sola)
          Business business= businessDaoJpa.createBusiness(BUSINESS_NAME, USER_ID, TELEPHONE, EMAIL, LOCATION);
@@ -66,7 +67,6 @@
      @Test
      public void testDeleteLastBusiness(){
          // 1. Precondiciones
-         jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)");
          jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION));
 
          boolean isStillProvider = businessDaoJpa.deleteBusiness(BUS_ID);
@@ -77,7 +77,6 @@
 
      @Test
      public void testDeleteBusinessWithMoreLeft(){
-         jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)");
          jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION));
          jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID_SECONDARY,BUSINESS_NAME_SECONDARY, TELEPHONE, EMAIL, LOCATION));
 
@@ -87,4 +86,14 @@
          Assert.assertTrue(isStillProvider);
      }
 
+     @Test
+     public void testDeleteBusinessWithNoBusiness(){
+         jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION));
+         User user=em.find(User.class,USER_ID);
+         businessDaoJpa.deleteBusiness(BUS_ID);
+         em.flush();
+         Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"business"));
+         Assert.assertFalse(user.isProvider());
+
+     }
  }
