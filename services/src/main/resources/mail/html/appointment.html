@@ -80,15 +80,12 @@
                     <p th:text="#{template.appointment.select-option}"/>
 
                     <div class="btn-container">
-                        <a th:href="${url}+'aceptar-turno/'+ ${appointmentId}">
-                            <button class="btn confirm" type="submit" th:text="#{template.accept}"/>
-                        </a>
-                        <a th:href="${url}+'rechazar-turno/'+${appointmentId}">
-                            <button class="btn deny" th:text="#{template.deny}"/>
+                        <a th:href="${url}+'negocio/'+ ${business.getBusinessid()} + '/turnos?confirmados=false'">
+                            <button class="btn confirm" th:text="#{template.view-request}"/>
                         </a>
                     </div>
                     <p class="align-center">
-                        <em th:text="#{template.select-option-message}" />
+                        <em><span class="align-center" th:text="#{template.url}"/> <a th:href="${url}+'servicio/'+${serviceId}" th:text="${url}+'servicio/'+${serviceId}"/>.</em>
                     </p>
             </div>
 
