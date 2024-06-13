@@ -50,7 +50,7 @@ public class ServinetAuthControl {
         if(service.isEmpty()){
             return false;
         }
-       Business business = businessService.findById(service.get().getBusinessid()).orElseThrow(BusinessNotFoundException::new);
+        Business business = service.orElseThrow(BusinessNotFoundException::new).getBusiness();
         return business.getUserId() == user.getUserId();
     }
 
@@ -79,7 +79,7 @@ public class ServinetAuthControl {
     @Transactional(readOnly = true)
     public Optional<User> getCurrentUser() {
         final Optional<String> mayBeEmail = getCurrentUserEmail();
-        if (!mayBeEmail.isPresent()){
+        if (mayBeEmail.isEmpty()){
             return Optional.empty();
         }
         return userService.findByEmail(mayBeEmail.get());
@@ -88,7 +88,7 @@ public class ServinetAuthControl {
 
     @Transactional(readOnly = true)
     public boolean isLoggedIn(){
-        return !getCurrentUser().isEmpty();
+        return getCurrentUser().isPresent();
     }
 
     @Transactional(readOnly = true)

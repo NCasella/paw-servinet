@@ -39,7 +39,7 @@
             <h2><c:out value="${service.name}"/></h2>
             <c:if test="${isOwner}">
                 <div>
-                    <a href="${pageContext.request.contextPath}/editar-servicio/${service.id}/" class="none-decoration">
+                    <a href="${pageContext.request.contextPath}/editar-servicio/${service.id}" class="none-decoration">
                         <button class="editBtn"><spring:message code="service.edit"/></button>
                     </a>
                     <button class="cancelBtn" onclick="showPopUp()"><spring:message code="service.delete"/></button>
