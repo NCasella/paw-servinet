@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 
 import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
@@ -17,9 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -66,13 +63,6 @@ public class BusinessController {
         if (errors.hasErrors()) {
             return registerBusiness(form);
         }
-        /*
-        ServinetAuthUserDetails userDetails = (ServinetAuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userService.findByEmail(userDetails.getUsername()).orElse(null);
-        if (user == null){
-            return new ModelAndView("redirect:/login");
-        }
-         */
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
         Business business = businessService.createBusiness(form.getBusinessName(),userid, form.getBusinessTelephone(), form.getBusinessEmail(),form.getBusinessLocation());
         return new ModelAndView("redirect:/negocio/"+ business.getBusinessid());
@@ -149,15 +139,9 @@ public class BusinessController {
     @RequestMapping(method = RequestMethod.POST, path = "negocio/{businessId:\\d+}/solicitud-turno/{appoinmentId:\\d+}")
     public void acceptOrDenyAppointment(@PathVariable(value = "businessId") final long businessId,
                                             @PathVariable(value = "appoinmentId") final long appoinmentId,
-                                            @RequestParam(value = "accepted") final boolean accepted,
-                                            HttpServletResponse response) throws IOException{
-        if ( accepted )
-            try {
-                appointmentService.confirmAppointment(appoinmentId);
-            } catch (AppointmentNonExistentException e) {
-                response.setStatus(HttpServletResponse.SC_CONFLICT);
-                response.getWriter().println("El turno ya no existe");
-            }
+                                            @RequestParam(value = "accepted") final boolean accepted) {
+        if (accepted)
+            appointmentService.confirmAppointment(appoinmentId);
         else
             appointmentService.denyAppointment(appoinmentId);
     }

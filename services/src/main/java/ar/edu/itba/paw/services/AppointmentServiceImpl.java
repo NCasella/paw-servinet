@@ -120,7 +120,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     public long confirmAppointment(long appointmentid) {
 
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
-        final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
+        final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
 
         if (appointment.getConfirmed())
@@ -136,7 +136,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public long denyAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
-        final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
+        final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
 
         if (appointment.getConfirmed())
@@ -153,7 +153,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public long cancelAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
-        final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
+        final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
 
         Business business = service.getBusiness();

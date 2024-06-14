@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -38,13 +37,8 @@ public class AppointmentController {
     public ModelAndView hireService(@PathVariable("serviceId") final long serviceId, @ModelAttribute("appointmentForm") final AppointmentForm form) {
 
         final ModelAndView mav = new ModelAndView("postAppointment");
-        try {
-            Service service = serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
-            mav.addObject("service",service);
-        } catch (ServiceNotFoundException ex) {
-            return new ModelAndView("redirect:/operacion-invalida/?argumento=servicionoexiste");
-        }
-
+        Service service = serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        mav.addObject("service",service);
         return mav;
     }
 
@@ -53,7 +47,7 @@ public class AppointmentController {
             @PathVariable("serviceId") final long serviceId,
             @Valid @ModelAttribute("appointmentForm") AppointmentForm form, BindingResult errors
     ){
-        //todo: manejo de errores de ingreso del formulario (se lanzarían excepciones a nivel sql)
+
         if(errors.hasErrors()) {
             return hireService(serviceId, form);
         }
@@ -94,18 +88,8 @@ public class AppointmentController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE , path = "/cancelar-turno/{appointmentId:\\d+}")
-    public void cancelAppointment(@PathVariable("appointmentId") final long appointmentId,
-                                  HttpServletResponse response){
-        try {
-            appointmentService.cancelAppointment(appointmentId);
-        } catch (Exception e) {
-            if ( e.getClass() != AppointmentNonExistentException.class ) {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                return;
-            }
-        }
-        response.setStatus(HttpServletResponse.SC_OK);
-
+    public void cancelAppointment(@PathVariable("appointmentId") final long appointmentId){
+        appointmentService.cancelAppointment(appointmentId);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/turno/{serviceId:\\d+}/{appointmentId:\\d+}")
