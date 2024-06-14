@@ -69,14 +69,6 @@ public class FilterArgument {
         }
     }
 
-    public List<Object> getValues() {
-        List<Object> values= new ArrayList<>(filters.values());
-        if(page!=-1){
-            values.add(page*10);
-        }
-        return values;
-    }
-
         private enum FilterTypes {
             CATEGORY("category = :cat ","cat"),
             LOCATION("s.id in (select serviceid from nbservices where neighbourhood in :loc ) ","loc"),

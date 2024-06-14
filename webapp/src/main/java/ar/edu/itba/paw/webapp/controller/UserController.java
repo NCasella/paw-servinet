@@ -15,7 +15,6 @@ import java.util.*;
 
 @Controller
 public class UserController {
-    private final BusinessService businessService;
     private final UserService userService;
     private final QuestionService questionService;
     private final ServinetAuthControl authControl;
@@ -23,13 +22,11 @@ public class UserController {
     private final ServiceService serviceService;
 
     @Autowired
-    public UserController (@Qualifier("BusinessServiceImpl") final BusinessService businessService,
-                           @Qualifier("userServiceImpl") final UserService userService,
+    public UserController (@Qualifier("userServiceImpl") final UserService userService,
                            @Qualifier("QuestionServiceImpl") final QuestionService questionService,
                            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl,
                            @Qualifier("serviceServiceImpl") final ServiceService serviceService,
                            @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService){
-        this.businessService = businessService;
         this.userService = userService;
         this.questionService = questionService;
         this.authControl= authControl;
