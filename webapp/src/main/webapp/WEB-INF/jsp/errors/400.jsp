@@ -7,7 +7,7 @@
     <link href="${pageContext.request.contextPath}/css/noneAppointment.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/css/global.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <title><spring:message code="error.notfound"/></title>
+    <title><spring:message code="error.badrequest"/></title>
 </head>
 <body>
 <div class="page">
