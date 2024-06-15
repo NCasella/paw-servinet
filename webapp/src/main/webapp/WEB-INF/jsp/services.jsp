@@ -36,11 +36,6 @@
                     <button type="submit" class="search-button"><i class="material-icons">search</i></button>
                 </div>
             </form>
-            <div class="align-right">
-                <label>
-                    <p class="filters-text" onclick="toggleFilters()" id="toggleFiltersButton"><i class="material-icons">filter_alt</i><spring:message code="services.filter-by"/> <i class="material-icons" id="filtersIcon">expand_more</i></p>
-                </label>
-            </div>
         </div>
 
         <c:if test="${category!=null}">
@@ -152,7 +147,7 @@
             </c:choose>
         </div>
 
-        <div class="filters-column transparent" id="filters">
+        <div class="filters-column">
         <div class="filters-box">
             <h3><spring:message code="services.filter-rate"/></h3>
             <c:forEach items="${ratings}" var="rate">
@@ -200,23 +195,5 @@
 
 </div>
 
-<script>
-    function toggleFilters() {
-        var showFilters = document.getElementById('filters');
-        var icon = document.getElementById('filtersIcon');
-
-        if (showFilters.classList.contains('transparent')) {
-            showFilters.classList.remove('transparent');
-            icon.textContent= "expand_less";
-        } else {
-            showFilters.classList.add('transparent');
-            icon.textContent= "expand_more";
-        }
-    }
-
-    function withFilters() {
-
-    }
-</script>
 </body>
 </html>
