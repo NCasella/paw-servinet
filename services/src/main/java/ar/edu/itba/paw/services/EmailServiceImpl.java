@@ -254,7 +254,7 @@ public class EmailServiceImpl implements EmailService{
         }
     }
 
-    public void sendMailToClient( EmailTypes emailType, String userMail, Context ctx) throws MessagingException {
+    private void sendMailToClient( EmailTypes emailType, String userMail, Context ctx) throws MessagingException {
         prepareAndSendMail(emailType, userMail, true, ctx);
     }
 
