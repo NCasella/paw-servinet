@@ -97,7 +97,7 @@ public class UserController {
         mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("confirmed",confirmed);
         mav.addObject("page",page);
-        mav.addObject("otherFilterResults",appointmentService.getUserAppointmentCount(userid,!confirmed));
+        mav.addObject("moreResults",appointmentService.getUserAppointmentCount(userid,!confirmed));
         final long totalResults = appointmentService.getUserAppointmentCount(userid,confirmed);
         mav.addObject("totalResults",totalResults);
         mav.addObject("pageCount", appointmentService.getPageCount(totalResults));

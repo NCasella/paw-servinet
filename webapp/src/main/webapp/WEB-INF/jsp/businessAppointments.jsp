@@ -11,6 +11,7 @@
 </head>
 <body>
 <c:set var="isUser" value="false" scope="request" />
+<c:set var="notConfirmed" value="${!confirmed}" />
 <c:set var="requestForBusiness" value="${!confirmed}" scope="request" />
 <div class="page">
     <jsp:include page="./components/backButton.jsp" />
@@ -18,9 +19,11 @@
         <h2><c:out value="${business.businessName}"/></h2>
         <div>
             <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=true">
-                <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}"><spring:message code="business.next"/> (<c:out value="${confirmed? totalResults: otherResults}" />)</button></a>
+                <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}"><spring:message code="business.next"/>
+                    (<span id="${confirmed? 'totalResults':'moreResults'}"></span>)</button></a>
             <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=false">
-                <button class="btn-basic btn-right ${!confirmed? 'btn-selected':''}"><spring:message code="business.requests"/> (<c:out value="${!confirmed? totalResults: otherResults}"/>)</button></a>
+                <button class="btn-basic btn-right ${notConfirmed? 'btn-selected':''}"><spring:message code="business.requests"/>
+                    (<span id="${notConfirmed? 'totalResults':'moreResults'}"></span>)</button></a>
         </div>
     </div>
     <div class="appointments-container">
@@ -37,6 +40,7 @@
                 <jsp:include page="components/noResults.jsp"/>
             </c:when>
             <c:otherwise>
+                <div class="loader" id="loader"></div>
                 <c:if test="${pageCount > 1}">
                     <div class="pagination-box">
                         <c:set var="page" value="${page}" scope="request" />

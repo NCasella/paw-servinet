@@ -10,6 +10,7 @@
 </head>
 <body>
 <c:set var="isUser" value="true" scope="request" />
+<c:set var="notConfirmed" value="${!confirmed}" />
 <c:set var="history" value="${history}" scope="request"/>
 <c:set var="historyTitle"><spring:message code="appointments.history.title"/> </c:set>
 <div class="page">
@@ -28,9 +29,11 @@
                         <button class="btn-basic rounded-btn"><i class="material-icons icon" title="${historyTitle}">history</i></button></a>
                     <div class="switch-btn">
                         <a href="${pageContext.request.contextPath}/turnos?confirmados=true">
-                            <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}" ><spring:message code="appointments.next"/> (<c:out value="${confirmed ?totalResults : otherFilterResults}" />)</button></a>
+                            <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}"><spring:message code="appointments.next"/>
+                                (<span id="${confirmed? 'totalResults':'moreResults'}"></span>)</button></a>
                         <a href="${pageContext.request.contextPath}/turnos?confirmados=false">
-                            <button class="btn-basic btn-right ${!confirmed? 'btn-selected':''}" ><spring:message code="appointments.requested"/> (<c:out value="${!confirmed ?totalResults : otherFilterResults}" />)</button></a>
+                            <button class="btn-basic btn-right ${notConfirmed? 'btn-selected':''}"><spring:message code="appointments.requested"/>
+                                (<span id="${notConfirmed? 'totalResults':'moreResults'}"></span>)</button></a>
                     </div>
                 </div>
             </c:otherwise>
@@ -51,6 +54,7 @@
                 <jsp:include page="components/noResults.jsp"/>
             </c:when>
             <c:otherwise>
+                <div class="loader" id="loader"></div>
                 <c:if test="${pageCount > 1}">
                     <c:set var="historyUrl" value="/historial?" />
                     <c:set var="confirmedUrl" value="?confirmados=${confirmed}&"/>
@@ -65,12 +69,12 @@
         </c:choose>
 
     </div>
-
-<script>
-    window.onload = getPreviousPageInfo(document.referrer);
-</script>
 </div>
 </body>
 </html>
 
 <jsp:include page="appointmentScript.jsp" />
+
+<script>
+    window.onload = getPreviousPageInfo(document.referrer);
+</script>

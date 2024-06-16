@@ -154,10 +154,12 @@ public class AppointmentServiceImpl implements AppointmentService{
     public long cancelAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
         final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
+        LOGGER.info("Looking for user");
         final User client = appointment.getAppointedBy();
-
+        LOGGER.info("Found user");
         Business business = service.getBusiness();
         appointmentDao.cancelAppointment(appointment.getId());
+        LOGGER.info("About to send email");
         emailService.cancelledAppointment(appointment, service,business, client,false, getBusinessLocale(business.getUserId()));
         LOGGER.info("Cancel Appointment email sent successfully.");
 

@@ -141,25 +141,25 @@ public class BusinessController {
         mav.addObject("page",page);
         final long totalResults = appointmentService.getServicesAppointmentCount(serviceIds,confirmed);
         mav.addObject("totalResults",totalResults);
-        mav.addObject("otherResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
+        mav.addObject("moreResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
         mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
         return mav;
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "negocio/{businessId:\\d+}/solicitud-turno/{appoinmentId:\\d+}")
+    @RequestMapping(method = RequestMethod.POST, path = "negocio/{businessId:\\d+}/solicitud-turno/{appointmentId:\\d+}")
     public void acceptOrDenyAppointment(@PathVariable(value = "businessId") final long businessId,
-                                            @PathVariable(value = "appoinmentId") final long appoinmentId,
+                                            @PathVariable(value = "appointmentId") final long appointmentId,
                                             @RequestParam(value = "accepted") final boolean accepted,
                                             HttpServletResponse response) throws IOException{
         if ( accepted )
             try {
-                appointmentService.confirmAppointment(appoinmentId);
+                appointmentService.confirmAppointment(appointmentId);
             } catch (AppointmentNonExistentException e) {
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
                 response.getWriter().println("El turno ya no existe");
             }
         else
-            appointmentService.denyAppointment(appoinmentId);
+            appointmentService.denyAppointment(appointmentId);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}")
