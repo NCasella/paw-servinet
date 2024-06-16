@@ -80,6 +80,13 @@ public class QuestionDaoJpa implements QuestionDao {
         return questionServiceMap;
     }
 
+    @Override
+    public int getQuestionsToRespondCount(User user) {
+        final TypedQuery<Long> query = em.createQuery("select COUNT(q) from Question as q where q.service.business.ownedBy.id = :userid", Long.class);
+        query.setParameter("userid", user.getUserId());
+        return query.getSingleResult().intValue();
+    }
+
     private String getServiceNameForQuestion(long serviceId) {
         return em.find(Service.class, serviceId).getName();
     }

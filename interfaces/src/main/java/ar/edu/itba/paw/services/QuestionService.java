@@ -14,5 +14,6 @@ public interface QuestionService {
     void addResponse(long id, String response);
     int getQuestionsCount(long serviceid);
     Map<Question, String> getQuestionsToRespond(User user, int page);
-
+    int getQuestionsToRespondCount(User user);
+    int getQuestionsToRespondPageCount(User user);
 }

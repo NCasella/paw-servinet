@@ -94,7 +94,7 @@ public class ServiceDaoJpa implements ServiceDao {
         filterArgument.setQueryParams(nativeQuery);
 
         nativeQuery.setMaxResults(filterArgument.getPageSize());
-        nativeQuery.setFirstResult((page)*filterArgument.getPageSize());
+        nativeQuery.setFirstResult((page-1)*filterArgument.getPageSize());
 
         final List<Long> idList = (List<Long>) nativeQuery.getResultList()
                 .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());

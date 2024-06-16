@@ -76,7 +76,7 @@ public class UserController {
         User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
         mav.addObject("pendingQst", questionService.getQuestionsToRespond(currentUser, page));
         mav.addObject("page", page);
-        mav.addObject("pageCount", 1);
+        mav.addObject("pageCount", questionService.getQuestionsToRespondPageCount(currentUser));
         return mav;
     }
 

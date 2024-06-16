@@ -90,4 +90,18 @@ public class QuestionServiceImpl implements  QuestionService {
         return questionDao.getQuestionsToRespond(user, page, 10);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public int getQuestionsToRespondCount(User user) {
+        return questionDao.getQuestionsToRespondCount(user);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getQuestionsToRespondPageCount(User user) {
+        int count = getQuestionsToRespondCount(user);
+        int pageCount = count / 10;
+        if(count % 10 != 0) pageCount++;
+        return pageCount;
+    }
 }

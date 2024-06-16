@@ -11,15 +11,16 @@
 </head>
 <body>
 <c:set var="numParameters" value="0"/>
-<c:url var="Path" value="/servicios">
+<c:url var="Path" value="/servicios/">
     <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /> <c:set var="numParameters" value="${numParameters+1}"/></c:if>
+    <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}" /><c:set var="numParameters" value="${numParameters+1}"/></c:if>
     <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /><c:set var="numParameters" value="${numParameters+1}"/></c:if>
     <c:if test="${not empty paramValues.ubicacion}"><c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/> <c:set var="numParameters" value="${numParameters+1}"/></c:forEach></c:if>
 </c:url>
 
 <c:choose>
     <c:when test="${empty param or (numParameters == 0 and not empty param.pagina)}">
-        <c:set var="filtersPath" value="${Path}?"/>
+        <c:set var="filtersPath" value="${Path}/?"/>
     </c:when>
     <c:otherwise>
         <c:set var="filtersPath" value="${Path}&"/>
