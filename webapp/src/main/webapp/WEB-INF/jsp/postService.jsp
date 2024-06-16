@@ -107,7 +107,8 @@
                     </c:forEach>
                 </div>
             <div class="align-center">
-                <input type="submit" value="Publicar" class="btn submit-btn">
+                <spring:message code="input.service.publish" var="PublishValue"/>
+                <input type="submit" value="${PublishValue}" class="btn submit-btn">
             </div>
         </form:form>
     </div>
