@@ -68,10 +68,15 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocios/consultas")
-    public ModelAndView userServicesQuestions(@ModelAttribute("responseForm") final ResponseForm responseForm) {
+    public ModelAndView userServicesQuestions(
+            @ModelAttribute("responseForm") final ResponseForm responseForm,
+            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
+    ) {
         final ModelAndView mav = new ModelAndView("userQuestions");
         User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
-        mav.addObject("pendingQst", questionService.getQuestionsToRespond(currentUser));
+        mav.addObject("pendingQst", questionService.getQuestionsToRespond(currentUser, page));
+        mav.addObject("page", page);
+        mav.addObject("pageCount", 1);
         return mav;
     }
 

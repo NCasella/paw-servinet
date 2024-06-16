@@ -84,7 +84,7 @@ public class QuestionsDaoJpaTest {
         User user = em.find(User.class, USERID);
         jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1,"+ user.getUserId() +", 'question', 'responded', '2024-01-01')");
         jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1,"+ user.getUserId() +", 'question', null, '2024-01-01')");
-        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user).size());
+        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user, 0, 10).size());
     }
 
     @Test

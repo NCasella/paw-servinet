@@ -86,8 +86,8 @@ public class QuestionServiceImpl implements  QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public Map<Question, String> getQuestionsToRespond(User user) {
-        return questionDao.getQuestionsToRespond(user);
+    public Map<Question, String> getQuestionsToRespond(User user, int page) {
+        return questionDao.getQuestionsToRespond(user, page, 10);
     }
 
 }

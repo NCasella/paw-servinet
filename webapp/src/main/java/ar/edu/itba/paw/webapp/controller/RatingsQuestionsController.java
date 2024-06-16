@@ -56,10 +56,11 @@ public class RatingsQuestionsController {
     @RequestMapping(method = RequestMethod.POST, path = "/responder/{questionId:\\d+}")
     public ModelAndView addResponse(
             @Valid @ModelAttribute("responseForm") ResponseForm form, final BindingResult errors,
-            @PathVariable("questionId") final long questionId
+            @PathVariable("questionId") final long questionId,
+            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
     ){
         if(errors.hasErrors()) {
-            return userController.userServicesQuestions(form);
+            return userController.userServicesQuestions(form, page);
         }
         question.addResponse(questionId, form.getResponse());
         return new ModelAndView("redirect:/negocios/consultas");
