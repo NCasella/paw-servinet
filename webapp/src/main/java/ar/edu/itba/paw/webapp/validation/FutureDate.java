@@ -11,7 +11,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ ElementType.TYPE ,FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FutureDate {
-    String message() default "La fecha de entrega debe ser posterior a la fecha actual";
+    String message() default "{ar.edu.itba.paw.webapp.validation.FutureDate.message}";
 
     Class<?>[] groups() default {};
 

@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface LocationFormatted {
 
-    String message() default "Si ingresó una entrega a domicilio, debe seleccionar al menos un barrio. Si tiene un domicilio particular aclare SOLO en que barrio se encuentra";
+    String message() default "{ar.edu.itba.paw.webapp.validation.LocationFormatted.message}";
 
     Class<?>[] groups() default { };
 
