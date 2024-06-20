@@ -30,7 +30,7 @@ public class BusinessController {
     private final ServinetAuthControl authControl;
     private final RatingService ratingService;
 
-    List<Neighbourhoods> neighbourhoods = Arrays.asList(Neighbourhoods.values());
+    private final List<Neighbourhoods> neighbourhoods = Arrays.asList(Neighbourhoods.values());
     @Autowired
     public BusinessController(@Qualifier("BusinessServiceImpl") final BusinessService businessService,  @Qualifier("serviceServiceImpl") final ServiceService serviceService,
                               @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService,
