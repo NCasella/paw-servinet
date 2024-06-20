@@ -2,6 +2,7 @@ package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "questions")
@@ -31,6 +32,21 @@ public class Question {
         this.question = question;
         this.response = response;
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (this==o)
+            return true;
+        if(! (o instanceof Question q))
+            return false;
+        return Objects.equals(this.questionid,q.questionid);
+
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hashCode(questionid);
     }
 
     public long getId() {
