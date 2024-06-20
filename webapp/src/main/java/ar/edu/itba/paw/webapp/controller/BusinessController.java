@@ -3,7 +3,6 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 
-import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
@@ -74,13 +73,13 @@ public class BusinessController {
         return new ModelAndView("redirect:/negocios");
     }
 
-    //todo: available only for business admin
+
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/estadisticas")
     public ModelAndView appointmentStatistics(@PathVariable("businessId") final long businessId,
                                                @RequestParam(name = "filtro", required = false, defaultValue = "w") String filterId) {
         final Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         DateIntervalFilter filter = DateIntervalFilter.of(filterId);
-        if (filter==null) throw new InvalidFilterException();
+        //if (filter==null) throw new InvalidFilterException(); por el defaultValue filter no va a ser null
         final List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
 
         Map<Long, BasicService> serviceMap = new HashMap<>();
