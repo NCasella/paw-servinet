@@ -68,7 +68,7 @@ public class UserDaoJpaTest {
     }
     @Test
     public void testFindById() {
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone) VALUES (1, 'username', 'mepassword', 'name', 'surname', 'email', 'telephone')");
+        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'mepassword', 'name', 'surname', 'email', 'telephone',false)");
         Optional<User> user = userDao.findById(USERID);
         Assert.assertTrue(user.isPresent());
         Assert.assertEquals(USERID, user.get().getUserId());

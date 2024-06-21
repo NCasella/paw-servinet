@@ -59,7 +59,7 @@ package ar.edu.itba.paw.persistance;
          this.jdbcTemplate = new JdbcTemplate(ds);
          jdbcTemplate.execute("insert into users(userid,username, name, surname, email, telephone, password, isprovider) values (1,'solro', 'sol', 'rodri', 'solrodriguezgiana@gmail.com', '113452343', 'solro', true);");
          jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, "113452343", "solrodriguezgiana@gmail.com", LOCATION));
-         jdbcTemplate.execute("INSERT INTO services VALUES (1,1,'Peluqueria Ramon','Veni, peinate y divertite!',false,'calle falsa 123','Belleza',60,'Por hora',5000,true,null);");
+         jdbcTemplate.execute("INSERT INTO services(id,businessid,servicename,servicedescription,homeservice,location,category,minimalduration,pricingtype,price,additionalcharges,imageid) VALUES (1,1,'Peluqueria Ramon','Veni, peinate y divertite!',false,'calle falsa 123','Belleza',60,'Por hora','5000',true,null);");
          USER=em.find(User.class,USERID);
          SERVICE=em.find(Service.class,SERVICEID);
      }
@@ -84,7 +84,8 @@ package ar.edu.itba.paw.persistance;
          Appointment a1 = appointmentDao.create(SERVICE, USER, STARTDATE, ENDDATE, LOCATION, DESCRIPTION);
          em.flush();
          // 3. Postcondiciones - assertions (todas las que sean necesarias)
-         Assert.assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "appointments"));
+         Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "appointments","serviceid ="+SERVICEID));
+         Assert.assertEquals(SERVICE,a1.getServiceAppointed());
      }
 
      @Test
@@ -114,10 +115,8 @@ package ar.edu.itba.paw.persistance;
          jdbcTemplate.execute(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (1, %d, %d, '%s', '%s', '%s', false);", SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION));
          jdbcTemplate.execute(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (2, %d, %d, '%s', '%s', '%s', false);", SERVICEID, USERID, Timestamp.valueOf(STARTDATE.plusHours(1)), Timestamp.valueOf(ENDDATE.plusHours(1)), LOCATION));
 
-         //Appointment appointment = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION);
-         //Appointment anotherAppointment = appointmentDao.create(SERVICEID, USERID, STARTDATE.plusHours(1), ENDDATE, LOCATION);
          em.flush();
          appointmentDao.cancelAppointment(APPOINTMENT_ID);
-         Assert.assertFalse( appointmentDao.findById(APPOINTMENT_ID).isPresent());
+         Assert.assertNull(em.find(Appointment.class,APPOINTMENT_ID));
      }
  }
