@@ -112,7 +112,8 @@
                                         </div>
                                         <div class="service-info">
                                             <div class="service-header">
-                                                <p class="item comment">${item.category.value}</p>
+                                                <c:set var="categoryCodeMsg" value="${item.category.codeMsg}"/>
+                                                <p class="item comment"><spring:message code="${categoryCodeMsg}"/></p>
                                                 <p class="align-right">$
                                                     <c:choose>
                                                     <c:when test="${item.pricing.value == TBDPricing}">
