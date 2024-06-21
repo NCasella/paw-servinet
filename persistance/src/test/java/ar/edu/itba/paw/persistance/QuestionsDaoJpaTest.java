@@ -33,7 +33,7 @@ public class QuestionsDaoJpaTest {
     private static final String RESPONSE2 = "This is a response2";
     private static final long USERID = 1;
     private static final long SERVICEID = 1;
-    private static final int QUESTIONS_TO_RESPOND = 1;
+    private static final int QUESTIONS_TO_RESPOND = 2;
     private static final int QUESTIONS_COUNT = 2;
 
 
@@ -84,7 +84,9 @@ public class QuestionsDaoJpaTest {
         User user = em.find(User.class, USERID);
         jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1,"+ user.getUserId() +", 'question', 'responded', '2024-01-01')");
         jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1,"+ user.getUserId() +", 'question', null, '2024-01-01')");
-        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user, 0, 10).size());
+        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (3, 1,"+ user.getUserId() +", 'question3', null, '2024-01-01')");
+
+        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user, 1, 10).size());
     }
 
     @Test
