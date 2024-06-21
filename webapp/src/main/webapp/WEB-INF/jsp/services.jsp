@@ -11,15 +11,16 @@
 </head>
 <body>
 <c:set var="numParameters" value="0"/>
-<c:url var="Path" value="/servicios">
+<c:url var="Path" value="/servicios/">
     <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /> <c:set var="numParameters" value="${numParameters+1}"/></c:if>
+    <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}" /><c:set var="numParameters" value="${numParameters+1}"/></c:if>
     <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /><c:set var="numParameters" value="${numParameters+1}"/></c:if>
     <c:if test="${not empty paramValues.ubicacion}"><c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/> <c:set var="numParameters" value="${numParameters+1}"/></c:forEach></c:if>
 </c:url>
 
 <c:choose>
     <c:when test="${empty param or (numParameters == 0 and not empty param.pagina)}">
-        <c:set var="filtersPath" value="${Path}?"/>
+        <c:set var="filtersPath" value="${Path}/?"/>
     </c:when>
     <c:otherwise>
         <c:set var="filtersPath" value="${Path}&"/>
@@ -36,11 +37,6 @@
                     <button type="submit" class="search-button"><i class="material-icons">search</i></button>
                 </div>
             </form>
-            <div class="align-right">
-                <label>
-                    <p class="filters-text" onclick="toggleFilters()" id="toggleFiltersButton"><i class="material-icons">filter_alt</i><spring:message code="services.filter-by"/> <i class="material-icons" id="filtersIcon">expand_more</i></p>
-                </label>
-            </div>
         </div>
 
         <c:if test="${category!=null}">
@@ -116,7 +112,8 @@
                                         </div>
                                         <div class="service-info">
                                             <div class="service-header">
-                                                <p class="item comment">${item.category.value}</p>
+                                                <c:set var="categoryCodeMsg" value="${item.category.codeMsg}"/>
+                                                <p class="item comment"><spring:message code="${categoryCodeMsg}"/></p>
                                                 <p class="align-right">$
                                                     <c:choose>
                                                     <c:when test="${item.pricing.value == TBDPricing}">
@@ -152,7 +149,7 @@
             </c:choose>
         </div>
 
-        <div class="filters-column transparent" id="filters">
+        <div class="filters-column">
         <div class="filters-box">
             <h3><spring:message code="services.filter-rate"/></h3>
             <c:forEach items="${ratings}" var="rate">
@@ -200,23 +197,5 @@
 
 </div>
 
-<script>
-    function toggleFilters() {
-        var showFilters = document.getElementById('filters');
-        var icon = document.getElementById('filtersIcon');
-
-        if (showFilters.classList.contains('transparent')) {
-            showFilters.classList.remove('transparent');
-            icon.textContent= "expand_less";
-        } else {
-            showFilters.classList.add('transparent');
-            icon.textContent= "expand_more";
-        }
-    }
-
-    function withFilters() {
-
-    }
-</script>
 </body>
 </html>

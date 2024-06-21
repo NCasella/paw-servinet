@@ -55,10 +55,9 @@ public class ServiceController {
             @RequestParam(name = "categoria", required = false) String category,
             @RequestParam(name = "ubicacion", required = false) String[] neighbourhoodFilters,
             @RequestParam(name = "calificacion", required = false) String ratingFilters,
-            @RequestParam(name = "pagina", required = false) Integer page,
+            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page,
             @RequestParam(name="query",required=false) String query
     ) {
-        if(page == null) page = 0;
         final ModelAndView mav = new ModelAndView("services");
 
         List<Service> serviceList = ss.services(page, category, neighbourhoodFilters, ratingFilters, query);

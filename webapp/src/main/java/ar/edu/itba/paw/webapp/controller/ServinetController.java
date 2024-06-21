@@ -22,25 +22,22 @@ import java.util.*;
 @Qualifier("ServinetController")
 public class ServinetController {
 
-    private UserService us;
-    private ServiceService ss;
-    private final ServinetAuthControl authControl;
+    private final UserService us;
+    private final ServiceService ss;
     private final PasswordRecoveryCodeService passwordRecoveryCodeService;
     private static final String TBDPricing = PricingTypes.TBD.getValue();
 
-    private Logger LOGGER = LoggerFactory.getLogger(ServinetController.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(ServinetController.class);
 
     @Autowired
     public ServinetController(
             @Qualifier("userServiceImpl") final UserService us,
             @Qualifier("serviceServiceImpl") final ServiceService ss,
-            @Qualifier("passwordRecoveryCodeServiceImpl") final PasswordRecoveryCodeService passwordRecoveryCodeService,
-            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl
+            @Qualifier("passwordRecoveryCodeServiceImpl") final PasswordRecoveryCodeService passwordRecoveryCodeService
     ){
         this.us = us;
         this.ss = ss;
         this.passwordRecoveryCodeService = passwordRecoveryCodeService;
-        this.authControl= authControl;
     }
 
     @RequestMapping(path="/login")

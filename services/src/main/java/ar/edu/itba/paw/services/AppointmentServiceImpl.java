@@ -19,18 +19,15 @@ public class AppointmentServiceImpl implements AppointmentService{
     private final AppointmentDao appointmentDao;
     private final EmailService emailService;
     private final ServiceDao serviceDao;
-    private final BusinessDao businessDao;
     private final UserService userService;
 
     private final static int PAGESIZE = 10;
 
     private final Logger LOGGER = LoggerFactory.getLogger(AppointmentServiceImpl.class);
     @Autowired
-    public AppointmentServiceImpl(final AppointmentDao appointmentDao, final EmailService emailService,
-                                    final BusinessDao businessDao, ServiceDao serviceDao, final UserService userService) {
+    public AppointmentServiceImpl(final AppointmentDao appointmentDao, final EmailService emailService, ServiceDao serviceDao, final UserService userService) {
         this.appointmentDao = appointmentDao;
         this.emailService = emailService;
-        this.businessDao = businessDao;
         this.serviceDao = serviceDao;
         this.userService = userService;
     }
@@ -120,7 +117,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     public long confirmAppointment(long appointmentid) {
 
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
-        final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
+        final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
 
         if (appointment.getConfirmed())
@@ -136,7 +133,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public long denyAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
-        final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
+        final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
 
         if (appointment.getConfirmed())
@@ -153,8 +150,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public long cancelAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
-        final Service service = serviceDao.findById(appointment.getServiceid()).orElseThrow(ServiceNotFoundException::new);
-        LOGGER.info("Looking for user");
+        final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
         LOGGER.info("Found user");
         Business business = service.getBusiness();

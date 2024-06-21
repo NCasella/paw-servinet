@@ -68,11 +68,12 @@
      public void testDeleteLastBusiness(){
          // 1. Precondiciones
          jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION));
+         jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID+1,BUSINESS_NAME+"2", TELEPHONE, EMAIL, LOCATION));
 
          boolean isStillProvider = businessDaoJpa.deleteBusiness(BUS_ID);
          em.flush();
-         Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate, "business"));
-         //Assert.assertFalse(isStillProvider);
+         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate, "business"));
+         Assert.assertTrue(isStillProvider);
      }
 
      @Test
@@ -89,11 +90,10 @@
      @Test
      public void testDeleteBusinessWithNoBusiness(){
          jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION));
-         User user=em.find(User.class,USER_ID);
-         businessDaoJpa.deleteBusiness(BUS_ID);
+         boolean isStillProvider=businessDaoJpa.deleteBusiness(BUS_ID);
          em.flush();
          Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"business"));
-         Assert.assertFalse(user.isProvider());
+         Assert.assertTrue(isStillProvider);
 
      }
  }

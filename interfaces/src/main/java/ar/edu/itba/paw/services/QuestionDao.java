@@ -13,5 +13,6 @@ public interface QuestionDao {
     Question create(long serviceid, long userid, String question);
     void addResponse(long id, String response);
     int getQuestionsCount(long serviceid);
-    Map<Question, String> getQuestionsToRespond(User user);
+    Map<Question, String> getQuestionsToRespond(User user, int page, int pageSize);
+    int getQuestionsToRespondCount(User user);
 }

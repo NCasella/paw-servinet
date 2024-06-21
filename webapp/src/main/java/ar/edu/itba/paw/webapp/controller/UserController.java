@@ -15,7 +15,6 @@ import java.util.*;
 
 @Controller
 public class UserController {
-    private final BusinessService businessService;
     private final UserService userService;
     private final QuestionService questionService;
     private final ServinetAuthControl authControl;
@@ -23,13 +22,11 @@ public class UserController {
     private final ServiceService serviceService;
 
     @Autowired
-    public UserController (@Qualifier("BusinessServiceImpl") final BusinessService businessService,
-                           @Qualifier("userServiceImpl") final UserService userService,
+    public UserController (@Qualifier("userServiceImpl") final UserService userService,
                            @Qualifier("QuestionServiceImpl") final QuestionService questionService,
                            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl,
                            @Qualifier("serviceServiceImpl") final ServiceService serviceService,
                            @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService){
-        this.businessService = businessService;
         this.userService = userService;
         this.questionService = questionService;
         this.authControl= authControl;
@@ -71,10 +68,15 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocios/consultas")
-    public ModelAndView userServicesQuestions(@ModelAttribute("responseForm") final ResponseForm responseForm) {
+    public ModelAndView userServicesQuestions(
+            @ModelAttribute("responseForm") final ResponseForm responseForm,
+            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
+    ) {
         final ModelAndView mav = new ModelAndView("userQuestions");
         User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
-        mav.addObject("pendingQst", questionService.getQuestionsToRespond(currentUser));
+        mav.addObject("pendingQst", questionService.getQuestionsToRespond(currentUser, page));
+        mav.addObject("page", page);
+        mav.addObject("pageCount", questionService.getQuestionsToRespondPageCount(currentUser));
         return mav;
     }
 

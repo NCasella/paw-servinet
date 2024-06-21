@@ -58,18 +58,33 @@ public class QuestionDaoJpa implements QuestionDao {
     }
 
     @Override
-    public Map<Question, String> getQuestionsToRespond(User user) {
-        //agrego business en BasicService en vez del id
-        List<Question> questions = em.createQuery("SELECT q FROM Question q JOIN q.service s JOIN s.business b WHERE b.ownedBy = :user AND q.response IS NULL ORDER BY q.date DESC", Question.class)
-                .setParameter("user", user).getResultList();
+    public Map<Question, String> getQuestionsToRespond(User user, int page, int pageSize) {
+
+        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions q WHERE q.response is null and q.serviceid IN (SELECT s.id FROM services s WHERE s.businessid IN (SELECT b.businessid FROM business b WHERE b.userid = :userid)) ORDER BY q.date DESC").setParameter("userid", user.getUserId());
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+
+        @SuppressWarnings("unchecked")
+        final List<Long> idList = (List<Long>) nativeQuery.getResultList()
+                .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
+
+        final TypedQuery<Question> questions = em.createQuery(" from Question as q where q.questionid in :idList ", Question.class);
+        questions.setParameter("idList", idList);
 
         Map<Question, String> questionServiceMap = new HashMap<>();
 
-        for (Question question : questions) {
+        for (Question question : questions.getResultList()) {
             String serviceName = getServiceNameForQuestion(question.getServiceid());
             questionServiceMap.put(question, serviceName);
         }
         return questionServiceMap;
+    }
+
+    @Override
+    public int getQuestionsToRespondCount(User user) {
+        final TypedQuery<Long> query = em.createQuery("select COUNT(q) from Question as q where q.response is null and q.service.business.ownedBy.id = :userid", Long.class);
+        query.setParameter("userid", user.getUserId());
+        return query.getSingleResult().intValue();
     }
 
     private String getServiceNameForQuestion(long serviceId) {

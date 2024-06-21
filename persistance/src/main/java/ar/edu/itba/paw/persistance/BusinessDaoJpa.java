@@ -50,7 +50,7 @@ public class BusinessDaoJpa implements BusinessDao {
         final Business business = em.find(Business.class, businessid);
         if (business != null) {
             em.remove(business);
-            return true;
+            return !business.getOwnedBy().getBusinessOwned().isEmpty();
         }
         return false;
     }

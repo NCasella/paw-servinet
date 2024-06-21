@@ -78,26 +78,21 @@ public class BusinessServiceImpl implements BusinessService{
                 serviceService.delete(service, business,false);
 
         boolean isStillProvider = businessDao.deleteBusiness(businessid);
-        emailService.deletedBusiness(business,getBusinessLocale(business.getUserId()));
         User user = userService.findById(business.getUserId()).orElseThrow(UserNotFoundException::new);
         if (!isStillProvider) {
             userService.revokeProviderRole(user);
         }
+        emailService.deletedBusiness(business,user.getLocale());
     }
 
     @Transactional
     @Override
     public Business createBusiness(String businessName, long userId, String telephone, String email, String location){
         Business business = businessDao.createBusiness(businessName,userId,telephone,email,location);
-
-        emailService.createdBusiness(business,getBusinessLocale(business.getUserId()));
         User user= userService.findById(userId).orElseThrow(UserNotFoundException::new);
         userService.makeProvider(user);
+        emailService.createdBusiness(business,user.getLocale());
         return business;
-    }
-
-    private String getBusinessLocale( long adminId ){
-        return userService.getUserLocale(adminId);
     }
 
 }

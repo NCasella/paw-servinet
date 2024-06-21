@@ -1,10 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 
-import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
@@ -17,9 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -33,7 +29,7 @@ public class BusinessController {
     private final ServinetAuthControl authControl;
     private final RatingService ratingService;
 
-    List<Neighbourhoods> neighbourhoods = Arrays.asList(Neighbourhoods.values());
+    private final List<Neighbourhoods> neighbourhoods = Arrays.asList(Neighbourhoods.values());
     @Autowired
     public BusinessController(@Qualifier("BusinessServiceImpl") final BusinessService businessService,  @Qualifier("serviceServiceImpl") final ServiceService serviceService,
                               @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService,
@@ -66,13 +62,6 @@ public class BusinessController {
         if (errors.hasErrors()) {
             return registerBusiness(form);
         }
-        /*
-        ServinetAuthUserDetails userDetails = (ServinetAuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userService.findByEmail(userDetails.getUsername()).orElse(null);
-        if (user == null){
-            return new ModelAndView("redirect:/login");
-        }
-         */
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
         Business business = businessService.createBusiness(form.getBusinessName(),userid, form.getBusinessTelephone(), form.getBusinessEmail(),form.getBusinessLocation());
         return new ModelAndView("redirect:/negocio/"+ business.getBusinessid());
@@ -84,13 +73,13 @@ public class BusinessController {
         return new ModelAndView("redirect:/negocios");
     }
 
-    //todo: available only for business admin
+
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/estadisticas")
     public ModelAndView appointmentStatistics(@PathVariable("businessId") final long businessId,
                                                @RequestParam(name = "filtro", required = false, defaultValue = "w") String filterId) {
         final Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         DateIntervalFilter filter = DateIntervalFilter.of(filterId);
-        if (filter==null) throw new InvalidFilterException();
+        //if (filter==null) throw new InvalidFilterException(); por el defaultValue filter no va a ser null
         final List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
 
         Map<Long, BasicService> serviceMap = new HashMap<>();
@@ -153,16 +142,10 @@ public class BusinessController {
 
     @RequestMapping(method = RequestMethod.POST, path = "negocio/{businessId:\\d+}/solicitud-turno/{appointmentId:\\d+}")
     public void acceptOrDenyAppointment(@PathVariable(value = "businessId") final long businessId,
-                                            @PathVariable(value = "appointmentId") final long appointmentId,
-                                            @RequestParam(value = "accepted") final boolean accepted,
-                                            HttpServletResponse response) throws IOException{
-        if ( accepted )
-            try {
-                appointmentService.confirmAppointment(appointmentId);
-            } catch (AppointmentNonExistentException e) {
-                response.setStatus(HttpServletResponse.SC_CONFLICT);
-                response.getWriter().println("El turno ya no existe");
-            }
+                                    @PathVariable(value = "appointmentId") final long appointmentId,
+                                    @RequestParam(value = "accepted") final boolean accepted) {
+        if (accepted)
+            appointmentService.confirmAppointment(appointmentId);
         else
             appointmentService.denyAppointment(appointmentId);
     }

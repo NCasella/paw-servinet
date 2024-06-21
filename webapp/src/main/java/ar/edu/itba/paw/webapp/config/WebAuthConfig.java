@@ -38,21 +38,21 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
-            .and()
-            .authorizeRequests()
-                .antMatchers("/login", "/registrarse", "/olvide-mi-clave", "/restablecer-clave/**").anonymous()
-                .antMatchers("/editar-opinion/{serviceID}/{ratingId}").access("hasRole('USER') && @servinetAuthControl.isRatingOwner(#ratingId)")
-                .antMatchers("/perfil","/contratar-servicio/{serviceId}","/preguntar/**","/opinar/**").hasRole("USER")
-                .antMatchers("/negocio/{businessID}/turnos", "/negocio/{businessID}/solicitud-turno/**","/borrar-negocio/{businessID}","/crear-servicio/{businessID}", "/{businessID}/editar-negocio").access(" hasRole('BUSINESS') && @servinetAuthControl.isBusinessOwner(#businessID,@servinetAuthControl.currentUser.get().userId)")
-                .antMatchers("/borrar-servicio/{serviceId}","/editar-servicio/{serviceId}").access("hasRole('BUSINESS') && @servinetAuthControl.isServiceOwner(#serviceId)")
-                .antMatchers("/rechazar-turno/{appointmentId}","/turno/{serviceId}/{appointmentId}","/aceptar-turno/{appointmentId}","/cancelar-turno/{appointmentId}").access("hasRole('USER') && @servinetAuthControl.isUserAppointment(#appointmentId)")
-                .antMatchers("/negocios/**").hasRole("BUSINESS")
-                .antMatchers("/servicios/**").permitAll()
-                .antMatchers("/servicio/**").permitAll()
-                .antMatchers("/negocio/{businessID}").permitAll()
-                .antMatchers("/negocio/opiniones/{businessID}/**").permitAll()
-                .antMatchers("/").permitAll()
-                .antMatchers("/**").authenticated().and()
+                .and()
+                .authorizeRequests()
+                .requestMatchers("/login", "/registrarse", "/olvide-mi-clave", "/restablecer-clave/**").anonymous()
+                .requestMatchers("/editar-opinion/{serviceID:\\d+}/{ratingId:\\d+}").access("hasRole('USER') && @servinetAuthControl.isRatingOwner(#ratingId)")
+                .requestMatchers("/perfil", "/contratar-servicio/{serviceId:\\d+}", "/preguntar/**", "/opinar/**").hasRole("USER")
+                .requestMatchers("/negocio/{businessID:\\d+}/turnos","/negocio/{businessID:\\d+}/estadisticas", "/negocio/{businessID:\\d+}/solicitud-turno/**", "/borrar-negocio/{businessID:\\d+}", "/crear-servicio/{businessID:\\d+}", "/{businessID:\\d+}/editar-negocio").access(" hasRole('BUSINESS') && @servinetAuthControl.isBusinessOwner(#businessID,@servinetAuthControl.currentUser.get().userId)")
+                .requestMatchers("/borrar-servicio/{serviceId:\\d+}", "/editar-servicio/{serviceId:\\d+}").access("hasRole('BUSINESS') && @servinetAuthControl.isServiceOwner(#serviceId)")
+                .requestMatchers("/rechazar-turno/{appointmentId:\\d+}", "/turno/{serviceId:\\d+}/{appointmentId:\\d+}", "/aceptar-turno/{appointmentId:\\d+}", "/cancelar-turno/{appointmentId:\\d+}").access("hasRole('USER') && @servinetAuthControl.isUserAppointment(#appointmentId)")
+                .requestMatchers("/negocios/**").hasRole("BUSINESS")
+                .requestMatchers("/servicios/**").permitAll()
+                .requestMatchers("/servicio/**").permitAll()
+                .requestMatchers("/negocio/{businessID:\\d+}").permitAll()
+                .requestMatchers("/negocio/opiniones/{businessID:\\d+}/**").permitAll()
+                .requestMatchers("/").permitAll().
+                requestMatchers("/**").authenticated().and()
             .formLogin()
                 .loginPage("/login")
                 .usernameParameter("email")
@@ -74,6 +74,10 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(final WebSecurity web) {
+<<<<<<< HEAD
         web.ignoring().antMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/404","/403","/500,/400");
+=======
+        web.ignoring().requestMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/404","/403","/500");
+>>>>>>> refs/remotes/origin/main
     }
 }

@@ -27,7 +27,7 @@
                         <label class="qst"><c:out value="${qst.key.question}"/></label>
                         <label class="qst-date"><c:out value="${qst.key.date}"/></label>
                     </div>
-                    <c:url value="/responder/${qst.key.id}" var="askUrl"/>
+                    <c:url value="/responder/${qst.key.id}/?pagina=1" var="askUrl"/>
                     <form:form action="${askUrl}" method="post" modelAttribute="responseForm">
                         <div class="flex">
                             <form:input path="response" type="text" class="input" placeholder=""/>
@@ -43,6 +43,14 @@
             <jsp:include page="components/noResults.jsp"/>
         </c:otherwise>
     </c:choose>
+
+    <c:url value="/negocios/consultas/?" var="questionsPath"/>
+    <c:if test="${true}">
+        <c:set var="page" value="${page}" scope="request" />
+        <c:set var="pageCount" value="${pageCount}" scope="request" />
+        <c:set var="path" value="${questionsPath}" scope="request" />
+        <jsp:include page="components/pagination.jsp"/>
+    </c:if>
 </div>
 
 <script>

@@ -85,7 +85,7 @@
     @Test
      public void testFindById() {
         jdbcTemplate.execute(String.format("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (%d, %d, '%s', '%s', true, '%s', 'Belleza', 30, 'Total', '%s', false, null);", SERVICEID,BUSINESSID, NAME, DESCRIPTION, LOCATION,PRICE));
-        jdbcTemplate.execute(String.format("INSERT INTO nbservices (serviceid, neighbourhood) VALUES (%d, '%s');", SERVICEID, NEIGHBOURHOODS[0].getValue()));
+        jdbcTemplate.execute(String.format("INSERT INTO nbservices (insertid,serviceid, neighbourhood) VALUES (1,%d, '%s');", SERVICEID, NEIGHBOURHOODS[0].getValue()));
         Service service = serviceDao.findById(SERVICEID).get();
 
         Assert.assertNotNull(service);
@@ -104,9 +104,13 @@
 
    @Test
     public void testDelete() {
-       Service service = serviceDao.create(BUSINESS, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,null);
-        serviceDao.delete(service.getId());
-
+       jdbcTemplate.execute(String.format("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (%d, %d, '%s', '%s', true, '%s', 'Belleza', 30, 'Total', '%s', false, null);", SERVICEID,BUSINESSID, NAME, DESCRIPTION, LOCATION,PRICE));
+       jdbcTemplate.execute(String.format("INSERT INTO nbservices (insertid,serviceid, neighbourhood) VALUES (1,%d, '%s');", SERVICEID, NEIGHBOURHOODS[0].getValue()));
+       em.flush();
+       jdbcTemplate.execute(String.format("DELETE FROM nbservices WHERE serviceid = %d", SERVICEID));
+       em.flush(); // Manually flush the Hibernate session
+       serviceDao.delete(SERVICEID);
+       em.flush();
         Assert.assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "services"));
     }
 
@@ -114,14 +118,14 @@
     public void testWithQueryAndCategory(){
         Populate();
 
-        List<Service> services=serviceDao.getServicesFilteredBy(0,CATEGORY.getValue(), null,0,"capping");
+        List<Service> services=serviceDao.getServicesFilteredBy(1,CATEGORY.getValue(), null,0,"capping");
         Assert.assertEquals(CAPPIN_FILTERED_AMOUNT,services.size());
     }
     @Test
      public void testUnFiltered(){
         Populate();
 
-        List<Service> services =serviceDao.getServicesFilteredBy(0,null,null,0,null);
+        List<Service> services =serviceDao.getServicesFilteredBy(1,null,null,0,null);
 
 
         Assert.assertEquals(TOTAL_AMOUNT,services.size());
@@ -141,17 +145,17 @@
         jdbcTemplate.execute("insert into services(id,businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges) values (9,2, 'Uñas capping5', 'Servicio de uñas, multiples colores y esmaltes de todo tipo. Diseño a eleccion del cliente. Arte en uñas. Consulte por disponibilidad.', FALSE, 'calle123', 'Belleza', 60, 'Por hora', '10000', TRUE)");
         jdbcTemplate.execute("insert into services(id,businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges) values (10,2, 'Uñas capping6', 'Servicio de uñas, multiples colores y esmaltes de todo tipo. Diseño a eleccion del cliente. Arte en uñas. Consulte por disponibilidad.', FALSE, 'calle123', 'Belleza', 60, 'Por hora', '10000', TRUE)");
 
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (1,'Palermo')");
-        jdbcTemplate.execute("Insert into nbservices (serviceid, neighbourhood) values (1,'Almagro')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (2,'Barracas')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (3,'Belgrano')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (4,'Boedo')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (5,'Caballito')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (6,'Caballito')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (7,'Almagro')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (8,'Palermo')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (9,'Palermo')");
-        jdbcTemplate.execute("INSERT INTO nbservices (serviceid, neighbourhood) values (10,'Palermo')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (1,1,'Palermo')");
+        jdbcTemplate.execute("Insert into nbservices (insertid,serviceid, neighbourhood) values (2,1,'Almagro')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (3,2,'Barracas')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (4,3,'Belgrano')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (5,4,'Boedo')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (6,5,'Caballito')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (7,6,'Caballito')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (8,7,'Almagro')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (9,8,'Palermo')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (10,9,'Palermo')");
+        jdbcTemplate.execute("INSERT INTO nbservices (insertid,serviceid, neighbourhood) values (11,10,'Palermo')");
 
     }
  }

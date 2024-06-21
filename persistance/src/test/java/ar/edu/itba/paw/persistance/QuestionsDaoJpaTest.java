@@ -33,7 +33,7 @@ public class QuestionsDaoJpaTest {
     private static final String RESPONSE2 = "This is a response2";
     private static final long USERID = 1;
     private static final long SERVICEID = 1;
-    private static final int QUESTIONS_TO_RESPOND = 1;
+    private static final int QUESTIONS_TO_RESPOND = 2;
     private static final int QUESTIONS_COUNT = 2;
 
 
@@ -49,7 +49,7 @@ public class QuestionsDaoJpaTest {
     @Before
     public void setup(){
         this.jdbcTemplate = new JdbcTemplate(ds);
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone')");
+        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)");
         jdbcTemplate.execute("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')");
         jdbcTemplate.execute("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (1, 1, 'serviceName', 'serviceDescription', true, 'serviceLocation', 'Belleza', 30, 'Total', '1000', false, null);");
     }
@@ -84,7 +84,9 @@ public class QuestionsDaoJpaTest {
         User user = em.find(User.class, USERID);
         jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1,"+ user.getUserId() +", 'question', 'responded', '2024-01-01')");
         jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1,"+ user.getUserId() +", 'question', null, '2024-01-01')");
-        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user).size());
+        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (3, 1,"+ user.getUserId() +", 'question3', null, '2024-01-01')");
+
+        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user, 1, 10).size());
     }
 
     @Test
