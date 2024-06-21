@@ -40,8 +40,8 @@
             loader.style.display = "flex";
             setTimeout(function() {
                 loader.style.display = "none";
-            }, 1000000);
-            window.location.reload()
+                window.location.reload()
+            }, 2000);
         }
         totalResultsElement.textContent = String(totalResults)
         if ( changeNext===true) {

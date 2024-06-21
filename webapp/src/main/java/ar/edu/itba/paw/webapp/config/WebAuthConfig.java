@@ -74,6 +74,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(final WebSecurity web) {
-        web.ignoring().antMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/404","/403","/500");
+        web.ignoring().antMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/404","/403","/500,/400");
     }
 }

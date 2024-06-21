@@ -99,8 +99,13 @@ public class UserController {
         mav.addObject("page",page);
         mav.addObject("moreResults",appointmentService.getUserAppointmentCount(userid,!confirmed));
         final long totalResults = appointmentService.getUserAppointmentCount(userid,confirmed);
+        long pageCount = appointmentService.getPageCount(totalResults);
+        if ( page!=0 && pageCount <= page) {
+            pageCount--;
+            return new ModelAndView("redirect:/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
+        }
         mav.addObject("totalResults",totalResults);
-        mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
+        mav.addObject("pageCount", pageCount);
         return mav;
     }
 

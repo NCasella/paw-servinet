@@ -141,8 +141,13 @@ public class BusinessController {
         mav.addObject("page",page);
         final long totalResults = appointmentService.getServicesAppointmentCount(serviceIds,confirmed);
         mav.addObject("totalResults",totalResults);
+        long pageCount = appointmentService.getPageCount(totalResults);
+        if ( page!=0 && pageCount <= page) {
+            pageCount--;
+            return new ModelAndView("redirect:/negocio/" + businessId + "/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
+        }
         mav.addObject("moreResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
-        mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
+        mav.addObject("pageCount", pageCount);
         return mav;
     }
 
