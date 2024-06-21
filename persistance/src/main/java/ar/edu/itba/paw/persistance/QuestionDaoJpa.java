@@ -60,7 +60,7 @@ public class QuestionDaoJpa implements QuestionDao {
     @Override
     public Map<Question, String> getQuestionsToRespond(User user, int page, int pageSize) {
 
-        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions q WHERE q.serviceid IN (SELECT s.id FROM services s WHERE s.businessid IN (SELECT b.businessid FROM business b WHERE b.userid = :userid)) ORDER BY q.date DESC").setParameter("userid", user.getUserId());
+        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions q WHERE q.response is null and q.serviceid IN (SELECT s.id FROM services s WHERE s.businessid IN (SELECT b.businessid FROM business b WHERE b.userid = :userid)) ORDER BY q.date DESC").setParameter("userid", user.getUserId());
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
 
@@ -82,7 +82,7 @@ public class QuestionDaoJpa implements QuestionDao {
 
     @Override
     public int getQuestionsToRespondCount(User user) {
-        final TypedQuery<Long> query = em.createQuery("select COUNT(q) from Question as q where q.service.business.ownedBy.id = :userid", Long.class);
+        final TypedQuery<Long> query = em.createQuery("select COUNT(q) from Question as q where q.response is null and q.service.business.ownedBy.id = :userid", Long.class);
         query.setParameter("userid", user.getUserId());
         return query.getSingleResult().intValue();
     }
