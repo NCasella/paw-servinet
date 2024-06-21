@@ -104,9 +104,10 @@
 
    @Test
     public void testDelete() {
-       Service service = serviceDao.create(BUSINESS, NAME, DESCRIPTION, HOMESERVICE, LOCATION, NEIGHBOURHOODS,CATEGORY, DURATION, PRICING, PRICE, ADDITIONALCHARGES,null);
-        serviceDao.delete(service.getId());
-
+       jdbcTemplate.execute(String.format("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (%d, %d, '%s', '%s', true, '%s', 'Belleza', 30, 'Total', '%s', false, null);", SERVICEID,BUSINESSID, NAME, DESCRIPTION, LOCATION,PRICE));
+       jdbcTemplate.execute(String.format("INSERT INTO nbservices (serviceid, neighbourhood) VALUES (%d, '%s');", SERVICEID, NEIGHBOURHOODS[0].getValue()));
+        serviceDao.delete(SERVICEID);
+        em.flush();
         Assert.assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "services"));
     }
 
@@ -114,14 +115,14 @@
     public void testWithQueryAndCategory(){
         Populate();
 
-        List<Service> services=serviceDao.getServicesFilteredBy(0,CATEGORY.getValue(), null,0,"capping");
+        List<Service> services=serviceDao.getServicesFilteredBy(1,CATEGORY.getValue(), null,0,"capping");
         Assert.assertEquals(CAPPIN_FILTERED_AMOUNT,services.size());
     }
     @Test
      public void testUnFiltered(){
         Populate();
 
-        List<Service> services =serviceDao.getServicesFilteredBy(0,null,null,0,null);
+        List<Service> services =serviceDao.getServicesFilteredBy(1,null,null,0,null);
 
 
         Assert.assertEquals(TOTAL_AMOUNT,services.size());
