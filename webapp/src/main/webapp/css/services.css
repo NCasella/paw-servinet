@@ -208,3 +208,12 @@ p {
     color: #7475ff;
     transform: translateY(-2px);
 }
+
+.category-icon {
+    margin-right: 10px;
+    color: #9f9f9f;
+}
+
+.category-text {
+    margin: 5px 0;
+}
