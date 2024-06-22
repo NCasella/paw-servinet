@@ -89,12 +89,12 @@ public class ServiceDaoJpa implements ServiceDao {
 
     @Override
     public List<Service> getServicesFilteredBy(int page, String category, String[] location, int rating, String searchQuery, ServicesOrderFilters orderFilter) {
-        FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addPage(page).addRating(rating);
-        String order = "";
-        if(orderFilter != null) {
-            order = " GROUP BY s.id ORDER BY coalesce(avg(r.rating), 0) " + orderFilter.getOrder();
-        }
-        Query nativeQuery = em.createNativeQuery("select s.id from services s full join ratings r on s.id = r.serviceid where "+filterArgument.formSqlSentence()+order);
+        FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addPage(page).addRating(rating).addOrder(orderFilter);
+        Query nativeQuery;
+        if(orderFilter!=null)
+            nativeQuery = em.createNativeQuery("select s.id from services s full outer join ratings r on s.id = r.serviceid where "+filterArgument.formSqlSentence());
+        else
+            nativeQuery = em.createNativeQuery("select s.id from services s where "+filterArgument.formSqlSentence());
         filterArgument.setQueryParams(nativeQuery);
 
         nativeQuery.setMaxResults(filterArgument.getPageSize());
@@ -104,7 +104,7 @@ public class ServiceDaoJpa implements ServiceDao {
                 .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
 
         final TypedQuery<Service> query;
-        query = em.createQuery("from Service as s where id in :ids", Service.class);
+        query = em.createQuery("from Service as s  where id in :ids "+filterArgument.getOrderFilterQuery() , Service.class);
 
         query.setParameter("ids",idList);
 
