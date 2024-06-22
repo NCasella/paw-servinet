@@ -64,7 +64,7 @@ public class ServiceServiceImpl implements ServiceService {
         }
 
         Service service = serviceDao.create(business, name, description, homeservice, homeservice? "":location, homeservice? neighbourhood:uniqueNeighbourhood, category, minimalduration ,pricing, price, additionalCharges, imageId);
-        emailService.createdService(service, business, userService.getUserLocale(business.getUserId()));
+        emailService.createdService(service, business, business.getOwnedBy().getLocale());
         return service;
     }
 
@@ -96,7 +96,7 @@ public class ServiceServiceImpl implements ServiceService {
     public void delete(long serviceId) {
 
         Optional<Service> optionalService = findById(serviceId);
-        if (!optionalService.isPresent())
+        if (optionalService.isEmpty())
             return;
         final Service service = optionalService.get();
         final Business business = businessDao.findById(service.getBusinessid()).orElseThrow(UserNotFoundException::new);
@@ -107,7 +107,7 @@ public class ServiceServiceImpl implements ServiceService {
     @Transactional
     @Override
     public void delete(Service service, Business business, boolean sendEmailToBusiness) {
-        String businessLocale = userService.getUserLocale(business.getUserId());
+        String businessLocale = business.getOwnedBy().getLocale();
         List<Appointment> appointmentList = appointmentService.getAllUpcomingServiceAppointments(service.getId());
              for ( Appointment appointment : appointmentList){
                  User client = userService.findById( appointment.getUserid()).orElseThrow(UserNotFoundException::new);
