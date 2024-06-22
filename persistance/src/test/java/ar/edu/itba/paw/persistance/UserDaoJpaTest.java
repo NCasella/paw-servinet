@@ -7,17 +7,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
+import java.math.BigInteger;
 import java.util.Optional;
 
 // Uso una base de datos provista por un tercero
@@ -41,14 +39,11 @@ public class UserDaoJpaTest {
 
     @PersistenceContext
     private EntityManager em;
-    @Autowired
-    private DataSource ds;
 
-    private JdbcTemplate jdbcTemplate;
 
     @Before
     public void setup() {
-        this.jdbcTemplate = new JdbcTemplate(ds);
+
     }
 
     @Test
@@ -64,11 +59,11 @@ public class UserDaoJpaTest {
         Assert.assertEquals(NAME, user.getName());
         Assert.assertEquals(SURNAME, user.getSurname());
         Assert.assertEquals(EMAIL, user.getEmail());
-        Assert.assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
+        Assert.assertEquals(1, ((BigInteger)em.createNativeQuery("select count(*) from users").getSingleResult()).intValue());
     }
     @Test
     public void testFindById() {
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'mepassword', 'name', 'surname', 'email', 'telephone',false)");
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'mepassword', 'name', 'surname', 'email', 'telephone',false)").executeUpdate();
         Optional<User> user = userDao.findById(USERID);
         Assert.assertTrue(user.isPresent());
         Assert.assertEquals(USERID, user.get().getUserId());
@@ -79,12 +74,12 @@ public class UserDaoJpaTest {
     @Test
     public void testChangeUsername() {
         // 1. Precondiciones
-        jdbcTemplate.execute(String.format("INSERT INTO users (userid,username, password, name, surname, email, telephone, isprovider) VALUES (%d,'%s','%s','%s','%s','%s','%s',false)",USERID,USERNAME, PASSWORD, NAME, SURNAME, EMAIL, TELEPHONE));
+        em.createNativeQuery(String.format("INSERT INTO users (userid,username, password, name, surname, email, telephone, isprovider) VALUES (%d,'%s','%s','%s','%s','%s','%s',false)",USERID,USERNAME, PASSWORD, NAME, SURNAME, EMAIL, TELEPHONE)).executeUpdate();
 
         // 2. Ejecuta la class under test (una sola)
         userDao.changeUsername(USERID,"newUsername");
         em.flush();
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
-        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "users", "username = 'newUsername'"));
+        Assert.assertEquals(1,((BigInteger)em.createNativeQuery("select count(*) from users where username= 'newUsername' ").getSingleResult()).intValue());
     }
 }

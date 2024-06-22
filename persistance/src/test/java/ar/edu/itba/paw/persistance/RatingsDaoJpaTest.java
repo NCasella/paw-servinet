@@ -9,17 +9,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
+import java.math.BigInteger;
 import java.util.Optional;
 
 @Transactional
@@ -29,12 +27,8 @@ import java.util.Optional;
 @ContextConfiguration(classes = TestConfig.class)
 public class RatingsDaoJpaTest {
     private static final String COMMENT = "This is a comment";
-    private static final int RATING5 = 5;
-    private static final int RATING3 = 3;
     private static final int RATING1 = 1;
     private static final long USERID = 1;
-    private static final long USERID2=2;
-    private static final long USERID3=3;
     private static final long SERVICEID = 1;
 
     @PersistenceContext
@@ -42,19 +36,15 @@ public class RatingsDaoJpaTest {
     @Autowired
     private RatingDaoJpa ratingDao;
 
-    @Autowired
-    private DataSource ds;
-    private JdbcTemplate jdbcTemplate;
 
     @Before
     public void setup(){
-        this.jdbcTemplate = new JdbcTemplate(ds);
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)");
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (2, 'username2', 'password2', 'name2', 'surname2', 'email2', 'telephone2',false)");
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (3, 'username3', 'password3', 'name2', 'surname3', 'email3', 'telephone3',false)");
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)").executeUpdate();
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (2, 'username2', 'password2', 'name2', 'surname2', 'email2', 'telephone2',false)").executeUpdate();
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (3, 'username3', 'password3', 'name2', 'surname3', 'email3', 'telephone3',false)").executeUpdate();
 
-        jdbcTemplate.execute("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')");
-        jdbcTemplate.execute("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (1, 1, 'serviceName', 'serviceDescription', true, 'serviceLocation', 'Belleza', 30, 'Total', '1000', false, null);");
+        em.createNativeQuery("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')").executeUpdate();
+        em.createNativeQuery("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (1, 1, 'serviceName', 'serviceDescription', true, 'serviceLocation', 'Belleza', 30, 'Total', '1000', false, null);").executeUpdate();
     }
 
     @Test
@@ -66,13 +56,13 @@ public class RatingsDaoJpaTest {
         Assert.assertEquals(USERID, rating.getUserid());
         Assert.assertEquals(COMMENT, rating.getComment());
         Assert.assertEquals(RATING1, rating.getRating());
-        Assert.assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "ratings"));
+        Assert.assertEquals(1, ((BigInteger)em.createNativeQuery("select count(*) from ratings").getSingleResult()).intValue());
     }
 
 
     @Test
     public void testFindById() {
-        jdbcTemplate.execute(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment,date) values (1, %d, %d, %d, '%s',CURRENT_TIMESTAMP)", SERVICEID, USERID, RATING1, COMMENT));
+        em.createNativeQuery(String.format("insert into ratings (ratingid, serviceid, userid, rating, comment,date) values (1, %d, %d, %d, '%s',CURRENT_TIMESTAMP)", SERVICEID, USERID, RATING1, COMMENT)).executeUpdate();
         Optional<Rating> ratingFound = ratingDao.findById(1);
 
         Assert.assertTrue(ratingFound.isPresent());
