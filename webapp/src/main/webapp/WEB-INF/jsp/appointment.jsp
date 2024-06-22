@@ -15,7 +15,7 @@
     <jsp:include page="./components/backButton.jsp" />
     <div class="appointment-container">
         <div class="title">
-            <h1 class="form-title"><spring:message code="appointment.detail" arguments="${appointment.id}"/></h1>
+            <h1 class="form-title"><spring:message code="appointment.detail"/></h1>
         </div>
         <c:if test="${appointment != null}">
             <div class="box">
@@ -75,6 +75,7 @@
                         </c:otherwise>
                     </c:choose>
                 </p>
+                <p><span class="highlight-text"><spring:message code="appointment.tracking-number"/> </span> <c:out value="${appointment.id}"/></p>
                 <c:if test="${appointment.description != '' && appointment.description != null }">
                     <p><span class="highlight-text"><spring:message code="appointment.user-description"/> </span> <c:out value="${appointment.description}"/></p>
                 </c:if>
