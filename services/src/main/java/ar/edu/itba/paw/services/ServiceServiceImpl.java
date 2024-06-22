@@ -125,9 +125,9 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Service> services(int page, String category, String[] location, String rating, String query) {
+    public List<Service> services(int page, String category, String[] location, String rating, String query, ServicesOrderFilters orderFilter) {
         int ratingNum = Ratings.getMinValueByName(rating);
-        return serviceDao.getServicesFilteredBy(page, category, location, ratingNum, query);
+        return serviceDao.getServicesFilteredBy(page, category, location, ratingNum, query, orderFilter);
     }
 
     @Transactional(readOnly = true)
