@@ -20,7 +20,7 @@ public interface ServiceService {
     void delete(Service service, Business business, boolean sendEmailToBusiness);
     void delete(long serviceId);
     Map<Long,ServiceContactInfo> getServicesContactInfo(Collection<Long> serviceids);
-    List<Service> services(int page,String category,String[] location, String rating, String query);
+    List<Service> services(int page,String category,String[] location, String rating, String query, ServicesOrderFilters orderFilters);
     int getServiceCount(String category, String[] location, String rating, String searchQuery);
     int getPageCount(String category, String[] location, String rating, String searchQuery);
     List<Service> getRecommendedServices();

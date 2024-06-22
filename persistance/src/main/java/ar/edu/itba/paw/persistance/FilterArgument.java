@@ -1,12 +1,24 @@
 package ar.edu.itba.paw.persistance;
 
 
+import ar.edu.itba.paw.model.ServicesOrderFilters;
+
 import javax.persistence.Query;
 import java.util.*;
 
 public class FilterArgument {
 
     private final Map<FilterTypes, Object> filters = new EnumMap<>(FilterTypes.class);//mapa <columna a filtrar,valor del "?">
+
+    private final Map<ServicesOrderFilters,String> orderQueryMap=Map.of(
+            ServicesOrderFilters.RATE_ASC,"group by s.id order by coalesce(round(avg(r.rating), 2), 0) asc ",
+            ServicesOrderFilters.RATE_DESC,"group by s.id order by coalesce(round(avg(r.rating), 2), 0) desc "
+    );
+
+    private final Map<ServicesOrderFilters,String > orderJqlToReturn=Map.of(ServicesOrderFilters.RATE_ASC,"order by s.ratingAvg asc ",
+            ServicesOrderFilters.RATE_DESC,"order by s.ratingAvg desc ");
+
+    private  ServicesOrderFilters servicesOrderFilters;
     private int page=-1;
     private int pageSize=10;
     public FilterArgument addCategory(String category) {
@@ -22,6 +34,13 @@ public class FilterArgument {
         if(value!=null && !value.isEmpty()){
             filters.put(type,value);
         }
+        return this;
+    }
+    public String getOrderFilterQuery(){
+        return servicesOrderFilters != null ? orderJqlToReturn.getOrDefault(servicesOrderFilters,""):"";
+    }
+    public FilterArgument addOrder(ServicesOrderFilters servicesOrderFilters){
+        this.servicesOrderFilters=servicesOrderFilters;
         return this;
     }
 
@@ -60,6 +79,9 @@ public class FilterArgument {
         sql.append("2=2 ");//(p ^ 1) === p
         for (Map.Entry<FilterTypes, Object> entries : filters.entrySet()) {
                 sql.append("and ").append(entries.getKey()).append(" ");
+        }
+        if(servicesOrderFilters!=null){
+            sql.append(orderQueryMap.get(servicesOrderFilters));
         }
         return sql.toString();
     }

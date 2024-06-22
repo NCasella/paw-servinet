@@ -56,11 +56,12 @@ public class ServiceController {
             @RequestParam(name = "ubicacion", required = false) String[] neighbourhoodFilters,
             @RequestParam(name = "calificacion", required = false) String ratingFilters,
             @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "orden", required = false) String orderFilter,
             @RequestParam(name="query",required=false) String query
     ) {
         final ModelAndView mav = new ModelAndView("services");
 
-        List<Service> serviceList = ss.services(page, category, neighbourhoodFilters, ratingFilters, query);
+        List<Service> serviceList = ss.services(page, category, neighbourhoodFilters, ratingFilters, query, ServicesOrderFilters.findByValue(orderFilter));
         mav.addObject("services", serviceList);
         mav.addObject("page", page);
         mav.addObject("isServicesEmpty", serviceList.isEmpty());
@@ -70,6 +71,7 @@ public class ServiceController {
         mav.addObject("pageCount", ss.getPageCount(category, neighbourhoodFilters, ratingFilters, query));
         mav.addObject("TBDPricing", PricingTypes.TBD.getValue());
         mav.addObject("availableNb", ss.getAvailableNeighbourhoods(category));
+        mav.addObject("orderFilter", ServicesOrderFilters.findByValue(orderFilter));
         return mav;
     }
 
