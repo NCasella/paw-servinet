@@ -108,7 +108,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         Appointment appointment = appointmentDao.create(service, newuser, startDate, startDate.plusMinutes(service.getDuration()), location, description);
         Business business = service.getBusiness();
 
-        emailService.requestAppointment(appointment, service, business, newuser, getBusinessLocale(business.getUserId()));
+        emailService.requestAppointment(appointment, service, business, newuser, business.getOwnedBy().getLocale());
         LOGGER.info("Appointment request email sent successfully.");
         return appointment;
     }
@@ -125,7 +125,7 @@ public class AppointmentServiceImpl implements AppointmentService{
 
         Business business = service.getBusiness();
         appointmentDao.confirmAppointment(appointment.getId());
-        emailService.confirmedAppointment(appointment, service, business, client, getBusinessLocale(business.getUserId()) );
+        emailService.confirmedAppointment(appointment, service, business, client, business.getOwnedBy().getLocale() );
         LOGGER.info("Appointment confirmation email sent successfully.");
         return service.getId();
     }
@@ -141,7 +141,7 @@ public class AppointmentServiceImpl implements AppointmentService{
 
         Business business = service.getBusiness();
         appointmentDao.cancelAppointment(appointment.getId());
-        emailService.deniedAppointment(appointment, service, business, client,false, getBusinessLocale(business.getUserId()));
+        emailService.deniedAppointment(appointment, service, business, client,false,business.getOwnedBy().getLocale());
         LOGGER.info("Denied appointment email sent successfully.");
 
         return service.getId();
@@ -155,13 +155,10 @@ public class AppointmentServiceImpl implements AppointmentService{
 
         Business business = service.getBusiness();
         appointmentDao.cancelAppointment(appointment.getId());
-        emailService.cancelledAppointment(appointment, service,business, client,false, getBusinessLocale(business.getUserId()));
+        emailService.cancelledAppointment(appointment, service,business, client,false, business.getOwnedBy().getLocale());
         LOGGER.info("Cancel Appointment email sent successfully.");
 
         return service.getId();
     }
 
-    private String getBusinessLocale(long adminId){
-        return userService.getUserLocale(adminId);
-    }
 }

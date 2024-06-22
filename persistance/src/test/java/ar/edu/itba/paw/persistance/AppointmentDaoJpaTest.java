@@ -117,6 +117,8 @@ package ar.edu.itba.paw.persistance;
 
          em.flush();
          appointmentDao.cancelAppointment(APPOINTMENT_ID);
-         Assert.assertNull(em.find(Appointment.class,APPOINTMENT_ID));
+         em.flush();
+         Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"appointments","appointmentid="+APPOINTMENT_ID2));
+         Assert.assertEquals(0,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"appointments","appointmentid="+APPOINTMENT_ID));
      }
  }
