@@ -9,7 +9,7 @@
     var pageTotalResults = Number('${appointmentList.size()}')
 
     const totalResultsElement=document.getElementById('totalResults')
-    console.log("# app List:" + pageTotalResults )
+
     var totalResults =  Number('${totalResults}')
     totalResultsElement.textContent = totalResults
 

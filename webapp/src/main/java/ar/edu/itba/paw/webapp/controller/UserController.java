@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
@@ -83,11 +84,13 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/turnos")
     public ModelAndView userAppointments( @RequestParam(name = "confirmados") final boolean confirmed,
-                                          @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page) {
+                                          @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page) {
 
         final ModelAndView mav = new ModelAndView("userAppointments");
 
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
+        if ( page<1 )
+            throw new InvalidFilterException();
 
         List<Appointment> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed,page);
         Set<Long> serviceids = new HashSet<>();
@@ -102,8 +105,7 @@ public class UserController {
         mav.addObject("moreResults",appointmentService.getUserAppointmentCount(userid,!confirmed));
         final long totalResults = appointmentService.getUserAppointmentCount(userid,confirmed);
         long pageCount = appointmentService.getPageCount(totalResults);
-        if ( page!=0 && pageCount <= page) {
-            pageCount--;
+        if ( page!=1 && pageCount < page) {
             return new ModelAndView("redirect:/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
         }
         mav.addObject("totalResults",totalResults);
@@ -113,13 +115,14 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/turnos/historial")
     public ModelAndView userPreviousAppointments(
-            @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page
+            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
     ) {
 
         final ModelAndView mav = new ModelAndView("userAppointments");
 
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
-
+        if ( page<1 )
+            throw new InvalidFilterException();
         List<Appointment> appointmentList = appointmentService.getPreviousUserAppointments(userid,page);
         Set<Long> serviceids = new HashSet<>();
         for ( Appointment a : appointmentList){

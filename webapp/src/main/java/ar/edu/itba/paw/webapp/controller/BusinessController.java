@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 
+import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
@@ -102,9 +103,11 @@ public class BusinessController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/turnos")
     public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId, @RequestParam(name = "confirmados") final boolean confirmed,
-                                               @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page) {
+                                               @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page) {
 
         Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
+        if ( page<1 )
+            throw new InvalidFilterException();
         List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
         List<Appointment> appointmentList;
 
@@ -131,8 +134,7 @@ public class BusinessController {
         final long totalResults = appointmentService.getServicesAppointmentCount(serviceIds,confirmed);
         mav.addObject("totalResults",totalResults);
         long pageCount = appointmentService.getPageCount(totalResults);
-        if ( page!=0 && pageCount <= page) {
-            pageCount--;
+        if ( page!=1 && pageCount < page) {
             return new ModelAndView("redirect:/negocio/" + businessId + "/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
         }
         mav.addObject("moreResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
