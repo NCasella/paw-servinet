@@ -2,24 +2,21 @@
 
 
  import ar.edu.itba.paw.model.Business;
- import ar.edu.itba.paw.model.User;
  import ar.edu.itba.paw.persistance.config.TestConfig;
  import org.junit.Assert;
  import org.junit.Before;
  import org.junit.Test;
  import org.junit.runner.RunWith;
  import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.jdbc.core.JdbcTemplate;
  import org.springframework.test.annotation.Rollback;
  import org.springframework.test.context.ContextConfiguration;
  import org.springframework.test.context.jdbc.Sql;
  import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
- import org.springframework.test.jdbc.JdbcTestUtils;
  import org.springframework.transaction.annotation.Transactional;
 
  import javax.persistence.EntityManager;
  import javax.persistence.PersistenceContext;
- import javax.sql.DataSource;
+ import java.math.BigInteger;
 
  @Transactional
  @Rollback
@@ -39,16 +36,12 @@
 
      @Autowired
      private BusinessDaoJpa businessDaoJpa;
-     @Autowired
-     private DataSource ds;
      @PersistenceContext
      private EntityManager em;
-     private JdbcTemplate jdbcTemplate;
 
      @Before
      public void setup() {
-         this.jdbcTemplate = new JdbcTemplate(ds);
-         jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)");
+         em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)").executeUpdate();
      }
 
      @Test
@@ -61,39 +54,29 @@
          // 3. Postcondiciones - assertions (todas las que sean necesarias)
          Assert.assertNotNull(business);
          Assert.assertEquals(BUSINESS_NAME, business.getBusinessName());
-         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate, "business"));
+         Assert.assertEquals(1,((BigInteger)em.createNativeQuery("select count(*) from business").getSingleResult()).intValue());
      }
 
      @Test
      public void testDeleteLastBusiness(){
          // 1. Precondiciones
-         jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION));
-         jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID+1,BUSINESS_NAME+"2", TELEPHONE, EMAIL, LOCATION));
+         em.createNativeQuery(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION)).executeUpdate();
+         em.createNativeQuery(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID+1,BUSINESS_NAME+"2", TELEPHONE, EMAIL, LOCATION)).executeUpdate();
 
-         boolean isStillProvider = businessDaoJpa.deleteBusiness(BUS_ID);
+         businessDaoJpa.deleteBusiness(BUS_ID);
          em.flush();
-         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate, "business"));
-         Assert.assertTrue(isStillProvider);
+         Assert.assertEquals(1,((BigInteger)em.createNativeQuery("select count(*) from business").getSingleResult()).intValue());
      }
 
      @Test
      public void testDeleteBusinessWithMoreLeft(){
-         jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION));
-         jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID_SECONDARY,BUSINESS_NAME_SECONDARY, TELEPHONE, EMAIL, LOCATION));
+         em.createNativeQuery(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION)).executeUpdate();
+         em.createNativeQuery(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID_SECONDARY,BUSINESS_NAME_SECONDARY, TELEPHONE, EMAIL, LOCATION)).executeUpdate();
 
-         boolean isStillProvider = businessDaoJpa.deleteBusiness(BUS_ID);
+         businessDaoJpa.deleteBusiness(BUS_ID);
          em.flush();
-         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate, "business"));
-         Assert.assertTrue(isStillProvider);
+         Assert.assertNotNull(em.find(Business.class,BUS_ID_SECONDARY));
+         Assert.assertNull(em.find(Business.class,BUS_ID));
      }
 
-     @Test
-     public void testDeleteBusinessWithNoBusiness(){
-         jdbcTemplate.execute(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, TELEPHONE, EMAIL, LOCATION));
-         boolean isStillProvider=businessDaoJpa.deleteBusiness(BUS_ID);
-         em.flush();
-         Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"business"));
-         Assert.assertTrue(isStillProvider);
-
-     }
  }

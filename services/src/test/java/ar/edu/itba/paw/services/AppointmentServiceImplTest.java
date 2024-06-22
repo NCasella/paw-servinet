@@ -2,6 +2,9 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.AppointmentAlreadyConfirmed;
+import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
+import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
+import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +14,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,11 +44,13 @@ public class AppointmentServiceImplTest {
     private static final long APPOINTMENTID = 1;
     private static final String APPDESCRIPTION="Appointment description";
 
-    private static final User mockUserOwner=new User("biz owner","biz owner password","biz owner name","biz owner surname","biz owner email","11578411",true,LOCALE);
-    private static final User mockUserAppointment=new User(USERNAME,PASSWORD,NAME,SURNAME,EMAIL,TELEPHONE,true,LOCALE);
-    private static final Business mockBusiness=createBusiness();
-    private static final Appointment mockAppointment=createAppointment();
-    private static final Service mockService=createService();
+    private static final User yserOwner =new User("biz owner","biz owner password","biz owner name","biz owner surname","biz owner email","11578411",true,LOCALE);
+    private static final User userAppointment =new User(USERNAME,PASSWORD,NAME,SURNAME,EMAIL,TELEPHONE,true,LOCALE);
+    private static final Business business =new Business(BUSINESSNAME, yserOwner,TELEPHONE,EMAIL,LOCATION);
+    private static final Service service =new Service(business,NAME,DESCRIPTION,HOMESERVICE,LOCATION, CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)0);
+    private static final Appointment appointment = new Appointment(service, userAppointment,STARTDATE,ENDDATE,LOCATION,false);
+    private static final Appointment confirmedAppointment=new Appointment(service, userAppointment,STARTDATE,ENDDATE,LOCATION,true);
+    private static final Service mockService=Mockito.mock(Service.class);
 
     // Los Mocks hacen el constructor automaticamente (no necesito hacer un Before setup)
     @InjectMocks
@@ -66,48 +70,51 @@ public class AppointmentServiceImplTest {
     public void testCreate() {
         // 1. Precondiciones
 
-        Mockito.when(userService.findByEmail(Mockito.eq(EMAIL))).thenReturn(Optional.of(mockUserAppointment));
-        Mockito.when(appointmentDao.create(Mockito.eq(mockService),Mockito.eq(mockUserAppointment),Mockito.eq(STARTDATE),Mockito.any(),Mockito.eq(LOCATION),Mockito.eq(APPDESCRIPTION))).thenReturn(mockAppointment);
-        Mockito.when(businessDao.findById(Mockito.eq(BUSINESSID))).thenReturn(Optional.of(mockBusiness));
-        Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(mockService));
-        Mockito.when(mockBusiness.getOwnedBy()).thenReturn(mockUserOwner);
-        Mockito.when(mockUserOwner.getLocale()).thenReturn(LOCALE);
+        Mockito.when(userService.findByEmail(Mockito.eq(EMAIL))).thenReturn(Optional.of(userAppointment));
+        Mockito.when(appointmentDao.create(Mockito.eq(service),Mockito.eq(userAppointment),Mockito.eq(STARTDATE),Mockito.any(),Mockito.eq(LOCATION),Mockito.eq(APPDESCRIPTION))).thenReturn(appointment);
+        Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(service));
         // 2. Ejecuta la class under test (una sola)
         Appointment appointment = appointmentService.create(SERVICEID,NAME,SURNAME,EMAIL,LOCATION,TELEPHONE,STARTDATE.toString(),APPDESCRIPTION);
 
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertNotNull(appointment);
-        Assert.assertEquals(APPOINTMENTID, appointment.getId());
+        Assert.assertEquals(userAppointment, appointment.getAppointedBy());
         Assert.assertEquals(ENDDATE, appointment.getEndDate());
     }
+
+    @Test
+    public void findByIdNonExistent(){
+        Mockito.when(appointmentService.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        Optional<Appointment> appointment= appointmentService.findById(APPOINTMENTID);
+        Assert.assertTrue(appointment.isEmpty());
+
+    }
+
+    @Test(expected = ServiceNotFoundException.class)
+    public void createAppointmentForNonExistentService(){
+        Appointment appointment1=appointmentService.create(SERVICEID,NAME,SURNAME,EMAIL,LOCATION,TELEPHONE,STARTDATE.toString(),APPDESCRIPTION);
+        Assert.fail();
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void createAppointmentForNonExistentUser(){
+        Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(service));
+        Appointment appointment1=appointmentService.create(SERVICEID,NAME,SURNAME,EMAIL,LOCATION,TELEPHONE,STARTDATE.toString(),APPDESCRIPTION);
+        Assert.fail();
+    }
+
     @Test(expected = AppointmentAlreadyConfirmed.class)
     public void testDenyAlreadyCondirmed(){
-        Mockito.when(appointmentService.findById(Mockito.eq(APPOINTMENTID))).thenReturn(Optional.of(mockAppointment));
-        Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(mockService));
-        Mockito.when(userService.findById(Mockito.anyLong())).thenReturn(Optional.of(mockUserAppointment));
-
+        Mockito.when(appointmentService.findById(Mockito.eq(APPOINTMENTID))).thenReturn(Optional.of(confirmedAppointment));
         appointmentService.denyAppointment(APPOINTMENTID);
         Assert.fail();
     }
 
     @Test(expected= AppointmentAlreadyConfirmed.class)
-    public void testCreateExisting(){
-        Mockito.when(appointmentService.findById(Mockito.eq(APPOINTMENTID))).thenReturn(Optional.of(mockAppointment));
-        Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(mockService));
-        Mockito.when(userService.findById(Mockito.anyLong())).thenReturn(Optional.of(mockUserAppointment));
-
+    public void testConfirmAlready(){
+        Mockito.when(appointmentService.findById(Mockito.eq(APPOINTMENTID))).thenReturn(Optional.of(confirmedAppointment));
         appointmentService.confirmAppointment(APPOINTMENTID);
         Assert.fail();
-    }
-    private static Service createService(){
-        return new Service(mockBusiness,NAME,DESCRIPTION,HOMESERVICE,LOCATION, CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)0);
-    }
-
-    private static Business createBusiness(){
-        return new Business(BUSINESSNAME,mockUserOwner,TELEPHONE,EMAIL,LOCATION);
-    }
-    private static Appointment createAppointment(){
-        return new Appointment(mockService,mockUserAppointment,STARTDATE,ENDDATE,LOCATION,false);
     }
 }
 

@@ -37,7 +37,7 @@ public class ServiceServiceImplTest {
     private static final String USERNAME = "username";
     private static final long BUSINESSID = 1;
     private static final String DESCRIPTION = "description";
-    private static final Boolean HOMESERVICE = true;
+    private static final Boolean HOMESERVICE = false;
     private static final String SURNAME = "surname";
     private static final String LOCATION = "calle 123";
     private static final Neighbourhoods[] NEIGHBOURHOODS = {Neighbourhoods.PALERMO};
@@ -46,7 +46,9 @@ public class ServiceServiceImplTest {
     private static final String PRICE = "ARS 1000";
     private static final Boolean ADDITIONALCHARGES = false;
     private static final PricingTypes PRICING = PricingTypes.PER_TOTAL;
-
+    private static final User mockUser=Mockito.mock(User.class);
+    private static final Business mockBusiness=new Business(BUSINESS_NAME,mockUser,TELEPHONE,EMAIL,LOCATION);
+    private static final Service service=new Service(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION, CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)1);
     @InjectMocks
     private ServiceServiceImpl serviceService;
 
@@ -67,26 +69,41 @@ public class ServiceServiceImplTest {
     @Test
     public void testCreate() {
        MultipartFile image = Mockito.mock(MultipartFile.class);
-       User mockUser=Mockito.mock(User.class);
-       Business mockBusiness=Mockito.mock(Business.class);
-       Service mockService=Mockito.mock(Service.class);
        Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.of(mockBusiness));
        Mockito.when(imageService.addImage(image)).thenReturn(new ImageModel(1, new byte[1]));
-       Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)1)).thenReturn(mockService);
-       Mockito.when(mockBusiness.getOwnedBy()).thenReturn(mockUser);
-       Mockito.when(mockUser.getLocale()).thenReturn(LOCALE);
+       Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)1)).thenReturn(service);
 
        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
 
         Assert.assertNotNull(serv);
-        Assert.assertEquals(SERVICEID,serv.getId());
-        Assert.assertEquals(BUSINESSID,serv.getBusinessid());
+        Assert.assertEquals(service,serv);
+        Assert.assertEquals(mockBusiness,serv.getBusiness());
         Assert.assertEquals(SERVICENAME,serv.getName());
         Assert.assertEquals(SERVICEDESCRIPTION,serv.getDescription());
         Assert.assertEquals(HOMESERVICE,serv.getHomeService());
         Assert.assertEquals(LOCATION,serv.getLocation());
+        Assert.assertEquals(Long.valueOf(1),serv.getImageId());
     }
+    @Test
+    public void testCreateWithoutImage(){
+        final Service noImageService=new Service(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION, CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,null);
 
+        MultipartFile image = Mockito.mock(MultipartFile.class);
+        Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.of(mockBusiness));
+        Mockito.when(image.isEmpty()).thenReturn(true);
+        Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,null)).thenReturn(noImageService);
+
+        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
+
+        Assert.assertNotNull(serv);
+        Assert.assertEquals(noImageService,serv);
+        Assert.assertEquals(mockBusiness,serv.getBusiness());
+        Assert.assertEquals(SERVICENAME,serv.getName());
+        Assert.assertEquals(SERVICEDESCRIPTION,serv.getDescription());
+        Assert.assertEquals(HOMESERVICE,serv.getHomeService());
+        Assert.assertEquals(LOCATION,serv.getLocation());
+        Assert.assertEquals(Long.valueOf(-1),serv.getImageId());
+    }
     @Test(expected = BusinessNotFoundException.class)
     public void testCreateBusIdNotFound() {
         MultipartFile image = Mockito.mock(MultipartFile.class);

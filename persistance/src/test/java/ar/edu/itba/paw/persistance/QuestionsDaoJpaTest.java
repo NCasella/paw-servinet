@@ -10,17 +10,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
+import java.math.BigInteger;
 
 @Transactional
 @Rollback
@@ -42,16 +40,13 @@ public class QuestionsDaoJpaTest {
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired
-    private DataSource ds;
-    private JdbcTemplate jdbcTemplate;
 
     @Before
     public void setup(){
-        this.jdbcTemplate = new JdbcTemplate(ds);
-        jdbcTemplate.execute("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)");
-        jdbcTemplate.execute("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')");
-        jdbcTemplate.execute("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (1, 1, 'serviceName', 'serviceDescription', true, 'serviceLocation', 'Belleza', 30, 'Total', '1000', false, null);");
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)").executeUpdate();
+        em.createNativeQuery("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')").executeUpdate();
+        em.createNativeQuery("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (1, 1, 'serviceName', 'serviceDescription', true, 'serviceLocation', 'Belleza', 30, 'Total', '1000', false, null);").executeUpdate();
+        em.flush();
     }
 
     @Test
@@ -62,38 +57,39 @@ public class QuestionsDaoJpaTest {
         Assert.assertEquals(SERVICEID, qst.getServiceid());
         Assert.assertEquals(USERID, qst.getUserid());
         Assert.assertEquals(QUESTION, qst.getQuestion());
-        Assert.assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "questions"));
+        Assert.assertEquals(BigInteger.valueOf(1),em.createNativeQuery("select count(*) from questions").getSingleResult());
     }
 
     @Test
     public void testRespond() {
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1, 1, 'question', null, '2024-01-01')");
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1, 1, 'question', null, '2024-01-01')");
-        questionDao.addResponse(1, RESPONSE);
-        questionDao.addResponse(2,RESPONSE2);
+        em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1, 1, 'question', null, '2024-01-01')").executeUpdate();
+        em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1, 1, 'question', null, '2024-01-01')").executeUpdate();
         em.flush();
-        String response = jdbcTemplate.queryForObject("SELECT response FROM questions WHERE questionid = 1", String.class);
-        String response2 = jdbcTemplate.queryForObject("SELECT response FROM questions WHERE questionid = 2", String.class);
+        questionDao.addResponse(1, RESPONSE);
+        questionDao.addResponse(2, RESPONSE2);
+
+        String response = em.find(Question.class, (long)1).getResponse();
+        String response2 = em.find(Question.class, (long)2).getResponse();
         Assert.assertEquals(RESPONSE, response);
         Assert.assertEquals(RESPONSE2, response2);
-        Assert.assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "questions"));
     }
 
     @Test
     public void testQuestionsToRespond() {
         User user = em.find(User.class, USERID);
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1,"+ user.getUserId() +", 'question', 'responded', '2024-01-01')");
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1,"+ user.getUserId() +", 'question', null, '2024-01-01')");
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (3, 1,"+ user.getUserId() +", 'question3', null, '2024-01-01')");
-
+        em.flush();
+        em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1,"+ USERID +", 'question', 'responded', '2024-01-01')").executeUpdate();
+        em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1,"+ USERID +", 'question', null, '2024-01-01')").executeUpdate();
+        em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (3, 1,"+ USERID +", 'question3', null, '2024-01-01')").executeUpdate();
+        em.flush();
         Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user, 1, 10).size());
     }
 
     @Test
     public void testQuestionCount() {
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1, 1, 'question', 'responded', '2024-01-01')");
-        jdbcTemplate.execute("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1, 1, 'question', null, '2024-01-01')");
-
+        em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1, 1, 'question', 'responded', '2024-01-01')").executeUpdate();
+        em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1, 1, 'question', null, '2024-01-01')").executeUpdate();
+        em.flush();
         Assert.assertEquals(QUESTIONS_COUNT, questionDao.getQuestionsCount(SERVICEID));
     }
 

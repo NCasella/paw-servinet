@@ -20,21 +20,6 @@
             </a>
 
             <div class="dropdown">
-                <p class="nav-item"><spring:message code="navbar.categories"/></p>
-                <div class="dropdown-content">
-                    <c:forEach var="category" items="${categories}">
-                        <c:url value="/servicios" var="categoryChange">
-                            <c:if test="${not empty param.ubicacion}"><c:param name="ubicacion" value="${param.ubicacion}" /></c:if>
-                            <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
-                            <c:if test="${not empty param.page}"><c:param name="page" value="${param.page}" /></c:if>
-                            <c:param name="categoria" value="${category.value}"/>
-                        </c:url>
-                        <a href="${categoryChange}"><spring:message code="${category.codeMsg}"/></a>
-                    </c:forEach>
-                </div>
-            </div>
-
-            <div class="dropdown">
             <c:choose>
                 <c:when test="${isLoggedIn}">
                     <p class="nav-item"><spring:message code="navbar.account"/></p>
