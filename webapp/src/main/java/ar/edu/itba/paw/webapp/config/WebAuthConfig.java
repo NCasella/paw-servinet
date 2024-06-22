@@ -45,7 +45,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers("/perfil", "/contratar-servicio/{serviceId:\\d+}", "/preguntar/**", "/opinar/**").hasRole("USER")
                 .requestMatchers("/negocio/{businessID:\\d+}/turnos","/negocio/{businessID:\\d+}/estadisticas", "/negocio/{businessID:\\d+}/solicitud-turno/**", "/borrar-negocio/{businessID:\\d+}", "/crear-servicio/{businessID:\\d+}", "/{businessID:\\d+}/editar-negocio").access(" hasRole('BUSINESS') && @servinetAuthControl.isBusinessOwner(#businessID,@servinetAuthControl.currentUser.get().userId)")
                 .requestMatchers("/borrar-servicio/{serviceId:\\d+}", "/editar-servicio/{serviceId:\\d+}").access("hasRole('BUSINESS') && @servinetAuthControl.isServiceOwner(#serviceId)")
-                .requestMatchers("/rechazar-turno/{appointmentId:\\d+}", "/turno/{serviceId:\\d+}/{appointmentId:\\d+}", "/aceptar-turno/{appointmentId:\\d+}", "/cancelar-turno/{appointmentId:\\d+}").access("hasRole('USER') && @servinetAuthControl.isUserAppointment(#appointmentId)")
+                .requestMatchers("/rechazar-turno/{appointmentId:\\d+}","/aceptar-turno/{appointmentId:\\d+}").access("hasRole('BUSINESS') && @servinetAuthControl.isAdminAppointment(#appointmentId)")
+                .requestMatchers("/turno/{serviceId:\\d+}/{appointmentId:\\d+}", "/cancelar-turno/{appointmentId:\\d+}").access("hasRole('USER') && (@servinetAuthControl.isUserAppointment(#appointmentId) || @servinetAuthControl.isAdminAppointment(#appointmentId))")
                 .requestMatchers("/negocios/**").hasRole("BUSINESS")
                 .requestMatchers("/servicios/**").permitAll()
                 .requestMatchers("/servicio/**").permitAll()
@@ -74,10 +75,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(final WebSecurity web) {
-<<<<<<< HEAD
-        web.ignoring().antMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/404","/403","/500,/400");
-=======
-        web.ignoring().requestMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/404","/403","/500");
->>>>>>> refs/remotes/origin/main
+        web.ignoring().requestMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/400","/404","/403","/500");
     }
 }

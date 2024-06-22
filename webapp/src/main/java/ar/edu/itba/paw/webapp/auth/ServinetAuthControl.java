@@ -54,11 +54,19 @@ public class ServinetAuthControl {
         return business.getUserId() == user.getUserId();
     }
 
+
     @Transactional(readOnly = true)
     public boolean isUserAppointment(long appointmentId){
         User user =getCurrentUser().orElseThrow(UserNotFoundException::new);
         Appointment appointment = appointmentService.findById(appointmentId).orElseThrow(AppointmentNonExistentException::new);
         return user.getUserId() == appointment.getUserid();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAdminAppointment(long appointmentId){
+        User user =getCurrentUser().orElseThrow(UserNotFoundException::new);
+        BasicAppointment appointment = appointmentService.findById(appointmentId).orElseThrow(AppointmentNonExistentException::new);
+        return user.getUserId() == appointment.getServiceAppointed().getBusiness().getUserId();
     }
 
     @Transactional(readOnly = true)

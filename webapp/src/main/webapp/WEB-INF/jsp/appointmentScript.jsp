@@ -17,7 +17,7 @@
     const moreResultsElement=document.getElementById('moreResults')
     moreResultsElement.textContent = String(moreResults)
 
-    const changeNext = '${ !isUser and !confirmed }'
+    const changeNext = Boolean ('${ !isUser and !confirmed }')
 
     const loader = document.getElementById('loader');
 
@@ -29,11 +29,11 @@
         const url = businessUrl + '/solicitud-turno/' + appointmentId;
         if ( send(url,'POST', data) === 0) {
             document.getElementById(componentId).style.display = "none";
-            changeTotalResults();
+            changeTotalResults(accepted);
         }
     }
 
-    function changeTotalResults() {
+    function changeTotalResults(accepted) {
         totalResults-= 1
         pageTotalResults -=1
         if ( pageTotalResults===0 ) {
@@ -44,7 +44,7 @@
             }, 2000);
         }
         totalResultsElement.textContent = String(totalResults)
-        if ( changeNext===true) {
+        if ( changeNext===true && accepted) {
             moreResults += 1
             moreResultsElement.textContent = String(moreResults)
         }
@@ -56,7 +56,7 @@
 
         if ( send(url,'DELETE',{}) === 0 ) {
             document.getElementById(componentId).style.display = "none";
-            changeTotalResults()
+            changeTotalResults(false)
         }
     }
 
