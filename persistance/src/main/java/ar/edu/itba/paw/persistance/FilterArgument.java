@@ -39,6 +39,13 @@ public class FilterArgument {
     public String getOrderFilterQuery(){
         return servicesOrderFilters != null ? orderJqlToReturn.getOrDefault(servicesOrderFilters,""):"";
     }
+
+    public FilterArgument addHomeServiceFilter(Boolean homeServiceFilter){
+        if(homeServiceFilter!=null){
+            filters.put(FilterTypes.HOME_SERVICE,homeServiceFilter);
+        }
+        return this;
+    }
     public FilterArgument addOrder(ServicesOrderFilters servicesOrderFilters){
         this.servicesOrderFilters=servicesOrderFilters;
         return this;
@@ -95,7 +102,8 @@ public class FilterArgument {
             CATEGORY("category = :cat ","cat"),
             LOCATION("s.id in (select serviceid from nbservices where neighbourhood in :loc ) ","loc"),
             RATING("s.id IN (SELECT serviceid FROM ratings GROUP BY serviceid HAVING AVG(rating) >= :rate)","rate"),
-            SERVICE_SEARCH("( lower(servicename) like concat('%',lower( :search ),'%') or lower(servicedescription) like concat('%',lower( :search ),'%') )","search");
+            SERVICE_SEARCH("( lower(servicename) like concat('%',lower( :search ),'%') or lower(servicedescription) like concat('%',lower( :search ),'%') )","search"),
+            HOME_SERVICE("homeservice = :homeserv ","homeserv");
 
             private final String value;
             private final String param;//valores a ser filtrados/buscados en SQL
