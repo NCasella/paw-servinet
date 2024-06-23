@@ -51,7 +51,7 @@ package ar.edu.itba.paw.persistance;
 
      @Before
      public void setup() {
-         em.createNativeQuery("insert into users(userid,username, name, surname, email, telephone, password, isprovider) values (1,'solro', 'sol', 'rodri', 'solrodriguezgiana@gmail.com', '113452343', 'solro', true);").executeUpdate();
+         em.createNativeQuery("insert into users(userid,username, name, surname, email, telephone, password, isprovider,isverified) values (1,'solro', 'sol', 'rodri', 'solrodriguezgiana@gmail.com', '113452343', 'solro', true,true);").executeUpdate();
          em.createNativeQuery(String.format("INSERT INTO business (businessid, businessname, userid, businessTelephone, businessEmail, businessLocation) VALUES (%d,'%s', 1, '%s','%s','%s')",BUS_ID,BUSINESS_NAME, "113452343", "solrodriguezgiana@gmail.com", LOCATION)).executeUpdate();
          em.createNativeQuery("INSERT INTO services(id,businessid,servicename,servicedescription,homeservice,location,category,minimalduration,pricingtype,price,additionalcharges,imageid) VALUES (1,1,'Peluqueria Ramon','Veni, peinate y divertite!',false,'calle falsa 123','Belleza',60,'Por hora','5000',true,null);").executeUpdate();
          USER=em.find(User.class,USERID);

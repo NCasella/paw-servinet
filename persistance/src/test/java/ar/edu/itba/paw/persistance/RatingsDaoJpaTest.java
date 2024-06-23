@@ -39,9 +39,9 @@ public class RatingsDaoJpaTest {
 
     @Before
     public void setup(){
-        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)").executeUpdate();
-        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (2, 'username2', 'password2', 'name2', 'surname2', 'email2', 'telephone2',false)").executeUpdate();
-        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (3, 'username3', 'password3', 'name2', 'surname3', 'email3', 'telephone3',false)").executeUpdate();
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider,isverified) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true,true)").executeUpdate();
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider,isverified) VALUES (2, 'username2', 'password2', 'name2', 'surname2', 'email2', 'telephone2',false,true)").executeUpdate();
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider,isverified) VALUES (3, 'username3', 'password3', 'name2', 'surname3', 'email3', 'telephone3',false,true)").executeUpdate();
 
         em.createNativeQuery("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')").executeUpdate();
         em.createNativeQuery("INSERT INTO services (id, businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges, imageId) VALUES (1, 1, 'serviceName', 'serviceDescription', true, 'serviceLocation', 'Belleza', 30, 'Total', '1000', false, null);").executeUpdate();

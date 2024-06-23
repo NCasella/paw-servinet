@@ -63,7 +63,7 @@ public class UserDaoJpaTest {
     }
     @Test
     public void testFindById() {
-        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'mepassword', 'name', 'surname', 'email', 'telephone',false)").executeUpdate();
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider,isverified) VALUES (1, 'username', 'mepassword', 'name', 'surname', 'email', 'telephone',false,true)").executeUpdate();
         Optional<User> user = userDao.findById(USERID);
         Assert.assertTrue(user.isPresent());
         Assert.assertEquals(USERID, user.get().getUserId());
@@ -74,7 +74,7 @@ public class UserDaoJpaTest {
     @Test
     public void testChangeUsername() {
         // 1. Precondiciones
-        em.createNativeQuery(String.format("INSERT INTO users (userid,username, password, name, surname, email, telephone, isprovider) VALUES (%d,'%s','%s','%s','%s','%s','%s',false)",USERID,USERNAME, PASSWORD, NAME, SURNAME, EMAIL, TELEPHONE)).executeUpdate();
+        em.createNativeQuery(String.format("INSERT INTO users (userid,username, password, name, surname, email, telephone, isprovider,isverified) VALUES (%d,'%s','%s','%s','%s','%s','%s',false,true)",USERID,USERNAME, PASSWORD, NAME, SURNAME, EMAIL, TELEPHONE)).executeUpdate();
 
         // 2. Ejecuta la class under test (una sola)
         userDao.changeUsername(USERID,"newUsername");

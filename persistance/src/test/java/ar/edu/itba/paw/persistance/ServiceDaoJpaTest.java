@@ -49,7 +49,7 @@
 
     @Before
     public void setup(){
-        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',false)").executeUpdate();
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider,isverified) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',false,true)").executeUpdate();
         em.createNativeQuery("INSERT INTO business(businessid, userid, businessname, businessTelephone, businessEmail, businessLocation) VALUES (1, 1, 'businessname', 'businessTelephone', 'businessEmail', 'businessLocation')").executeUpdate();
         BUSINESS=em.find(Business.class,BUSINESSID);
     }
@@ -118,7 +118,7 @@
     }
 
     private void Populate(){
-        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (2, 'username2', 'password2', 'name2', 'surname2', 'email2', 'telephone2',false)").executeUpdate();
+        em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider,isverified) VALUES (2, 'username2', 'password2', 'name2', 'surname2', 'email2', 'telephone2',false,true)").executeUpdate();
         em.createNativeQuery("insert into business (businessid,userid, businessname, businessTelephone, businessEmail, businessLocation) values (2,2, 'Sol nails shop', '11365335', 'mailfalso@gmail.com', 'Palermo')").executeUpdate();
         em.createNativeQuery("insert into services(id,businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges) values (1,2, 'Uñas capping', 'Servicio de uñas, multiples colores y esmaltes de todo tipo. Diseño a eleccion del cliente. Arte en uñas. Consulte por disponibilidad.', FALSE, 'Palermo', 'Belleza', 60, 'Por hora', '10000', TRUE)").executeUpdate();
         em.createNativeQuery("insert into services(id,businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges) values (2,2, 'Uñas francecita', 'Servicio de uñas francesitas.', FALSE, 'Palermo', 'Belleza', 60, 'Por hora', '5000', TRUE)").executeUpdate();
