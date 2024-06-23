@@ -27,7 +27,13 @@
         <div class="box service-box flex">
             <div class="service-box-text">
                 <p class=""><spring:message code="statistics.total-requests"/></p>
-                <h1 class="appointment-counter"><c:out value="${requestedAppointments}"/></h1>
+                <h1 class="appointment-counter"><c:out value="${totalRequestedAppointments}"/></h1>
+            </div>
+        </div>
+        <div class="box service-box flex">
+            <div class="service-box-text">
+                <p class=""><spring:message code="statistics.total-confirmed"/></p>
+                <h1 class="appointment-counter"><c:out value="${totalConfirmedAppointments}"/></h1>
             </div>
         </div>
         <div class="box service-box flex">

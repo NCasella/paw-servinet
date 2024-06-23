@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Table(name = "appointments")
 public class Appointment extends BasicAppointment{
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name="userid")
     private User appointedBy;
 

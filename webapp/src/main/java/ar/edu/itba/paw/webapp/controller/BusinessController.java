@@ -96,8 +96,12 @@ public class BusinessController {
         AtomicLong totalFinishedAppointments = new AtomicLong();
         serviceAppointmentCount.forEach(pair -> totalFinishedAppointments.addAndGet(pair.getValue()));
         mav.addObject("finishedAppointments",totalFinishedAppointments.get());
-        Long requestedAppointments = appointmentService.getServicesRequestedAppointmentCount(serviceIds,filter);
-        mav.addObject("requestedAppointments", totalFinishedAppointments.get()+requestedAppointments);
+        // total confirmed
+        Long confirmed = appointmentService.getServicesAppointmentCount(serviceIds,true) + totalFinishedAppointments.get();
+        mav.addObject("totalConfirmedAppointments",confirmed);
+        // total requests
+        Long requestedAppointments = appointmentService.getServicesRequestedAppointmentCount(serviceIds,filter) + confirmed;
+        mav.addObject("totalRequestedAppointments",requestedAppointments );
         return mav;
     }
 

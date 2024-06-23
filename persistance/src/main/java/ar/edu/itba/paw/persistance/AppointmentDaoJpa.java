@@ -81,11 +81,10 @@ public class AppointmentDaoJpa implements AppointmentDao {
     }
 
     @Override
-    public Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate, LocalDateTime endDate){
-        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment where serviceAppointed.id in :serviceids and confirmed = FALSE and startDate between :startDate and :endDate",Long.class);
+    public Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate){
+        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment where serviceAppointed.id in :serviceids and confirmed = FALSE and startDate > :startDate",Long.class);
         query.setParameter("serviceids", servicesIds);
         query.setParameter("startDate", startDate);
-        query.setParameter("endDate", endDate);
         return query.getSingleResult();
     }
 
