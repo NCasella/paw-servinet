@@ -45,12 +45,14 @@
     </c:choose>
 
     <c:url value="/negocios/consultas/?" var="questionsPath"/>
-    <c:if test="${true}">
-        <c:set var="page" value="${page}" scope="request" />
-        <c:set var="pageCount" value="${pageCount}" scope="request" />
-        <c:set var="path" value="${questionsPath}" scope="request" />
-        <jsp:include page="components/pagination.jsp"/>
-    </c:if>
+    <div class="padding-bottom">
+        <c:if test="${pageCount>1}">
+            <c:set var="page" value="${page}" scope="request" />
+            <c:set var="pageCount" value="${pageCount}" scope="request" />
+            <c:set var="path" value="${questionsPath}" scope="request" />
+            <jsp:include page="components/pagination.jsp"/>
+        </c:if>
+    </div>
 </div>
 
 <script>
