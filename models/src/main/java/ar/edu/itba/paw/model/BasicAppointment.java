@@ -13,7 +13,7 @@ public abstract class BasicAppointment {
     @SequenceGenerator(name = "appointments_appointmentid_seq",sequenceName = "appointments_appointmentid_seq",allocationSize = 1)
     @Column(name = "appointmentid")
     private long id;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name="serviceid")
     private Service serviceAppointed;
     @Column(name = "startDate", nullable = false)

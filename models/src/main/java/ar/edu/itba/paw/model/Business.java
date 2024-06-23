@@ -13,7 +13,7 @@ public class Business {
     private Long businessid;
     @Column(nullable = false)
     private String businessName;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "userid")
     private User ownedBy;
     @Column(name="businesstelephone")
