@@ -38,6 +38,7 @@ public class EmailServiceImpl implements EmailService{
     public void recoverPassword(User user, PasswordRecoveryCode code) {
         Locale locale = Locale.of(user.getLocale());
         final Context ctx = new Context(locale);
+
         ctx.setVariable("user", user);
         ctx.setVariable("token", code.getCode());
         LOGGER.info("Preparing password recovery mail for user.");
@@ -64,21 +65,19 @@ public class EmailServiceImpl implements EmailService{
     @Async
     @Override
     public void requestAppointment(Appointment appointment, Service service, Business business, User client, String businessLocale) {
-        Locale locale = Locale.of(businessLocale);
-        final Context ctx = getContext(appointment,service,false, client, business, locale);
 
+        final Context ctxBusiness = getContext(appointment,service,false, client, business, Locale.of(businessLocale));
         LOGGER.info("Preparing request mail for business owner.");
         try {
-            sendMailToBusiness(EmailTypes.REQUEST, business.getEmail(), ctx);
+            sendMailToBusiness(EmailTypes.REQUEST, business.getEmail(), ctxBusiness);
         }catch(MessagingException e){
             LOGGER.warn("Error while preparing request notification email for business owner: {}", e.getMessage());
         }
 
-        locale = Locale.of(client.getLocale());
-        ctx.setLocale(locale);
+        final Context ctxClient = getContext(appointment,service,false, client, business,  Locale.of(client.getLocale()));
         LOGGER.info("Preparing request mail for client.");
         try {
-            sendMailToClient(EmailTypes.WAITING, client.getEmail(), ctx);
+            sendMailToClient(EmailTypes.WAITING, client.getEmail(), ctxClient);
         }catch(MessagingException e){
             LOGGER.warn("Error while preparing request notification email for client: {}", e.getMessage());
         }
@@ -103,21 +102,19 @@ public class EmailServiceImpl implements EmailService{
     }
 
     private void sendAppointmentMails(Appointment appointment, EmailTypes emailType,  Service service, Business business, User client, boolean isServiceDeleted, String businessLocale) {
-        Locale locale = Locale.of(businessLocale);
-        final Context ctx = getContext(appointment,service,isServiceDeleted, client, business,locale);
-
+        final Context ctxBusiness = getContext(appointment,service,isServiceDeleted, client, business, Locale.of(businessLocale));
         if (!isServiceDeleted && !emailType.equals(EmailTypes.DENIED) ) {
             LOGGER.info("Preparing {} mail for business owner.", emailType.getType());
             try {
-                sendMailToBusiness(emailType, business.getEmail(), ctx);
+                sendMailToBusiness(emailType, business.getEmail(), ctxBusiness);
             }catch(MessagingException e){
                 LOGGER.warn("Error while preparing {} notification email: {}", emailType.getType(), e.getMessage());
             }
         }
-        locale = Locale.of(client.getLocale());
-        ctx.setLocale(locale);
+
+        final Context ctxClient = getContext(appointment,service,isServiceDeleted, client, business, Locale.of(client.getLocale()));
         try {
-            sendMailToClient(emailType, client.getEmail(), ctx);
+            sendMailToClient(emailType, client.getEmail(), ctxClient);
             LOGGER.info("{} mail for client sent successfully.", emailType.getType());
         }catch (MessagingException e){
             LOGGER.warn("Error while preparing {} notification email: {}", emailType.getType(), e.getMessage());
@@ -206,31 +203,31 @@ public class EmailServiceImpl implements EmailService{
         return messageSource.getMessage(emailType.getSubject(), new Object[]{id, name} , locale) ;
     }
 
-    private Locale setLocale(String locale){
-        return Locale.of(locale);
+    private Context getQuestionContext(long serviceId, String serviceName, User client, String question, Locale locale){
+        Context ctx = new Context(locale);
+        ctx.setVariable("serviceId",serviceId);
+        ctx.setVariable("serviceName",serviceName );
+        ctx.setVariable("client", client);
+        ctx.setVariable("question", question);
+        return ctx;
     }
 
     @Async
     @Override
     public void askedQuestion(BasicService service, String businessEmail, User client, String question, String businessLocale) {
-        Locale locale = Locale.of(client.getLocale());
-        Context ctx = new Context(locale);
-        ctx.setVariable("serviceId",service.getId());
-        ctx.setVariable("serviceName", service.getName());
-        ctx.setVariable("client", client);
-        ctx.setVariable("question", question);
+
+        Context ctxClient = getQuestionContext(service.getId(), service.getName(),client,question,Locale.of(client.getLocale()));
         LOGGER.info("Preparing new question notification mail for client");
         try {
-            sendMailToClient(EmailTypes.ASKED_QUESTION, client.getEmail(), ctx );
+            sendMailToClient(EmailTypes.ASKED_QUESTION, client.getEmail(), ctxClient );
         }catch(MessagingException e){
             LOGGER.warn("Error while preparing new question notification email: {}", e.getMessage());
         }
 
-        locale = Locale.of(businessLocale);
-        ctx.setLocale(locale);
-        LOGGER.info("Preparing new question notification mail for  business owner");
+        Context ctxBusiness = getQuestionContext(service.getId(), service.getName(), client, question, Locale.of(businessLocale));
+        LOGGER.info("Preparing new question notification mail for business owner");
         try {
-            sendMailToBusiness(EmailTypes.ASKED_QUESTION, businessEmail, ctx );
+            sendMailToBusiness(EmailTypes.ASKED_QUESTION, businessEmail, ctxBusiness );
         }catch(MessagingException e){
             LOGGER.warn("Error while preparing new question notification email: {}", e.getMessage());
         }
@@ -239,12 +236,7 @@ public class EmailServiceImpl implements EmailService{
     @Async
     @Override
     public void answeredQuestion(BasicService service, User client, String question, String response) {
-        Locale locale = Locale.of(client.getLocale());
-        Context ctx = new Context(locale);
-        ctx.setVariable("serviceId",service.getId());
-        ctx.setVariable("serviceName", service.getName());
-        ctx.setVariable("client", client);
-        ctx.setVariable("question", question);
+        Context ctx = getQuestionContext(service.getId(), service.getName(),client,question,Locale.of(client.getLocale()));
         ctx.setVariable("response", response);
         LOGGER.info("Preparing question answer notification mail for client");
         try {
