@@ -118,8 +118,9 @@ public class ServiceController {
         Business business = serv.getBusiness();
         boolean isOwner = userId != null && business.getUserId()==userId;
         Rating oldRating = userId != null ? rating.hasAlreadyRated(userId,serviceId) :null;
-        if(oldRating !=null)
+        if(oldRating !=null && editReviewForm!=null) {
             editReviewForm.setEditedComment(oldRating.getComment());
+        }
         mav.addObject("isOwner", isOwner);
         mav.addObject("option", option);
         mav.addObject("service",serv);
