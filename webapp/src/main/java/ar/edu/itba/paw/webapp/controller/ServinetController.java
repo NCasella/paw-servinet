@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.model.PricingTypes;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.services.ServiceService;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
@@ -25,6 +26,7 @@ public class ServinetController {
     private final UserService us;
     private final ServiceService ss;
     private final PasswordRecoveryCodeService passwordRecoveryCodeService;
+    private final UserVerificationService userVerificationService;
     private static final String TBDPricing = PricingTypes.TBD.getValue();
 
     private final Logger LOGGER = LoggerFactory.getLogger(ServinetController.class);
@@ -33,11 +35,13 @@ public class ServinetController {
     public ServinetController(
             @Qualifier("userServiceImpl") final UserService us,
             @Qualifier("serviceServiceImpl") final ServiceService ss,
-            @Qualifier("passwordRecoveryCodeServiceImpl") final PasswordRecoveryCodeService passwordRecoveryCodeService
+            @Qualifier("passwordRecoveryCodeServiceImpl") final PasswordRecoveryCodeService passwordRecoveryCodeService,
+            @Qualifier("userVerificationServiceImpl") final UserVerificationService userVerificationService
     ){
         this.us = us;
         this.ss = ss;
         this.passwordRecoveryCodeService = passwordRecoveryCodeService;
+        this.userVerificationService = userVerificationService;
     }
 
     @RequestMapping(path="/login")
@@ -51,6 +55,24 @@ public class ServinetController {
         final ModelAndView mav = new ModelAndView("postPersonal");
 
         return mav;
+    }
+
+    @RequestMapping(path="/verificar-cuenta/{token}", method=RequestMethod.GET)
+    public ModelAndView verifyAccountRequest(@PathVariable(value = "token")final String token, @ModelAttribute("ValidateUserForm") ValidateUserForm form) {
+        if (!userVerificationService.validateTokenUrl(UUID.fromString(token))){
+            return new ModelAndView("redirect:/login");
+        }
+        return new ModelAndView("verifyAccount");
+    }
+    @RequestMapping(method=RequestMethod.POST,path = "/verificar-cuenta/{token}")
+    public ModelAndView verifyAccount(@PathVariable(value = "token")final String token, @Valid @ModelAttribute("ValidateUserForm") ValidateUserForm form, final BindingResult errors){
+        if (errors.hasErrors()){
+            return verifyAccountRequest(token, form);
+        }
+        if (us.verifyUser(UUID.fromString(token), form.getVerificationCode())){
+            return new ModelAndView("redirect:/perfil");
+        }
+        return new ModelAndView("redirect:/verificar-cuenta/"+token);
     }
 
     @RequestMapping(path="/olvide-mi-clave", method = RequestMethod.GET)
@@ -105,7 +127,7 @@ public class ServinetController {
             return registerUser(form);
         }
         us.create(form.getUsername(),form.getName(),form.getSurname(),form.getPassword(),form.getEmail(),form.getTelephone());
-        return new ModelAndView("redirect:/perfil");
+        return new ModelAndView("redirect:/login?emailSent");
     }
 
 }

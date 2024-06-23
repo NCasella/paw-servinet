@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:remove="all"  th:text="${subject}" ></title>
+  <style>
+    .header {
+      color: #585bfa;
+      text-align: center;
+    }
+    .container{
+      margin: 0 auto;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 600px;
+      align-items: center;
+      background: white;
+      padding: 40px;
+    }
+    button {
+      border-radius: 8px;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .bg {
+      font-family: 'Poppins', sans-serif;
+      background: #585bfa;
+      padding: 50px;
+      text-align: justify;
+    }
+    button:hover {
+      opacity: 0.7;
+    }
+    .btn-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .btn {
+      font-weight: bold;
+      font-family: 'Poppins', sans-serif;
+      padding: 10px;
+      color: white;
+      padding-inline: 20px;
+      cursor: pointer;
+    }
+    .question-or-answer-container {
+      margin: 0 auto;
+      border-radius: 8px;
+      max-width: 400px;
+      align-items: center;
+      background: #efefef;
+      font-style: italic;
+      padding: 15px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+
+    .confirm {
+      background-color: #585bfa;
+    }
+
+  </style>
+</head>
+
+<body class="bg">
+<div class="container">
+  <div class="header">
+    <a th:href="${url}" style="text-decoration: none"><h1>servinet .</h1></a>
+  </div>
+  <div>
+
+    <p> <span th:text="#{template.greeting}"/> <span th:text="${user.getFullName()}"/>,</p>
+    <p th:text="#{template.user-verification.intro}" />
+    <div class="question-or-answer-container">
+      <span th:text="${code}"/>
+    </div>
+
+    <div>
+      <p th:text="#{template.user-verification.url}"/>
+      <div class="btn-container">
+        <a th:href="${url}+'verificar-cuenta/'+${token}">
+          <button class="btn confirm" th:text="#{template.verify-btn}"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

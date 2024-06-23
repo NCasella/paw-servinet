@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface EmailService {
 
+    void sendVerificationCode(User user, UserVerificationCode userVerificationCode);
+
     void recoverPassword(User user, PasswordRecoveryCode passwordRecoveryCode);
 
     void confirmNewPassword(User user);

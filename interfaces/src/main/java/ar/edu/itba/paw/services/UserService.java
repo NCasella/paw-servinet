@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserService {
     Optional<User> findById(long id);
@@ -18,4 +19,5 @@ public interface UserService {
     void changeEmail(long userid,String value);
     void changePassword(String email,String value);
     void changeLocale(long userid);
+    boolean verifyUser(UUID tokenUrl, String verificationCode);
 }

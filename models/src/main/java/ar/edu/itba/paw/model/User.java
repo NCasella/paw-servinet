@@ -36,6 +36,8 @@ public class User {
     @Column(nullable = false)
     private boolean isProvider;
 
+    @Column(nullable = false)
+    private boolean isVerified;
     /*
     @OneToOne(mappedBy = "requestedBy", fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "userid")
@@ -88,6 +90,11 @@ public class User {
         this.telephone = telephone;
         this.isProvider = isProvider;
         this.locale = locale;
+        this.isVerified = false;
+    }
+
+    public boolean getIsVerified() {
+        return isVerified;
     }
     public String getPassword() {
         return password;
@@ -105,6 +112,9 @@ public class User {
         return locale;
     }
 
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
 
     public void setPassword(String password) {
         this.password = password;

@@ -36,6 +36,23 @@ public class EmailServiceImpl implements EmailService{
     }
     @Async
     @Override
+    public void sendVerificationCode(User user, UserVerificationCode userVerificationCode) {
+        Locale locale = Locale.of(user.getLocale());
+        final Context ctx = new Context(locale);
+
+        ctx.setVariable("user", user);
+        ctx.setVariable("token", userVerificationCode.getTokenUrl());
+        ctx.setVariable("code", userVerificationCode.getVerificationCode());
+        LOGGER.info("Preparing verification mail for user.");
+        try {
+            sendMail(user.getEmail(), getSubject(EmailTypes.VERIFICATION_CODE,user.getUsername()) ,ctx, EmailTypes.VERIFICATION_CODE.getTemplate());
+        }catch(MessagingException e){
+            LOGGER.warn("Error while preparing verification email: {}", e.getMessage());
+        }
+    }
+
+    @Async
+    @Override
     public void recoverPassword(User user, PasswordRecoveryCode code) {
         setLocale(user.getLocale());
         final Context ctx = new Context(LOCALE);

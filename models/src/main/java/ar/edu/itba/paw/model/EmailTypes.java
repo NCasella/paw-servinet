@@ -15,7 +15,8 @@ public enum EmailTypes {
     PASSWORD_RECOVER("RECOVER_PASSWORD", "subject.password.recover", RECOVER_PASSWORD_TEMPLATE),
     CONFIRM_NEW_PASSWORD("CONFIRM_NEW_PASSWORD", "subject.password.confirm", CONFIRM_NEW_PASSWORD_TEMPLATE),
     ASKED_QUESTION("ASKED","subject.asked-question",QUESTION_TEMPLATE),
-    ANSWERED_QUESTION("ANSWERED","subject.answered-question",QUESTION_TEMPLATE);
+    ANSWERED_QUESTION("ANSWERED","subject.answered-question",QUESTION_TEMPLATE),
+    VERIFICATION_CODE("USER_VERIFICATION","subject.user-verification", USER_VERIFICATION_TEMPLATE);
 
     private final String name;
     private final String subject;

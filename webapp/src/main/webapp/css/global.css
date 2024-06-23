@@ -126,6 +126,11 @@ body {
     align-items: center;
 }
 
+.success{
+    color: green;
+    font-size: 14px;
+}
+
 .error {
     color: #e75a46;
     font-size: 14px;

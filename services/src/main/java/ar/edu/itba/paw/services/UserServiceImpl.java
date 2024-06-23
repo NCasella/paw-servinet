@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.UserVerificationCode;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,17 +18,20 @@ import java.util.List;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
+    private final UserVerificationService userVerificationService;
 
     @Autowired
-    public UserServiceImpl(final UserDao userDao, final PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(final UserDao userDao, final PasswordEncoder passwordEncoder, final UserVerificationService userVerificationService){
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
+        this.userVerificationService= userVerificationService;
     }
 
     @Transactional(readOnly = true)
@@ -84,9 +88,8 @@ public class UserServiceImpl implements UserService {
         String locale = LocaleContextHolder.getLocale().getLanguage();
 
         User user= userDao.create(username,name,surname, passwordEncoder.encode(password), email, telephone,false,locale);
-        Set<GrantedAuthority> authorities= Set.of(new SimpleGrantedAuthority("ROLE_USER"));
-        org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, authorities));
+        userVerificationService.sendVerificationCode(user);
+
         return user;
 
     }
@@ -117,5 +120,24 @@ public class UserServiceImpl implements UserService {
         String locale = getUserLocale(userid);
         locale = locale.equals("es")? "en":"es";
         userDao.changeLocale(userid,locale);
+    }
+    @Transactional
+    @Override
+    public boolean verifyUser(UUID tokenUrl, String verificationCode){
+        if(userVerificationService.verifyUser(tokenUrl, verificationCode)) {
+            Optional<UserVerificationCode> userVerificationCode = userVerificationService.getUserVerificationCodeByTokenUrl(tokenUrl);
+            if (userVerificationCode.isEmpty()){
+                return false;
+            }
+            User user =userVerificationCode.get().getRequestedBy();
+            long userid = user.getUserId();
+            userDao.verifyUser(userid);
+            userVerificationService.deleteCode(userid);
+            Set<GrantedAuthority> authorities= Set.of(new SimpleGrantedAuthority("ROLE_USER"));
+            org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, authorities));return true;
+        }
+        //agregar cambio de roles
+        return false;
     }
 }
