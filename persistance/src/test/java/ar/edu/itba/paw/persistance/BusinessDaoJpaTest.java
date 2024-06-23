@@ -41,7 +41,7 @@
 
      @Before
      public void setup() {
-         em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true)").executeUpdate();
+         em.createNativeQuery("INSERT INTO users (userid, username, password, name, surname, email, telephone,isprovider,isverified) VALUES (1, 'username', 'password', 'name', 'surname', 'email', 'telephone',true,true)").executeUpdate();
      }
 
      @Test
