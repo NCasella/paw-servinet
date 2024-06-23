@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
-import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +48,7 @@ public class ServinetAuthControl {
         if(service.isEmpty()){
             return false;
         }
-        Business business = service.orElseThrow(BusinessNotFoundException::new).getBusiness();
+        Business business = service.get().getBusiness();
         return business.getUserId() == user.getUserId();
     }
 
@@ -58,15 +56,15 @@ public class ServinetAuthControl {
     @Transactional(readOnly = true)
     public boolean isUserAppointment(long appointmentId){
         User user =getCurrentUser().orElseThrow(UserNotFoundException::new);
-        Appointment appointment = appointmentService.findById(appointmentId).orElseThrow(AppointmentNonExistentException::new);
-        return user.getUserId() == appointment.getUserid();
+        Optional<Appointment> appointment = appointmentService.findById(appointmentId);
+        return appointment.filter(value -> user.getUserId() == value.getUserid()).isPresent();
     }
 
     @Transactional(readOnly = true)
     public boolean isAdminAppointment(long appointmentId){
         User user =getCurrentUser().orElseThrow(UserNotFoundException::new);
-        BasicAppointment appointment = appointmentService.findById(appointmentId).orElseThrow(AppointmentNonExistentException::new);
-        return user.getUserId() == appointment.getServiceAppointed().getBusiness().getUserId();
+        Optional<Appointment> appointment = appointmentService.findById(appointmentId);
+        return appointment.filter(value -> user.getUserId() == value.getServiceAppointed().getBusiness().getUserId()).isPresent();
     }
 
     @Transactional(readOnly = true)
