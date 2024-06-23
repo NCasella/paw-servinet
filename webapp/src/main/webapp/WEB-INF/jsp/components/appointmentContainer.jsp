@@ -20,7 +20,7 @@
                         - <c:out value="${appointment.endDateTimeString}"/>
                     </c:if>
                     </span>
-            <a class="appointment-field service-name" href="${pageContext.request.contextPath}/servicio/${appointment.serviceid}">
+            <a class="appointment-field service-name-not-bold" href="${pageContext.request.contextPath}/servicio/${appointment.serviceid}">
                 <c:out value="${serviceName}"/>
             </a>
             <span class="appointment-field id"> #<c:out value="${appointment.id}"/></span>

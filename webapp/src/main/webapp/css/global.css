@@ -355,3 +355,9 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.service-name-not-bold {
+    text-decoration: none;
+    color: #6c6fff;
+    width: 160px;
+}
