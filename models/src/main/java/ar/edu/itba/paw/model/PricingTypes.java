@@ -19,7 +19,7 @@ public enum PricingTypes {
     public String getCodeMsg() {
         return codeMsg;
     }
-    //TODO: implementar Interfaz que agrupe enums? -> definir findByValue genérico
+
     public static PricingTypes findByValue(String value) {
         for (PricingTypes pricingType: values()) {
             if (pricingType.getValue().equalsIgnoreCase(value)) {

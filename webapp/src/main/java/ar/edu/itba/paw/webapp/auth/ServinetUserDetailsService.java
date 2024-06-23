@@ -37,10 +37,11 @@ public class ServinetUserDetailsService implements UserDetailsService {
         }
 
         final Collection<GrantedAuthority> authorities = new HashSet<>();
+        //check if user is verified
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         if(us.isProvider(user.getUserId()))
             authorities.add(new SimpleGrantedAuthority("ROLE_BUSINESS"));
-        return new ServinetAuthUserDetails(user.getEmail(), user.getPassword(), authorities);
+        return new ServinetAuthUserDetails(user.getEmail(), user.getPassword(),user.getIsVerified(),true,true,true, authorities);
     }
 
 

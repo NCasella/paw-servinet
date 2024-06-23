@@ -13,7 +13,7 @@ import java.util.*;
 public class RatingServiceImpl implements RatingService {
 
     private final RatingDao ratingDao;
-
+    private static final int PAGE_SIZE=10;
     @Autowired
     public RatingServiceImpl(final RatingDao ratingDao) {
         this.ratingDao = ratingDao;
@@ -22,8 +22,7 @@ public class RatingServiceImpl implements RatingService {
     @Transactional(readOnly = true)
     @Override
     public List<Rating> getAllRatings(long serviceid, int page) {
-        //TODO: manejar tamaño de pagina
-        return ratingDao.getAllRatings(serviceid, page,10);
+        return ratingDao.getAllRatings(serviceid, page,PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
@@ -118,8 +117,8 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public int getBusinessRatingsPageCount(Business business) {
         int serviceCount = (int) business.getBusinessRatingCount();
-        int pageCount = serviceCount / 10;
-        if(serviceCount % 10 != 0) pageCount++;
+        int pageCount = serviceCount / PAGE_SIZE;
+        if(serviceCount % PAGE_SIZE != 0) pageCount++;
         return pageCount;
     }
 }

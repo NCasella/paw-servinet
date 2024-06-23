@@ -33,7 +33,7 @@ public enum Categories {
         return codeMsg;
     }
 
-    //TODO: implementar Interfaz que agrupe enums? -> definir findByValue genérico
+
     public static Categories findByValue(String value) {
         for (Categories category: values()) {
             if (category.getValue().equalsIgnoreCase(value)) {

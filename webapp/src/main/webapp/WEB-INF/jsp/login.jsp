@@ -13,10 +13,10 @@
     <body>
         <c:url value="/login" var="postPath"/>
         <div class="postForm page">
-        <form:form action="${postPath}" modelAttribute="ServiceForm" method="post" cssClass="form">
+        <form:form action="${postPath}" method="post" cssClass="form">
         <h2 class="form-title highlight-text"><spring:message code="login"/></h2>
             <div>
-                <form:errors path="Ser"></form:errors><label>
+                <label>
                     <p class="label">
                     <spring:message code="email"/>
                     </p>
@@ -35,6 +35,12 @@
             </div>
             <c:if test="${param.error!=null}">
                 <p class="error"><spring:message code="error.badcredentials"/></p>
+            </c:if>
+            <c:if test="${param.notVerified!=null}">
+                <p class="error"><spring:message code="error.notVerified"/></p>
+            </c:if>
+            <c:if test="${param.emailSent!=null}">
+                <p class="success"><spring:message code="login.emailSent"/></p>
             </c:if>
             <div>
                 <label class="password-options">

@@ -85,4 +85,13 @@ public class UserDaoJpa implements UserDao {
             em.persist(user);
         }
     }
+
+    public void verifyUser(long userid){
+        Optional<User> maybeUser= findById(userid);
+        if(maybeUser.isPresent()){
+            final User user= maybeUser.get();
+            user.setIsVerified(true);
+            em.persist(user);
+        }
+    }
 }
