@@ -18,6 +18,9 @@
                 <a href="${urlCreateBusiness}" class="none-decoration mr">
                     <button class="btn center-vertically"><i class="material-icons">storefront</i> <spring:message code="businesses.add-business"/></button>
                 </a>
+                <a href="${pageContext.request.contextPath}/negocios/turnos" class="none-decoration">
+                    <button class="btn center-vertically"><i class="material-icons">calendar_today</i> <spring:message code="businesses.appointments"/></button>
+                </a>
                 <a href="${pageContext.request.contextPath}/negocios/consultas" class="none-decoration">
                     <button class="btn center-vertically"><i class="material-icons">notifications_active</i> <spring:message code="businesses.questions"/></button>
                 </a>
