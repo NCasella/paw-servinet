@@ -1,12 +1,24 @@
 package ar.edu.itba.paw.persistance;
 
 
+import ar.edu.itba.paw.model.ServicesOrderFilters;
+
 import javax.persistence.Query;
 import java.util.*;
 
 public class FilterArgument {
 
     private final Map<FilterTypes, Object> filters = new EnumMap<>(FilterTypes.class);//mapa <columna a filtrar,valor del "?">
+
+    private final Map<ServicesOrderFilters,String> orderQueryMap=Map.of(
+            ServicesOrderFilters.RATE_ASC,"group by s.id order by coalesce(round(avg(r.rating), 2), 0) asc ",
+            ServicesOrderFilters.RATE_DESC,"group by s.id order by coalesce(round(avg(r.rating), 2), 0) desc "
+    );
+
+    private final Map<ServicesOrderFilters,String > orderJqlToReturn=Map.of(ServicesOrderFilters.RATE_ASC,"order by s.ratingAvg asc ",
+            ServicesOrderFilters.RATE_DESC,"order by s.ratingAvg desc ");
+
+    private  ServicesOrderFilters servicesOrderFilters;
     private int page=-1;
     private int pageSize=10;
     public FilterArgument addCategory(String category) {
@@ -22,6 +34,20 @@ public class FilterArgument {
         if(value!=null && !value.isEmpty()){
             filters.put(type,value);
         }
+        return this;
+    }
+    public String getOrderFilterQuery(){
+        return servicesOrderFilters != null ? orderJqlToReturn.getOrDefault(servicesOrderFilters,""):"";
+    }
+
+    public FilterArgument addHomeServiceFilter(Boolean homeServiceFilter){
+        if(homeServiceFilter!=null){
+            filters.put(FilterTypes.HOME_SERVICE,homeServiceFilter);
+        }
+        return this;
+    }
+    public FilterArgument addOrder(ServicesOrderFilters servicesOrderFilters){
+        this.servicesOrderFilters=servicesOrderFilters;
         return this;
     }
 
@@ -61,6 +87,9 @@ public class FilterArgument {
         for (Map.Entry<FilterTypes, Object> entries : filters.entrySet()) {
                 sql.append("and ").append(entries.getKey()).append(" ");
         }
+        if(servicesOrderFilters!=null){
+            sql.append(orderQueryMap.get(servicesOrderFilters));
+        }
         return sql.toString();
     }
     public void setQueryParams(Query query){
@@ -73,7 +102,8 @@ public class FilterArgument {
             CATEGORY("category = :cat ","cat"),
             LOCATION("s.id in (select serviceid from nbservices where neighbourhood in :loc ) ","loc"),
             RATING("s.id IN (SELECT serviceid FROM ratings GROUP BY serviceid HAVING AVG(rating) >= :rate)","rate"),
-            SERVICE_SEARCH("( lower(servicename) like concat('%',lower( :search ),'%') or lower(servicedescription) like concat('%',lower( :search ),'%') )","search");
+            SERVICE_SEARCH("( lower(servicename) like concat('%',lower( :search ),'%') or lower(servicedescription) like concat('%',lower( :search ),'%') )","search"),
+            HOME_SERVICE("homeservice = :homeserv ","homeserv");
 
             private final String value;
             private final String param;//valores a ser filtrados/buscados en SQL

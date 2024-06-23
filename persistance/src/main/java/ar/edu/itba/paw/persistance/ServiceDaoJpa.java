@@ -88,9 +88,13 @@ public class ServiceDaoJpa implements ServiceDao {
 
 
     @Override
-    public List<Service> getServicesFilteredBy(int page, String category, String[] location, int rating, String searchQuery) {
-        FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addPage(page).addRating(rating);
-        Query nativeQuery =em.createNativeQuery("select s.id from services s  where "+filterArgument.formSqlSentence());
+    public List<Service> getServicesFilteredBy(int page, String category, String[] location, int rating, String searchQuery, ServicesOrderFilters orderFilter,Boolean homeServiceFilter) {
+        FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addPage(page).addRating(rating).addOrder(orderFilter).addHomeServiceFilter(homeServiceFilter);
+        Query nativeQuery;
+        if(orderFilter!=null)
+            nativeQuery = em.createNativeQuery("select s.id from services s full outer join ratings r on s.id = r.serviceid where "+filterArgument.formSqlSentence());
+        else
+            nativeQuery = em.createNativeQuery("select s.id from services s where "+filterArgument.formSqlSentence());
         filterArgument.setQueryParams(nativeQuery);
 
         nativeQuery.setMaxResults(filterArgument.getPageSize());
@@ -99,7 +103,9 @@ public class ServiceDaoJpa implements ServiceDao {
         final List<Long> idList = (List<Long>) nativeQuery.getResultList()
                 .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
 
-        final TypedQuery<Service> query= em.createQuery("from Service as s where id in :ids" , Service.class);
+        final TypedQuery<Service> query;
+        query = em.createQuery("from Service as s  where id in :ids "+filterArgument.getOrderFilterQuery() , Service.class);
+
         query.setParameter("ids",idList);
 
         return  query.getResultList();
@@ -107,8 +113,8 @@ public class ServiceDaoJpa implements ServiceDao {
 
 
     @Override
-    public int getServiceCount(String category, String[] location, int rating, String searchQuery) {
-        FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addRating(rating);
+    public int getServiceCount(String category, String[] location, int rating, String searchQuery,Boolean homeServiceFilter) {
+        FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addRating(rating).addHomeServiceFilter(homeServiceFilter);
         final Query query= em.createNativeQuery("select count(s.id) from services s where "+filterArgument.formSqlSentence());
         filterArgument.setQueryParams(query);
         return ((Number)query.getSingleResult()).intValue();

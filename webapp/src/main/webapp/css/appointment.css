@@ -64,3 +64,8 @@
 .state-text {
     text-align: center;
 }
+
+.appointment-detail {
+    display: flex;
+    align-items: center;
+}

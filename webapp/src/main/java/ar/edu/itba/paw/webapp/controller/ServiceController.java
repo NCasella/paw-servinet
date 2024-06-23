@@ -56,20 +56,24 @@ public class ServiceController {
             @RequestParam(name = "ubicacion", required = false) String[] neighbourhoodFilters,
             @RequestParam(name = "calificacion", required = false) String ratingFilters,
             @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name="query",required=false) String query
+            @RequestParam(name = "orden", required = false) String orderFilter,
+            @RequestParam(name="query",required=false) String query,
+            @RequestParam(name="domicilio",required = false) Boolean homeServiceFilter
     ) {
         final ModelAndView mav = new ModelAndView("services");
 
-        List<Service> serviceList = ss.services(page, category, neighbourhoodFilters, ratingFilters, query);
+        List<Service> serviceList = ss.services(page, category, neighbourhoodFilters, ratingFilters, query, ServicesOrderFilters.findByValue(orderFilter),homeServiceFilter);
         mav.addObject("services", serviceList);
         mav.addObject("page", page);
         mav.addObject("isServicesEmpty", serviceList.isEmpty());
         mav.addObject("category", Categories.findByValue(category));
         mav.addObject("location", neighbourhoodFilters);
-        mav.addObject("resultsAmount", ss.getServiceCount(category, neighbourhoodFilters, ratingFilters, query));
-        mav.addObject("pageCount", ss.getPageCount(category, neighbourhoodFilters, ratingFilters, query));
+        mav.addObject("resultsAmount", ss.getServiceCount(category, neighbourhoodFilters, ratingFilters, query,homeServiceFilter));
+        mav.addObject("pageCount", ss.getPageCount(category, neighbourhoodFilters, ratingFilters, query,homeServiceFilter));
         mav.addObject("TBDPricing", PricingTypes.TBD.getValue());
         mav.addObject("availableNb", ss.getAvailableNeighbourhoods(category));
+        mav.addObject("orderFilter", ServicesOrderFilters.findByValue(orderFilter));
+        mav.addObject("orderFilters", ServicesOrderFilters.values());
         return mav;
     }
 

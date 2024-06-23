@@ -12,10 +12,15 @@
 </head>
 <body>
 <div class="page">
-    <jsp:include page="./components/backButton.jsp" />
+
+    <a href="${pageContext.request.contextPath}/servicio/${appointment.serviceid}" class="none-decoration back-container">
+        <i class="material-icons back-arrow">arrow_back</i>
+        <label class="back-text" id="previous-page-text"><spring:message code="back.service"/></label>
+    </a>
+
     <div class="appointment-container">
         <div class="title">
-            <h1 class="form-title"><spring:message code="appointment.detail" arguments="${appointment.id}"/></h1>
+            <h1 class="form-title"><spring:message code="appointment.detail"/></h1>
         </div>
         <c:if test="${appointment != null}">
             <div class="box">
@@ -52,17 +57,30 @@
         <div class="box">
             <div class="box-info">
                 <h3><spring:message code="service.info"/></h3>
-                <p><span class="highlight-text"><spring:message code="service-name"/>:</span>
+                <p class="appointment-detail service-name"><span class="highlight-text"><i class="material-icons">storefront</i></span>
                     <a class="service-name none-decoration" href="${pageContext.request.contextPath}/servicio/${appointment.serviceid}">
-                        <c:out value="${service.name}"/></a><p>
-                <p><span class="highlight-text"><spring:message code="appointment.service.description"/> </span><c:out value="${service.description}"/><p>
-                <p><span class="highlight-text"><spring:message code="appointment.service.price"/></span> <c:out value="${service.price}"/></p>
+                        <spring:message code="appointment.service.name" arguments="${service.name}, ${service.business.name}"/>
+                    </a>
+                <p>
+
+                <p class="appointment-detail"><c:out value="${service.description}"/><p>
+                <p>$ <c:out value="${service.price}"/></p>
 
                 <h3 class="appointment-info"><spring:message code="appointment.info"/></h3>
-                <p><span class="highlight-text"><spring:message code="appointment.status"/> </span> <c:out value="${appointment.confirmed ? 'Confirmado':'Pendiente de confirmación'}"/></p>
-                <p><span class="highlight-text"><spring:message code="appointment.solicitor-name"/> </span> <c:out value="${user.name}"/> <c:out value="${user.surname}"/></p>
-                <p><span class="highlight-text"><spring:message code="appointment.date"/> </span><c:out value="${appointment.startDateWithTimeString}"/></p>
-                <p><span class="highlight-text"><spring:message code="appointment.location"/> </span> <c:out value="${service.homeService? appointment.location : service.location}"/></p>
+                <p class="appointment-detail"><span class="highlight-text"><i class="material-icons">person</i> </span> <c:out value="${user.name}"/> <c:out value="${user.surname}"/></p>
+                <p class="appointment-detail"><span class="highlight-text"><i class="material-icons">calendar_today</i></span><c:out value="${appointment.startDateWithTimeString}"/></p>
+                <c:set value="${service.homeService? appointment.location : service.location}" var="location"/>
+                <p class="appointment-detail"><span class="highlight-text"><i class="material-icons">location_on</i></span>
+                    <c:choose>
+                        <c:when test="${location == null || empty location}">
+                            <spring:message code="appointment.no-location"/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:out value="${location}"/>
+                        </c:otherwise>
+                    </c:choose>
+                </p>
+                <p><span class="highlight-text"><spring:message code="appointment.tracking-number"/> </span> <c:out value="${appointment.id}"/></p>
                 <c:if test="${appointment.description != '' && appointment.description != null }">
                     <p><span class="highlight-text"><spring:message code="appointment.user-description"/> </span> <c:out value="${appointment.description}"/></p>
                 </c:if>
@@ -86,8 +104,6 @@
 </body>
 
 <script>
-    window.onload = getPreviousPageInfo(document.referrer);
-
     function showPopUp() {
         document.getElementById("popup").style.display = "block";
     }
