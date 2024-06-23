@@ -88,10 +88,9 @@ public class UserController {
             @RequestParam(name = "confirmados") final boolean confirmed,
             @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
     ) {
-        Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
-        if ( page<1 )
-            throw new InvalidFilterException();
-        List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
+        User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
+
+        List<BasicService> services = serviceService.getAllUserBasicServices(currentUser);
         List<Appointment> appointmentList;
 
         Map<Long, BasicService> serviceMap = new HashMap<>();
@@ -99,7 +98,7 @@ public class UserController {
         Set<Long> serviceIds =  serviceMap.keySet();
         appointmentList = appointmentService.getAllUpcomingServicesAppointments(serviceIds, confirmed, page);
 
-        final ModelAndView mav = new ModelAndView("businessAppointments");
+        final ModelAndView mav = new ModelAndView("userBusinessesAppointments");
         Map<Long, User> userMap = new HashMap<>();
         if (confirmed){
             for (Appointment a : appointmentList){
@@ -109,7 +108,6 @@ public class UserController {
             mav.addObject("userMap", userMap );
         }
 
-        mav.addObject("business",business);
         mav.addObject("serviceMap", serviceMap );
         mav.addObject("appointmentList", appointmentList);
         mav.addObject("confirmed",confirmed);
@@ -118,7 +116,7 @@ public class UserController {
         mav.addObject("totalResults",totalResults);
         long pageCount = appointmentService.getPageCount(totalResults);
         if ( page!=1 && pageCount < page) {
-            return new ModelAndView("redirect:/negocio/" + businessId + "/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
+            return new ModelAndView("redirect:/negocios/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
         }
         mav.addObject("moreResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
         mav.addObject("pageCount", pageCount);

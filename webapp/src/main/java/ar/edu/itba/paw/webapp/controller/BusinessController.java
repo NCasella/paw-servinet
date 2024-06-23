@@ -146,8 +146,8 @@ public class BusinessController {
         return mav;
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "negocio/{businessId:\\d+}/solicitud-turno/{appointmentId:\\d+}")
-    public void acceptOrDenyAppointment(@PathVariable(value = "businessId") final long businessId,
+    @RequestMapping(method = RequestMethod.POST, path = "negocio/solicitud-turno/{appointmentId:\\d+}")
+    public void acceptOrDenyAppointment(
                                     @PathVariable(value = "appointmentId") final long appointmentId,
                                     @RequestParam(value = "accepted") final boolean accepted) {
         if (accepted)

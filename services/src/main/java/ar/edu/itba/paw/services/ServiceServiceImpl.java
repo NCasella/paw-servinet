@@ -154,6 +154,16 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<BasicService> getAllUserBasicServices(User user) {
+        List<BasicService> services = new ArrayList<>();
+        for(Business business : user.getBusinessOwned()) {
+            services.addAll(getAllBusinessBasicServices(business.getBusinessid()));
+        }
+        return services;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<Service> getAllBusinessServices(long businessid){
         return serviceDao.getAllBusinessServices(businessid);
     }

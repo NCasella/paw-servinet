@@ -3,7 +3,7 @@
 
 <script src="${pageContext.request.contextPath}/js/fetch.js"></script>
 <script type="text/javascript">
-    const businessUrl = '${pageContext.request.contextPath}/negocio/${businessId}'
+    const businessUrl = '${pageContext.request.contextPath}/negocio'
     const deleteAppointmentUrl = '${pageContext.request.contextPath}/cancelar-turno/'
 
     var pageTotalResults = Number('${appointmentList.size()}')
