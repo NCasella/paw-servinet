@@ -12,7 +12,12 @@
 </head>
 <body>
 <div class="page">
-    <jsp:include page="./components/backButton.jsp" />
+
+    <a href="${pageContext.request.contextPath}/servicio/${appointment.serviceid}" class="none-decoration back-container">
+        <i class="material-icons back-arrow">arrow_back</i>
+        <label class="back-text" id="previous-page-text"><spring:message code="back.service"/></label>
+    </a>
+
     <div class="appointment-container">
         <div class="title">
             <h1 class="form-title"><spring:message code="appointment.detail"/></h1>
@@ -99,8 +104,6 @@
 </body>
 
 <script>
-    window.onload = getPreviousPageInfo(document.referrer);
-
     function showPopUp() {
         document.getElementById("popup").style.display = "block";
     }
