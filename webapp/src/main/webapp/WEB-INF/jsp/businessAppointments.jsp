@@ -41,14 +41,16 @@
             </c:when>
             <c:otherwise>
                 <div class="loader" id="loader"></div>
-                <c:if test="${pageCount > 1}">
-                    <div class="pagination-box">
-                        <c:set var="page" value="${page}" scope="request" />
-                        <c:set var="pageCount" value="${pageCount}" scope="request" />
-                        <c:set var="path" value="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=${confirmed}&" scope="request" />
-                        <jsp:include page="components/pagination.jsp"/>
-                    </div>
-                </c:if>
+                <div id="pagination">
+                    <c:if test="${pageCount > 1}">
+                        <div class="pagination-box">
+                            <c:set var="page" value="${page}" scope="request" />
+                            <c:set var="pageCount" value="${pageCount}" scope="request" />
+                            <c:set var="path" value="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=${confirmed}&" scope="request" />
+                            <jsp:include page="components/pagination.jsp" />
+                        </div>
+                    </c:if>
+                </div>
             </c:otherwise>
         </c:choose>
     </div>

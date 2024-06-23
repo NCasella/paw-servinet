@@ -20,6 +20,7 @@
     const changeNext = Boolean ('${ !isUser and !confirmed }')
 
     const loader = document.getElementById('loader');
+    const paginationBox = document.getElementById('pagination');
 
     function acceptAppointment(appointmentId,accepted, componentId){
 
@@ -38,10 +39,11 @@
         pageTotalResults -=1
         if ( pageTotalResults===0 ) {
             loader.style.display = "flex";
+            paginationBox.style.display ="none";
             setTimeout(function() {
                 loader.style.display = "none";
                 window.location.reload()
-            }, 2000);
+            }, 2500);
         }
         totalResultsElement.textContent = String(totalResults)
         if ( changeNext===true && accepted) {

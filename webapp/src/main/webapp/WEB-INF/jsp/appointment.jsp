@@ -64,7 +64,7 @@
                 <p>
 
                 <p class="appointment-detail"><c:out value="${service.description}"/><p>
-                <p>$ <c:out value="${service.price}"/></p>
+                <p>$ <c:out value="${service.pricing==P }"/></p>
 
                 <h3 class="appointment-info"><spring:message code="appointment.info"/></h3>
                 <p class="appointment-detail"><span class="highlight-text"><i class="material-icons">person</i> </span> <c:out value="${user.name}"/> <c:out value="${user.surname}"/></p>

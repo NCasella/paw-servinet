@@ -58,7 +58,7 @@
                 <c:if test="${pageCount > 1}">
                     <c:set var="historyUrl" value="/historial?" />
                     <c:set var="confirmedUrl" value="?confirmados=${confirmed}&"/>
-                    <div class="pagination-box">
+                    <div class="pagination-box" id="pagination-box">
                         <c:set var="page" value="${page}" scope="request" />
                         <c:set var="pageCount" value="${pageCount}" scope="request" />
                         <c:set var="path" value="${pageContext.request.contextPath}/turnos${history? historyUrl:confirmedUrl}" scope="request" />
