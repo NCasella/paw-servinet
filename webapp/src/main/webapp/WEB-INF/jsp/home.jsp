@@ -81,39 +81,45 @@
     <div class="recommended-services-containers">
         <h3 class="container-text"><spring:message code="home.recommended-services"/></h3>
         <c:forEach items="${recommendedServices}" var="item">
-        <div class="service-box">
-            <a class="service-text" href="${pageContext.request.contextPath}/servicio/${item.id}">
-                <div class="service-data-container">
-                    <div class="service-img-container">
-                        <img class="img service-img" src="${pageContext.request.contextPath}/images/${item.imageId}" alt="<spring:message code="service.image"/>">
-                    </div>
-                    <div class="service-info">
-                        <div class="service-header">
-                            <h3> <c:out value="${item.name}"/></h3>
-                            <p class="align-right">$
-                                <c:choose>
-                                <c:when test="${item.pricing.value == TBDPricing}">
+            <div class="service-box">
+                <a class="service-text" href="${pageContext.request.contextPath}/servicio/${item.id}">
+                    <div class="service-data-container">
+                        <div class="service-img-container">
+                            <img class="img service-img" src="${pageContext.request.contextPath}/images/${item.imageId}" alt="<spring:message code="service.image"/>">
+                        </div>
+                        <div class="service-info">
+                            <div class="service-header">
+                                <c:set var="categoryCodeMsg" value="${item.category.codeMsg}"/>
+                                <p class="item comment"><spring:message code="${categoryCodeMsg}"/></p>
+                                <p class="align-right">$
+                                    <c:choose>
+                                    <c:when test="${item.pricing.value == TBDPricing}">
                                 <p class="TBD-comment"><spring:message code="pricing.tbd"/></p>
                                 </c:when>
                                 <c:otherwise>
                                     <c:out value="${item.price}"/>
                                 </c:otherwise>
                                 </c:choose>
+                                </p>
+                            </div>
+                            <div class="service-header">
+                                <h3 class="service-title"> <c:out value="${item.name}"/></h3>
+                                <c:set value="${item.ratingAvg}" var="ratingAvg"/>
+                                <spring:message code="service.unrated" var="noRatings"/>
+                                <p class="align-right">${ratingAvg > 0? ratingAvg:noRatings}<i class="material-icons yellow-star">star</i></p>
+                            </div>
+                            <p class="item"> <i class="material-icons">location_on</i>
+                                <c:if test="${not empty item.location}">
+                                    <c:out value="${item.location}"/>,
+                                </c:if>
+                                <c:forEach items="${item.neighbourhoodAvailable}" var="neighbour">
+                                    <c:out value=" ${neighbour}"/>
+                                </c:forEach>
                             </p>
                         </div>
-                        <p class="item"> <i class="material-icons">location_on</i>
-                            <c:if test="${not empty item.location}">
-                                <c:out value="${item.location}"/>,
-                            </c:if>
-                            <c:forEach items="${item.neighbourhoodAvailable}" var="neighbour">
-                                <c:out value=" ${neighbour}"/>
-                            </c:forEach>
-                        </p>
-                        <p class="item"> <c:out value="${item.description}"/></p>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
         </c:forEach>
     </div>
 
