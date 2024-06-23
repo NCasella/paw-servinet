@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public enum DateIntervalFilter {
 
 
-    LASTWEEK(7,"d"),
+    LASTWEEK(7,"w"),
     LASTTHIRTYDAYS(30,"m"),
     LASTYEAR(365,"y");
 
@@ -24,10 +24,9 @@ public enum DateIntervalFilter {
 
     public static DateIntervalFilter of(String id){
         return switch (id) {
-            case "w" -> LASTWEEK;
             case "m" -> LASTTHIRTYDAYS;
             case "y" -> LASTYEAR;
-            default -> null;
+            default -> LASTWEEK;
         };
     }
 
@@ -36,5 +35,7 @@ public enum DateIntervalFilter {
         return id;
     }
 
-
+    public String getId() {
+        return id;
+    }
 }

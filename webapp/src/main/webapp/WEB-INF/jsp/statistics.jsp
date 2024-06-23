@@ -68,6 +68,6 @@
 </body>
 </html>
 <script>
-    document.getElementById('${filter}').classList.add('btn-selected')
+    document.getElementById('${filter.id}').classList.add('btn-selected')
     window.onload = getPreviousPageInfo(document.referrer);
 </script>
