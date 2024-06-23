@@ -28,7 +28,7 @@ public class QuestionServiceImpl implements  QuestionService {
     private final ServiceService serviceService;
     private final BusinessService businessService;
     private final Logger LOGGER = LoggerFactory.getLogger(QuestionServiceImpl.class);
-
+    private static final int PAGE_SIZE=10;
     @Autowired
     public QuestionServiceImpl(final QuestionDao questionDao, final EmailService emailService,
                                final UserService userService, final ServiceService serviceService,
@@ -44,8 +44,7 @@ public class QuestionServiceImpl implements  QuestionService {
     @Override
     public List<Question> getAllQuestions(long serviceid, int page) {
         List<Question> questions;
-        //TODO: manejar tamaño de pagina
-        questions = questionDao.getAllQuestions(serviceid, page, 10);
+        questions = questionDao.getAllQuestions(serviceid, page, PAGE_SIZE);
         return questions;
     }
 

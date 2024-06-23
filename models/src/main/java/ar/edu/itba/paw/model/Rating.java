@@ -10,10 +10,10 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "ratings_ratingid_seq")
     @SequenceGenerator(sequenceName = "ratings_ratingid_seq",name="ratings_ratingid_seq",allocationSize = 1)
     private long ratingid;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name="serviceid")
     private Service service;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name="userid")
     private User user;
     @Column(nullable = false)

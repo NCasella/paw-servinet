@@ -40,6 +40,7 @@ select.input {
     background: none;
     padding: 10px 10px;
     margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .file-input {

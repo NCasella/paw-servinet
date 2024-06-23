@@ -42,7 +42,7 @@ public class Service extends BasicService {
     @OneToMany(mappedBy = "service")
     private List<Rating> ratings;
 
-    @Formula("(select coalesce(round(avg(r.rating), 1), 0) from ratings r where r.serviceid = id)")
+    @Formula("(select coalesce(round(avg(r.rating), 2), 0) from ratings r where r.serviceid = id)")
     private double ratingAvg;
     @Formula("(select count(r.rating) from ratings r where r.serviceid = id)")
     private int ratingsCount;

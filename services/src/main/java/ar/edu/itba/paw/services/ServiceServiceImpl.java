@@ -125,22 +125,22 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Service> services(int page, String category, String[] location, String rating, String query) {
+    public List<Service> services(int page, String category, String[] location, String rating, String query, ServicesOrderFilters orderFilter,Boolean homeServiceFilter) {
         int ratingNum = Ratings.getMinValueByName(rating);
-        return serviceDao.getServicesFilteredBy(page, category, location, ratingNum, query);
+        return serviceDao.getServicesFilteredBy(page, category, location, ratingNum, query, orderFilter,homeServiceFilter);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getServiceCount(String category, String[] location, String rating, String searchQuery) {
+    public int getServiceCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceFilter) {
         int ratingNum = Ratings.getMinValueByName(rating);
-        return serviceDao.getServiceCount(category, location, ratingNum, searchQuery);
+        return serviceDao.getServiceCount(category, location, ratingNum, searchQuery,homeServiceFilter);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getPageCount(String category, String[] location, String rating, String searchQuery) {
-        int serviceCount = getServiceCount(category, location, rating, searchQuery);
+    public int getPageCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceCount) {
+        int serviceCount = getServiceCount(category, location, rating, searchQuery,homeServiceCount);
         int pageCount = serviceCount / 10;
         if(serviceCount % 10 != 0) pageCount++;
         return pageCount;
@@ -150,6 +150,16 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public List<BasicService> getAllBusinessBasicServices(long businessId) {
         return serviceDao.getAllBusinessBasicServices(businessId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<BasicService> getAllUserBasicServices(User user) {
+        List<BasicService> services = new ArrayList<>();
+        for(Business business : user.getBusinessOwned()) {
+            services.addAll(getAllBusinessBasicServices(business.getBusinessid()));
+        }
+        return services;
     }
 
     @Transactional(readOnly = true)

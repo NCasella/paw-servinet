@@ -58,6 +58,7 @@ body {
 .highlight-text {
     color: #585bfa;
     font-weight: bold;
+    margin-right: 10px;
 }
 
 .align-right {
@@ -191,7 +192,11 @@ body {
 .service-name {
     text-decoration: none;
     color: #6c6fff;
-    width: 160px;
+    font-weight: bold;
+}
+
+.service-name:hover {
+    transform: translateY(-2px);
 }
 
 .mr {
@@ -331,4 +336,33 @@ body {
 .back-text {
     font-weight: bold;
     cursor: pointer;
+}
+
+.display-none {
+    display: none;
+}
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #585bfa; /* Blue */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 2s linear infinite;
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.service-name-not-bold {
+    text-decoration: none;
+    color: #6c6fff;
+    width: 160px;
 }

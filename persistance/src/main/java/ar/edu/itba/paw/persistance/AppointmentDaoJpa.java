@@ -45,7 +45,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
         query.setParameter("serviceids",List.copyOf(servicesIds));
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("confirmed", confirmed);
-        query.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
+        query.setFirstResult((page - 1) * pageSize);
         query.setMaxResults(pageSize);
 
         final List<Long> idList = query.getResultList();
@@ -81,18 +81,17 @@ public class AppointmentDaoJpa implements AppointmentDao {
     }
 
     @Override
-    public Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate, LocalDateTime endDate){
-        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment where serviceAppointed.id in :serviceids and confirmed = FALSE and startDate between :startDate and :endDate",Long.class);
+    public Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate){
+        TypedQuery<Long> query = em.createQuery("SELECT count(id) FROM Appointment where serviceAppointed.id in :serviceids and confirmed = FALSE and startDate > :startDate",Long.class);
         query.setParameter("serviceids", servicesIds);
         query.setParameter("startDate", startDate);
-        query.setParameter("endDate", endDate);
         return query.getSingleResult();
     }
 
     @Override
     public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize) {
         TypedQuery<Long> query = em.createQuery("SELECT id FROM Appointment as a where appointedBy.userId = :userid and confirmed = :confirmed and startDate > :currentDate order by startDate,id", Long.class);
-        query.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
+        query.setFirstResult((page - 1) * pageSize);
         query.setMaxResults(pageSize);
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);
@@ -118,7 +117,7 @@ public class AppointmentDaoJpa implements AppointmentDao {
     public List<Appointment> getPreviousUserAppointments(long userid, int page, int pageSize) {
 
         TypedQuery<Long> nativeQuery = em.createQuery("SELECT id FROM Appointment as a where appointedBy.userId = :userid and confirmed = TRUE and startDate < :currentDate order by startDate desc, id desc", Long.class);
-        nativeQuery.setFirstResult(page * pageSize); // (page - 1) si arrancan en 1 las pags
+        nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
         nativeQuery.setParameter("currentDate", LocalDateTime.now());
         nativeQuery.setParameter("userid", userid);

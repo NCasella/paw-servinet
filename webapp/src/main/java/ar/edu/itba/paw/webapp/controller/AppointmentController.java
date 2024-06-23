@@ -58,33 +58,13 @@ public class AppointmentController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET , path = "/rechazar-turno/{appointmentId:\\d+}")
-    public ModelAndView denyAppointment(@PathVariable("appointmentId") final long appointmentId) {
-        final long serviceId = appointmentService.denyAppointment(appointmentId);
-        return new ModelAndView("redirect:/sinturno/" + serviceId + "/?argumento=cancelado");
-    }
-
-    @RequestMapping(method = RequestMethod.GET , path = "/aceptar-turno/{appointmentId:\\d+}")
-    public ModelAndView confirmAppointment(@PathVariable("appointmentId") final long appointmentId) {
-        final long serviceId = appointmentService.confirmAppointment(appointmentId);
-        return new ModelAndView("redirect:/turno/"+serviceId+"/"+appointmentId);
-    }
-
-    // Para mantener compatibilidad con mails enviados antes que usaban form POST
     @RequestMapping(method = RequestMethod.POST , path = "/aceptar-turno/{appointmentId:\\d+}")
-    public ModelAndView confirmAppointmentPost(@PathVariable("appointmentId") final long appointmentId) {
-        return confirmAppointment(appointmentId);
+    public void confirmAppointmentPost(@PathVariable("appointmentId") final long appointmentId) {
+        appointmentService.confirmAppointment(appointmentId);
     }
     @RequestMapping(method = RequestMethod.POST , path = "/rechazar-turno/{appointmentId:\\d+}")
-    public ModelAndView denyAppointmentPost(@PathVariable("appointmentId") final long appointmentId) {
-        return denyAppointment(appointmentId);
-    }
-
-
-    @RequestMapping(method = RequestMethod.POST , path = "/cancelar-turno/{appointmentId:\\d+}")
-    public ModelAndView cancelAppointmentFromMail(@PathVariable("appointmentId") final long appointmentId) {
-        final long serviceId = appointmentService.cancelAppointment(appointmentId);
-        return new ModelAndView("redirect:/sinturno/" + serviceId + "/?argumento=cancelado");
+    public void denyAppointmentPost(@PathVariable("appointmentId") final long appointmentId) {
+        appointmentService.denyAppointment(appointmentId);
     }
 
     @RequestMapping(method = RequestMethod.DELETE , path = "/cancelar-turno/{appointmentId:\\d+}")

@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="navbar.jsp" />
 <html>
 <head>
@@ -28,7 +29,7 @@
             <a href="${pageContext.request.contextPath}/servicio/${serviceId}" class="none-decoration">
                 <label class="go-back">
                     <i class="material-icons icon">arrow_back</i>
-                    <spring:message code="service.back" arguments="${service.name}"/>
+                    <spring:message code="service.back" arguments="${fn:escapeXml(service.name)}"/>
                 </label>
             </a>
         </c:if>

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="navbar.jsp" />
 <html>
 <head>
@@ -12,7 +13,7 @@
 <body>
 <div class="page reviews-page">
     <jsp:include page="./components/backButton.jsp" />
-    <h2><spring:message code="review.business" arguments="${business.name}"/></h2>
+    <h2><spring:message code="review.business" arguments="${fn:escapeXml(business.name)}"/></h2>
 
     <c:if test="${!empty reviews}">
         <c:set var="rating" value="${business.businessRatingAvg}" scope="request"/>
@@ -51,9 +52,9 @@
         <c:set value="${review.rating}" var="rate"/>
         <div class="review-box">
             <div class="review-content">
-            <p class="user-comment"><spring:message code="review.user" arguments="${review.user.username}"/>
+            <p class="user-comment"><spring:message code="review.user" arguments="${fn:escapeXml(review.user.username)}"/>
                 <a href="${pageContext.request.contextPath}/servicio/${review.serviceid}" class="none-decoration">
-                    <span class="review-service">${review.service.name}</span>
+                    <span class="review-service"><c:out value="${review.service.name}"/></span>
                 </a>
             </p>
             <div class="flex">
@@ -111,7 +112,7 @@
     <c:if test="${ empty reviews}">
         <c:url var="urlGoBack" value="/negocio/${business.businessid}"/>
         <c:set var="urlCallToAction" value="${urlGoBack}" scope="request" />
-        <c:set var="message" scope="request"><spring:message code="reviews.not-found" arguments="${business.name}"/></c:set>
+        <c:set var="message" scope="request"><spring:message code="reviews.not-found" arguments="${fn:escapeXml(business.name)}"/></c:set>
         <c:set var="textCallToAction" scope="request"><spring:message code="business.go"/></c:set>
         <jsp:include page="components/noResults.jsp"/>
     </c:if>

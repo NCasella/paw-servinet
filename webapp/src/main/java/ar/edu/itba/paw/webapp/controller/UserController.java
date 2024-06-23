@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
+import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
@@ -81,13 +83,55 @@ public class UserController {
     }
 
 
+    @RequestMapping(method = RequestMethod.GET, path = "/negocios/turnos")
+    public ModelAndView userServicesAppointments(
+            @RequestParam(name = "confirmados") final boolean confirmed,
+            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
+    ) {
+        User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
+
+        List<BasicService> services = serviceService.getAllUserBasicServices(currentUser);
+        List<Appointment> appointmentList;
+
+        Map<Long, BasicService> serviceMap = new HashMap<>();
+        services.forEach(service -> serviceMap.put(service.getId(), service));
+        Set<Long> serviceIds =  serviceMap.keySet();
+        appointmentList = appointmentService.getAllUpcomingServicesAppointments(serviceIds, confirmed, page);
+
+        final ModelAndView mav = new ModelAndView("userBusinessesAppointments");
+        Map<Long, User> userMap = new HashMap<>();
+        if (confirmed){
+            for (Appointment a : appointmentList){
+                if (!userMap.containsKey(a.getUserid()))
+                    userMap.put(a.getUserid(),userService.findById(a.getUserid()).orElseThrow(UserNotFoundException::new));
+            }
+            mav.addObject("userMap", userMap );
+        }
+
+        mav.addObject("serviceMap", serviceMap );
+        mav.addObject("appointmentList", appointmentList);
+        mav.addObject("confirmed",confirmed);
+        mav.addObject("page",page);
+        final long totalResults = appointmentService.getServicesAppointmentCount(serviceIds,confirmed);
+        mav.addObject("totalResults",totalResults);
+        long pageCount = appointmentService.getPageCount(totalResults);
+        if ( page!=1 && pageCount < page) {
+            return new ModelAndView("redirect:/negocios/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
+        }
+        mav.addObject("moreResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
+        mav.addObject("pageCount", pageCount);
+        return mav;
+    }
+
     @RequestMapping(method = RequestMethod.GET, path = "/turnos")
     public ModelAndView userAppointments( @RequestParam(name = "confirmados") final boolean confirmed,
-                                          @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page) {
+                                          @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page) {
 
         final ModelAndView mav = new ModelAndView("userAppointments");
 
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
+        if ( page<1 )
+            throw new InvalidFilterException();
 
         List<Appointment> appointmentList = appointmentService.getAllUpcomingUserAppointments(userid,confirmed,page);
         Set<Long> serviceids = new HashSet<>();
@@ -99,22 +143,27 @@ public class UserController {
         mav.addObject("serviceContactInfoMap", serviceContactInfoMap );
         mav.addObject("confirmed",confirmed);
         mav.addObject("page",page);
-        mav.addObject("otherFilterResults",appointmentService.getUserAppointmentCount(userid,!confirmed));
+        mav.addObject("moreResults",appointmentService.getUserAppointmentCount(userid,!confirmed));
         final long totalResults = appointmentService.getUserAppointmentCount(userid,confirmed);
+        long pageCount = appointmentService.getPageCount(totalResults);
+        if ( page!=1 && pageCount < page) {
+            return new ModelAndView("redirect:/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
+        }
         mav.addObject("totalResults",totalResults);
-        mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
+        mav.addObject("pageCount", pageCount);
         return mav;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/turnos/historial")
     public ModelAndView userPreviousAppointments(
-            @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page
+            @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page
     ) {
 
         final ModelAndView mav = new ModelAndView("userAppointments");
 
         long userid = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
-
+        if ( page<1 )
+            throw new InvalidFilterException();
         List<Appointment> appointmentList = appointmentService.getPreviousUserAppointments(userid,page);
         Set<Long> serviceids = new HashSet<>();
         for ( Appointment a : appointmentList){

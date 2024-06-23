@@ -12,8 +12,10 @@
 <body>
 <c:set var="numParameters" value="0"/>
 <c:url var="Path" value="/servicios/">
-    <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /> <c:set var="numParameters" value="${numParameters+1}"/></c:if>
-    <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}" /><c:set var="numParameters" value="${numParameters+1}"/></c:if>
+    <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /> <c:set var="numParameters" value="${numParameters+1}"/> </c:if>
+    <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /> <c:set var="numParameters" value="${numParameters+1}"/> </c:if>
+    <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /><c:set var="numParameters" value="${numParameters+1}"/></c:if>
+    <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}" /> <c:set var="numParameters" value="${numParameters+1}"/></c:if>
     <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /><c:set var="numParameters" value="${numParameters+1}"/></c:if>
     <c:if test="${not empty paramValues.ubicacion}"><c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/> <c:set var="numParameters" value="${numParameters+1}"/></c:forEach></c:if>
 </c:url>
@@ -40,13 +42,15 @@
         </div>
 
 
-        <c:if test="${not empty paramValues.ubicacion or not empty paramValues.calificacion or not empty paramValues.categoria}">
+        <c:if test="${not empty paramValues.ubicacion or not empty paramValues.calificacion or not empty paramValues.categoria or not empty paramValues.orden or not empty paramValues.domicilio}">
             <h4><spring:message code="services.selected-filters"/></h4>
             <div class="filters-selected flex">
                 <c:forEach items="${paramValues.ubicacion}" var="location">
                     <button class="filter-container">
                         <c:out value="${location}"/>
                         <c:url value="/servicios" var="locationRemove">
+                            <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /></c:if>
+                            <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /></c:if>
                             <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
                             <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
                             <c:forEach var="calificaciones" items="${paramValues.calificacion}"><c:param name="calificacion" value="${calificaciones}"/></c:forEach>
@@ -67,6 +71,8 @@
                             </c:if>
                         </c:forEach>
                         <c:url value="/servicios" var="rateRemove">
+                            <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /></c:if>
+                            <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /></c:if>
                             <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
                             <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
                             <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/></c:forEach>
@@ -78,6 +84,8 @@
                     <button class="filter-container">
                         <spring:message code="${category.codeMsg}"/>
                         <c:url value="/servicios" var="categoryRemove">
+                            <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /></c:if>
+                            <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /></c:if>
                             <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
                             <c:forEach var="calificaciones" items="${paramValues.calificacion}"><c:param name="calificacion" value="${calificaciones}"/></c:forEach>
                             <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/></c:forEach>
@@ -85,9 +93,34 @@
                         <a href="${categoryRemove}"><i class="material-icons close-filter-icon">close</i></a>
                     </button>
                 </c:if>
+                <c:if test="${not empty param.orden}">
+                    <button class="filter-container">
+                        <spring:message code="${orderFilter.codeMsg}"/>
+                        <c:url value="/servicios" var="orderRemove">
+                            <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /></c:if>
+                            <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
+                            <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
+                            <c:forEach var="calificaciones" items="${paramValues.calificacion}"><c:param name="calificacion" value="${calificaciones}"/></c:forEach>
+                            <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/></c:forEach>
+                        </c:url>
+                        <a href="${orderRemove}"><i class="material-icons close-filter-icon">close</i></a>
+                    </button>
+                </c:if>
+                <c:if test="${not empty param.domicilio}">
+                    <button class="filter-container">
+                        <spring:message code="services.filter-home"/>
+                        <c:url value="/servicios" var="homeRemove">
+                            <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /></c:if>
+                            <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
+                            <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
+                            <c:forEach var="calificaciones" items="${paramValues.calificacion}"><c:param name="calificacion" value="${calificaciones}"/></c:forEach>
+                            <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/></c:forEach>
+                        </c:url>
+                        <a href="${homeRemove}"><i class="material-icons close-filter-icon">close</i></a>
+                    </button>
+                </c:if>
             </div>
             <c:url value="/servicios" var="filtersRemove">
-                <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
                 <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
             </c:url>
             <a class="none-decoration" href="${filtersRemove}">
@@ -159,6 +192,8 @@
             <h3><spring:message code="services.filter-rate"/></h3>
             <c:forEach items="${ratings}" var="rate">
                 <c:url value="/servicios" var="ratingChange">
+                    <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /></c:if>
+                    <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /></c:if>
                     <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
                     <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
                     <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/></c:forEach>
@@ -177,6 +212,8 @@
             <h3><spring:message code="services.filter-category"/></h3>
             <c:forEach items="${categories}" var="categ">
                 <c:url value="/servicios" var="categoryChange">
+                    <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /></c:if>
+                    <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /></c:if>
                     <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}"/></c:if>
                     <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
                     <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/></c:forEach>
@@ -187,9 +224,24 @@
                     <spring:message code="${categ.codeMsg}"/>
                 </a>
             </c:forEach>
+            <h3><spring:message code="services.filter-type"/></h3>
+            <c:url value="/servicios" var="homeChange">
+                <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /></c:if>
+                <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
+                <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}"/></c:if>
+                <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
+                <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/></c:forEach>
+                <c:param name="domicilio" value="true"/>
+            </c:url>
+            <a class="none-decoration filter-text category-text" href="${homeChange}">
+                <i class="material-icons category-icon">house</i>
+                <spring:message code="services.filter-home"/>
+            </a>
             <h3><spring:message code="services.filter-location"/></h3>
             <c:forEach items="${availableNb}" var="neighbourhood">
                 <c:url value="/servicios" var="locationChange">
+                    <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /></c:if>
+                    <c:if test="${not empty param.orden}"><c:param name="orden" value="${param.orden}" /></c:if>
                     <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
                     <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
                     <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}"/></c:if>
@@ -197,6 +249,20 @@
                     <c:param name="ubicacion" value="${neighbourhood}"/>
                 </c:url>
                 <a class="none-decoration filter-text" href="${locationChange}"><c:out value="${neighbourhood}"/></a>
+            </c:forEach>
+        </div>
+        <div class="filters-box">
+            <h3><spring:message code="reviews.order-by"/></h3>
+            <c:forEach items="${orderFilters}" var="filter">
+                <c:url value="/servicios" var="orderChange">
+                    <c:if test="${not empty param.domicilio}"><c:param name="domicilio" value="${param.domicilio}" /></c:if>
+                    <c:if test="${not empty param.categoria}"><c:param name="categoria" value="${param.categoria}" /></c:if>
+                    <c:if test="${not empty param.calificacion}"><c:param name="calificacion" value="${param.calificacion}"/></c:if>
+                    <c:if test="${not empty param.query}"><c:param name="query" value="${param.query}" /></c:if>
+                    <c:forEach var="ubicaciones" items="${paramValues.ubicacion}"><c:param name="ubicacion" value="${ubicaciones}"/></c:forEach>
+                    <c:param name="orden" value="${filter}"/>
+                </c:url>
+                <a class="none-decoration filter-text" href="${orderChange}"><spring:message code="${filter.codeMsg}"/> </a>
             </c:forEach>
         </div>
         </div>

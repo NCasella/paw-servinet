@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 
+import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
@@ -79,7 +80,7 @@ public class BusinessController {
                                                @RequestParam(name = "filtro", required = false, defaultValue = "w") String filterId) {
         final Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         DateIntervalFilter filter = DateIntervalFilter.of(filterId);
-        //if (filter==null) throw new InvalidFilterException(); por el defaultValue filter no va a ser null
+        //if (filter==null) throw new InvalidFilterException();
         final List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
 
         Map<Long, BasicService> serviceMap = new HashMap<>();
@@ -91,20 +92,26 @@ public class BusinessController {
         final ModelAndView mav = new ModelAndView("statistics");
         mav.addObject("serviceAppointmentCountList", serviceAppointmentCount);
         mav.addObject("serviceMap", serviceMap );
-        mav.addObject("filter",filterId);
+        mav.addObject("filter",filter);
         AtomicLong totalFinishedAppointments = new AtomicLong();
         serviceAppointmentCount.forEach(pair -> totalFinishedAppointments.addAndGet(pair.getValue()));
         mav.addObject("finishedAppointments",totalFinishedAppointments.get());
-        Long requestedAppointments = appointmentService.getServicesRequestedAppointmentCount(serviceIds,filter);
-        mav.addObject("requestedAppointments", totalFinishedAppointments.get()+requestedAppointments);
+        // total confirmed
+        Long confirmed = appointmentService.getServicesAppointmentCount(serviceIds,true) + totalFinishedAppointments.get();
+        mav.addObject("totalConfirmedAppointments",confirmed);
+        // total requests
+        Long requestedAppointments = appointmentService.getServicesRequestedAppointmentCount(serviceIds,filter) + confirmed;
+        mav.addObject("totalRequestedAppointments",requestedAppointments );
         return mav;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}/turnos")
     public ModelAndView businessesAppointments(@PathVariable("businessId") final long businessId, @RequestParam(name = "confirmados") final boolean confirmed,
-                                               @RequestParam(name = "pagina", required = false, defaultValue = "0") Integer page) {
+                                               @RequestParam(name = "pagina", required = false, defaultValue = "1") Integer page) {
 
         Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
+        if ( page<1 )
+            throw new InvalidFilterException();
         List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
         List<Appointment> appointmentList;
 
@@ -130,19 +137,23 @@ public class BusinessController {
         mav.addObject("page",page);
         final long totalResults = appointmentService.getServicesAppointmentCount(serviceIds,confirmed);
         mav.addObject("totalResults",totalResults);
-        mav.addObject("otherResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
-        mav.addObject("pageCount", appointmentService.getPageCount(totalResults));
+        long pageCount = appointmentService.getPageCount(totalResults);
+        if ( page!=1 && pageCount < page) {
+            return new ModelAndView("redirect:/negocio/" + businessId + "/turnos?confirmados=" + confirmed + "&pagina=" + pageCount);
+        }
+        mav.addObject("moreResults", appointmentService.getServicesAppointmentCount(serviceIds,!confirmed));
+        mav.addObject("pageCount", pageCount);
         return mav;
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "negocio/{businessId:\\d+}/solicitud-turno/{appoinmentId:\\d+}")
-    public void acceptOrDenyAppointment(@PathVariable(value = "businessId") final long businessId,
-                                            @PathVariable(value = "appoinmentId") final long appoinmentId,
-                                            @RequestParam(value = "accepted") final boolean accepted) {
+    @RequestMapping(method = RequestMethod.POST, path = "negocio/solicitud-turno/{appointmentId:\\d+}")
+    public void acceptOrDenyAppointment(
+                                    @PathVariable(value = "appointmentId") final long appointmentId,
+                                    @RequestParam(value = "accepted") final boolean accepted) {
         if (accepted)
-            appointmentService.confirmAppointment(appoinmentId);
+            appointmentService.confirmAppointment(appointmentId);
         else
-            appointmentService.denyAppointment(appoinmentId);
+            appointmentService.denyAppointment(appointmentId);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/negocio/{businessId:\\d+}")

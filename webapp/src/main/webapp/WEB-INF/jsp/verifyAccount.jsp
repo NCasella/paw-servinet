@@ -19,7 +19,7 @@
             <p class="label"><spring:message code="verification-code"/></p>
             <spring:message code="input.verification-code" var="inputPassword"/>
             <form:errors path="verificationCode" cssClass="error" element="p"/>
-            <form:input type="password" id="password" cssClass="input" path="verificationCode" placeholder="${inputPassword}" required="true"/>
+            <form:input type="text" cssClass="input" path="verificationCode" placeholder="${inputPassword}" required="true"/>
         </label>
         <div class="align-center">
             <input type="submit" value="<spring:message code="verify.button"/>" class="btn submit-btn">

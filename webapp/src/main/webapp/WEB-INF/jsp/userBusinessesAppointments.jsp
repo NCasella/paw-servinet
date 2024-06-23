@@ -16,14 +16,14 @@
 <div class="page">
     <jsp:include page="./components/backButton.jsp" />
     <div class="header">
-        <h2><c:out value="${business.businessName}"/></h2>
+        <h2><spring:message code="business.appointments"/></h2>
         <div>
-            <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=true">
-                <button class="btn-basic btn-left ${confirmed? 'btn-selected':''}"><spring:message code="business.next"/>
-                    (<span id="${confirmed? 'totalResults':'moreResults'}"></span>)</button></a>
-            <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=false">
-                <button class="btn-basic btn-right ${notConfirmed? 'btn-selected':''}"><spring:message code="business.requests"/>
-                    (<span id="${notConfirmed? 'totalResults':'moreResults'}"></span>)</button></a>
+            <a href="${pageContext.request.contextPath}/negocios/turnos?confirmados=true">
+                <button class="btn-basic btn-left ${confirmed ? 'btn-selected' : ''}"><spring:message code="business.next"/>
+                    (<span id="${confirmed ? 'totalResults' : 'moreResults'}"></span>)</button></a>
+            <a href="${pageContext.request.contextPath}/negocios/turnos?confirmados=false">
+                <button class="btn-basic btn-right ${notConfirmed ? 'btn-selected' : ''}"><spring:message code="business.requests"/>
+                    (<span id="${notConfirmed ? 'totalResults' : 'moreResults'}"></span>)</button></a>
         </div>
     </div>
     <div class="appointments-container">
@@ -36,7 +36,7 @@
             <jsp:include page="components/appointmentContainer.jsp"/>
         </c:forEach>
         <c:choose>
-            <c:when test="${ empty appointmentList}">
+            <c:when test="${empty appointmentList}">
                 <jsp:include page="components/noResults.jsp"/>
             </c:when>
             <c:otherwise>
@@ -45,7 +45,7 @@
                     <div class="pagination-box">
                         <c:set var="page" value="${page}" scope="request" />
                         <c:set var="pageCount" value="${pageCount}" scope="request" />
-                        <c:set var="path" value="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=${confirmed}&" scope="request" />
+                        <c:set var="path" value="${pageContext.request.contextPath}/negocios/turnos?confirmados=${confirmed}&" scope="request" />
                         <jsp:include page="components/pagination.jsp"/>
                     </div>
                 </c:if>
@@ -53,9 +53,9 @@
         </c:choose>
     </div>
 
-<script>
-    window.onload = getPreviousPageInfo(document.referrer);
-</script>
+    <script>
+        window.onload = getPreviousPageInfo(document.referrer);
+    </script>
 
 </div>
 

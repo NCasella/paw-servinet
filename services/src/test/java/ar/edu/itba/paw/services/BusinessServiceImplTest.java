@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
  import ar.edu.itba.paw.model.Business;
  import ar.edu.itba.paw.model.User;
+ import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
  import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
  import org.junit.Assert;
  import org.junit.Test;
@@ -11,7 +12,6 @@ package ar.edu.itba.paw.services;
  import org.mockito.Mockito;
  import org.mockito.junit.MockitoJUnitRunner;
 
- import java.util.Locale;
  import java.util.Optional;
 
  @RunWith(MockitoJUnitRunner.class)
@@ -50,6 +50,12 @@ package ar.edu.itba.paw.services;
          Assert.assertEquals(EMAIL,biz.getEmail());
          Assert.assertEquals(LOCATION,biz.getLocation());
          Assert.assertEquals(TELEPHONE,biz.getTelephone());
+     }
+     @Test(expected = BusinessNotFoundException.class)
+     public void testDeleteNonExistentBusiness(){
+         Mockito.when(businessService.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+         businessService.deleteBusiness(ID);
+         Assert.fail();
      }
 
      @Test(expected = UserNotFoundException.class)
