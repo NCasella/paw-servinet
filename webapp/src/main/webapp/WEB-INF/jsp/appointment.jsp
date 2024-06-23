@@ -102,11 +102,12 @@
         <c:set var="method" value="post" scope="request"/>
         <c:set var="url" value="${cancelUrl}" scope="request"/>
 
-
-        <div class="align-center">
-            <button onclick="showPopUp()" class="cancelBtn appointment-cancelBtn"><spring:message code="appointment.cancel"/></button>
-            <jsp:include page="components/popUp.jsp" />
-        </div>
+        <c:if test="${not appointment.previous}">
+            <div class="align-center">
+                <button onclick="showPopUp()" class="cancelBtn appointment-cancelBtn"><spring:message code="appointment.cancel"/></button>
+                <jsp:include page="components/popUp.jsp" />
+            </div>
+        </c:if>
     </div>
 </div>
 </body>

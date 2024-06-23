@@ -3,6 +3,7 @@ package ar.edu.itba.paw.model;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Objects;
 
 @MappedSuperclass
@@ -110,4 +111,6 @@ public abstract class BasicAppointment {
     public boolean getDuration(){
         return !startDate.equals(endDate);
     }
+
+    public boolean isPrevious(){ return startDate.isBefore(LocalDateTime.now()); }
 }
