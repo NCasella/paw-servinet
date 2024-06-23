@@ -80,7 +80,7 @@ public class BusinessController {
                                                @RequestParam(name = "filtro", required = false, defaultValue = "w") String filterId) {
         final Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         DateIntervalFilter filter = DateIntervalFilter.of(filterId);
-        //if (filter==null) throw new InvalidFilterException(); por el defaultValue filter no va a ser null
+        //if (filter==null) throw new InvalidFilterException();
         final List<BasicService> services = serviceService.getAllBusinessBasicServices(businessId);
 
         Map<Long, BasicService> serviceMap = new HashMap<>();
@@ -92,7 +92,7 @@ public class BusinessController {
         final ModelAndView mav = new ModelAndView("statistics");
         mav.addObject("serviceAppointmentCountList", serviceAppointmentCount);
         mav.addObject("serviceMap", serviceMap );
-        mav.addObject("filter",filterId);
+        mav.addObject("filter",filter);
         AtomicLong totalFinishedAppointments = new AtomicLong();
         serviceAppointmentCount.forEach(pair -> totalFinishedAppointments.addAndGet(pair.getValue()));
         mav.addObject("finishedAppointments",totalFinishedAppointments.get());

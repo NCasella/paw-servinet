@@ -13,7 +13,7 @@
 <div class="popup-contenedor" id="${id2}">
     <div class="popup">
 
-        <h2><spring:message code="appointment.description"/></h2>
+        <h2><spring:message code="appointments.description"/></h2>
         <p class="description-pop-up"> <c:out value="${ appointmentDescription}"/> </p>
 
         <div class="btns-box">
