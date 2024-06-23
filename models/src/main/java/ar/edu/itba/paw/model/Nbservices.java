@@ -11,7 +11,7 @@ public class Nbservices {
     @Column(name = "insertid")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="serviceid")
     private Service serviceIn;
 

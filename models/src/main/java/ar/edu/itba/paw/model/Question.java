@@ -11,10 +11,10 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "questions_questionid_seq")
     @SequenceGenerator(sequenceName = "questions_questionid_seq",name="questions_questionid_seq",allocationSize = 1)
     private long questionid;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="serviceid")
     private Service service;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="userid")
     private User user;
     @Column(nullable = false)
