@@ -65,7 +65,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Override
     public Long getServicesRequestedAppointmentCount(Collection<Long> serviceIds, DateIntervalFilter filter) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        return appointmentDao.getServicesRequestedAppointmentCount(serviceIds, filter.getEndDate(currentDateTime),currentDateTime);
+        return appointmentDao.getServicesRequestedAppointmentCount(serviceIds, filter.getEndDate(currentDateTime));
     }
 
     @Transactional(readOnly = true)

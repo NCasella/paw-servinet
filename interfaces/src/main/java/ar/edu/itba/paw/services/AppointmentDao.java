@@ -22,7 +22,7 @@ public interface AppointmentDao {
 
     List<Pair<Long,Long>> getServicesFinishedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate , LocalDateTime endDate);
 
-    Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate, LocalDateTime endDate);
+    Long getServicesRequestedAppointmentCount(Collection<Long> servicesIds, LocalDateTime startDate);
 
     List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize);
 
