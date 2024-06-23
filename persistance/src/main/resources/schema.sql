@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     surname VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     telephone VARCHAR(255),
-    isprovider boolean NOT NULL DEFAULT FALSE
+    isprovider boolean NOT NULL DEFAULT FALSE,
+    isverified boolean not null
 );
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS locale varchar(10) DEFAULT 'en' NOT NULL;

@@ -39,7 +39,7 @@ public class EmailConfig {
 
 
     @Bean
-    public JavaMailSender mailSender() {
+    public JavaMailSender mailSender() throws IOException {
 
         final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
