@@ -30,13 +30,5 @@ public enum Neighbourhoods {
         return value;
     }
 
-    //TODO: implementar Interfaz que agrupe enums? -> definir findByValue genérico
-    public static Neighbourhoods findByValue(String value) {
-        for (Neighbourhoods neighbourhood: values()) {
-            if (neighbourhood.getValue().equalsIgnoreCase(value)) {
-                return neighbourhood;
-            }
-        }
-        return null;
-    }
+
 }
