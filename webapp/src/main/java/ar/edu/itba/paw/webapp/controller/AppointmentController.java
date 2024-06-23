@@ -67,6 +67,13 @@ public class AppointmentController {
         appointmentService.denyAppointment(appointmentId);
     }
 
+    @RequestMapping(method = RequestMethod.POST , path = "/cancelar-turno/{appointmentId:\\d+}")
+    public ModelAndView cancelAppointmentFromAppointmentView(@PathVariable("appointmentId") final long appointmentId) {
+        final long serviceId = appointmentService.cancelAppointment(appointmentId);
+        return new ModelAndView("redirect:/sinturno/" + serviceId + "/?argumento=cancelado");
+    }
+
+
     @RequestMapping(method = RequestMethod.DELETE , path = "/cancelar-turno/{appointmentId:\\d+}")
     public void cancelAppointment(@PathVariable("appointmentId") final long appointmentId){
         appointmentService.cancelAppointment(appointmentId);
