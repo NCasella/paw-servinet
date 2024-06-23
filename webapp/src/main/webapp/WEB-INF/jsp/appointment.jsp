@@ -59,7 +59,7 @@
                 <h3><spring:message code="service.info"/></h3>
                 <p class="appointment-detail service-name"><span class="highlight-text"><i class="material-icons">storefront</i></span>
                     <a class="service-name none-decoration" href="${pageContext.request.contextPath}/servicio/${appointment.serviceid}">
-                        <spring:message code="appointment.service.name" arguments="${service.name}, ${service.business.name}"/>
+                        <spring:message code="appointment.service.name" arguments="${fn:escapeXml(service.name)}, ${fn:escapeXml(service.business.name)}"/>
                     </a>
                 <p>
 
