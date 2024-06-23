@@ -104,6 +104,7 @@ public class AppointmentController {
         mav.addObject("service", service);
         mav.addObject("new", true);
         mav.addObject("confirmed", app.getConfirmed());
+        mav.addObject("TBDPricing", PricingTypes.TBD.getValue());
         return mav;
     }
 

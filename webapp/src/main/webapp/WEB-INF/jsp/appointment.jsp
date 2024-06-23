@@ -64,7 +64,15 @@
                 <p>
 
                 <p class="appointment-detail"><c:out value="${service.description}"/><p>
-                <p>$ <c:out value="${service.pricing==P }"/></p>
+                <p><c:choose>
+                        <c:when test="${service.pricing.value == TBDPricing}">
+                            <p class="TBD-comment">$ <spring:message code="pricing.tbd"/></p>
+                        </c:when>
+                        <c:otherwise>
+                            $ <c:out value="${service.price}"/>
+                        </c:otherwise>
+                    </c:choose>
+                </p>
 
                 <h3 class="appointment-info"><spring:message code="appointment.info"/></h3>
                 <p class="appointment-detail"><span class="highlight-text"><i class="material-icons">person</i> </span> <c:out value="${user.name}"/> <c:out value="${user.surname}"/></p>
