@@ -103,7 +103,7 @@ public class EmailServiceImpl implements EmailService{
 
     private void sendAppointmentMails(Appointment appointment, EmailTypes emailType,  Service service, Business business, User client, boolean isServiceDeleted, String businessLocale) {
         final Context ctxBusiness = getContext(appointment,service,isServiceDeleted, client, business, Locale.of(businessLocale));
-        if (!isServiceDeleted && !emailType.equals(EmailTypes.DENIED) ) {
+        if (!isServiceDeleted && !emailType.isRequestAnswer() ) {
             LOGGER.info("Preparing {} mail for business owner.", emailType.getType());
             try {
                 sendMailToBusiness(emailType, business.getEmail(), ctxBusiness);

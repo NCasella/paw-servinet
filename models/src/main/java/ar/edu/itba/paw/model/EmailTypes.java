@@ -47,4 +47,6 @@ public enum EmailTypes {
     }
 
     public boolean isAboutAppointment(){ return isAboutAppointment; }
+
+    public boolean isRequestAnswer() { return this == ACCEPTED || this == DENIED ;}
 }
