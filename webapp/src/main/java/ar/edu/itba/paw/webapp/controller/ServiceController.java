@@ -73,6 +73,7 @@ public class ServiceController {
         mav.addObject("TBDPricing", PricingTypes.TBD.getValue());
         mav.addObject("availableNb", ss.getAvailableNeighbourhoods(category));
         mav.addObject("orderFilter", ServicesOrderFilters.findByValue(orderFilter));
+        mav.addObject("orderFilters", ServicesOrderFilters.values());
         return mav;
     }
 

@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.model;
 
 public enum ServicesOrderFilters {
-    RATE_ASC("rate_asc", "asc", "reviews.date-asc"),
-    RATE_DESC("rate_desc","desc", "reviews.date-desc");
+    RATE_ASC("rate_asc", "asc", "reviews.rating-asc"),
+    RATE_DESC("rate_desc","desc", "reviews.rating-desc");
 
     private final String type;
     private final String order;
