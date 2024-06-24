@@ -11,8 +11,8 @@ public class FilterArgument {
     private final Map<FilterTypes, Object> filters = new EnumMap<>(FilterTypes.class);//mapa <columna a filtrar,valor del "?">
 
     private final Map<ServicesOrderFilters,String> orderQueryMap=Map.of(
-            ServicesOrderFilters.RATE_ASC,"group by s.id order by coalesce(round(avg(r.rating), 2), 0) asc ",
-            ServicesOrderFilters.RATE_DESC,"group by s.id order by coalesce(round(avg(r.rating), 2), 0) desc "
+            ServicesOrderFilters.RATE_ASC,"group by s.id order by coalesce(round(avg(r.rating), 2), 0) asc, s.id ",
+            ServicesOrderFilters.RATE_DESC,"group by s.id order by coalesce(round(avg(r.rating), 2), 0) desc, s.id "
     );
 
     private final Map<ServicesOrderFilters,String > orderJqlToReturn=Map.of(ServicesOrderFilters.RATE_ASC,"order by s.ratingAvg asc ",
