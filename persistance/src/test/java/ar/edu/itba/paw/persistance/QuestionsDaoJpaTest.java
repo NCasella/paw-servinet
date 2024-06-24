@@ -66,12 +66,12 @@ public class QuestionsDaoJpaTest {
         em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1, 1, 'question', null, '2024-01-01')").executeUpdate();
         em.flush();
         questionDao.addResponse(1, RESPONSE);
-        questionDao.addResponse(2, RESPONSE2);
+
 
         String response = em.find(Question.class, (long)1).getResponse();
         String response2 = em.find(Question.class, (long)2).getResponse();
         Assert.assertEquals(RESPONSE, response);
-        Assert.assertEquals(RESPONSE2, response2);
+        Assert.assertNull(response2);
     }
 
     @Test
