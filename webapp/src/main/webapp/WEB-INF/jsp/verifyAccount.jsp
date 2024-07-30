@@ -16,11 +16,12 @@
     <form:form modelAttribute="ValidateUserForm" action="${postUrl}" method="post" class="form">
         <h2 class="form-title highlight-text"><spring:message code="verify.account"/></h2>
         <label>
-            <p class="label"><spring:message code="verification-code"/></p>
+            <p class="label"><spring:message code="verify.explanation"/></p>
             <spring:message code="input.verification-code" var="inputPassword"/>
             <form:errors path="verificationCode" cssClass="error" element="p"/>
-            <form:input type="text" cssClass="input" path="verificationCode" placeholder="${inputPassword}" required="true"/>
+            <form:input type="text" cssClass="input" path="verificationCode" placeholder="${inputPassword}" />
         </label>
+        <p class="label"><spring:message code="verify.resend-request"/> <a href="${pageContext.request.contextPath}/reenviar-codigo"><spring:message code="verify.resend-code"/></a></p>
         <div class="align-center">
             <input type="submit" value="<spring:message code="verify.button"/>" class="btn submit-btn">
         </div>
