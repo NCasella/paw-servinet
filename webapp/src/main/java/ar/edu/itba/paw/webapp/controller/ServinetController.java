@@ -25,6 +25,7 @@ public class ServinetController {
 
     private final UserService us;
     private final ServiceService ss;
+    private final ServinetAuthControl authControl;
     private final PasswordRecoveryCodeService passwordRecoveryCodeService;
     private final UserVerificationService userVerificationService;
     private static final String TBDPricing = PricingTypes.TBD.getValue();
@@ -36,12 +37,14 @@ public class ServinetController {
             @Qualifier("userServiceImpl") final UserService us,
             @Qualifier("serviceServiceImpl") final ServiceService ss,
             @Qualifier("passwordRecoveryCodeServiceImpl") final PasswordRecoveryCodeService passwordRecoveryCodeService,
-            @Qualifier("userVerificationServiceImpl") final UserVerificationService userVerificationService
+            @Qualifier("userVerificationServiceImpl") final UserVerificationService userVerificationService,
+            @Qualifier("servinetAuthControl") final ServinetAuthControl authControl
     ){
         this.us = us;
         this.ss = ss;
         this.passwordRecoveryCodeService = passwordRecoveryCodeService;
         this.userVerificationService = userVerificationService;
+        this.authControl = authControl;
     }
 
     @RequestMapping(path="/login")
@@ -57,23 +60,36 @@ public class ServinetController {
         return mav;
     }
 
-    @RequestMapping(path="/verificar-cuenta/{token}", method=RequestMethod.GET)
-    public ModelAndView verifyAccountRequest(@PathVariable(value = "token")final String token, @ModelAttribute("ValidateUserForm") ValidateUserForm form) {
-        if (!userVerificationService.validateTokenUrl(UUID.fromString(token))){
-            return new ModelAndView("redirect:/login");
+    @RequestMapping(path="/verificar-cuenta", method=RequestMethod.GET)
+    public ModelAndView verifyAccountRequest(@ModelAttribute("ValidateUserForm") ValidateUserForm form) {
+        final ModelAndView mav = new ModelAndView("verifyAccount");
+        Optional<User> maybeUser = authControl.getCurrentUser();
+        boolean isValidationCodeExpired = userVerificationService.isVerificationExpired(maybeUser.get().getUserId());
+        if (isValidationCodeExpired){
+            userVerificationService.sendVerificationCode(maybeUser.get());
         }
-        return new ModelAndView("verifyAccount");
+        mav.addObject("isValidationCodeExpired", isValidationCodeExpired);
+        return mav;
     }
-    @RequestMapping(method=RequestMethod.POST,path = "/verificar-cuenta/{token}")
-    public ModelAndView verifyAccount(@PathVariable(value = "token")final String token, @Valid @ModelAttribute("ValidateUserForm") ValidateUserForm form, final BindingResult errors){
+    @RequestMapping(method=RequestMethod.POST,path = "/verificar-cuenta")
+    public ModelAndView verifyAccount(@Valid @ModelAttribute("ValidateUserForm") ValidateUserForm form, final BindingResult errors){
+        Optional<User> currentUser = authControl.getCurrentUser();
         if (errors.hasErrors()){
-            return verifyAccountRequest(token, form);
+            return verifyAccountRequest(form);
         }
-        if (us.verifyUser(UUID.fromString(token), form.getVerificationCode())){
+        Long userId = currentUser.isPresent() ? currentUser.get().getUserId() : null;
+        if (us.verifyUser(userId, form.getVerificationCode())){
             return new ModelAndView("redirect:/perfil");
         }
-        return new ModelAndView("redirect:/verificar-cuenta/"+token);
+        return new ModelAndView("redirect:/verificar-cuenta");
     }
+
+    @RequestMapping(path="/reenviar-codigo")
+    public ModelAndView resendCode(){
+        userVerificationService.sendVerificationCode(authControl.getCurrentUser().get());
+        return new ModelAndView("redirect:/verificar-cuenta");
+    }
+
 
     @RequestMapping(path="/olvide-mi-clave", method = RequestMethod.GET)
     public ModelAndView forgotPasswordRequest(@ModelAttribute("requestPasswordRecoveryForm") RequestPasswordRecoveryForm form) {
@@ -127,7 +143,7 @@ public class ServinetController {
             return registerUser(form);
         }
         us.create(form.getUsername(),form.getName(),form.getSurname(),form.getPassword(),form.getEmail(),form.getTelephone());
-        return new ModelAndView("redirect:/login?emailSent");
+        return new ModelAndView("redirect:/perfil");
     }
 
 }

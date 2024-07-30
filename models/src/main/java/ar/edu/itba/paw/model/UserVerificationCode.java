@@ -15,8 +15,6 @@ public class UserVerificationCode {
     @JoinColumn(name="userid")
     private User requestedBy;
     @Column(nullable = false)
-    private UUID tokenUrl;
-    @Column(nullable = false)
     private String verificationCode;
     @Column(nullable = false)
     private LocalDateTime expirationDate;
@@ -24,9 +22,8 @@ public class UserVerificationCode {
     protected UserVerificationCode(){
 
     }
-    public UserVerificationCode(User requestedBy, UUID tokenUrl, String verificationCode, LocalDateTime expirationDate){
+    public UserVerificationCode(User requestedBy, String verificationCode, LocalDateTime expirationDate){
         this.requestedBy = requestedBy;
-        this.tokenUrl = tokenUrl;
         this.verificationCode = verificationCode;
         this.expirationDate = expirationDate;
     }
@@ -37,10 +34,6 @@ public class UserVerificationCode {
 
     public User getRequestedBy() {
         return requestedBy;
-    }
-
-    public UUID getTokenUrl() {
-        return tokenUrl;
     }
 
     public String getVerificationCode() {

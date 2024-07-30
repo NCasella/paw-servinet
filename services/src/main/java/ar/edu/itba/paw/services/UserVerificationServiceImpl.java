@@ -30,10 +30,22 @@ public class UserVerificationServiceImpl implements UserVerificationService{
     @Transactional
     @Override
     public void sendVerificationCode(User user) {
-        UserVerificationCode verificationCode = generateVerificationCode(user.getUserId());
+        UserVerificationCode verificationCode;
+        if (isVerificationExpired(user.getUserId())){
+            userVerificationDao.deleteCode(user.getUserId());
+            verificationCode = generateVerificationCode(user.getUserId());
+        }else{
+            verificationCode = getUserVerificationCodeByUserId(user.getUserId()).get();
+        }
         emailService.sendVerificationCode(user, verificationCode);
     }
 
+    @Transactional
+    @Override
+    public boolean isVerificationExpired(long userid){
+        Optional<UserVerificationCode> maybeVerificationCode = getUserVerificationCodeByUserId(userid);
+        return maybeVerificationCode.map(userVerificationCode -> userVerificationCode.getExpirationDate().isBefore(LocalDateTime.now())).orElse(true);
+    }
     @Transactional
     @Override
     public UserVerificationCode generateVerificationCode(long userid) {
@@ -41,38 +53,28 @@ public class UserVerificationServiceImpl implements UserVerificationService{
         UUID newVerificationToken = UUID.randomUUID();
         int randomInt=  new Random().nextInt(1000000);
         String newVerificationCode = String.format("%d",randomInt);
-        UserVerificationCode code = userVerificationDao.saveCodes(userid, newVerificationToken, newVerificationCode, LocalDateTime.now().plusDays(1));
+        UserVerificationCode code = userVerificationDao.saveCodes(userid, newVerificationCode, LocalDateTime.now().plusDays(1));
         LOGGER.info("Verification code succesfully generated");
         return code;
     }
 
     @Transactional
     @Override
-    public boolean validateTokenUrl(UUID tokenUrl) {
-        Optional<UserVerificationCode> possibleUserVerificationCode = userVerificationDao.getVerificationCodeByTokenUrl(tokenUrl);
-        if (possibleUserVerificationCode.isEmpty()){
-            LOGGER.warn("The code provided is not valid, it has expired or it has been used already");
-            return false;
-        }
-        return true;
+    public Optional<UserVerificationCode> getUserVerificationCodeByUserId(long userid){
+        return userVerificationDao.getVerificationCodeByUserId(userid);
     }
 
     @Transactional
     @Override
-    public Optional<UserVerificationCode> getUserVerificationCodeByTokenUrl(UUID tokenUrl){
-        return userVerificationDao.getVerificationCodeByTokenUrl(tokenUrl);
-    }
-
-    @Transactional
-    @Override
-    public boolean verifyUser(UUID tokenUrl, String verificationCode) {
-        Optional<UserVerificationCode> possibleUserVerificationCode = userVerificationDao.getVerificationCodeByTokenUrl(tokenUrl);
+    public boolean verifyUser(long userId, String verificationCode) {
+        Optional<UserVerificationCode> possibleUserVerificationCode = userVerificationDao.getVerificationCodeByUserId(userId);
         if (possibleUserVerificationCode.isEmpty()){
             LOGGER.warn("The code provided is not valid, it has expired or it has been used already");
             return false;
         }
         UserVerificationCode userVerificationCode = possibleUserVerificationCode.get();
         if (userVerificationCode.getVerificationCode().equals(verificationCode)){
+            userVerificationDao.deleteCode(userId);
             return true;
         }
         else{

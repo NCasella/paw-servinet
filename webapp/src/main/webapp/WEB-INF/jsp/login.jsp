@@ -36,12 +36,6 @@
             <c:if test="${param.error!=null}">
                 <p class="error"><spring:message code="error.badcredentials"/></p>
             </c:if>
-            <c:if test="${param.notVerified!=null}">
-                <p class="error"><spring:message code="error.notVerified"/></p>
-            </c:if>
-            <c:if test="${param.emailSent!=null}">
-                <p class="success"><spring:message code="login.emailSent"/></p>
-            </c:if>
             <div>
                 <label class="password-options">
                     <div>

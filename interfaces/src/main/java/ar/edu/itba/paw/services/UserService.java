@@ -16,8 +16,9 @@ public interface UserService {
     User create(String username, String name,String surname, String password, String email, String telephone);
     void changeUsername(long userid,String value);
     boolean isProvider(long userid);
+    boolean isVerified(long userid);
     void changeEmail(long userid,String value);
     void changePassword(String email,String value);
     void changeLocale(long userid);
-    boolean verifyUser(UUID tokenUrl, String verificationCode);
+    boolean verifyUser(long userid, String verificationCode);
 }

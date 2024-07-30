@@ -10,9 +10,10 @@ import java.util.UUID;
 public interface UserVerificationService {
     void sendVerificationCode(User user);
     UserVerificationCode generateVerificationCode(long userid);
-    Optional<UserVerificationCode> getUserVerificationCodeByTokenUrl(UUID tokenUrl);
-    boolean verifyUser(UUID tokenUrl, String verificationCode);
+    Optional<UserVerificationCode> getUserVerificationCodeByUserId(long userid);
+    boolean isVerificationExpired(long userid);
+
+    boolean verifyUser(long userid, String verificationCode);
     void deleteCode(long userid);
-    boolean validateTokenUrl(UUID tokenUrl);
 
 }
