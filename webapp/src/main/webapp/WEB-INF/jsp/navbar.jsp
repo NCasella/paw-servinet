@@ -34,7 +34,7 @@
                                 <a href="${pageContext.request.contextPath}/negocios"><spring:message code="navbar.create-businesses"/></a>
                             </c:otherwise>
                         </c:choose>
-
+                        <a href="${pageContext.request.contextPath}/logout"><spring:message code="profile.logout"/></a>
                     </div>
                 </c:when>
                 <c:otherwise>
