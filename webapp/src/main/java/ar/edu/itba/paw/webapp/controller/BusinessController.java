@@ -172,6 +172,13 @@ public class BusinessController {
         mav.addObject("serviceList", serviceList);
         mav.addObject("isOwner", isOwner);
         mav.addObject("avgRating", business.getBusinessRatingAvg());
+        List<BasicService> services = serviceService.getAllUserBasicServices(currentUser.orElseThrow(UserNotFoundException::new));
+
+        Map<Long, BasicService> serviceMap = new HashMap<>();
+        services.forEach(service -> serviceMap.put(service.getId(), service));
+        Set<Long> serviceIds =  serviceMap.keySet();
+
+        mav.addObject("countAppointments", appointmentService.getServicesAppointmentCount(serviceIds,false));
         return mav;
     }
 

@@ -51,9 +51,9 @@
         <c:if test="${not empty serviceList}" >
           <a href="${pageContext.request.contextPath}/negocio/${businessId}/turnos?confirmados=false" class="none-decoration">
             <button class="btn center-vertically"><i class="material-icons ">calendar_today</i> <spring:message code="business.appointments"/></button>
-          <c:if test="${true}">
+          <c:if test="${countAppointments > 0}">
             <div class="pending">
-              12
+              <c:out value="${countAppointments}"/>
             </div>
           </c:if>
           </a>
