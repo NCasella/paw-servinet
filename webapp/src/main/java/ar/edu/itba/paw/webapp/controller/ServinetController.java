@@ -77,7 +77,7 @@ public class ServinetController {
         if (errors.hasErrors()){
             return verifyAccountRequest(form);
         }
-        Long userId = currentUser.isPresent() ? currentUser.get().getUserId() : null;
+        Long userId = currentUser.isPresent() ? currentUser.get().getUserId() : -1;
         if (us.verifyUser(userId, form.getVerificationCode())){
             return new ModelAndView("redirect:/perfil");
         }

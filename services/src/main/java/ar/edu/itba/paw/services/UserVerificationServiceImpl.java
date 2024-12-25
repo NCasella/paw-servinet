@@ -74,7 +74,6 @@ public class UserVerificationServiceImpl implements UserVerificationService{
         }
         UserVerificationCode userVerificationCode = possibleUserVerificationCode.get();
         if (userVerificationCode.getVerificationCode().equals(verificationCode)){
-            userVerificationDao.deleteCode(userId);
             return true;
         }
         else{
