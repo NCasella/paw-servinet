@@ -14,8 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
 public @interface EmailRegistered {
-    String EMAIL_REGEX = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-            + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    String EMAIL_REGEX = "^[\\w-\\.+]+@([\\w-]+\\.)+[\\w-]{2,4}$";
 
     String message() default "{ar.edu.itba.paw.webapp.validation.EmailRegistered.message}";
 
