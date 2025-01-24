@@ -41,7 +41,6 @@ public class EmailServiceImpl implements EmailService{
         final Context ctx = new Context(locale);
 
         ctx.setVariable("user", user);
-        ctx.setVariable("token", userVerificationCode.getTokenUrl());
         ctx.setVariable("code", userVerificationCode.getVerificationCode());
         LOGGER.info("Preparing verification mail for user.");
         try {

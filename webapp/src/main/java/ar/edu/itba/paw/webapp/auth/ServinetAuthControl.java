@@ -102,4 +102,11 @@ public class ServinetAuthControl {
         Optional<User> user = getCurrentUser();
         return user.map(User::isProvider).orElse(false);
     }
+
+    @Transactional(readOnly = true)
+    public boolean isVerified(){
+        Optional<User> user = getCurrentUser();
+        return user.map(User::getIsVerified).orElse(false);
+    }
+
 }

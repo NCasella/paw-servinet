@@ -14,14 +14,27 @@
 
         <img class="svg" src="${pageContext.request.contextPath}/resources/403.svg" alt="">
         <h2 class="header-text"><spring:message code="error.403"/></h2>
-
-        <div class="align-center">
-            <a class="none-decoration" href="${pageContext.request.contextPath}/">
-                <button class="btn">
-                    <label class="btn-text"><spring:message code="error.backtohome"/></label>
-                </button>
-            </a>
-        </div>
+        <c:choose>
+        <c:when test="${isUnverified}">
+            <h3 class="align-center"><spring:message code="error.unverified"/></h3>
+            <div class="align-center">
+                <a class="none-decoration" href="${pageContext.request.contextPath}/verificar-cuenta/${token}">
+                    <button class="btn">
+                        <label class="btn-text"><spring:message code="verify.account"/></label>
+                    </button>
+                </a>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="align-center">
+                <a class="none-decoration" href="${pageContext.request.contextPath}/">
+                    <button class="btn">
+                        <label class="btn-text"><spring:message code="error.backtohome"/></label>
+                    </button>
+                </a>
+            </div>
+        </c:otherwise>
+        </c:choose>
     </div>
 
 </body>

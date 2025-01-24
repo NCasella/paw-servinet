@@ -42,9 +42,11 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                 .and()
                 .authorizeRequests()
-                .requestMatchers("/login", "/registrarse", "/olvide-mi-clave", "/restablecer-clave/**", "/verificar-cuenta/**").anonymous()
+                .requestMatchers("/login", "/registrarse", "/olvide-mi-clave", "/restablecer-clave/**").anonymous()
+                .requestMatchers("/verificar-cuenta", "/reenviar-codigo").hasRole("UNVERIFIED_USER")
                 .requestMatchers("/editar-opinion/{serviceID:\\d+}/{ratingId:\\d+}").access("hasRole('USER') && @servinetAuthControl.isRatingOwner(#ratingId)")
-                .requestMatchers("/perfil", "/contratar-servicio/{serviceId:\\d+}", "/preguntar/**", "/opinar/**").hasRole("USER")
+                .requestMatchers("/perfil", "/preguntar/**").hasAnyRole("UNVERIFIED_USER", "USER")
+                .requestMatchers( "/contratar-servicio/{serviceId:\\d+}", "/opinar/**").hasRole("USER")
                 .requestMatchers("/negocio/{businessID:\\d+}/turnos","/negocio/{businessID:\\d+}/estadisticas", "/borrar-negocio/{businessID:\\d+}", "/crear-servicio/{businessID:\\d+}", "/{businessID:\\d+}/editar-negocio").access(" hasRole('BUSINESS') && @servinetAuthControl.isBusinessOwner(#businessID,@servinetAuthControl.currentUser.get().userId)")
                 .requestMatchers("/borrar-servicio/{serviceId:\\d+}", "/editar-servicio/{serviceId:\\d+}").access("hasRole('BUSINESS') && @servinetAuthControl.isServiceOwner(#serviceId)")
                 .requestMatchers("/rechazar-turno/{appointmentId:\\d+}","/aceptar-turno/{appointmentId:\\d+}", "/negocio/solicitud-turno/{appointmentId:\\d+}").access("hasRole('BUSINESS') && @servinetAuthControl.isAdminAppointment(#appointmentId)")
@@ -55,31 +57,29 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers("/negocio/{businessID:\\d+}").permitAll()
                 .requestMatchers("/negocio/opiniones/{businessID:\\d+}/**").permitAll()
                 .requestMatchers("/").permitAll().
-                requestMatchers("/**").authenticated().and()
+                requestMatchers("/**").authenticated().and().exceptionHandling().and()
             .formLogin()
                 .loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/", false).failureHandler((request,response,exception)-> {
+                .defaultSuccessUrl("/", false)
+                .failureHandler((request,response,exception)-> {
                     String url;
                     if (exception instanceof DisabledException) {
-                        url="/login?notVerified";
+                        url="/403";
                     }else{
                         url="/login?error";
                     }
                     response.sendRedirect(request.getContextPath()+url);
-                }) .and()
+                })
+                .and()
             .rememberMe()
                 .userDetailsService(userDetailsService)
                 .rememberMeParameter("remember-me").key(rememberMeKey)
                 .tokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(6)).and()
             .logout().logoutUrl("/logout").logoutSuccessUrl("/login").and()
                 .exceptionHandling().accessDeniedHandler((request,response,accessDeniedException) ->{
-                    if (request.getServletPath().contains("/negocios")) {
-                        response.sendRedirect(request.getContextPath()+"/registrar-negocio");
-                    }else {
                         response.sendRedirect(request.getContextPath()+"/403");
-                    }
                 }).and()
             .csrf().disable();
     }

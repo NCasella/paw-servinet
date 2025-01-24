@@ -25,6 +25,9 @@
                     <p class="nav-item"><spring:message code="navbar.account"/></p>
                     <div class="dropdown-content">
                         <a href="${pageContext.request.contextPath}/perfil"><spring:message code="navbar.profile"/></a>
+                        <c:if test="${!isVerified}">
+                            <a href="${pageContext.request.contextPath}/verificar-cuenta"><spring:message code="verify.account"/></a>
+                        </c:if>
                         <a href="${pageContext.request.contextPath}/turnos?confirmados=true"><spring:message code="navbar.appointments"/></a>
                         <c:choose>
                             <c:when test="${isProvider}">
