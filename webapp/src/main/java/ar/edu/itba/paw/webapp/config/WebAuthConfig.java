@@ -11,12 +11,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.RedirectStrategy;
 
 import java.util.concurrent.TimeUnit;
+
 @EnableWebSecurity
 @ComponentScan({
         "ar.edu.itba.paw.webapp.auth"
@@ -39,8 +41,14 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.sessionManagement()
-                .and()
+        http    .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions!
+                )
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+                .formLogin().disable()
+                .authorizeHttpRequests().requestMatchers("/api/**").permitAll();
+
+       /*         .and()
                 .authorizeRequests()
                 .requestMatchers("/login", "/registrarse", "/olvide-mi-clave", "/restablecer-clave/**", "/verificar-cuenta/**").anonymous()
                 .requestMatchers("/editar-opinion/{serviceID:\\d+}/{ratingId:\\d+}").access("hasRole('USER') && @servinetAuthControl.isRatingOwner(#ratingId)")
@@ -82,6 +90,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     }
                 }).and()
             .csrf().disable();
+            */
     }
     @Override
     public void configure(final WebSecurity web) {
