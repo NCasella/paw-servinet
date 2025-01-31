@@ -14,11 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.List;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
@@ -32,6 +28,17 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.userVerificationService= userVerificationService;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers(int page){
+        return userDao.getUsers(page);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public int getUserCount(){
+        return userDao.getUserCount();
     }
 
     @Transactional(readOnly = true)
@@ -88,7 +95,7 @@ public class UserServiceImpl implements UserService {
         String locale = LocaleContextHolder.getLocale().getLanguage();
 
         User user= userDao.create(username,name,surname, passwordEncoder.encode(password), email, telephone,false,locale);
-        userVerificationService.sendVerificationCode(user);
+        //userVerificationService.sendVerificationCode(user);
 
         return user;
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,18 @@ public class UserDaoJpa implements UserDao {
     @PersistenceContext
     private EntityManager em;
 
+    @Override
+    public List<User> getUsers(int page){
+        final TypedQuery<User> query= em.createQuery("from User", User.class);
+        query.setMaxResults(10);
+        query.setFirstResult((page-1)*10);
+        return query.getResultList();
+    }
+    @Override
+    public int getUserCount(){
+        final Query query = em.createNativeQuery("select count(u.userid) from users as u ");
+        return ((Number) query.getSingleResult()).intValue();
+    }
     @Override
     public User create(final String username, final String name,final String surname, final String password, final String email, final String telephone, final boolean isProvider, final String locale){
         final User user =new User(username,password,name,surname,email,telephone,false,locale);

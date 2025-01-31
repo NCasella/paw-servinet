@@ -2,8 +2,6 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.User;
 
-import java.util.function.Function;
-
 public class UserDto {
     private long userId;
     private String fullName;
@@ -43,7 +41,6 @@ public class UserDto {
     public void setUsername(String username) {
         this.username = username;
     }
-
     public String getEmail() {
         return email;
     }

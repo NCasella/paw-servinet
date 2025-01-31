@@ -2,10 +2,13 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
     // Data Access Object
+    List<User> getUsers(int page);
+    int getUserCount();
     Optional<User> findById(long id);
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);

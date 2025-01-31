@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {
+    List<User> getAllUsers(int page);
+    int getUserCount();
     Optional<User> findById(long id);
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
