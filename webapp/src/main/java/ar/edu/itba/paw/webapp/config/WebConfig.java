@@ -20,12 +20,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -38,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan({
-        "ar.edu.itba.paw.webapp.controller",
+        "ar.edu.itba.paw.webapp.jersey",
         "ar.edu.itba.paw.services",
         "ar.edu.itba.paw.persistance"
 })
@@ -47,16 +44,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("classpath:schema.sql")
     private Resource schemaSql;
-
-    @Bean
-    public ViewResolver viewResolver() {
-        final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/jsp/");
-        viewResolver.setSuffix(".jsp");
-        return viewResolver;
-    }
 
     @Bean
     public DataSource dataSource() {
@@ -133,10 +120,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         super.addResourceHandlers(registry);
+        // Sirve archivos estáticos desde la raíz de webapp
+        registry.addResourceHandler("/**")
+                .addResourceLocations("/");
 
-        registry.addResourceHandler("/css/**").addResourceLocations("/css/");
-        registry.addResourceHandler("/js/**").addResourceLocations("/js/");
-        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
     }
 
 }
