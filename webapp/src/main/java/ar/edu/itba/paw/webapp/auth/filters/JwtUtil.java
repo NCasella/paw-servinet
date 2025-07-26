@@ -18,6 +18,7 @@ public class JwtUtil {
     private String SECRET_KEY;
 
     private static final int TOKEN_DURATION=1000*60*60*12; //ms
+    private static final int REFRESH_TOKEN_DURATION=1000*60*60*24*7;
 
     public String extractUsername(String token) {
         try {
@@ -42,6 +43,14 @@ public class JwtUtil {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_DURATION))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+    public String generateRefreshToken(UserDetails userDetails) {
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATION))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
