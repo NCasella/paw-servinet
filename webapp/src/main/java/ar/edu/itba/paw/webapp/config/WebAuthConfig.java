@@ -1,12 +1,16 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.webapp.auth.filters.BasicAuthFilter;
+import ar.edu.itba.paw.webapp.auth.filters.AuthEntryPoint;
+import ar.edu.itba.paw.webapp.auth.filters.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,9 +19,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.RedirectStrategy;
-
-import java.util.concurrent.TimeUnit;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @ComponentScan({
@@ -27,7 +30,12 @@ import java.util.concurrent.TimeUnit;
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    private JwtFilter jwtFilter;
+    @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private BasicAuthFilter basicAuthFilter;
+
     @Value("${rememberMe.key}")
     private String rememberMeKey;
     @Bean
@@ -41,14 +49,14 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http    .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions!
-                )
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
-                .formLogin().disable()
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf().disable() // Disable CSRF for APIs
+                .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint()).and()
+                .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests().requestMatchers("/api/**").permitAll();
 
-       /*         .and()
+       /*        .and()
                 .authorizeRequests()
                 .requestMatchers("/login", "/registrarse", "/olvide-mi-clave", "/restablecer-clave/**", "/verificar-cuenta/**").anonymous()
                 .requestMatchers("/editar-opinion/{serviceID:\\d+}/{ratingId:\\d+}").access("hasRole('USER') && @servinetAuthControl.isRatingOwner(#ratingId)")
@@ -95,5 +103,13 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final WebSecurity web) {
         web.ignoring().requestMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/400","/404","/403","/500");
+    }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint(){
+        return new AuthEntryPoint();
     }
 }
