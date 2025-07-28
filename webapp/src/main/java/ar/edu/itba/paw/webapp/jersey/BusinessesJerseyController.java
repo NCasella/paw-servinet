@@ -1,0 +1,58 @@
+package ar.edu.itba.paw.webapp.jersey;
+
+
+import ar.edu.itba.paw.model.Business;
+import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
+import ar.edu.itba.paw.services.BusinessService;
+import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
+import ar.edu.itba.paw.webapp.dto.BusinessDto;
+import ar.edu.itba.paw.webapp.form.BusinessForm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.validation.Valid;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.Optional;
+
+@Path("/businesses")
+@Component
+public class BusinessesJerseyController {
+
+    @Context
+    private UriInfo uriInfo;
+
+    private final BusinessService businessService;
+    private final ServinetAuthControl authControl;
+
+    @Autowired
+    public BusinessesJerseyController(BusinessService businessService,ServinetAuthControl authControl) {
+        this.businessService = businessService;
+        this.authControl=authControl;
+    }
+
+    @POST
+    @Consumes(value={MediaType.APPLICATION_JSON})//FIXME: validacion
+    public Response createBusiness(@Valid final BusinessForm businessForm){
+        User currentUser=authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
+        final Business business=businessService.createBusiness(businessForm.getBusinessName(),currentUser.getUserId()
+                ,businessForm.getBusinessTelephone(),businessForm.getBusinessEmail(),businessForm.getBusinessLocation());
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(business.getBusinessid())).build()).build();
+    }
+
+    @GET
+    @Path("/{businessid}")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response getBusiness(@PathParam("businessid") final long businessid) {
+        Optional<Business> business = businessService.findById(businessid);
+        if (business.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(BusinessDto.fromBusiness(business.get(), uriInfo)).build();
+    }
+
+}
