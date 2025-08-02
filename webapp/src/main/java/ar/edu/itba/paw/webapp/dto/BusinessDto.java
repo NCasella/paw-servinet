@@ -24,7 +24,7 @@ public class BusinessDto {
         toReturn.setBusinessName(business.getName());
         toReturn.setEmail(business.getEmail());
         toReturn.setTelephone(business.getTelephone());
-        toReturn.setQuestionsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_QUESTIONS.getUrl()).queryParam("forBusiness",business.getUserId()).build());
+        toReturn.setQuestionsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_QUESTIONS_URL.getUrl()).queryParam("forBusiness",business.getUserId()).build());
         toReturn.setReviewsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_URL.getUrl()).queryParam("providedBy",business.getUserId()).build());
         toReturn.setRating(business.getBusinessRatingAvg());
         toReturn.setUserOwnerPath(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(business.getUserId())).build());

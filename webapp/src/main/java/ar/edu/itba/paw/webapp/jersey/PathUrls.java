@@ -6,8 +6,8 @@ public enum PathUrls {
     BUSINESSES_URL("businesses"),
     BUSINESSES_STATISTICS_URL("statistics"),
     SERVICES_URL("services"),
-    SERVICES_QUESTIONS("questions");
-
+    SERVICES_QUESTIONS_URL("questions"),
+    APPOINMENTS_URL("appointments");
     private final String url;
     PathUrls(String url){this.url=url;}
 
