@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,10 +17,12 @@ import java.util.stream.Collectors;
 @Path("users")
 @Component
 public class UsersJerseyController {
-    private UserService us;
+    private final UserService us;
 
     @Context
     private UriInfo uriInfo;
+    @Context
+    private Request request;
     @Autowired
     public UsersJerseyController(UserService userService){
         this.us = userService;
@@ -62,6 +62,6 @@ public class UsersJerseyController {
         if (maybeUser.isEmpty()){
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(UserDto.fromUser(maybeUser.get())).build();
+        return ConditionalCache.cacheResponse(request,UserDto.fromUser(maybeUser.get())).build();
     }
 }

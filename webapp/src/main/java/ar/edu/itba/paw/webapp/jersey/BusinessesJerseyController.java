@@ -13,10 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.Optional;
 
 @Path("/businesses")
@@ -25,7 +22,8 @@ public class BusinessesJerseyController {
 
     @Context
     private UriInfo uriInfo;
-
+    @Context
+    private Request request;
     private final BusinessService businessService;
     private final ServinetAuthControl authControl;
 
@@ -52,7 +50,7 @@ public class BusinessesJerseyController {
         if (business.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(BusinessDto.fromBusiness(business.get(), uriInfo)).build();
+        return ConditionalCache.cacheResponse(request,BusinessDto.fromBusiness(business.get(),uriInfo)).build();
     }
 
 }

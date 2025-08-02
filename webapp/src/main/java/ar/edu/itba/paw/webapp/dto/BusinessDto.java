@@ -5,6 +5,7 @@ import ar.edu.itba.paw.webapp.jersey.PathUrls;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.Objects;
 
 public class BusinessDto {
     private String businessName;
@@ -75,5 +76,9 @@ public class BusinessDto {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(businessName,email,telephone,address,rating);
     }
 }

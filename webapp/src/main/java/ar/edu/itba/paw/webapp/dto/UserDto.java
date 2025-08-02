@@ -2,6 +2,8 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.User;
 
+import java.util.Objects;
+
 public class UserDto {
     private long userId;
     private String fullName;
@@ -54,5 +56,10 @@ public class UserDto {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(userId,fullName,username,email,language);
     }
 }
