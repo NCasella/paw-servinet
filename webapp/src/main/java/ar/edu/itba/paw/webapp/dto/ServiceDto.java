@@ -1,10 +1,18 @@
 package ar.edu.itba.paw.webapp.dto;
 
-public class ServicesDto {
+import ar.edu.itba.paw.model.Service;
+import ar.edu.itba.paw.webapp.jersey.PathUrls;
+
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.Objects;
+
+public class ServiceDto {
     private long serviceId;
     private String serviceName;
-    private long businessId;
     private boolean homeService;
+    private URI businessUri;
     private String[] neighbourhoods;
     private String address;
     private double rating;
@@ -15,11 +23,29 @@ public class ServicesDto {
     private String category;
     private String pricingType;
 
+    public static ServiceDto fromService(Service service, UriInfo uriInfo){
+    ServiceDto serviceDto =new ServiceDto();
+    serviceDto.setServiceId(service.getId());
+    serviceDto.setServiceName(service.getName());
+    serviceDto.setHomeService(service.getHomeService());
+    serviceDto.setAddress(service.getLocation());
+    serviceDto.setDescription(service.getDescription());
+    serviceDto.setDuration(service.getDuration());
+    serviceDto.setPrice(service.getPrice());
+    serviceDto.setCategory(service.getCategory().getValue());//TODO: ver localizacion?
+    serviceDto.setPricingType(service.getPricing().getValue());
+    serviceDto.setBusinessUri(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_URL.getUrl()).path(String.valueOf(service.getBusinessid())).build());
+    serviceDto.setNeighbourhoods(service.getNeighbourhoodAvailable().toArray(String[]::new));
+
+    return serviceDto;
+    }
+    private ServiceDto(){}
+
     public long getServiceId() {
         return serviceId;
     }
     public void setServiceId(long serviceId){
-        serviceId = serviceId;
+        this.serviceId = serviceId;
     }
 
     public String getServiceName() {
@@ -30,13 +56,7 @@ public class ServicesDto {
         this.serviceName = serviceName;
     }
 
-    public long getBusinessId() {
-        return businessId;
-    }
 
-    public void setBusinessId(long businessId) {
-        this.businessId = businessId;
-    }
     public boolean getHomeService(){
         return homeService;
     }
@@ -115,5 +135,15 @@ public class ServicesDto {
 
     public void setPricingType(String pricingType) {
         this.pricingType = pricingType;
+    }
+
+    public void setBusinessUri(URI uri){this.businessUri=uri;}
+
+    public URI getBusinessUri() {
+        return businessUri;
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(serviceName,homeService, Arrays.hashCode(neighbourhoods),address,rating,description,duration,additionalCosts,price,pricingType);
     }
 }
