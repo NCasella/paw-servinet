@@ -18,6 +18,7 @@ public class AppointmentDto {
 
     private URI service;
     private URI userRequester;
+    private URI self;
 
     public static AppointmentDto fromAppointment(Appointment app, UriInfo uriInfo){
         AppointmentDto toRet=new AppointmentDto();
@@ -28,8 +29,10 @@ public class AppointmentDto {
 
         toRet.setUserRequester(uriInfo.getBaseUriBuilder().path(PathUrls.USERS_URL.getUrl()).path(String.valueOf(app.getUserid())).build());
         toRet.setService(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_URL.getUrl()).path(String.valueOf(app.getServiceid())).build());
+        toRet.setSelf(uriInfo.getBaseUriBuilder().path(PathUrls.APPOINMENTS_URL.getUrl()).path(String.valueOf(app.getId())).build());
 
         return toRet;
+
     }
 
     @Override
@@ -93,4 +96,6 @@ public class AppointmentDto {
         this.userRequester = userRequester;
     }
 
+    public URI getSelf(){return this.self;}
+    public void setSelf(URI uri){this.self=uri;}
 }

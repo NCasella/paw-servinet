@@ -17,7 +17,7 @@ public class BusinessDto {
     private URI businessStatistics;
     private URI reviewsPath;
     private URI questionsPath;
-
+    private URI self;
     public static BusinessDto fromBusiness(Business business, UriInfo uriInfo){
         BusinessDto toReturn=new BusinessDto();
         toReturn.setAddress(business.getLocation());
@@ -29,9 +29,11 @@ public class BusinessDto {
         toReturn.setRating(business.getBusinessRatingAvg());
         toReturn.setUserOwnerPath(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(business.getUserId())).build());
         toReturn.setBusinessStatistics(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_URL.getUrl()).path(String.valueOf(business.getBusinessid())).path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl()).build());
+        toReturn.setSelf(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl()).path(String.valueOf(business.getBusinessid())).build());
         return toReturn;
     }
-
+    public URI getSelf(){return this.self;}
+    public void setSelf(URI uri){this.self=uri;}
     public URI getReviewsPath(){return this.reviewsPath;}
     public URI getQuestionsPath(){return this.questionsPath;}
     public void setUserOwnerPath(URI path){this.userOwnerPath=path;}

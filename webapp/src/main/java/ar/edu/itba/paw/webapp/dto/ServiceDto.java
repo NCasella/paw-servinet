@@ -13,6 +13,9 @@ public class ServiceDto {
     private String serviceName;
     private boolean homeService;
     private URI businessUri;
+
+
+    private URI self;
     private String[] neighbourhoods;
     private String address;
     private double rating;
@@ -37,6 +40,7 @@ public class ServiceDto {
     serviceDto.setBusinessUri(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_URL.getUrl()).path(String.valueOf(service.getBusinessid())).build());
     serviceDto.setNeighbourhoods(service.getNeighbourhoodAvailable().toArray(String[]::new));
 
+    serviceDto.setSelf(uriInfo.getAbsolutePathBuilder().path(PathUrls.SERVICES_URL.getUrl()).path(String.valueOf(service.getId())).build());
     return serviceDto;
     }
     private ServiceDto(){}
@@ -138,6 +142,13 @@ public class ServiceDto {
     }
 
     public void setBusinessUri(URI uri){this.businessUri=uri;}
+    public URI getSelf() {
+        return self;
+    }
+
+    public void setSelf(URI self) {
+        this.self = self;
+    }
 
     public URI getBusinessUri() {
         return businessUri;
