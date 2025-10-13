@@ -2,11 +2,10 @@ package ar.edu.itba.paw.model.exceptions;
 
 public class AppointmentAlreadyConfirmed extends InvalidOperationException{
 
-    private static final String message = "The appointment doesn't exist";
-    private static final String APPOINTMENT_ALREADY_CONFIRMED = "turnoyaconfirmado";
+    private static final String message = "The appointment had already been confirmed";
 
     public AppointmentAlreadyConfirmed() {
-        super(APPOINTMENT_ALREADY_CONFIRMED);
+        super(message);
     }
 
     @Override

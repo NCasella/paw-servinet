@@ -1,4 +1,4 @@
-<h1>HOLA</h1>
+<h1>HOLA, soy agus</h1>
 
 <script lang="ts">
 	export const ssr = false;

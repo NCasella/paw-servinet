@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.model.exceptions;
 
-public class QuestionNotFoundException extends InvalidOperationException {
+public class QuestionNotFoundException extends NotFoundException {
 
     private static final String message = "The business was not found";
     private static final String QUESTION_NON_EXISTENT = "preguntanoexiste";

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.*;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -39,4 +40,12 @@ public interface AppointmentService {
 
     long denyAppointment(long appointmentid);
 
+    Appointment create(long serviceid, long userid, String location, LocalDateTime startDate, String description);
+
+    void changePendingAppointmentStatus(long appointmentid, boolean confirmed);
+
+    PagedList<Appointment> getUserAppointments(long userId,AppointmentStatus status,int page);
+
+    PagedList<Appointment> getBusinessAppointments(long businessId,AppointmentStatus status,int page);
 }
+

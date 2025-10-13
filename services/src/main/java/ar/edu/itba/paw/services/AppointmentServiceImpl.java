@@ -9,9 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @org.springframework.stereotype.Service("appointmentServiceImpl")
 public class AppointmentServiceImpl implements AppointmentService{
@@ -112,6 +110,29 @@ public class AppointmentServiceImpl implements AppointmentService{
         LOGGER.info("Appointment request email sent successfully.");
         return appointment;
     }
+
+    @Transactional
+    @Override
+    public void changePendingAppointmentStatus(long appointmentid, boolean confirmed) {
+        Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
+        final Service service = appointment.getServiceAppointed();
+        final User client = appointment.getAppointedBy();
+
+        if (appointment.getConfirmed())
+            throw new AppointmentAlreadyConfirmed();
+
+        Business business = service.getBusiness();
+        if ( confirmed ) {
+            appointmentDao.confirmAppointment(appointment.getId());
+            emailService.confirmedAppointment(appointment, service, business, client, business.getOwnedBy().getLocale());
+            LOGGER.info("Appointment confirmation email sent successfully.");
+        } else {
+            appointmentDao.cancelAppointment(appointment.getId());
+            emailService.deniedAppointment(appointment, service, business, client,false,business.getOwnedBy().getLocale());
+            LOGGER.info("Denied appointment email sent successfully.");
+        }
+    }
+
     @Transactional
     @Override
     public long confirmAppointment(long appointmentid) {
@@ -162,4 +183,42 @@ public class AppointmentServiceImpl implements AppointmentService{
         return service.getId();
     }
 
+    @Transactional
+    @Override
+    public Appointment create(long serviceid, long userid, String location, LocalDateTime startDate, String description) {
+        Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
+        User newuser = userService.findById(userid).orElseThrow(UserNotFoundException::new);
+
+        Appointment appointment = appointmentDao.create(service, newuser, startDate, startDate.plusMinutes(service.getDuration()), location, description);
+        Business business = service.getBusiness();
+
+        emailService.requestAppointment(appointment, service, business, newuser, business.getOwnedBy().getLocale());
+        LOGGER.info("Appointment request email sent successfully.");
+        return appointment;
+    }
+
+    @Transactional
+    @Override
+    public PagedList<Appointment> getUserAppointments(long userId, AppointmentStatus status, int page) {
+        List<Appointment> list;
+        if (status==AppointmentStatus.FINISHED) {
+            list = getPreviousUserAppointments(userId, page);
+            return PagedList.of(list, (int) getPreviousUserAppointmentCount(userId) );
+        }
+        list = getAllUpcomingUserAppointments(userId,status==AppointmentStatus.CONFIRMED,page);
+        return PagedList.of(list, (int) getUserAppointmentCount(userId,status==AppointmentStatus.CONFIRMED) );
+    }
+
+    @Transactional
+    @Override
+    public PagedList<Appointment> getBusinessAppointments(long businessId, AppointmentStatus status, int page) {
+        List<BasicService> services = serviceDao.getAllBusinessBasicServices(businessId);
+        Map<Long, BasicService> serviceMap = new HashMap<>();
+        services.forEach(service -> serviceMap.put(service.getId(), service));
+        Set<Long> serviceIds =  serviceMap.keySet();
+
+        List<Appointment> l = getAllUpcomingServicesAppointments(serviceIds, status==AppointmentStatus.CONFIRMED, page);
+        final int totalResults = (int) getServicesAppointmentCount(serviceIds,status==AppointmentStatus.CONFIRMED);
+        return PagedList.of(l,totalResults);
+    }
 }

@@ -8,9 +8,11 @@ import javax.ws.rs.ext.Provider;
 
 @Provider
 public class InternalExceptionMapper implements ExceptionMapper<RuntimeException> {
+    private final ExceptionToStatusMapper exceptionToStatusMapper = new ExceptionToStatusMapper();
 
     @Override
     public Response toResponse(RuntimeException exception) {
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionDto.fromException(exception)).build();
+        return Response.status(exceptionToStatusMapper.map(exception))
+                .entity(ExceptionDto.fromException(exception)).build();
     }
 }

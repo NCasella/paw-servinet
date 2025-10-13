@@ -41,17 +41,8 @@ public class UsersJerseyController {
     public Response listUsers(@QueryParam("page") @DefaultValue("1") final int page) {
         final List<UserDto> allUsers = us.getAllUsers(page).stream()
                 .map(UserDto::fromUser).collect(Collectors.toList());
-        int prev = page-1 > 0 ? page-1 : page;
         int total = us.getUserCount();
-        int max =  total % 10 == 0 ? total / 10 : (total / 10) + 1;
-        int next = page + 1 <= max ? page + 1 : page;
-        return Response.ok(new GenericEntity<List<UserDto>>(allUsers) {})
-                .link(String.valueOf(total), "total")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", prev).build(),"prev")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", next).build(),"next")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(),"first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", max).build(),"last")
-                .build();
+        return PagedListResponse.generate(allUsers,page,total,uriInfo,UserDto.class);
     }
 
     @GET

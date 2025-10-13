@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class AppointmentDto {
-    private LocalDateTime start;
+    private long appointmentId;
+
+
+    private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String address;
     private String description;
@@ -23,29 +26,35 @@ public class AppointmentDto {
     public static AppointmentDto fromAppointment(Appointment app, UriInfo uriInfo){
         AppointmentDto toRet=new AppointmentDto();
         toRet.setAddress(app.getLocation());
-        toRet.setStart(app.getStartDate());
+        toRet.setStartDate(app.getStartDate());
+        toRet.setEndDate(app.getStartDate());
         toRet.setConfirmed(app.getConfirmed());
         toRet.setDescription(app.getDescription());
+        toRet.setAppointmentId(app.getId());
 
         toRet.setUserRequester(uriInfo.getBaseUriBuilder().path(PathUrls.USERS_URL.getUrl()).path(String.valueOf(app.getUserid())).build());
         toRet.setService(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_URL.getUrl()).path(String.valueOf(app.getServiceid())).build());
         toRet.setSelf(uriInfo.getBaseUriBuilder().path(PathUrls.APPOINMENTS_URL.getUrl()).path(String.valueOf(app.getId())).build());
 
         return toRet;
-
     }
+
 
     @Override
     public int hashCode(){
-        return Objects.hash(start,endDate,address,description,confirmed);
+        return Objects.hash(appointmentId,startDate,endDate,address,description,confirmed,service,userRequester,self);
     }
     private AppointmentDto(){}
-    public LocalDateTime getStart() {
-        return start;
+
+    public long getAppointmentId() {return appointmentId;}
+    public void setAppointmentId(long appointmentId) {this.appointmentId = appointmentId;}
+
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
-    public void setStart(LocalDateTime start) {
-        this.start = start;
+    public void setStartDate(LocalDateTime start) {
+        this.startDate = start;
     }
 
     public LocalDateTime getEndDate() {

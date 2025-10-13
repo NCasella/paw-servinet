@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.model.exceptions;
 
-public class ServiceNotFoundException extends InvalidOperationException {
+public class ServiceNotFoundException extends NotFoundException {
     //TODO: cambiar por llamado al constructor con parametros
     private String servicename = "servicio 1";
     //TODO: ver cómo pasar el username si es que se ingresa desde una lista que ya fue cargada (más significativo que hablar de un id)
