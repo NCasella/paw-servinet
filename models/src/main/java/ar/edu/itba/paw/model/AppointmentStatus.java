@@ -7,7 +7,9 @@ import java.util.Arrays;
 public enum AppointmentStatus {
     CONFIRMED("confirmed"),
     PENDING("pending"),
-    FINISHED("finished");
+    FINISHED("finished"),
+    DENIED("denied"),
+    CANCELLED("cancelled");
 
     private final String value;
     public static final String DEFAULT_VALUE = "pending";

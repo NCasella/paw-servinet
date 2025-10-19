@@ -53,7 +53,6 @@ public class AppointmentJerseyController {
 
     /*
     * FIXME: ver como pasar id del servicio.
-    *   Distinguir entre alterar, confirmar y cancelar appointment para patch/put
     *
     * @POST
     *
@@ -83,10 +82,9 @@ public class AppointmentJerseyController {
     @Path("/{appointmentid}")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
-        //! cancel y denied estan aca xq vamos a hacer borrado logico
-        if (!appointmentStatusDTO.hasValues() )
-            return Response.status(Response.Status.NOT_MODIFIED).build();
-        if (appointmentStatusDTO.isCanceled())
+        if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.isPending())
+            return Response.status(Response.Status.BAD_REQUEST ).build();
+        if (appointmentStatusDTO.isCancelled())
             appointmentService.cancelAppointment(appointmentId);
         else
             appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.isConfirmed());

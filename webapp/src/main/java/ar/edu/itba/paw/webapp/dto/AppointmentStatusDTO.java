@@ -1,36 +1,48 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import java.util.Objects;
+import ar.edu.itba.paw.model.AppointmentStatus;
+import ar.edu.itba.paw.model.exceptions.InvalidAppointmentStatusException;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import java.util.Optional;
 
 public class AppointmentStatusDTO {
-    private Boolean confirmed;
-    private Boolean canceled;
 
-    private AppointmentStatusDTO(){}
+    private AppointmentStatus status;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(confirmed,canceled);
+    public AppointmentStatusDTO() {
+        // Jackson necesita este constructor vacío
     }
 
-    public Boolean isCanceled() {
-        return canceled!=null && canceled;
+    @JsonSetter("status")
+    public void setStatus(String status) {
+        this.status = AppointmentStatus.toEnum(status);
     }
 
-    public void setCanceled(Boolean canceled) {
-        this.canceled = canceled;
+    @JsonProperty("status")
+    public String getStatus() {
+        return Optional.ofNullable(status)
+                .orElseThrow(InvalidAppointmentStatusException::new)
+                .getValue();
     }
 
-    public Boolean isConfirmed() {
-        return confirmed!=null && confirmed;
+    public AppointmentStatus getStatusEnum() {
+        return status;
     }
 
-    public void setConfirmed(Boolean confirmed) {
-        this.confirmed = confirmed;
+    public boolean isConfirmed() {
+        return status == AppointmentStatus.CONFIRMED;
     }
 
-    public boolean hasValues() {
-        return confirmed!=null || canceled!=null;
+    public boolean isCancelled() {
+        return status == AppointmentStatus.CANCELLED;
+    }
+
+    public boolean isPending() {
+        return status == AppointmentStatus.PENDING;
+    }
+    public boolean hasValidStatus() {
+        return status != null;
     }
 }

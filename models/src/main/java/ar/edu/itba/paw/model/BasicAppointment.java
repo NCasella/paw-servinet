@@ -27,6 +27,9 @@ public abstract class BasicAppointment {
     private boolean confirmed;
     @Column(name = "description")
     private String description;
+    @Column(name = "cancelled")
+    private boolean cancelled = false;
+
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE dd MMMM");
     private static final DateTimeFormatter dateWithYearFormat = DateTimeFormatter.ofPattern("dd MMMM yyyy");
@@ -113,4 +116,8 @@ public abstract class BasicAppointment {
     }
 
     public boolean isPrevious(){ return startDate.isBefore(LocalDateTime.now()); }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
 }
