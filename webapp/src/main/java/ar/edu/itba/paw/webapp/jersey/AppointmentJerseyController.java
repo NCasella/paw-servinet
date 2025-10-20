@@ -82,12 +82,9 @@ public class AppointmentJerseyController {
     @Path("/{appointmentid}")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
-        if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.isPending())
+        if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.isPending() || appointmentStatusDTO.hasFinished())
             return Response.status(Response.Status.BAD_REQUEST ).build();
-        if (appointmentStatusDTO.isCancelled())
-            appointmentService.cancelAppointment(appointmentId);
-        else
-            appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.isConfirmed());
+        appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.getStatusEnum());
         return Response.noContent().build();
     }
 

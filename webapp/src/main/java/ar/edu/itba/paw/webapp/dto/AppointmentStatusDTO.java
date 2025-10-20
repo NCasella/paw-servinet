@@ -12,7 +12,6 @@ public class AppointmentStatusDTO {
     private AppointmentStatus status;
 
     public AppointmentStatusDTO() {
-        // Jackson necesita este constructor vacío
     }
 
     @JsonSetter("status")
@@ -45,4 +44,6 @@ public class AppointmentStatusDTO {
     public boolean hasValidStatus() {
         return status != null;
     }
+
+    public boolean hasFinished() { return status == AppointmentStatus.FINISHED; }
 }

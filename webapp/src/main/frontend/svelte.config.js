@@ -1,11 +1,19 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import sveltePreprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
 	// for more information about preprocessors
-	preprocess: vitePreprocess(),
+	preprocess: [
+		vitePreprocess(),
+		sveltePreprocess({
+		scss: {
+			includePaths: ['src'],   // opcional
+		}
+		})
+	],
 
 	kit: {
 		adapter: adapter({
@@ -19,8 +27,8 @@ const config = {
 			base: '/webapp_war_exploded', // Ruta base de tu aplicación
 			relative: false,
 		},
-	},
-	
+    	
+  },
 };
 
 export default config;

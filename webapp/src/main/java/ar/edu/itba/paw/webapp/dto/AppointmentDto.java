@@ -1,12 +1,17 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Appointment;
+import ar.edu.itba.paw.model.AppointmentStatus;
+import ar.edu.itba.paw.model.exceptions.InvalidAppointmentStatusException;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public class AppointmentDto {
     private long appointmentId;
@@ -17,7 +22,7 @@ public class AppointmentDto {
     private String address;
     private String description;
 
-    private boolean confirmed;
+    private AppointmentStatus status;
 
     private URI service;
     private URI userRequester;
@@ -28,7 +33,7 @@ public class AppointmentDto {
         toRet.setAddress(app.getLocation());
         toRet.setStartDate(app.getStartDate());
         toRet.setEndDate(app.getStartDate());
-        toRet.setConfirmed(app.getConfirmed());
+        toRet.setStatus(AppointmentStatus.getStatusFromAppointment(app));
         toRet.setDescription(app.getDescription());
         toRet.setAppointmentId(app.getId());
 
@@ -42,7 +47,7 @@ public class AppointmentDto {
 
     @Override
     public int hashCode(){
-        return Objects.hash(appointmentId,startDate,endDate,address,description,confirmed,service,userRequester,self);
+        return Objects.hash(appointmentId,startDate,endDate,address,description,status,service,userRequester,self);
     }
     private AppointmentDto(){}
 
@@ -81,12 +86,28 @@ public class AppointmentDto {
         this.description = description;
     }
 
-    public boolean isConfirmed() {
-        return confirmed;
+    @JsonSetter("status")
+    public void setStatus(String status) {
+        this.status = AppointmentStatus.toEnum(status);
     }
 
-    public void setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
+    public void setStatus(AppointmentStatus status) {
+        this.status = status;
+    }
+
+    @JsonProperty("status")
+    public String getStatus() {
+        return Optional.ofNullable(status)
+                .orElseThrow(InvalidAppointmentStatusException::new)
+                .getValue();
+    }
+
+    public AppointmentStatus getStatusEnum() {
+        return status;
+    }
+
+    public boolean hasValidStatus() {
+        return status != null;
     }
 
     public URI getService() {

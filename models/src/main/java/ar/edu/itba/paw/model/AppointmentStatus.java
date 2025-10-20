@@ -33,4 +33,10 @@ public enum AppointmentStatus {
     public String toString() {
         return value;
     }
+
+    public static AppointmentStatus getStatusFromAppointment(final Appointment appointment) {
+        if (appointment.isCancelled()) return AppointmentStatus.CANCELLED;
+        if (appointment.isConfirmed()) return AppointmentStatus.CONFIRMED;
+        return AppointmentStatus.PENDING;
+    }
 }

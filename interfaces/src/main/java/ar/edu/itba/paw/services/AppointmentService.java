@@ -42,7 +42,7 @@ public interface AppointmentService {
 
     Appointment create(long serviceid, long userid, String location, LocalDateTime startDate, String description);
 
-    void changePendingAppointmentStatus(long appointmentid, boolean confirmed);
+    void changePendingAppointmentStatus(long appointmentid, AppointmentStatus status);
 
     PagedList<Appointment> getUserAppointments(long userId,AppointmentStatus status,int page);
 

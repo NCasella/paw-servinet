@@ -1,13 +1,16 @@
-<h1>HOLA, soy agus</h1>
-
 <script lang="ts">
-	export const ssr = false;
-	// This can be false if you're using a fallback (i.e. SPA mode)
-	export const prerender = false;
+	import './layout.css';
 
 	import '../app.css';
+
 	let { children } = $props();
+
+	import Layout from '$lib/styles/layout.svelte';
+	
 </script>
 
-{@render children()}
-
+<div class="body" data-theme="sktheme">
+	<Layout>
+		{@render children()}
+	</Layout>
+</div>
