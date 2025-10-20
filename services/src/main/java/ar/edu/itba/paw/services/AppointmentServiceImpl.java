@@ -113,7 +113,7 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Transactional
     @Override
-    public void changePendingAppointmentStatus(long appointmentid, boolean confirmed) {
+    public void changePendingAppointmentStatus(long appointmentid, AppointmentStatus status) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
         final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
@@ -122,14 +122,18 @@ public class AppointmentServiceImpl implements AppointmentService{
             throw new AppointmentAlreadyConfirmed();
 
         Business business = service.getBusiness();
-        if ( confirmed ) {
-            appointmentDao.confirmAppointment(appointment.getId());
-            emailService.confirmedAppointment(appointment, service, business, client, business.getOwnedBy().getLocale());
-            LOGGER.info("Appointment confirmation email sent successfully.");
-        } else {
-            appointmentDao.cancelAppointment(appointment.getId());
-            emailService.deniedAppointment(appointment, service, business, client,false,business.getOwnedBy().getLocale());
-            LOGGER.info("Denied appointment email sent successfully.");
+        switch (status) {
+            case CONFIRMED -> {
+                appointmentDao.confirmAppointment(appointment.getId());
+                emailService.confirmedAppointment(appointment, service, business, client, business.getOwnedBy().getLocale());
+                LOGGER.info("Appointment confirmation email sent successfully.");
+            }
+            case DENIED -> {
+                appointmentDao.cancelAppointment(appointment.getId());
+                emailService.deniedAppointment(appointment, service, business, client,false,business.getOwnedBy().getLocale());
+                LOGGER.info("Denied appointment email sent successfully.");
+            }
+            case CANCELLED -> cancelAppointment(appointmentid);
         }
     }
 

@@ -117,7 +117,11 @@ public abstract class BasicAppointment {
 
     public boolean isPrevious(){ return startDate.isBefore(LocalDateTime.now()); }
 
+    public boolean isConfirmed() { return confirmed; }
+
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
+
+    public boolean isCancelled() {return cancelled;}
 }
