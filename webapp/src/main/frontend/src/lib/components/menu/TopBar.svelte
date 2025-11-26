@@ -12,7 +12,11 @@
 	  return page.url.pathname === path;
 	}
   
-	async function handleLogout(event: Event): Promise<void> {
+	async function handleLogin(event: Event): Promise<void> {
+        goto('login');
+    }
+    
+    async function handleLogout(event: Event): Promise<void> {
 	  event.preventDefault();
 	
 	  const response: Response = await fetch('/api/logout', {
@@ -24,7 +28,7 @@
 	  if (response.ok) {
 		alert('Logout successful');
 		//userStore.set({ authUser: null, session: null });
-		goto('/login');
+		goto('login');
 	  } else {
 		alert('Error logging out: ' + result.error);
 	  }
@@ -41,7 +45,7 @@
 	</div>
 	<div class="top-bar__right">
       <BusinessMenu/>  
-	  <button type="button" class="btn preset-filled-primary-500" on:click={handleLogout}>{$t("login")}</button>
+	  <button type="button" class="btn preset-filled-primary-500" on:click={handleLogin}>{$t("login")}</button>
 	</div>
   </header>
   
