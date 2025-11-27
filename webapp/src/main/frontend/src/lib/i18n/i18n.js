@@ -17,18 +17,25 @@ function translate(locale, key, vars) {
   if (!locale) throw new Error(`no translation for key "${key}"`);
 
   const dictionary = translations[locale];
-  if (!dictionary) throw new Error(`no translation for locale "${locale}"`);
-
   let text = dictionary[key];
+
   if (!text) throw new Error(`no translation found for ${locale}.${key}`);
 
-  // Replace variables
-  Object.keys(vars).forEach((k) => {
-    text = text.replace(new RegExp(`{{${k}}}`, "g"), vars[k]);
-  });
+  // Soporte para variables posicionales tipo {0}
+  if (Array.isArray(vars)) {
+    vars.forEach((value, index) => {
+      text = text.replace(new RegExp(`\\{${index}\\}`, "g"), value);
+    });
+  } //else if (typeof vars === "object") {
+  //  // Soporte para {{variable}}
+  //  Object.keys(vars).forEach((k) => {
+  //    text = text.replace(new RegExp(`{{${k}}}`, "g"), vars[k]);
+  //  });
+  //}
 
   return text;
 }
+
 
 export const t = derived(locale, ($locale) => (key, vars = {}) =>
   translate($locale, key, vars)
