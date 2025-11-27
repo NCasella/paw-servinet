@@ -27,7 +27,11 @@ const config = {
 			base: '/webapp_war_exploded', // Ruta base de tu aplicación
 			relative: false,
 		},
-    	
+		alias: {
+			$utils: 'src/utils',
+			$services: 'src/services',
+			$stores: 'src/stores',
+		}
   },
 };
 
