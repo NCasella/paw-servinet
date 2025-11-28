@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.jersey;
 
 
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.UserCreationDTO;
 import ar.edu.itba.paw.webapp.dto.UserDto;
@@ -49,10 +50,7 @@ public class UsersJerseyController {
     @Path("/{userid}")
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("userid") final long userid){
-        final Optional<User> maybeUser = us.findById(userid);
-        if (maybeUser.isEmpty()){
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return ConditionalCache.cacheResponse(request,UserDto.fromUser(maybeUser.get())).build();
+        final User maybeUser = us.findById(userid).orElseThrow(UserNotFoundException::new);
+        return ConditionalCache.cacheResponse(request,UserDto.fromUser(maybeUser)).build();
     }
 }

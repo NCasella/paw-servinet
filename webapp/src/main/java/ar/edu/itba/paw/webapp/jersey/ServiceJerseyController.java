@@ -4,6 +4,7 @@ package ar.edu.itba.paw.webapp.jersey;
 import ar.edu.itba.paw.model.ImageModel;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ServiceService;
@@ -48,21 +49,15 @@ public class ServiceJerseyController {
     @Path("/{serviceid}")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response getService(@PathParam("serviceid")final long serviceId){
-        Optional<Service> service=ss.findById(serviceId);
-        if(service.isEmpty()){
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return ConditionalCache.cacheResponse(request, ServiceDto.fromService(service.get(),uriInfo)).build();
+        Service service=ss.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        return ConditionalCache.cacheResponse(request, ServiceDto.fromService(service,uriInfo)).build();
     }
     @GET
     @Path("/{serviceid}/image")
     @Produces(value = {MediaType.MULTIPART_FORM_DATA})
     public Response getServiceImage(@PathParam("serviceid") final long serviceid){
-        Optional<ImageModel> imageModel=is.getImageById(serviceid);
-        if(imageModel.isEmpty()){
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return ConditionalCache.cacheResponse(request, ImageDto.fromImage(imageModel.get())).build();
+        ImageModel imageModel=is.getImageById(serviceid).orElseThrow(NotFoundException::new);
+        return ConditionalCache.cacheResponse(request, ImageDto.fromImage(imageModel)).build();
 
     }
 
