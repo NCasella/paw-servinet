@@ -17,15 +17,13 @@ const config = {
 
 	kit: {
 		adapter: adapter({
-			// default options are shown. On some platforms
-			// these options are set automatically — see below
-			pages: 'build',
-			assets: 'build',
-			fallback: 'index.html',
+			pages: '../webapp/app',
+			assets: '../webapp/app',
+			fallback: 'index.html'
 		}),
 		paths: {
-			base: '/webapp_war_exploded', // Ruta base de tu aplicación
-			relative: false,
+			base: '/webapp_war_exploded/app', // Ruta base de tu aplicación
+			relative: true,	
 		},
 		alias: {
 			$utils: 'src/utils',
