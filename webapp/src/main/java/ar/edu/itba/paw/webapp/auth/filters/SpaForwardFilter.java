@@ -21,18 +21,14 @@ public class SpaForwardFilter implements Filter {
         // ruta sin el context path (/webapp_war_exploded)
         String path = req.getRequestURI().substring(req.getContextPath().length());
 
-        // No tocar recursos estáticos: tienen punto o son de _app
-        boolean isStatic =
-                path.startsWith("/app/_app")
-                        || path.contains(".");   // .js, .css, .png, etc.
+        boolean isApi = path.startsWith("/api");
+        boolean isStatic = path.contains(".") || path.startsWith("/_app");
 
-        if (!isStatic) {
-            // forward a index.html de la SPA
-            request.getRequestDispatcher("/app/index.html").forward(request, response);
+        if (!isApi && !isStatic) {
+            request.getRequestDispatcher("/index.html").forward(request, response);
             return;
         }
 
-        // para todo lo demás, seguir normalmente
         chain.doFilter(request, response);
     }
 

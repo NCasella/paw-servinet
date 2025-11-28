@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+    import { base } from '$app/paths';
     import BusinessMenu from '$lib/components/menu/BusinessMenu.svelte';
     import {t} from "$lib/i18n/i18n"
 
@@ -38,7 +39,7 @@
   
   <header class="top-bar">
 	<div class="top-bar__left">
-	  <a class="logo" href="/">
+	  <a class="logo" href={base}>
         <h1 class="text-4xl text-primary-500 font-bold"> servinet .</h1>
 		<!--img src='/images/servinet.png' alt="Logo"  /-->
 	  </a>

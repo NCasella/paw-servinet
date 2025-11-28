@@ -118,7 +118,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     </filter-mapping>
 
     <welcome-file-list>
-        <welcome-file>app/index.html</welcome-file>
+        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
     <filter>
