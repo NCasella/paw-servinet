@@ -12,7 +12,6 @@ import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.dto.AppointmentCreationDTO;
 import ar.edu.itba.paw.webapp.dto.AppointmentDto;
 import ar.edu.itba.paw.webapp.dto.AppointmentStatusDTO;
-import ar.edu.itba.paw.webapp.mapper.ExceptionToStatusMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,6 @@ public class AppointmentJerseyController {
     @Context
     private Request request;
 
-    private ExceptionToStatusMapper exceptionToStatusMapper;
 
     private final ServinetAuthControl authControl;
     private final AppointmentService appointmentService;
