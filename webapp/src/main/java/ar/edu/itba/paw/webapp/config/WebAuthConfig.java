@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.webapp.auth.filters.BasicAuthFilter;
 import ar.edu.itba.paw.webapp.auth.filters.AuthEntryPoint;
+import ar.edu.itba.paw.webapp.auth.filters.DeniedEntryPoint;
 import ar.edu.itba.paw.webapp.auth.filters.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +52,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf().disable() // Disable CSRF for APIs
-                .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint()).and()
+                .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint()).accessDeniedHandler(new DeniedEntryPoint()).and()
                 .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests().requestMatchers("/api/**").permitAll();
