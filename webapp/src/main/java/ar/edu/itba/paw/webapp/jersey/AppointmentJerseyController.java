@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes.APPOINTMENT;
+
 @Path("appointments")
 @Component
 public class AppointmentJerseyController {
@@ -60,7 +62,7 @@ public class AppointmentJerseyController {
 
     @GET
     @Path("/{appointmentid}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(APPOINTMENT)
     public Response getAppointment(@PathParam("appointmentid")final long appointmentId){
         Optional<Appointment> app=appointmentService.findById(appointmentId);
         if(app.isEmpty()){
@@ -70,7 +72,7 @@ public class AppointmentJerseyController {
     }
 
     @POST
-    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Consumes(APPOINTMENT)
     public Response createAppointment(final AppointmentCreationDTO appointmentCreationDto){
         Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription());
         return Response.created(
@@ -80,7 +82,7 @@ public class AppointmentJerseyController {
 
     @PATCH
     @Path("/{appointmentid}")
-    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Consumes(APPOINTMENT)
     public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
         if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.isPending() || appointmentStatusDTO.hasFinished())
             return Response.status(Response.Status.BAD_REQUEST ).build();
@@ -89,7 +91,7 @@ public class AppointmentJerseyController {
     }
 
     @GET
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(APPOINTMENT)
     public Response getAppointments(
             @QueryParam("userId") Long userId,
             @QueryParam("businessId") Long businessId,
