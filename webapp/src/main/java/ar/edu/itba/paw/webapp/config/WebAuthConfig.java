@@ -21,6 +21,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @EnableWebSecurity
 @ComponentScan({
@@ -36,6 +43,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private BasicAuthFilter basicAuthFilter;
 
+    @Value("${SPA_BASE_URL}")
+    private String SPA_ORIGIN;
+
     @Value("${rememberMe.key}")
     private String rememberMeKey;
     @Bean
@@ -50,6 +60,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .csrf().disable() // Disable CSRF for APIs
                 .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint()).and()
                 .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -100,6 +112,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable();
             */
     }
+
     @Override
     public void configure(final WebSecurity web) {
         web.ignoring().requestMatchers("/resources/**", "/images/**","/css/**", "/js/**", "/img/**", "/favicon.ico","/400","/404","/403","/500");
@@ -111,5 +124,17 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint(){
         return new AuthEntryPoint();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(SPA_ORIGIN));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.addAllowedHeader("*");
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Link", "Location", "ETag", "X-Total-Count", "X-Refresh-Token"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
