@@ -1,24 +1,25 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import ar.edu.itba.paw.model.Appointment;
+import ar.edu.itba.paw.webapp.jersey.PathUrls;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class AppointmentCreationDTO {
+    @Future
     @NotNull
     private LocalDateTime startDate;
 
-    private LocalDateTime endDate;
+    @Size(max = 255)
     private String address;
+
+    @Size(max = 255)
     private String description;
 
     @NotNull
@@ -27,8 +28,50 @@ public class AppointmentCreationDTO {
     @NotNull
     private long serviceId;
 
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public void setServiceId(long serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public long getServiceId() {
+        return serviceId;
+    }
+
+    private AppointmentCreationDTO(){}
+
     @Override
     public int hashCode(){
-        return Objects.hash(userId,serviceId,startDate,endDate,address,description);
+        return Objects.hash(userId,serviceId,startDate,address,description);
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime start) {
+        this.startDate = start;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

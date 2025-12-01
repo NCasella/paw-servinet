@@ -196,6 +196,13 @@ public class AppointmentServiceImpl implements AppointmentService{
             Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
             User newuser = userService.findById(userid).orElseThrow(UserNotFoundException::new);
 
+            if ( !service.getHomeService() ) {
+                if ( !(location==null || location.isEmpty()) && !location.equals(service.getLocation()))
+                    throw new InvalidOperationException("Address shouldn't be included - it is a home service");
+                location = service.getLocation();
+            }
+            else if ( location==null || location.isEmpty() ) throw new InvalidOperationException("Address required");
+
             Appointment appointment = appointmentDao.create(service, newuser, startDate, startDate.plusMinutes(service.getDuration()), location, description);
             Business business = service.getBusiness();
 
