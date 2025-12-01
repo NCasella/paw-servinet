@@ -5,8 +5,10 @@ import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.InvalidOperationException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.util.InvalidMimeTypeException;
 
 import javax.ws.rs.NotAllowedException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +21,15 @@ public class ExceptionToStatusMapper {
             NotFoundException.class, Response.Status.NOT_FOUND,
             ForbiddenOperationException.class, Response.Status.FORBIDDEN,
             NotAllowedException.class, Response.Status.METHOD_NOT_ALLOWED
+
             //AuthenticationException.class, Response.Status.UNAUTHORIZED
+
     );
 
     public static Response.Status map(final Exception e) {
+        if ( e instanceof WebApplicationException w) {
+            return Response.Status.fromStatusCode( w.getResponse().getStatus() );
+        }
         Class<?> clazz = e.getClass();
         while (clazz != null) {
             Response.Status status = exceptionStatusMap.get(clazz);
