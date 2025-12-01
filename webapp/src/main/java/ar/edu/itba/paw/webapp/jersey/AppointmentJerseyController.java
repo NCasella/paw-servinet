@@ -62,11 +62,8 @@ public class AppointmentJerseyController {
     @Path("/{appointmentid}")
     @Produces(APPOINTMENT)
     public Response getAppointment(@PathParam("appointmentid")final long appointmentId){
-        Optional<Appointment> app=appointmentService.findById(appointmentId);
-        if(app.isEmpty()){
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return ConditionalCache.cacheResponse(request, AppointmentDto.fromAppointment(app.get(),uriInfo)).build();
+        Appointment app=appointmentService.findById(appointmentId).orElseThrow(AppointmentNonExistentException::new);
+        return ConditionalCache.cacheResponse(request, AppointmentDto.fromAppointment(app,uriInfo)).build();
     }
 
     @POST
@@ -83,7 +80,7 @@ public class AppointmentJerseyController {
     @Consumes(APPOINTMENT)
     public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
         if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.isPending() || appointmentStatusDTO.hasFinished())
-            return Response.status(Response.Status.BAD_REQUEST ).build();
+            throw new InvalidOperationException("Invalid status change");
         appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.getStatusEnum());
         return Response.noContent().build();
     }

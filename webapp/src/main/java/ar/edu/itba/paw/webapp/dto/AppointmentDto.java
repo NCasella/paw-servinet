@@ -4,8 +4,6 @@ import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.model.AppointmentStatus;
 import ar.edu.itba.paw.model.exceptions.InvalidAppointmentStatusException;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -86,7 +84,7 @@ public class AppointmentDto {
         this.description = description;
     }
 
-    @JsonSetter("status")
+    //@JsonSetter("status")
     public void setStatus(String status) {
         this.status = AppointmentStatus.toEnum(status);
     }
@@ -95,7 +93,7 @@ public class AppointmentDto {
         this.status = status;
     }
 
-    @JsonProperty("status")
+   // @JsonProperty("status")
     public String getStatus() {
         return Optional.ofNullable(status)
                 .orElseThrow(InvalidAppointmentStatusException::new)
