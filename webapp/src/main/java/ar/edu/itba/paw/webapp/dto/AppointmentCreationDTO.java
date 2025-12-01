@@ -3,18 +3,23 @@ package ar.edu.itba.paw.webapp.dto;
 import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class AppointmentCreationDTO {
+    @Future
     @NotNull
     private LocalDateTime startDate;
 
-    private LocalDateTime endDate;
+    @Size(max = 255)
     private String address;
+
+    @Size(max = 255)
     private String description;
 
     @NotNull
@@ -43,7 +48,7 @@ public class AppointmentCreationDTO {
 
     @Override
     public int hashCode(){
-        return Objects.hash(userId,serviceId,startDate,endDate,address,description);
+        return Objects.hash(userId,serviceId,startDate,address,description);
     }
 
     public LocalDateTime getStartDate() {
@@ -52,14 +57,6 @@ public class AppointmentCreationDTO {
 
     public void setStartDate(LocalDateTime start) {
         this.startDate = start;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
     }
 
     public String getAddress() {
