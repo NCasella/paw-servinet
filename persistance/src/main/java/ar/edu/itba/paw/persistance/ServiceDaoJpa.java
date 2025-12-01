@@ -88,8 +88,16 @@ public class ServiceDaoJpa implements ServiceDao {
 
 
     @Override
-    public List<Service> getServicesFilteredBy(int page, String category, String[] location, int rating, String searchQuery, ServicesOrderFilters orderFilter,Boolean homeServiceFilter) {
-        FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addPage(page).addRating(rating).addOrder(orderFilter).addHomeServiceFilter(homeServiceFilter);
+    public List<Service> getServicesFilteredBy(int page, String category, String[] location, int rating, String searchQuery, ServicesOrderFilters orderFilter, Boolean homeServiceFilter, Long businessId) {
+        FilterArgument filterArgument = new FilterArgument()
+                .addCategory(category)
+                .addLocation(location)
+                .addSearch(searchQuery)
+                .addPage(page)
+                .addRating(rating)
+                .addOrder(orderFilter)
+                .addHomeServiceFilter(homeServiceFilter)
+                .addBusinessId(businessId);
         Query nativeQuery;
         if(orderFilter!=null)
             nativeQuery = em.createNativeQuery("select s.id from services s full outer join ratings r on s.id = r.serviceid where "+filterArgument.formSqlSentence());
@@ -113,8 +121,14 @@ public class ServiceDaoJpa implements ServiceDao {
 
 
     @Override
-    public int getServiceCount(String category, String[] location, int rating, String searchQuery,Boolean homeServiceFilter) {
-        FilterArgument filterArgument = new FilterArgument().addCategory(category).addLocation(location).addSearch(searchQuery).addRating(rating).addHomeServiceFilter(homeServiceFilter);
+    public int getServiceCount(String category, String[] location, int rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
+        FilterArgument filterArgument = new FilterArgument()
+                .addCategory(category)
+                .addLocation(location)
+                .addSearch(searchQuery)
+                .addRating(rating)
+                .addHomeServiceFilter(homeServiceFilter)
+                .addBusinessId(businessId);
         final Query query= em.createNativeQuery("select count(s.id) from services s where "+filterArgument.formSqlSentence());
         filterArgument.setQueryParams(query);
         return ((Number)query.getSingleResult()).intValue();

@@ -125,22 +125,24 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Service> services(int page, String category, String[] location, String rating, String query, ServicesOrderFilters orderFilter,Boolean homeServiceFilter) {
+    public PagedList<Service> getServices(int page, String category, String[] location, String rating, String query, ServicesOrderFilters orderFilter,Boolean homeServiceFilter, Long businessId) {
         int ratingNum = Ratings.getMinValueByName(rating);
-        return serviceDao.getServicesFilteredBy(page, category, location, ratingNum, query, orderFilter,homeServiceFilter);
+        List<Service> services = serviceDao.getServicesFilteredBy(page, category, location, ratingNum, query, orderFilter,homeServiceFilter, businessId);
+        int serviceCount = getServiceCount(category, location, rating, query,homeServiceFilter, businessId);
+        return PagedList.of(services, serviceCount);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getServiceCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceFilter) {
+    public int getServiceCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
         int ratingNum = Ratings.getMinValueByName(rating);
-        return serviceDao.getServiceCount(category, location, ratingNum, searchQuery,homeServiceFilter);
+        return serviceDao.getServiceCount(category, location, ratingNum, searchQuery,homeServiceFilter, businessId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getPageCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceCount) {
-        int serviceCount = getServiceCount(category, location, rating, searchQuery,homeServiceCount);
+    public int getPageCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceCount, Long businessId) {
+        int serviceCount = getServiceCount(category, location, rating, searchQuery,homeServiceCount, businessId);
         int pageCount = serviceCount / 10;
         if(serviceCount % 10 != 0) pageCount++;
         return pageCount;

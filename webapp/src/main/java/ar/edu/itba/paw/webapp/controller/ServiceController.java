@@ -49,7 +49,7 @@ public class ServiceController {
         this.question = question;
         this.authControl = authControl;
     }
-
+/*
     @RequestMapping(method = RequestMethod.GET, path = "/servicios")
     public ModelAndView services(
             @RequestParam(name = "categoria", required = false) String category,
@@ -76,7 +76,7 @@ public class ServiceController {
         mav.addObject("orderFilters", ServicesOrderFilters.values());
         return mav;
     }
-
+*/
     @RequestMapping(method = RequestMethod.GET, path="/crear-servicio/{businessId:\\d+}")
     public ModelAndView registerService(@PathVariable("businessId")long businessId, @ModelAttribute("serviceForm") final ServiceForm form) {
         final ModelAndView mav = new ModelAndView("postService");
