@@ -5,12 +5,16 @@ import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Component
 public class ServinetAuthControl {
@@ -52,6 +56,11 @@ public class ServinetAuthControl {
         return business.getUserId() == user.getUserId();
     }
 
+    @Transactional(readOnly = true)
+    public boolean isCurrentUser(long userId){
+        Optional<User> userOptional= getCurrentUser();
+        return userOptional.isPresent() && userOptional.get().getUserId()==userId;
+    }
 
     @Transactional(readOnly = true)
     public boolean isUserAppointment(long appointmentId){
@@ -102,4 +111,28 @@ public class ServinetAuthControl {
         Optional<User> user = getCurrentUser();
         return user.map(User::isProvider).orElse(false);
     }
+
+    @Transactional(readOnly = true)
+    public AuthorizationDecision canChangeService (Supplier<Authentication> auth, RequestAuthorizationContext context){
+        long serviceId=Long.parseLong(context.getVariables().getOrDefault("serviceId","-1"));
+        return new AuthorizationDecision(this.isServiceOwner(serviceId));
+    }
+    @Transactional(readOnly = true)
+    public AuthorizationDecision isCurrentUserBusinessOwner(Supplier<Authentication> auth, RequestAuthorizationContext context){
+        long businessId=Long.parseLong(context.getVariables().getOrDefault("businessId","-1"));
+        long userId=getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
+        return new AuthorizationDecision(this.isBusinessOwner(businessId,userId));
+
+    }
+    @Transactional(readOnly = true)
+    public AuthorizationDecision isCurrentUser(Supplier<Authentication> auth,RequestAuthorizationContext context){
+        long userId=Long.parseLong(context.getVariables().getOrDefault("userId","-1"));
+        return new AuthorizationDecision(this.isCurrentUser(userId));
+    }
+    @Transactional(readOnly = true)
+    public AuthorizationDecision canViewAppointment(Supplier<Authentication> auth,RequestAuthorizationContext context){
+        long appointmentId=Long.parseLong(context.getVariables().getOrDefault("appointmentId","-1"));
+        return new AuthorizationDecision(this.isAdminAppointment(appointmentId)||this.isUserAppointment(appointmentId));
+    }
+
 }

@@ -118,6 +118,8 @@ public class AppointmentServiceImpl implements AppointmentService{
         final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
 
+        if (appointment.isCancelled())
+            throw new AppointmentWasCancelled();
         if (appointment.getConfirmed())
             throw new AppointmentAlreadyConfirmed();
 
@@ -190,15 +192,19 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Transactional
     @Override
     public Appointment create(long serviceid, long userid, String location, LocalDateTime startDate, String description) {
-        Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
-        User newuser = userService.findById(userid).orElseThrow(UserNotFoundException::new);
+        try {
+            Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
+            User newuser = userService.findById(userid).orElseThrow(UserNotFoundException::new);
 
-        Appointment appointment = appointmentDao.create(service, newuser, startDate, startDate.plusMinutes(service.getDuration()), location, description);
-        Business business = service.getBusiness();
+            Appointment appointment = appointmentDao.create(service, newuser, startDate, startDate.plusMinutes(service.getDuration()), location, description);
+            Business business = service.getBusiness();
 
-        emailService.requestAppointment(appointment, service, business, newuser, business.getOwnedBy().getLocale());
-        LOGGER.info("Appointment request email sent successfully.");
-        return appointment;
+            emailService.requestAppointment(appointment, service, business, newuser, business.getOwnedBy().getLocale());
+            LOGGER.info("Appointment request email sent successfully.");
+            return appointment;
+        } catch (NotFoundException e ) {
+            throw new InvalidOperationException(e.getMessage());
+        }
     }
 
     @Transactional
