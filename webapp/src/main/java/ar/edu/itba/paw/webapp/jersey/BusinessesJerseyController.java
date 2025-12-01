@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.jersey;
 
 import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.BusinessService;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
@@ -46,11 +47,8 @@ public class BusinessesJerseyController {
     @Path("/{businessid}")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response getBusiness(@PathParam("businessid") final long businessid) {
-        Optional<Business> business = businessService.findById(businessid);
-        if (business.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return ConditionalCache.cacheResponse(request,BusinessDto.fromBusiness(business.get(),uriInfo)).build();
+        Business business = businessService.findById(businessid).orElseThrow(BusinessNotFoundException::new);
+        return ConditionalCache.cacheResponse(request,BusinessDto.fromBusiness(business,uriInfo)).build();
     }
 
 }
