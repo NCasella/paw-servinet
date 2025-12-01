@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import lombok.Data;
+
+@Data
 public class ExceptionDto {
 
     private String messageException;
-
 
     public static ExceptionDto fromException(Exception e){
         ExceptionDto exceptionDto=new ExceptionDto();
@@ -11,7 +13,4 @@ public class ExceptionDto {
         return exceptionDto;
     }
     private ExceptionDto(){}
-    public String getMessageException(){return this.messageException;}
-
-    public void setMessageException(String message){this.messageException=message;}
 }
