@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -68,7 +69,7 @@ public class AppointmentJerseyController {
 
     @POST
     @Consumes(APPOINTMENT)
-    public Response createAppointment(final AppointmentCreationDTO appointmentCreationDto){
+    public Response createAppointment(@Valid final AppointmentCreationDTO appointmentCreationDto){
         Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription());
         return Response.created(
                 uriInfo.getAbsolutePathBuilder().path(String.valueOf(app.getId())).build()
@@ -79,7 +80,7 @@ public class AppointmentJerseyController {
     @Path("/{appointmentid}")
     @Consumes(APPOINTMENT)
     public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
-        if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.isPending() || appointmentStatusDTO.hasFinished())
+        if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.hasFinished() || appointmentStatusDTO.isPending() )
             throw new InvalidOperationException("Invalid status change");
         appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.getStatusEnum());
         return Response.noContent().build();

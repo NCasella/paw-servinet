@@ -3,19 +3,24 @@ package ar.edu.itba.paw.webapp.dto;
 import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class AppointmentCreationDTO {
-
+    @NotNull
     private LocalDateTime startDate;
+
     private LocalDateTime endDate;
     private String address;
     private String description;
 
+    @NotNull
     private long userId;
+
+    @NotNull
     private long serviceId;
 
     public void setUserId(long userId) {

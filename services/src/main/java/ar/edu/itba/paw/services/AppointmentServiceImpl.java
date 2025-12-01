@@ -118,6 +118,8 @@ public class AppointmentServiceImpl implements AppointmentService{
         final Service service = appointment.getServiceAppointed();
         final User client = appointment.getAppointedBy();
 
+        if (appointment.isCancelled())
+            throw new AppointmentWasCancelled();
         if (appointment.getConfirmed())
             throw new AppointmentAlreadyConfirmed();
 
