@@ -20,9 +20,9 @@ public interface ServiceService {
     void delete(Service service, Business business, boolean sendEmailToBusiness);
     void delete(long serviceId);
     Map<Long,ServiceContactInfo> getServicesContactInfo(Collection<Long> serviceids);
-    List<Service> services(int page,String category,String[] location, String rating, String query, ServicesOrderFilters orderFilters,Boolean homeServiceFilter);
-    int getServiceCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceCount);
-    int getPageCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceCount);
+    PagedList<Service> getServices(int page,String category,String[] location, String rating, String query, ServicesOrderFilters orderFilters,Boolean homeServiceFilter, Long businessId);
+    int getServiceCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceCount, Long businessId);
+    int getPageCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceCount, Long businessId);
     List<Service> getRecommendedServices();
     List<BasicService> getAllBusinessBasicServices(long businessId);
     List<BasicService> getAllUserBasicServices(User user);

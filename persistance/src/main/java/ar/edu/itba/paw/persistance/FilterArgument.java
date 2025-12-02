@@ -71,6 +71,13 @@ public class FilterArgument {
         return this;
     }
 
+    public FilterArgument addBusinessId(Long businessId){
+        if(businessId!=null && businessId>0){
+            filters.put(FilterTypes.BUSINESS_ID, businessId);
+        }
+        return this;
+    }
+
     public FilterArgument addSearch(String search) {
         if(search!=null && !search.isEmpty()){
             filters.put(FilterTypes.SERVICE_SEARCH,search.replace("%","\\%").replace("_","\\_"));
@@ -103,7 +110,8 @@ public class FilterArgument {
             LOCATION("s.id in (select serviceid from nbservices where neighbourhood in :loc ) ","loc"),
             RATING("s.id IN (SELECT serviceid FROM ratings GROUP BY serviceid HAVING AVG(rating) >= :rate)","rate"),
             SERVICE_SEARCH("( lower(servicename) like concat('%',lower( :search ),'%') or lower(servicedescription) like concat('%',lower( :search ),'%') )","search"),
-            HOME_SERVICE("homeservice = :homeserv ","homeserv");
+            HOME_SERVICE("homeservice = :homeserv ","homeserv"),
+            BUSINESS_ID("s.businessid = :businessId ","businessId");
 
             private final String value;
             private final String param;//valores a ser filtrados/buscados en SQL

@@ -1,7 +1,8 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import javax.validation.ConstraintViolation;
+import lombok.Data;
 
+@Data
 public class ValidationErrorDto {
 
     private String message;
@@ -14,19 +15,4 @@ public class ValidationErrorDto {
         return error;
     }
     private ValidationErrorDto(){}
-    public String getMessage() {
-        return message;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 }

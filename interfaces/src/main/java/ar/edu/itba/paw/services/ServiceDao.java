@@ -21,8 +21,8 @@ public interface ServiceDao {
     List<Service> getAllBusinessServices(long businessId);
 
     void delete(long serviceid);
-    List<Service> getServicesFilteredBy(int page, String category, String[] neighbourhoods, int rating, String query, ServicesOrderFilters orderFilters,Boolean homeServiceFilter);
-    int getServiceCount(String category, String[] neighbourhoods, int rating, String query,Boolean homeServiceFilter);
+    List<Service> getServicesFilteredBy(int page, String category, String[] neighbourhoods, int rating, String query, ServicesOrderFilters orderFilters,Boolean homeServiceFilter, Long businessId);
+    int getServiceCount(String category, String[] neighbourhoods, int rating, String query,Boolean homeServiceFilter, Long businessId);
     List<Service> getRecommendedServices();
 
     List<String> getAvailableNeighbourhoods();
