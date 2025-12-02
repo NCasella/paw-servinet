@@ -84,7 +84,7 @@ package ar.edu.itba.paw.persistance;
 
      @Test
      public void testFindById(){
-         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (%d, %d, %d, '%s', '%s', '%s', false);", APPOINTMENT_ID,SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION)).executeUpdate();
+         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed, cancelled) values (%d, %d, %d, '%s', '%s', '%s', false, false);", APPOINTMENT_ID,SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION)).executeUpdate();
          em.flush();
          Appointment appointment = appointmentDao.findById(APPOINTMENT_ID).get();
          Assert.assertEquals(SERVICEID,appointment.getServiceid());
@@ -93,8 +93,8 @@ package ar.edu.itba.paw.persistance;
 
      @Test
      public void testConfirmAppointment(){
-         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (%d, %d, %d, '%s', '%s', '%s', false);", APPOINTMENT_ID,SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION)).executeUpdate();
-         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (%d, %d, %d, '%s', '%s', '%s', false);", APPOINTMENT_ID2,SERVICEID, USERID, Timestamp.valueOf(STARTDATE.plusHours(1)), Timestamp.valueOf(ENDDATE.plusHours(1)), LOCATION)).executeUpdate();
+         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed, cancelled) values (%d, %d, %d, '%s', '%s', '%s', false, false);", APPOINTMENT_ID,SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION)).executeUpdate();
+         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed, cancelled) values (%d, %d, %d, '%s', '%s', '%s', false, false);", APPOINTMENT_ID2,SERVICEID, USERID, Timestamp.valueOf(STARTDATE.plusHours(1)), Timestamp.valueOf(ENDDATE.plusHours(1)), LOCATION)).executeUpdate();
          //Appointment toConfirmAppointment = appointmentDao.create(SERVICEID, USERID, STARTDATE, ENDDATE, LOCATION);
 
          appointmentDao.confirmAppointment(1);
@@ -105,13 +105,14 @@ package ar.edu.itba.paw.persistance;
 
      @Test
      public void testCancelAppointment(){
-         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (1, %d, %d, '%s', '%s', '%s', false);", SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION)).executeUpdate();
-         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed) values (2, %d, %d, '%s', '%s', '%s', false);", SERVICEID, USERID, Timestamp.valueOf(STARTDATE.plusHours(1)), Timestamp.valueOf(ENDDATE.plusHours(1)), LOCATION)).executeUpdate();
+         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed,cancelled) values (1, %d, %d, '%s', '%s', '%s', false,false);", SERVICEID, USERID, Timestamp.valueOf(STARTDATE), Timestamp.valueOf(ENDDATE), LOCATION)).executeUpdate();
+         em.createNativeQuery(String.format("insert into appointments(appointmentid, serviceid, userid, startdate, enddate, location, confirmed,cancelled) values (2, %d, %d, '%s', '%s', '%s', false,false);", SERVICEID, USERID, Timestamp.valueOf(STARTDATE.plusHours(1)), Timestamp.valueOf(ENDDATE.plusHours(1)), LOCATION)).executeUpdate();
 
          em.flush();
          appointmentDao.cancelAppointment(APPOINTMENT_ID);
          em.flush();
-         Assert.assertNotNull(em.find(Appointment.class,APPOINTMENT_ID2));
-         Assert.assertNull(em.find(Appointment.class,APPOINTMENT_ID));
+         Assert.assertFalse( em.find(Appointment.class,APPOINTMENT_ID2).isCancelled() );
+         Assert.assertTrue( em.find(Appointment.class,APPOINTMENT_ID).isCancelled() );
+
      }
  }
