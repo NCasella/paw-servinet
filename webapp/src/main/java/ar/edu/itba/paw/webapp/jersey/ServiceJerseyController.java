@@ -11,7 +11,6 @@ import ar.edu.itba.paw.services.ServiceService;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.controller.ImageController;
 import ar.edu.itba.paw.webapp.dto.ImageDto;
-import ar.edu.itba.paw.webapp.dto.ServiceCreationDto;
 import ar.edu.itba.paw.webapp.dto.ServiceDto;
 import ar.edu.itba.paw.webapp.form.ServiceForm;
 import org.slf4j.Logger;
