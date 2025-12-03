@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistance;
 
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.InvalidUsernameException;
 import ar.edu.itba.paw.services.UserDao;
 import org.springframework.stereotype.Repository;
 
@@ -62,8 +63,18 @@ public class UserDaoJpa implements UserDao {
      }
     }
     @Override
-    public void changePassword(String email,String value){
-        Optional<User> optUser=findByEmail(email);
+    public void changeTelephone(long userid,String value){
+        Optional<User> optUser=findById(userid);
+        if(optUser.isPresent()){
+            final User user=optUser.get();
+            user.setTelephone(value);
+            em.persist(user);
+        }
+    }
+
+    @Override
+    public void changePassword(long userId,String value){
+        Optional<User> optUser= findById(userId);
         if(optUser.isPresent()){
             final User user=optUser.get();
             user.setPassword(value);

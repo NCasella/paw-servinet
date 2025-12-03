@@ -16,10 +16,16 @@ public interface UserService {
     void makeProvider(User user);
     void revokeProviderRole(User user);
     User create(String username, String name,String surname, String password, String email, String telephone);
+    void changeUserInfo(long userid,String username, String email, String telephone);
+
     void changeUsername(long userid,String value);
     boolean isProvider(long userid);
     void changeEmail(long userid,String value);
-    void changePassword(String email,String value);
+    void changeTelephone(long userid,String value);
+
+    void changePassword(long userid,String value);
+    void changePassword(long userid,String oldPass, String newPass);
+
     void changeLocale(long userid);
     boolean verifyUser(UUID tokenUrl, String verificationCode);
 }

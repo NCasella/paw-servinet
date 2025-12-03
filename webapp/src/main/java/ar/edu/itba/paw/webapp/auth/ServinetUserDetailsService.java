@@ -32,7 +32,7 @@ public class ServinetUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException( "no user for email" + email));
 
         if(!BCRYPT_PATTERN.matcher(user.getPassword()).matches()){
-            us.changePassword(email,user.getPassword());
+            us.changePassword(user.getUserId(),user.getPassword());
             return loadUserByUsername(email);
         }
 

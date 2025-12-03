@@ -21,12 +21,24 @@ public class PasswordRecoveryCodeDaoJpa implements PasswordRecoveryCodeDao {
 
     @Override
     public PasswordRecoveryCode saveCode(long userid, UUID code, LocalDateTime expirationDate) {
-        return new PasswordRecoveryCode(em.find(User.class, userid), code, expirationDate);
+        PasswordRecoveryCode recoveryCode = new PasswordRecoveryCode(em.find(User.class, userid), code, expirationDate);
+        em.persist(recoveryCode);
+        return recoveryCode;
     }
 
     @Override
     public Optional<PasswordRecoveryCode> getCodeByUserId(long userid) {
-        return Optional.of(em.find(PasswordRecoveryCode.class, userid));
+        try {
+            PasswordRecoveryCode code = em.createQuery(
+                   "FROM PasswordRecoveryCode as p WHERE p.requestedBy.userId  = :userId", PasswordRecoveryCode.class)
+                    .setParameter("userId", userid)
+                    .getSingleResult();
+
+            return Optional.of(code);
+
+        } catch (javax.persistence.NoResultException e) {
+            return Optional.empty();
+        }
     }
     @Override
     public Optional<PasswordRecoveryCode> getCodeByUUID(UUID code) {
