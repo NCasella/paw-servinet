@@ -3,16 +3,12 @@ package ar.edu.itba.paw.webapp.jersey;
 
 import ar.edu.itba.paw.model.ImageModel;
 import ar.edu.itba.paw.model.Service;
-import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
-import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.ServiceService;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
-import ar.edu.itba.paw.webapp.controller.ImageController;
-import ar.edu.itba.paw.webapp.dto.ImageDto;
-import ar.edu.itba.paw.webapp.dto.ServiceDto;
-import ar.edu.itba.paw.webapp.form.ServiceForm;
+import ar.edu.itba.paw.webapp.dto.output.ImageDto;
+import ar.edu.itba.paw.webapp.dto.output.ServiceDto;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.Optional;
 
 @Path("/services")
 @Component

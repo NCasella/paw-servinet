@@ -1,8 +1,7 @@
 package ar.edu.itba.paw.webapp.jersey;
 
-import ar.edu.itba.paw.webapp.dto.IndexDto;
+import ar.edu.itba.paw.webapp.dto.output.IndexDto;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

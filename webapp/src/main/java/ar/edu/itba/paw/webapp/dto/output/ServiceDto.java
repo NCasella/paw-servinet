@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;

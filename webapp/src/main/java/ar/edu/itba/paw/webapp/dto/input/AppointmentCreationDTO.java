@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.input;
 
 import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;

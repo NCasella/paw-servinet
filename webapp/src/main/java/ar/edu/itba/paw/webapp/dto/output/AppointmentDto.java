@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.model.AppointmentStatus;
@@ -39,7 +39,7 @@ public class AppointmentDto {
 
         toRet.setUserRequester(uriInfo.getBaseUriBuilder().path(PathUrls.USERS_URL.getUrl()).path(String.valueOf(app.getUserid())).build());
         toRet.setService(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_URL.getUrl()).path(String.valueOf(app.getServiceid())).build());
-        toRet.setSelf(uriInfo.getBaseUriBuilder().path(PathUrls.APPOINMENTS_URL.getUrl()).path(String.valueOf(app.getId())).build());
+        toRet.setSelf(uriInfo.getBaseUriBuilder().path(PathUrls.APPOINTMENTS_URL.getUrl()).path(String.valueOf(app.getId())).build());
 
         return toRet;
     }
