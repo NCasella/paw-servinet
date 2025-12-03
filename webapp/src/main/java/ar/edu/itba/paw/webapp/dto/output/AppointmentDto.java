@@ -4,8 +4,8 @@ import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.model.AppointmentStatus;
 import ar.edu.itba.paw.model.exceptions.InvalidAppointmentStatusException;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
+@Data
+@NoArgsConstructor
 public class AppointmentDto {
     private long appointmentId;
-
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
@@ -49,44 +50,8 @@ public class AppointmentDto {
     public int hashCode(){
         return Objects.hash(appointmentId,startDate,endDate,address,description,status,service,userRequester,self);
     }
-    private AppointmentDto(){}
 
-    public long getAppointmentId() {return appointmentId;}
-    public void setAppointmentId(long appointmentId) {this.appointmentId = appointmentId;}
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime start) {
-        this.startDate = start;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @JsonSetter("status")
+    //@JsonSetter("status")
     public void setStatus(String status) {
         this.status = AppointmentStatus.toEnum(status);
     }
@@ -95,7 +60,7 @@ public class AppointmentDto {
         this.status = status;
     }
 
-    @JsonProperty("status")
+   // @JsonProperty("status")
     public String getStatus() {
         return Optional.ofNullable(status)
                 .orElseThrow(InvalidAppointmentStatusException::new)
@@ -109,23 +74,4 @@ public class AppointmentDto {
     public boolean hasValidStatus() {
         return status != null;
     }
-
-    public URI getService() {
-        return service;
-    }
-
-    public void setService(URI service) {
-        this.service = service;
-    }
-
-    public URI getUserRequester() {
-        return userRequester;
-    }
-
-    public void setUserRequester(URI userRequester) {
-        this.userRequester = userRequester;
-    }
-
-    public URI getSelf(){return this.self;}
-    public void setSelf(URI uri){this.self=uri;}
 }

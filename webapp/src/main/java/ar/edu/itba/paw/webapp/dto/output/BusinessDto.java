@@ -2,11 +2,19 @@ package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.Objects;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BusinessDto {
     private String businessName;
     private String email;
@@ -18,67 +26,22 @@ public class BusinessDto {
     private URI reviewsPath;
     private URI questionsPath;
     private URI self;
-    public static BusinessDto fromBusiness(Business business, UriInfo uriInfo){
-        BusinessDto toReturn=new BusinessDto();
-        toReturn.setAddress(business.getLocation());
-        toReturn.setBusinessName(business.getName());
-        toReturn.setEmail(business.getEmail());
-        toReturn.setTelephone(business.getTelephone());
-        toReturn.setQuestionsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_QUESTIONS_URL.getUrl()).queryParam("forBusiness",business.getUserId()).build());
-        toReturn.setReviewsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_URL.getUrl()).queryParam("providedBy",business.getUserId()).build());
-        toReturn.setRating(business.getBusinessRatingAvg());
-        toReturn.setUserOwnerPath(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(business.getUserId())).build());
-        toReturn.setBusinessStatistics(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_URL.getUrl()).path(String.valueOf(business.getBusinessid())).path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl()).build());
-        toReturn.setSelf(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl()).path(String.valueOf(business.getBusinessid())).build());
-        return toReturn;
-    }
-    public URI getSelf(){return this.self;}
-    public void setSelf(URI uri){this.self=uri;}
-    public URI getReviewsPath(){return this.reviewsPath;}
-    public URI getQuestionsPath(){return this.questionsPath;}
-    public void setUserOwnerPath(URI path){this.userOwnerPath=path;}
-    public void setBusinessStatistics(URI path){this.businessStatistics=path;}
-    public URI getBusinessStatistics(){return this.businessStatistics;}
-    public String getBusinessName() {
-        return businessName;
-    }
-    public URI getUserOwnerPath(){return this.userOwnerPath;}
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
-    }
-    public void setReviewsPath(URI path){this.reviewsPath=path;}
-    public void setQuestionsPath(URI path){this.questionsPath=path;}
-    public String getEmail() {
-        return email;
+
+    public static BusinessDto fromBusiness(Business business, UriInfo uriInfo) {
+        return BusinessDto.builder()
+                .address(business.getLocation())
+                .businessName(business.getName())
+                .email(business.getEmail())
+                .telephone(business.getTelephone())
+                .questionsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_QUESTIONS_URL.getUrl()).queryParam("forBusiness",business.getUserId()).build())
+                .reviewsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_URL.getUrl()).queryParam("providedBy",business.getUserId()).build())
+                .rating(business.getBusinessRatingAvg())
+                .userOwnerPath(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(business.getUserId())).build())
+                .businessStatistics(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_URL.getUrl()).path(String.valueOf(business.getBusinessid())).path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl()).build())
+                .self(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl()).path(String.valueOf(business.getBusinessid())).build())
+                .build();
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
     @Override
     public int hashCode(){
         return Objects.hash(businessName,email,telephone,address,rating);

@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import java.util.Arrays;
+
 public enum ServicesOrderFilters {
     RATE_ASC("rate_asc", "asc", "reviews.rating-asc"),
     RATE_DESC("rate_desc","desc", "reviews.rating-desc");
@@ -26,14 +28,10 @@ public enum ServicesOrderFilters {
         return type;
     }
 
-    public static ServicesOrderFilters findByValue(String orderFilter) {
-        for (ServicesOrderFilters serviceOrderFilter: values()) {
-            if (serviceOrderFilter.getType().equalsIgnoreCase(orderFilter)) {
-                return serviceOrderFilter;
-            }
-        }
-        return null;
+    public static ServicesOrderFilters from(String value) {
+        return Arrays.stream(values())
+                .filter(v -> v.type.equalsIgnoreCase(value))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid order filter: " + value));
     }
-
-
 }
