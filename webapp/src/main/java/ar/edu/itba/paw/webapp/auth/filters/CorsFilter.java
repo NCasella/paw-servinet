@@ -35,17 +35,17 @@ public class CorsFilter implements Filter {
         // Headers CORS
         response.setHeader("Access-Control-Allow-Origin", SPA_ORIGIN);
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
+        //response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers",
                 "Authorization, Content-Type, X-Requested-With, Origin, Accept");
 
-        if (!"OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            chain.doFilter(req, res);
-        } else {
-            // Preflight: respondemos 200 y listo
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
+        //if (!"OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        chain.doFilter(req, res);
+        //} else {
+        //    // Preflight: respondemos 200 y listo
+        //    response.setStatus(HttpServletResponse.SC_OK);
+        //}
     }
 
     @Override
