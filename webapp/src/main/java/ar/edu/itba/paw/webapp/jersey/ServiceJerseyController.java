@@ -2,15 +2,11 @@ package ar.edu.itba.paw.webapp.jersey;
 
 import ar.edu.itba.paw.model.ImageModel;
 import ar.edu.itba.paw.model.Service;
-import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
+import ar.edu.itba.paw.model.exceptions.*;
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
-import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
-import ar.edu.itba.paw.webapp.dto.input.QuestionCreationDTO;
-import ar.edu.itba.paw.webapp.dto.input.ReviewCreationDTO;
-import ar.edu.itba.paw.webapp.dto.input.ServiceCreationDTO;
+import ar.edu.itba.paw.webapp.dto.input.*;
 import ar.edu.itba.paw.webapp.dto.output.ImageDto;
 import ar.edu.itba.paw.webapp.dto.output.QuestionDto;
 import ar.edu.itba.paw.webapp.dto.output.ReviewDto;
@@ -22,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.*;
 import java.util.*;
 
@@ -67,7 +64,7 @@ public class ServiceJerseyController {
             @QueryParam("businessId") Long businessId,
             @QueryParam("category") String category,
             @QueryParam("neighbourhoods") String neighbourhoods,
-            @QueryParam("rating") int rating,
+            @QueryParam("rating") Integer rating,
             @QueryParam("searchQuery") String searchQuery,
             @QueryParam("orderFilters") String orderFilters,
             @QueryParam("homeServiceFilter") Boolean homeServiceFilter,
@@ -143,25 +140,24 @@ public class ServiceJerseyController {
 
     @PATCH
     @Path("/{serviceid}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value={MediaType.APPLICATION_JSON})
     public Response changeService(
             @PathParam("serviceid") final long serviceId,
-            final ServiceCreationDTO serviceCreationDto
-    ) {
+            final ServiceUpdateDTO serviceUpdateDTO
+            ) {
         serviceService.editService(
                 serviceId,
-                serviceCreationDto.getDescription(),
-                serviceCreationDto.getMinimalDuration(),
-                serviceCreationDto.getPricingType(),
-                serviceCreationDto.getPrice(),
-                serviceCreationDto.isAdditionalCharges()
+                serviceUpdateDTO.getDescription(),
+                serviceUpdateDTO.getMinimalDuration(),
+                serviceUpdateDTO.getPricingType(),
+                serviceUpdateDTO.getPrice(),
+                serviceUpdateDTO.getAdditionalCharges()
         );
         return Response.noContent().build();
     }
 
     @DELETE
     @Path("/{serviceId}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
     public Response deleteService(@PathParam("serviceId") final long serviceId){
         serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
         serviceService.delete(serviceId);
@@ -191,7 +187,7 @@ public class ServiceJerseyController {
 
     @POST
     @Path("/{serviceId}/questions")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value={MediaType.APPLICATION_JSON})
     public Response createServiceQuestion(
             @PathParam("serviceId") final long serviceId,
             final QuestionCreationDTO questionCreationDto
@@ -210,9 +206,35 @@ public class ServiceJerseyController {
     }
 
     @GET
+    @Path("/{serviceId}/questions/{questionId}")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response getServiceQuestionById(
+            @PathParam("serviceId") final long serviceId,
+            @PathParam("questionId") final long questionId
+    ){
+        Question question = questionService.findById(questionId).orElseThrow(QuestionNotFoundException::new);
+        if (question.getServiceid() != serviceId) throw new QuestionNotFoundException();
+        return ConditionalCache.cacheResponse(request, QuestionDto.fromQuestion(question, uriInfo)).build();
+    }
+
+    @PATCH
+    @Path("/{serviceId}/questions/{questionId}")
+    @Consumes(value={MediaType.APPLICATION_JSON})
+    public Response updateQuestionResponse(
+            @PathParam("serviceId") final long serviceId,
+            @PathParam("questionId") final long questionId,
+            final QuestionResponseDTO questionResponseDTO
+            ){
+        Question question = questionService.findById(questionId).orElseThrow(QuestionNotFoundException::new);
+        if (question.getServiceid() != serviceId) throw new QuestionNotFoundException();
+        questionService.addResponse(questionId, questionResponseDTO.getResponse());
+        return Response.noContent().build();
+    }
+
+    @GET
     @Path("/{serviceId}/reviews")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response getServiceQuestions(
+    public Response getServiceReviews(
             @PathParam("serviceId") final long serviceId,
             @QueryParam("filter") String filter,
             @QueryParam("page") @DefaultValue("1") final int page
@@ -236,7 +258,7 @@ public class ServiceJerseyController {
 
     @POST
     @Path("/{serviceId}/reviews")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value={MediaType.APPLICATION_JSON})
     public Response createServiceReview(
             @PathParam("serviceId") final long serviceId,
             final ReviewCreationDTO reviewCreationDTO
@@ -253,6 +275,18 @@ public class ServiceJerseyController {
                         .path(String.valueOf(review.getId()))
                         .build()
         ).build();
+    }
+
+    @GET
+    @Path("/{serviceId}/reviews/{reviewId}")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response getReviewById(
+            @PathParam("serviceId") final long serviceId,
+            @PathParam("reviewId") final long reviewId
+    ){
+        Rating rating = ratingService.findById(reviewId).orElseThrow(RatingNotFoundException::new);
+        if (rating.getServiceid() != serviceId) throw new RatingNotFoundException();
+        return ConditionalCache.cacheResponse(request, ReviewDto.fromRating(rating, uriInfo)).build();
     }
 
 
