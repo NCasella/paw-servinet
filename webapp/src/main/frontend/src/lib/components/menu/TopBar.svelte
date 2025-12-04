@@ -2,19 +2,23 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
     import { base } from '$app/paths';
-    import BusinessMenu from '$lib/components/menu/BusinessMenu.svelte';
+    import UserMenu from '$lib/components/menu/UserMenu.svelte';
     import {t} from "$lib/i18n/i18n"
 	import { user } from '$stores/userStore';
 	import { onMount } from 'svelte';
 	import { getCurrentUser } from '$services/userService';
+	import { type User } from '$models/User';
 
-	let currentUser;
+	let currentUser :User | null;
 	onMount(async () => {
 		try {
 		currentUser = await getCurrentUser();
+		console.log(currentUser.profilePicture)
 		} catch {
 		currentUser = null;
     }})
+
+	let isProvider = true
 
 	function isRouteActive(path: string): boolean {
 	  return page.url.pathname === path;
@@ -52,9 +56,9 @@
 	  </a>
 	</div>
 	<div class="top-bar__right">
-      <BusinessMenu/>  
+      <button type="button" class="btn "><a href="/services"> {$t("navbar.all-services")}</a></button>
 	  {#if $user.user }
-		<button type="button" class="btn preset-filled-primary-500" on:click={handleLogin}>{$t("navbar.account")}</button>	
+		<UserMenu user={currentUser}/>  	
 	  {:else}
 	  <button type="button" class="btn preset-filled-primary-500" on:click={handleLogin}>{$t("login")}</button>
 		{/if}
@@ -88,7 +92,6 @@
 	  align-items: center;
 	  justify-content: center;
 	}
-
   
   </style>
   

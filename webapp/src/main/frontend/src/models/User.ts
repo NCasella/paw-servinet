@@ -4,6 +4,7 @@ export class User {
   username: string;
   email: string;
   language: string;
+  profilePicture: string; 
 
   constructor(data: {
     userId: number;
@@ -11,12 +12,14 @@ export class User {
     username: string;
     email: string;
     language: string;
+    profilePicture: string;
   }) {
     this.userId = data.userId;
     this.fullName = data.fullName;
     this.username = data.username;
     this.email = data.email;
     this.language = data.language;
+    this.profilePicture = data.profilePicture  //extractProfileImageURLFromJson( data.profilePictureURL);
   }
   
 
@@ -27,6 +30,10 @@ export class User {
     throw new Error("Invalid User JSON");
   }
 
+  getProfilePicture() :string {
+    return this.profilePicture? this.profilePicture
+    : "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" //`/images/${this.profilePictureId}`;
+  }
 }
 
 function isUser(obj: any): obj is User {
@@ -39,3 +46,7 @@ function isUser(obj: any): obj is User {
     typeof obj.language === "string"
   );
 }
+
+//function extractProfileImageURLFromJson(url: String) :number{
+//    return new Number (url.split('/').pop());
+//}

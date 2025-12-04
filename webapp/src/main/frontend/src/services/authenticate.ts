@@ -44,7 +44,7 @@ function getTokensFromResponse(response: Response): AuthState {
 }
 
 
-export function logout() {
+export function removeTokens() {
   clearTokens();
 }
 
