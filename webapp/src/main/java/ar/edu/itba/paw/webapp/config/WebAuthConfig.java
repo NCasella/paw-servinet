@@ -83,8 +83,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(HttpMethod.GET,"/api/services/**").permitAll()
                 .requestMatchers("/api/services/{serviceId:\\d++}").access(authControl::canChangeService)
                 .requestMatchers("/api/appointments/{appointmentId:\\d+}").access(authControl::canViewAppointment)
-                .requestMatchers("/api/").permitAll()
-                .requestMatchers("/**").authenticated();
+                .requestMatchers("/api/").permitAll();
+                //.requestMatchers("/**").authenticated();
 
        /*        .and()
                 .authorizeRequests()
@@ -150,7 +150,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(List.of(SPA_ORIGIN));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.addAllowedHeader("*");
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Link", "Location", "ETag", "X-Total-Count", "X-Refresh-Token"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization-access-token", "Link", "Location", "ETag", "X-Total-Count", "X-Refresh-Token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

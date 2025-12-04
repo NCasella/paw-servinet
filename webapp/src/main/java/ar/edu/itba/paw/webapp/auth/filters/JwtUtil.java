@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.auth.filters;
 
+import ar.edu.itba.paw.webapp.auth.ServinetAuthUserDetails;
 import io.jsonwebtoken.*;
 
 import io.jsonwebtoken.security.SignatureException;
@@ -8,6 +9,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -39,8 +42,16 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
+
+        Long userId = null;
+        if (userDetails instanceof ServinetAuthUserDetails servinetUser) {
+            userId = servinetUser.getUserId();
+            System.out.println("IDDDDDD = "+userId);
+        }
+
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .claim("id", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_DURATION))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)

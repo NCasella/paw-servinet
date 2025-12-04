@@ -41,7 +41,7 @@ public class ServinetUserDetailsService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         if(us.isProvider(user.getUserId()))
             authorities.add(new SimpleGrantedAuthority("ROLE_BUSINESS"));
-        return new ServinetAuthUserDetails(user.getEmail(), user.getPassword(),user.getIsVerified(),true,true,true, authorities);
+        return new ServinetAuthUserDetails(user.getEmail(), user.getPassword(), user.getUserId(), user.getIsVerified(),true,true,true, authorities);
     }
 
 
