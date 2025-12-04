@@ -9,8 +9,6 @@ export async function getUserInfo(id: number ) :Promise<User> {
     return User.fromJson(data)
 }
 
-
-
 export async function getCurrentUser() :Promise<User> {
     let currentUser = getUser()
     if ( currentUser )
