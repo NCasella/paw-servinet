@@ -1,7 +1,7 @@
 <script lang="ts">
     import {t} from "$lib/i18n/i18n"
     import {loginWithBasicAuth} from "$services/authenticate"
-
+	import { getCurrentUser } from "$services/userService";
 
     let username = '';
     let password = '';
@@ -18,11 +18,10 @@
 
         loading = false;
 
-        if (!ok) {
-            errorMessage = "Invalid username or password";
-        return;
-    }
-
+        if (ok) {
+          getCurrentUser().then( () => history.back())   
+        }
+        errorMessage = "Invalid username or password";
     
   }
 </script>

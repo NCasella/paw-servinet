@@ -1,11 +1,13 @@
 import { getAccessToken } from "$stores/auth"; 
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 interface FetchOptions<TBody> {
   method?: HttpMethod;
   body?: TBody;
+  contentType?: string; 
   headers?: Record<string, string>;
   withAuth?: boolean; // para saltearnos AUTH 
 }
@@ -21,12 +23,17 @@ export async function apiFetch<TResponse = any, TBody = any>(
   const {
     method = "GET",
     body,
+    contentType,
     headers = {},
     withAuth = true
   } = options;
 
+  let mediaTypeHeader = method=="GET"? "Accept" : "Content-Type"
+
   const finalHeaders: Record<string, string> = {
-    "Content-Type": "application/json",
+    mediaTypeHeader: contentType
+      ? `application/vnd.servinet.${contentType}.v1+json`
+      : "application/json" ,
     ...headers
   };
 

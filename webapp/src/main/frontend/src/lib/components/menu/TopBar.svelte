@@ -4,11 +4,11 @@
     import { base } from '$app/paths';
     import BusinessMenu from '$lib/components/menu/BusinessMenu.svelte';
     import {t} from "$lib/i18n/i18n"
+	import { user } from '$stores/userStore';
+	import { getCurrentUser } from '$services/userService';
 
-	let currentUser = {
-	  avatar: '/images/avatar.png'
-	};
-  
+	$: currentUser = getCurrentUser()
+
 	function isRouteActive(path: string): boolean {
 	  return page.url.pathname === path;
 	}
@@ -46,8 +46,13 @@
 	</div>
 	<div class="top-bar__right">
       <BusinessMenu/>  
+	  {#if currentUser!=undefined }
+		<button type="button" class="btn preset-filled-primary-500" on:click={handleLogin}>{$t("navbar.account")}</button>	
+	  {:else}
 	  <button type="button" class="btn preset-filled-primary-500" on:click={handleLogin}>{$t("login")}</button>
+		{/if}
 	</div>
+	
   </header>
   
   <style lang="scss">

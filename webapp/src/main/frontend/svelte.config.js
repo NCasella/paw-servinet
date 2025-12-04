@@ -29,6 +29,7 @@ const config = {
 			$utils: 'src/utils',
 			$services: 'src/services',
 			$stores: 'src/stores',
+			$models: 'src/models'
 		}
   },
 };

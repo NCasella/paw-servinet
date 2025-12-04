@@ -1,4 +1,5 @@
-import { writable, get } from "svelte/store";
+import { get, type Writable } from 'svelte/store';
+import { localStorageStore } from '$stores/localStorageStore'
 
 export type AuthState = {
   accessToken: string | null;
@@ -10,7 +11,8 @@ const initialState: AuthState = {
   refreshToken: null
 };
 
-export const auth = writable<AuthState>(initialState);
+
+export const auth: Writable<AuthState> = localStorageStore<AuthState>('authStore', initialState);
 
 export function setTokens(tokens: Partial<AuthState>) {
   auth.update((current) => ({
@@ -20,7 +22,7 @@ export function setTokens(tokens: Partial<AuthState>) {
 }
 
 export function clearTokens() {
-  auth.set(initialState);
+  auth.set({ ...initialState });
 }
 
 export function getAccessToken(): string | null {
