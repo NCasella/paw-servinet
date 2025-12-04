@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.Service;
+import ar.edu.itba.paw.webapp.dto.output.links.ServiceLinks;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,9 +21,7 @@ public class ServiceDto {
     private long serviceId;
     private String serviceName;
     private boolean homeService;
-    private URI businessUri;
 
-    private URI self;
     private String[] neighbourhoods;
     private String address;
     private double rating;
@@ -33,7 +32,38 @@ public class ServiceDto {
     private String category;
     private String pricingType;
 
+    private ServiceLinks links;
+
     public static ServiceDto fromService(Service service, UriInfo uriInfo){
+        URI self = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.SERVICES_URL.getUrl())
+                .path(String.valueOf(service.getId()))
+                .build();
+
+        URI business = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.BUSINESSES_URL.getUrl())
+                .path(String.valueOf(service.getBusinessid()))
+                .build();
+
+        URI questions = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.SERVICES_URL.getUrl())
+                .path(String.valueOf(service.getId()))
+                .path("questions")
+                .build();
+
+        URI reviews = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.SERVICES_URL.getUrl())
+                .path(String.valueOf(service.getId()))
+                .path("reviews")
+                .build();
+
+        ServiceLinks links = ServiceLinks.builder()
+                .self(self)
+                .business(business)
+                .questions(questions)
+                .reviews(reviews)
+                .build();
+
         return ServiceDto.builder()
                 .serviceId(service.getId())
                 .serviceName(service.getName())
@@ -44,15 +74,8 @@ public class ServiceDto {
                 .price(service.getPrice())
                 .category(service.getCategory().getValue())
                 .pricingType(service.getPricing().getValue())
-                .businessUri(uriInfo.getBaseUriBuilder()
-                        .path(PathUrls.BUSINESSES_URL.getUrl())
-                        .path(String.valueOf(service.getBusinessid()))
-                        .build())
                 .neighbourhoods(service.getNeighbourhoodAvailable().toArray(String[]::new))
-                .self(uriInfo.getAbsolutePathBuilder()
-                        .path(PathUrls.SERVICES_URL.getUrl())
-                        .path(String.valueOf(service.getId()))
-                        .build())
+                .links(links)
                 .build();
     }
 

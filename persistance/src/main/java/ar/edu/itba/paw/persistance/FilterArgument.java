@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistance;
 
 
+import ar.edu.itba.paw.model.Categories;
+import ar.edu.itba.paw.model.Neighbourhoods;
 import ar.edu.itba.paw.model.ServicesOrderFilters;
 
 import javax.persistence.Query;
@@ -21,9 +23,11 @@ public class FilterArgument {
     private  ServicesOrderFilters servicesOrderFilters;
     private int page=-1;
     private int pageSize=10;
-    public FilterArgument addCategory(String category) {
-        return addParameter(FilterTypes.CATEGORY,category);
-
+    public FilterArgument addCategory(Categories category) {
+        if(category!=null){
+            return addParameter(FilterTypes.CATEGORY,category.getValue());
+        }
+        return this;
     }
 
     public FilterArgument addRating(int rating) {
@@ -65,9 +69,13 @@ public class FilterArgument {
 
     public int getPageSize(){return pageSize;}
 
-    public FilterArgument addLocation(String[] location) {
-        if(location!=null && location.length!=0)
-            filters.put(FilterTypes.LOCATION,Arrays.asList(location));
+    public FilterArgument addLocation(Neighbourhoods[] neighbourhoods) {
+        if(neighbourhoods!=null && neighbourhoods.length!=0) {
+            List<String> values = Arrays.stream(neighbourhoods)
+                    .map(Neighbourhoods::getValue)
+                    .toList();
+            filters.put(FilterTypes.NEIGHBOURHOOD, List.of(values));
+        }
         return this;
     }
 
@@ -107,7 +115,7 @@ public class FilterArgument {
 
         private enum FilterTypes {
             CATEGORY("category = :cat ","cat"),
-            LOCATION("s.id in (select serviceid from nbservices where neighbourhood in :loc ) ","loc"),
+            NEIGHBOURHOOD("s.id in (select serviceid from nbservices where neighbourhood in :loc ) ","loc"),
             RATING("s.id IN (SELECT serviceid FROM ratings GROUP BY serviceid HAVING AVG(rating) >= :rate)","rate"),
             SERVICE_SEARCH("( lower(servicename) like concat('%',lower( :search ),'%') or lower(servicedescription) like concat('%',lower( :search ),'%') )","search"),
             HOME_SERVICE("homeservice = :homeserv ","homeserv"),

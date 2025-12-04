@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import java.util.Arrays;
+
 public enum Neighbourhoods {
     ALMAGRO("Almagro"),
     BALVANERA("Balvanera"),
@@ -30,5 +32,19 @@ public enum Neighbourhoods {
         return value;
     }
 
+    public static Neighbourhoods fromValue(String value) {
+        return Arrays.stream(values())
+                .filter(v -> v.getValue().equalsIgnoreCase(value))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid neighbourhood: " + value));
+    }
+
+    public static Neighbourhoods fromName(String name) {
+        try {
+            return Neighbourhoods.valueOf(name.toUpperCase());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid neighbourhood: " + name);
+        }
+    }
 
 }

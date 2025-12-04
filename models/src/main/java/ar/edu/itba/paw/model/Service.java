@@ -71,7 +71,7 @@ public class Service extends BasicService {
     }
 
     public Categories getCategory() {
-        return Categories.findByValue(category);
+        return Categories.fromValue(category);
     }
 
     public void setCategory(String category) {
@@ -107,7 +107,7 @@ public class Service extends BasicService {
     }
 
     public PricingTypes getPricing() {
-        return PricingTypes.findByValue(pricing);
+        return PricingTypes.fromValue(pricing);
     }
 
     public void setPricing(String pricing) {

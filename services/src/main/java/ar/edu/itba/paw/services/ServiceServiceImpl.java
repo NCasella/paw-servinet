@@ -50,10 +50,9 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional
     @Override
-    public Service create(long businessId, String name, String description, boolean homeservice,
-                          Neighbourhoods[] neighbourhood, Neighbourhoods[] uniqueNeighbourhood, String location, Categories category, int minimalduration,
-                          PricingTypes pricing, String price, boolean additionalCharges, MultipartFile image) {
-        Business business = businessDao.findById( businessId).orElseThrow(BusinessNotFoundException::new);
+    public Service create(long businessId, String name, String description, boolean homeService, Neighbourhoods[] neighbourhoods, String location, Categories category, int minimalDuration, PricingTypes pricing, String price, boolean additionalCharges, MultipartFile image) {
+
+    Business business = businessDao.findById( businessId).orElseThrow(BusinessNotFoundException::new);
 
         Long imageId=null;
         if(!image.isEmpty()){
@@ -63,7 +62,7 @@ public class ServiceServiceImpl implements ServiceService {
             }
         }
 
-        Service service = serviceDao.create(business, name, description, homeservice, homeservice? "":location, homeservice? neighbourhood:uniqueNeighbourhood, category, minimalduration ,pricing, price, additionalCharges, imageId);
+        Service service = serviceDao.create(business, name, description, homeService, homeService? "":location, neighbourhoods, category, minimalDuration ,pricing, price, additionalCharges, imageId);
         emailService.createdService(service, business, business.getOwnedBy().getLocale());
         return service;
     }
@@ -125,24 +124,22 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
-    public PagedList<Service> getServices(int page, String category, String[] location, String rating, String query, ServicesOrderFilters orderFilter,Boolean homeServiceFilter, Long businessId) {
-        int ratingNum = Ratings.getMinValueByName(rating);
-        List<Service> services = serviceDao.getServicesFilteredBy(page, category, location, ratingNum, query, orderFilter,homeServiceFilter, businessId);
-        int serviceCount = getServiceCount(category, location, rating, query,homeServiceFilter, businessId);
+    public PagedList<Service> getServices(int page, Categories category, Neighbourhoods[] neighbourhoods, int rating, String query, ServicesOrderFilters orderFilter, Boolean homeServiceFilter, Long businessId) {
+        List<Service> services = serviceDao.getServicesFilteredBy(page, category, neighbourhoods, rating, query, orderFilter,homeServiceFilter, businessId);
+        int serviceCount = getServiceCount(category, neighbourhoods, rating, query,homeServiceFilter, businessId);
         return PagedList.of(services, serviceCount);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getServiceCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
-        int ratingNum = Ratings.getMinValueByName(rating);
-        return serviceDao.getServiceCount(category, location, ratingNum, searchQuery,homeServiceFilter, businessId);
+    public int getServiceCount(Categories category, Neighbourhoods[] neighbourhoods, int rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
+        return serviceDao.getServiceCount(category, neighbourhoods, rating, searchQuery,homeServiceFilter, businessId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getPageCount(String category, String[] location, String rating, String searchQuery,Boolean homeServiceCount, Long businessId) {
-        int serviceCount = getServiceCount(category, location, rating, searchQuery,homeServiceCount, businessId);
+    public int getPageCount(Categories category, Neighbourhoods[] neighbourhoods, int rating, String searchQuery, Boolean homeServiceCount, Long businessId) {
+        int serviceCount = getServiceCount(category, neighbourhoods, rating, searchQuery,homeServiceCount, businessId);
         int pageCount = serviceCount / 10;
         if(serviceCount % 10 != 0) pageCount++;
         return pageCount;
@@ -184,7 +181,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional
     @Override
-    public List<String> getAvailableNeighbourhoods(String category) {
+    public List<String> getAvailableNeighbourhoods(Categories category) {
         if(category == null) {
             return serviceDao.getAvailableNeighbourhoods();
         }
