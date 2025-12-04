@@ -21,42 +21,52 @@ public class RatingDaoJpa implements RatingDao {
     private EntityManager em;
 
     @Override
-    public List<Rating> getAllRatings(long serviceid, int page, int pageSize) {
-        Query nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid").setParameter("serviceid", serviceid);
+    public List<Rating> getAllRatings(long serviceId, int page, int pageSize, RatingsFilters filter) {
+
+        String orderBy = "";
+        if (filter != null) {
+            String column = filter.getType();
+            String direction = filter.getOrder();
+            orderBy = " ORDER BY " + column + " " + direction;
+        }
+
+        Query nativeQuery = em.createNativeQuery(
+                "SELECT ratingid FROM ratings WHERE serviceid = :serviceid" + orderBy
+        );
+        nativeQuery.setParameter("serviceid", serviceId);
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
 
         @SuppressWarnings("unchecked")
-        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream())
+                .map(Integer::longValue)
+                .toList();
 
-        TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList", Rating.class);
+        if (idList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        TypedQuery<Rating> query = em.createQuery(
+                "SELECT r FROM Rating r WHERE r.id IN :idList" +
+                        (filter != null ? " ORDER BY r." + filter.getType() + " " + filter.getOrder() : ""),
+                Rating.class
+        );
+
         query.setParameter("idList", idList);
         return query.getResultList();
     }
 
     @Override
-    public List<Rating> getAllRatingsFiltered(long serviceid, int page, int pageSize, RatingsFilters filter) {
-        Query nativeQuery;
-        if(filter.isDateType(filter)) {
-            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid ORDER BY date " + filter.getOrder());
-        } else {
-            nativeQuery = em.createNativeQuery("SELECT ratingid FROM ratings WHERE serviceid = :serviceid ORDER BY rating " + filter.getOrder());
-        }
-        nativeQuery.setParameter("serviceid", serviceid);
-        nativeQuery.setFirstResult((page - 1) * pageSize);
-        nativeQuery.setMaxResults(pageSize);
-        @SuppressWarnings("unchecked")
-        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+    public int getAllRatingsCount(long serviceId, RatingsFilters filter) {
+        Query nativeQuery = em.createNativeQuery(
+                "SELECT COUNT(*) FROM ratings WHERE serviceid = :serviceid"
+        );
+        nativeQuery.setParameter("serviceid", serviceId);
 
-        TypedQuery<Rating> query;
-        if(filter.isDateType(filter)) {
-            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.date " + filter.getOrder(), Rating.class);
-        } else {
-            query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList ORDER BY r.rating " + filter.getOrder(), Rating.class);
-        }
-        query.setParameter("idList", idList);
-        return query.getResultList();
+        Number count = (Number) nativeQuery.getSingleResult();
+        return count.intValue();
     }
+
 
     @Override
     public Optional<Rating> findById(long id) {

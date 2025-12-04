@@ -1,15 +1,12 @@
 package ar.edu.itba.paw.webapp.jersey;
 
 import ar.edu.itba.paw.model.PagedList;
-import ar.edu.itba.paw.webapp.dto.UserDto;
 
 import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.util.List;
 
 public class PagedListResponse {

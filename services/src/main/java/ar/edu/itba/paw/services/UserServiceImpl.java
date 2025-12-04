@@ -2,6 +2,8 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UserVerificationCode;
+import ar.edu.itba.paw.model.exceptions.InvalidPasswordModificationException;
+import ar.edu.itba.paw.model.exceptions.InvalidUsernameException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -104,6 +106,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void changeUsername(long userid,String value){
+        if (userDao.findByUsername(value).isPresent()){
+            throw new InvalidUsernameException();
+        }
         userDao.changeUsername(userid,value);
     }
 
@@ -113,12 +118,39 @@ public class UserServiceImpl implements UserService {
         userDao.changeEmail(userid,value);
     }
 
+    @Transactional
+    @Override
+    public void changeTelephone(long userid,String value){
+        userDao.changeTelephone(userid,value);
+    }
+
 
     @Transactional
     @Override
-    public void changePassword(String email,String password){
-        userDao.changePassword(email,passwordEncoder.encode(password));
+    public void changePassword(long userid,String password){
+        userDao.changePassword(userid ,passwordEncoder.encode(password));
     }
+
+    @Transactional
+    @Override
+    public void changeUserInfo(long userid,String username, String email, String telephone) {
+        changeUsername(userid, username);
+        changeEmail(userid, email);
+        changeTelephone(userid, telephone);
+    }
+
+    @Transactional
+    @Override
+    public void changePassword(long userid,String oldPassword, String newPassword){
+        User user = userDao.findById(userid).orElseThrow(UserNotFoundException::new);
+        String storedPassword = user.getPassword();
+        boolean verified = passwordEncoder.matches(oldPassword, storedPassword);
+        if (!verified){
+            throw new InvalidPasswordModificationException();
+        }
+        userDao.changePassword(userid,passwordEncoder.encode(newPassword));
+    }
+
 
     // todo: enum de locale
     @Transactional

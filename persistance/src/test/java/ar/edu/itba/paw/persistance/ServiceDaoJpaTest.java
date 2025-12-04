@@ -105,7 +105,7 @@
     public void testWithQueryAndCategory(){
         Populate();
 
-        List<Service> services=serviceDao.getServicesFilteredBy(1,CATEGORY.getValue(), null,0,"capping", null,null, null);
+        List<Service> services=serviceDao.getServicesFilteredBy(1, CATEGORY, null,0,"capping", null,null, null);
         Assert.assertEquals(CAPPIN_FILTERED_AMOUNT,services.size());
     }
     @Test

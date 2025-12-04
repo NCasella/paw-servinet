@@ -1,9 +1,7 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.ImageModel;
-import org.thymeleaf.util.ArrayUtils;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class ImageDto {

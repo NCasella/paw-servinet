@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import java.util.Arrays;
+
 public enum PricingTypes {
     PER_HOUR ("Por hora", "pricing.perhour"),
     PER_TOTAL ("Total", "pricing.total"),
@@ -20,14 +22,10 @@ public enum PricingTypes {
         return codeMsg;
     }
 
-    public static PricingTypes findByValue(String value) {
-        for (PricingTypes pricingType: values()) {
-            if (pricingType.getValue().equalsIgnoreCase(value)) {
-                return pricingType;
-            }
-        }
-        return null;
+    public static PricingTypes fromValue(String value) {
+        return Arrays.stream(values())
+                .filter(v -> v.getValue().equalsIgnoreCase(value))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid pricing type: " + value));
     }
-
-
 }

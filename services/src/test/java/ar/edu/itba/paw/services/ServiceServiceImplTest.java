@@ -73,7 +73,7 @@ public class ServiceServiceImplTest {
        Mockito.when(imageService.addImage(image)).thenReturn(new ImageModel(1, new byte[1]));
        Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)1)).thenReturn(service);
 
-       Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
+       Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
 
         Assert.assertNotNull(serv);
         Assert.assertEquals(service,serv);
@@ -93,7 +93,7 @@ public class ServiceServiceImplTest {
         Mockito.when(image.isEmpty()).thenReturn(true);
         Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,null)).thenReturn(noImageService);
 
-        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
+        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
 
         Assert.assertNotNull(serv);
         Assert.assertEquals(noImageService,serv);
@@ -109,7 +109,7 @@ public class ServiceServiceImplTest {
         MultipartFile image = Mockito.mock(MultipartFile.class);
         Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.empty());
 
-        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
+        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
 
         Assert.fail();
     }

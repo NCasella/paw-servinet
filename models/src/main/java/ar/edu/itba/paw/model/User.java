@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +33,11 @@ public class User {
     @OneToMany(mappedBy = "ownedBy",fetch = FetchType.LAZY)
     private List<Business> businessOwned;
 
+    @Column(nullable = false)
     private String telephone;
+
+    @Column(nullable = false, name = "profilePic")
+    private Long profilePicId = 3L;
 
     @Column(nullable = false)
     private boolean isProvider;
@@ -77,6 +83,10 @@ public class User {
 
     public boolean isProvider() {
         return isProvider;
+    }
+
+    public Long getProfilePicId() {
+        return profilePicId;
     }
 
     protected User(){}
@@ -142,6 +152,11 @@ public class User {
     public void setLocale(String locale) {
         this.locale = locale;
     }
+
+    public void setProfilePicId(Long profilePicId) {
+        this.profilePicId = profilePicId;
+    }
+
     @Override
     public boolean equals(Object o){
         if(this==o)

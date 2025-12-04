@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.mapper;
 
-import ar.edu.itba.paw.webapp.dto.ExceptionDto;
+import ar.edu.itba.paw.webapp.dto.error.ExceptionDto;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

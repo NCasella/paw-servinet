@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.auth.filters;
 
-import ar.edu.itba.paw.webapp.dto.ExceptionDto;
+import ar.edu.itba.paw.webapp.dto.error.ExceptionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.AuthenticationException;

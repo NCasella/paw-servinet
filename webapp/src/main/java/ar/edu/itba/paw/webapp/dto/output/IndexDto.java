@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

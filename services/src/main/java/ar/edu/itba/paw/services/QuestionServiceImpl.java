@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.model.BasicService;
-import ar.edu.itba.paw.model.Business;
-import ar.edu.itba.paw.model.Question;
-import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 import ar.edu.itba.paw.model.exceptions.QuestionNotFoundException;
 import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
@@ -42,10 +39,11 @@ public class QuestionServiceImpl implements  QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Question> getAllQuestions(long serviceid, int page) {
+    public PagedList<Question> getAllQuestions(long serviceid, int page) {
         List<Question> questions;
         questions = questionDao.getAllQuestions(serviceid, page, PAGE_SIZE);
-        return questions;
+        int questionsCount = getQuestionsCount(serviceid);
+        return PagedList.of(questions, questionsCount);
     }
 
     @Transactional(readOnly = true)

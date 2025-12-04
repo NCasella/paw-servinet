@@ -89,7 +89,7 @@ public class ServiceController {
         if (errors.hasErrors()) {
             return registerService(businessId, form);
         }
-        Service newService = ss.create(businessId,form.getTitle(),form.getDescription(),form.getHomeserv(),form.getNeighbourhood(), form.getUniqueNeighbourhood(), form.getLocation(),form.getCategory(),form.getMinimalduration(),form.getPricingtype(),form.getPrice(),form.getAdditionalCharges(), form.getImage());
+        Service newService = ss.create(businessId,form.getTitle(),form.getDescription(),form.getHomeserv(),form.getNeighbourhood(), form.getLocation(),form.getCategory(),form.getMinimalduration(),form.getPricingtype(),form.getPrice(),form.getAdditionalCharges(), form.getImage());
         return new ModelAndView("redirect:/servicio/"+newService.getId());
     }
 
@@ -125,13 +125,13 @@ public class ServiceController {
         mav.addObject("option", option);
         mav.addObject("service",serv);
         mav.addObject("questions", question.getAllQuestions(serviceId, questionPage));
-        mav.addObject("reviews", rating.getAllRatingsFiltered(serviceId, reviewPage, RatingsFilters.findByValue(reviewFilter)));
+        mav.addObject("reviews", rating.getAllRatings(serviceId, reviewPage, RatingsFilters.fromValue(reviewFilter)));
         mav.addObject("questionPage", questionPage);
         mav.addObject("reviewPage", reviewPage);
         mav.addObject("TBDPricing", TBDPricing);
         mav.addObject("hasAlreadyRated", (userId==null)? null : rating.hasAlreadyRated(userId, serviceId));
         mav.addObject("ratingCountList", rating.getRatingsAvgByRate(serviceId));
-        mav.addObject("currentReviewFilter", RatingsFilters.findByValue(reviewFilter));
+        mav.addObject("currentReviewFilter", RatingsFilters.fromValue(reviewFilter));
         mav.addObject("reviewsFilters", RatingsFilters.values());
         return mav;
     }

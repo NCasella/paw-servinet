@@ -199,9 +199,9 @@ public class BusinessController {
         if(page == null) page = 1;
         Business business = businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
         mav.addObject("business", business);
-        mav.addObject("reviews", ratingService.getAllBusinessRatingsFiltered(businessId, page, RatingsFilters.findByValue(filter)));
+        mav.addObject("reviews", ratingService.getAllBusinessRatingsFiltered(businessId, page, RatingsFilters.fromValue(filter)));
         mav.addObject("ratingCountList", ratingService.getBusinessRatingsAvgByRate(businessId));
-        mav.addObject("currentFilter", RatingsFilters.findByValue(filter));
+        mav.addObject("currentFilter", RatingsFilters.fromValue(filter));
         mav.addObject("availableFilters", RatingsFilters.values());
         mav.addObject("pageCount", ratingService.getBusinessRatingsPageCount(business));
         mav.addObject("page", page);

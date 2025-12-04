@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
@@ -24,7 +24,6 @@ public class BusinessDto {
     private URI userOwnerPath;
     private URI businessStatistics;
     private URI reviewsPath;
-    private URI questionsPath;
     private URI self;
 
     public static BusinessDto fromBusiness(Business business, UriInfo uriInfo) {
@@ -33,7 +32,6 @@ public class BusinessDto {
                 .businessName(business.getName())
                 .email(business.getEmail())
                 .telephone(business.getTelephone())
-                .questionsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_QUESTIONS_URL.getUrl()).queryParam("forBusiness",business.getUserId()).build())
                 .reviewsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_URL.getUrl()).queryParam("providedBy",business.getUserId()).build())
                 .rating(business.getBusinessRatingAvg())
                 .userOwnerPath(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(business.getUserId())).build())

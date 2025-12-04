@@ -1,0 +1,57 @@
+package ar.edu.itba.paw.webapp.dto.output;
+
+import ar.edu.itba.paw.model.Question;
+import ar.edu.itba.paw.webapp.dto.output.links.QuestionsLinks;
+import ar.edu.itba.paw.webapp.jersey.PathUrls;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.time.LocalDate;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class QuestionDto {
+    private long questionId;
+    private long serviceId;
+    private long userId;
+    private String question;
+    private String response;
+    private LocalDate date;
+
+    private QuestionsLinks links;
+
+    public static QuestionDto fromQuestion(Question question, UriInfo uriInfo) {
+        URI serviceUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.SERVICES_URL.getUrl())
+                .path(String.valueOf(question.getServiceid()))
+                .build();
+
+        URI selfUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.SERVICES_URL.getUrl())
+                .path(String.valueOf(question.getServiceid()))
+                .path("questions")
+                .path(String.valueOf(question.getId()))
+                .build();
+
+        return QuestionDto.builder()
+                .questionId(question.getId())
+                .serviceId(question.getServiceid())
+                .userId(question.getUserid())
+                .question(question.getQuestion())
+                .response(question.getResponse())
+                .date(question.getDate())
+                .links(
+                    QuestionsLinks.builder()
+                            .self(selfUri)
+                            .services(serviceUri)
+                            .build()
+                )
+                .build();
+    }
+}

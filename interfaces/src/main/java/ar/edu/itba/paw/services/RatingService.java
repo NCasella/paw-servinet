@@ -1,17 +1,14 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.model.Business;
-import ar.edu.itba.paw.model.Rating;
-import ar.edu.itba.paw.model.RatingsFilters;
-import ar.edu.itba.paw.model.Service;
+import ar.edu.itba.paw.model.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public interface RatingService {
-    List<Rating> getAllRatings(long serviceid, int page);
-    List<Rating> getAllRatingsFiltered(long serviceid, int page, RatingsFilters filter);
+    PagedList<Rating> getAllRatings(long serviceid, int page, RatingsFilters filter);
+    int getAllRatingsCount(long serviceId, RatingsFilters filter);
     List<Rating> getAllBusinessRatings(long businessId, int page);
     List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, RatingsFilters filter);
     Optional<Rating> findById(long id);

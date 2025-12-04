@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import java.util.Arrays;
+
 public enum RatingsFilters {
     DATE_ASC("date_asc", "date", "asc", "reviews.date-asc"),
     DATE_DESC("date_desc", "date", "desc", "reviews.date-desc"),
@@ -34,13 +36,11 @@ public enum RatingsFilters {
         return order;
     }
 
-    public static RatingsFilters findByValue(String filter) {
-        for (RatingsFilters ratingsFilter: values()) {
-            if (ratingsFilter.getFilter().equalsIgnoreCase(filter)) {
-                return ratingsFilter;
-            }
-        }
-        return null;
+    public static RatingsFilters fromValue(String value) {
+        return Arrays.stream(values())
+                .filter(r -> r.getFilter().equalsIgnoreCase(value))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid rating filter: " + value));
     }
 
     public boolean isDateType(RatingsFilters filter) {

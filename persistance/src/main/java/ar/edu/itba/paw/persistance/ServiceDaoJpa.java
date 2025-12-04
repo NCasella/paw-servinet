@@ -88,10 +88,10 @@ public class ServiceDaoJpa implements ServiceDao {
 
 
     @Override
-    public List<Service> getServicesFilteredBy(int page, String category, String[] location, int rating, String searchQuery, ServicesOrderFilters orderFilter, Boolean homeServiceFilter, Long businessId) {
+    public List<Service> getServicesFilteredBy(int page, Categories category, Neighbourhoods[] neighbourhoods, int rating, String searchQuery, ServicesOrderFilters orderFilter, Boolean homeServiceFilter, Long businessId) {
         FilterArgument filterArgument = new FilterArgument()
                 .addCategory(category)
-                .addLocation(location)
+                .addLocation(neighbourhoods)
                 .addSearch(searchQuery)
                 .addPage(page)
                 .addRating(rating)
@@ -121,10 +121,10 @@ public class ServiceDaoJpa implements ServiceDao {
 
 
     @Override
-    public int getServiceCount(String category, String[] location, int rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
+    public int getServiceCount(Categories category, Neighbourhoods[] neighbourhoods, int rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
         FilterArgument filterArgument = new FilterArgument()
                 .addCategory(category)
-                .addLocation(location)
+                .addLocation(neighbourhoods)
                 .addSearch(searchQuery)
                 .addRating(rating)
                 .addHomeServiceFilter(homeServiceFilter)
@@ -160,9 +160,9 @@ public class ServiceDaoJpa implements ServiceDao {
     }
 
     @Override
-    public List<String> getAvailableNeighbourhoodsByCategory(String category) {
+    public List<String> getAvailableNeighbourhoodsByCategory(Categories category) {
         TypedQuery<String> query = em.createQuery("SELECT DISTINCT nb.neighbourhood FROM Service s JOIN s.neighbourhoodAvailable nb WHERE s.category = :category", String.class);
-        query.setParameter("category", category);
+        query.setParameter("category", category.getValue());
         return query.getResultList();
     }
 }

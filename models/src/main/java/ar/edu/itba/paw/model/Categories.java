@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import java.util.Arrays;
+
 public enum Categories {
     LIMPIEZA("Limpieza", "cleaning_services", "category.cleaning"),
     BELLEZA("Belleza", "diamond", "category.beauty"),
@@ -33,14 +35,19 @@ public enum Categories {
         return codeMsg;
     }
 
+    public static Categories fromValue(String value) {
+        return Arrays.stream(values())
+                .filter(v -> v.getValue().equalsIgnoreCase(value))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category value: " + value));
+    }
 
-    public static Categories findByValue(String value) {
-        for (Categories category: values()) {
-            if (category.getValue().equalsIgnoreCase(value)) {
-                return category;
-            }
+    public static Categories fromName(String name) {
+        try {
+            return Categories.valueOf(name.toUpperCase());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid category name: " + name);
         }
-        return null;
     }
 
     @Override

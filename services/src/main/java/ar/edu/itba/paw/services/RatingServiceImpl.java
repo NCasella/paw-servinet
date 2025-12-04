@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.Business;
+import ar.edu.itba.paw.model.PagedList;
 import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.RatingsFilters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,16 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Rating> getAllRatings(long serviceid, int page) {
-        return ratingDao.getAllRatings(serviceid, page,PAGE_SIZE);
+    public PagedList<Rating> getAllRatings(long serviceId, int page, RatingsFilters filter) {
+        List<Rating> ratings = ratingDao.getAllRatings(serviceId, page, PAGE_SIZE, filter);
+        int ratingsCount = getAllRatingsCount(serviceId, filter);
+        return PagedList.of(ratings, ratingsCount);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Rating> getAllRatingsFiltered(long serviceid, int page, RatingsFilters filter) {
-        if(filter == null) {
-            return getAllRatings(serviceid, page);
-        }
-        return ratingDao.getAllRatingsFiltered(serviceid, page, 10, filter);
+    public int getAllRatingsCount(long serviceId, RatingsFilters filter) {
+        return ratingDao.getAllRatingsCount(serviceId, filter);
     }
 
     @Transactional(readOnly = true)

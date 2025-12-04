@@ -28,7 +28,7 @@ public enum ServicesOrderFilters {
         return type;
     }
 
-    public static ServicesOrderFilters from(String value) {
+    public static ServicesOrderFilters fromValue(String value) {
         return Arrays.stream(values())
                 .filter(v -> v.type.equalsIgnoreCase(value))
                 .findFirst()

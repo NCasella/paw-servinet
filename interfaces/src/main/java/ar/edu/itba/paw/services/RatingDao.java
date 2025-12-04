@@ -4,12 +4,11 @@ import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.RatingsFilters;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface RatingDao {
-    List<Rating> getAllRatings(long serviceid, int page, int pageSize);
-    List<Rating> getAllRatingsFiltered(long serviceid, int page, int pageSize, RatingsFilters filter);
+    List<Rating> getAllRatings(long serviceId, int page, int pageSize, RatingsFilters filter);
+    int getAllRatingsCount(long serviceId, RatingsFilters filter);
     List<Rating> getAllBusinessRatings(long businessId, int page, int pageSize);
     List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, int pageSize, RatingsFilters filter);
     Optional<Rating> findById(long id);

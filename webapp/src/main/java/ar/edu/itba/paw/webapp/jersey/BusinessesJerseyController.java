@@ -7,7 +7,7 @@ import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.BusinessService;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
-import ar.edu.itba.paw.webapp.dto.BusinessDto;
+import ar.edu.itba.paw.webapp.dto.output.BusinessDto;
 import ar.edu.itba.paw.webapp.form.BusinessForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.Optional;
 
 @Path("/businesses")
 @Component
