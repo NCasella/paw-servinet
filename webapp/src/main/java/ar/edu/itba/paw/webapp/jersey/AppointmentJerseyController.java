@@ -12,7 +12,7 @@ import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.dto.input.AppointmentCreationDTO;
 import ar.edu.itba.paw.webapp.dto.output.AppointmentDto;
 import ar.edu.itba.paw.webapp.dto.input.AppointmentStatusDTO;
-import ar.edu.itba.paw.webapp.mapper.ExceptionToStatusMapper;
+import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,8 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes.APPOINTMENT;
 
 @Path("appointments")
 @Component
@@ -34,7 +32,6 @@ public class AppointmentJerseyController {
     private UriInfo uriInfo;
     @Context
     private Request request;
-
 
     private final ServinetAuthControl authControl;
     private final AppointmentService appointmentService;
@@ -60,35 +57,18 @@ public class AppointmentJerseyController {
     *
     */
 
-    @GET
-    @Path("/{appointmentid}")
-    @Produces(APPOINTMENT)
-    public Response getAppointment(@PathParam("appointmentid")final long appointmentId){
-        Appointment app=appointmentService.findById(appointmentId).orElseThrow(AppointmentNonExistentException::new);
-        return ConditionalCache.cacheResponse(request, AppointmentDto.fromAppointment(app,uriInfo)).build();
-    }
-
-    @POST
-    @Consumes(APPOINTMENT)
-    public Response createAppointment(@Valid final AppointmentCreationDTO appointmentCreationDto){
-        Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription());
-        return Response.created(
-                uriInfo.getAbsolutePathBuilder().path(String.valueOf(app.getId())).build()
-                ).build();
-    }
-
-    @PATCH
-    @Path("/{appointmentid}")
-    @Consumes(APPOINTMENT)
-    public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
-        if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.hasFinished() || appointmentStatusDTO.isPending() )
-            throw new InvalidOperationException("Invalid status change");
-        appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.getStatusEnum());
-        return Response.noContent().build();
+    @OPTIONS
+    public Response getSupportedAppointmentsMimeTypes() {
+        return Response.ok()
+                .header("Allow", "GET, POST, OPTIONS")
+                .header("Accept", CustomMediaTypes.APPOINTMENT_LIST)
+                .header("Accept-Post", CustomMediaTypes.APPOINTMENT_CREATION)
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .build();
     }
 
     @GET
-    @Produces(APPOINTMENT)
+    @Produces(value = {CustomMediaTypes.APPOINTMENT_LIST})
     public Response getAppointments(
             @QueryParam("userId") Long userId,
             @QueryParam("businessId") Long businessId,
@@ -97,7 +77,7 @@ public class AppointmentJerseyController {
     ){
         AppointmentStatus statusEnum = AppointmentStatus.toEnum(status);
         if ((userId == null && businessId == null) || (userId != null && businessId != null) || page<1
-            || (businessId!=null && statusEnum==AppointmentStatus.FINISHED ))
+                || (businessId!=null && statusEnum==AppointmentStatus.FINISHED ))
             throw new InvalidFilterException();
 
         PagedList<Appointment> pagedList;
@@ -116,7 +96,42 @@ public class AppointmentJerseyController {
         return PagedListResponse.generate(allAppointments,page,pagedList.getTotalElements(),uriInfo, AppointmentDto.class);
     }
 
+    @POST
+    @Consumes(value = {CustomMediaTypes.APPOINTMENT_CREATION})
+    public Response createAppointment(@Valid final AppointmentCreationDTO appointmentCreationDto){
+        Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription());
+        return Response.created(
+                uriInfo.getAbsolutePathBuilder().path(String.valueOf(app.getId())).build()
+                ).build();
+    }
 
+    @Path("/{appointmentid}")
+    @OPTIONS
+    public Response getSupportedAppointmentMimeTypes() {
+        return Response.ok()
+                .header("Allow", "GET, PATCH, OPTIONS")
+                .header("Accept", CustomMediaTypes.APPOINTMENT_INFO)
+                .header("Accept-Patch", CustomMediaTypes.APPOINTMENT_STATUS)
+                .header("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS")
+                .build();
+    }
 
+    @GET
+    @Path("/{appointmentid}")
+    @Produces(value = {CustomMediaTypes.APPOINTMENT_INFO})
+    public Response getAppointment(@PathParam("appointmentid")final long appointmentId){
+        Appointment app=appointmentService.findById(appointmentId).orElseThrow(AppointmentNonExistentException::new);
+        return ConditionalCache.cacheResponse(request, AppointmentDto.fromAppointment(app,uriInfo)).build();
+    }
+
+    @PATCH
+    @Path("/{appointmentid}")
+    @Consumes(value = {CustomMediaTypes.APPOINTMENT_STATUS})
+    public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
+        if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.hasFinished() || appointmentStatusDTO.isPending() )
+            throw new InvalidOperationException("Invalid status change");
+        appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.getStatusEnum());
+        return Response.noContent().build();
+    }
 }
 

@@ -10,7 +10,10 @@ public class CustomMediaTypes {
     public static final String PASSWORD_RESET = "application/vnd.servinet.user-password-reset.v1+json";
     public static final String PASSWORD_MODIFICATION = "application/vnd.servinet.user-password-modification.v1+json";
 
-    public static final String APPOINTMENT = "application/vnd.servinet.appointment.v1+json";
+    public static final String APPOINTMENT_INFO = "application/vnd.servinet.appointment-info.v1+json";
+    public static final String APPOINTMENT_LIST = "application/vnd.servinet.appointment-list.v1+json";
+    public static final String APPOINTMENT_CREATION = "application/vnd.servinet.appointment-creation.v1+json";
+    public static final String APPOINTMENT_STATUS = "application/vnd.servinet.appointment-status.v1+json";
 
     public static final String SERVICE_INFO = "application/vnd.servinet.service-info.v1+json";
     public static final String SERVICE_LIST = "application/vnd.servinet.service-list.v1+json";
