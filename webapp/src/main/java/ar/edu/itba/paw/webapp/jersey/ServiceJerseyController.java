@@ -11,12 +11,14 @@ import ar.edu.itba.paw.webapp.dto.output.ImageDto;
 import ar.edu.itba.paw.webapp.dto.output.QuestionDto;
 import ar.edu.itba.paw.webapp.dto.output.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.output.ServiceDto;
+import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.*;
@@ -58,8 +60,19 @@ public class ServiceJerseyController {
         this.imageService=imageService;
     }
 
+    @OPTIONS
+    public Response getSupportedMimeTypesForServices() {
+        return Response.ok()
+                .header("Allow", "GET, POST, OPTIONS")
+                .header("Accept", CustomMediaTypes.SERVICE_LIST)
+                .header("Accept-Post", CustomMediaTypes.SERVICE_CREATION)
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .build();
+    }
+
+
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(value = CustomMediaTypes.SERVICE_LIST)
     public Response getServices(
             @QueryParam("businessId") Long businessId,
             @QueryParam("category") String category,
@@ -103,8 +116,8 @@ public class ServiceJerseyController {
 
 
     @POST
-    @Consumes(value={MediaType.APPLICATION_JSON})
-    public Response createService(final ServiceCreationDTO serviceCreationDto) {
+    @Consumes(value = CustomMediaTypes.SERVICE_CREATION)
+    public Response createService(@Valid final ServiceCreationDTO serviceCreationDto) {
 
         businessService.findById(serviceCreationDto.getBusinessId()).orElseThrow(BusinessNotFoundException::new);
 
@@ -130,9 +143,20 @@ public class ServiceJerseyController {
         ).build();
     }
 
+    @Path("/{serviceId}")
+    @OPTIONS
+    public Response getSupportedMimeTypesForService() {
+        return Response.ok()
+                .header("Allow", "GET, PATCH, OPTIONS")
+                .header("Accept", CustomMediaTypes.SERVICE_INFO)
+                .header("Accept-Patch", CustomMediaTypes.SERVICE_UPDATE)
+                .header("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS")
+                .build();
+    }
+
     @GET
     @Path("/{serviceid}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = CustomMediaTypes.SERVICE_INFO)
     public Response getService(@PathParam("serviceid") final long serviceId){
         Service service = serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
         return ConditionalCache.cacheResponse(request, ServiceDto.fromService(service,uriInfo)).build();
@@ -140,10 +164,10 @@ public class ServiceJerseyController {
 
     @PATCH
     @Path("/{serviceid}")
-    @Consumes(value={MediaType.APPLICATION_JSON})
+    @Consumes(value = CustomMediaTypes.SERVICE_UPDATE)
     public Response changeService(
             @PathParam("serviceid") final long serviceId,
-            final ServiceUpdateDTO serviceUpdateDTO
+            @Valid final ServiceUpdateDTO serviceUpdateDTO
             ) {
         serviceService.editService(
                 serviceId,
@@ -164,9 +188,21 @@ public class ServiceJerseyController {
         return Response.noContent().build();
     }
 
+    @Path("/{serviceId}/questions")
+    @OPTIONS
+    public Response getSupportedMimeTypesForQuestions() {
+        return Response.ok()
+                .header("Allow", "GET, POST, OPTIONS")
+                .header("Accept", CustomMediaTypes.QUESTION_LIST)
+                .header("Accept-Post", CustomMediaTypes.QUESTION_CREATION)
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .build();
+    }
+
+
     @GET
     @Path("/{serviceId}/questions")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = CustomMediaTypes.QUESTION_LIST)
     public Response getServiceQuestions(
             @PathParam("serviceId") final long serviceId,
             @QueryParam("page") @DefaultValue("1") final int page
@@ -187,10 +223,10 @@ public class ServiceJerseyController {
 
     @POST
     @Path("/{serviceId}/questions")
-    @Consumes(value={MediaType.APPLICATION_JSON})
+    @Consumes(value = CustomMediaTypes.QUESTION_CREATION)
     public Response createServiceQuestion(
             @PathParam("serviceId") final long serviceId,
-            final QuestionCreationDTO questionCreationDto
+            @Valid final QuestionCreationDTO questionCreationDto
     ){
         User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
         Question question = questionService.create(
@@ -205,9 +241,21 @@ public class ServiceJerseyController {
         ).build();
     }
 
+
+    @Path("/{serviceId}/questions/{questionId}")
+    @OPTIONS
+    public Response getSupportedMimeTypesForQuestion() {
+        return Response.ok()
+                .header("Allow", "GET, PATCH, OPTIONS")
+                .header("Accept", CustomMediaTypes.QUESTION_INFO)
+                .header("Accept-Patch", CustomMediaTypes.QUESTION_RESPONSE)
+                .header("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS")
+                .build();
+    }
+
     @GET
     @Path("/{serviceId}/questions/{questionId}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = CustomMediaTypes.QUESTION_INFO)
     public Response getServiceQuestionById(
             @PathParam("serviceId") final long serviceId,
             @PathParam("questionId") final long questionId
@@ -219,11 +267,11 @@ public class ServiceJerseyController {
 
     @PATCH
     @Path("/{serviceId}/questions/{questionId}")
-    @Consumes(value={MediaType.APPLICATION_JSON})
+    @Consumes(value = CustomMediaTypes.QUESTION_RESPONSE)
     public Response updateQuestionResponse(
             @PathParam("serviceId") final long serviceId,
             @PathParam("questionId") final long questionId,
-            final QuestionResponseDTO questionResponseDTO
+            @Valid final QuestionResponseDTO questionResponseDTO
             ){
         Question question = questionService.findById(questionId).orElseThrow(QuestionNotFoundException::new);
         if (question.getServiceid() != serviceId) throw new QuestionNotFoundException();
@@ -231,9 +279,20 @@ public class ServiceJerseyController {
         return Response.noContent().build();
     }
 
+    @Path("/{serviceId}/reviews")
+    @OPTIONS
+    public Response getSupportedMimeTypesForReviews() {
+        return Response.ok()
+                .header("Allow", "GET, POST, OPTIONS")
+                .header("Accept", CustomMediaTypes.REVIEW_LIST)
+                .header("Accept-Post", CustomMediaTypes.REVIEW_CREATION)
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .build();
+    }
+
     @GET
     @Path("/{serviceId}/reviews")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = CustomMediaTypes.REVIEW_LIST)
     public Response getServiceReviews(
             @PathParam("serviceId") final long serviceId,
             @QueryParam("filter") String filter,
@@ -258,10 +317,10 @@ public class ServiceJerseyController {
 
     @POST
     @Path("/{serviceId}/reviews")
-    @Consumes(value={MediaType.APPLICATION_JSON})
+    @Consumes(value = CustomMediaTypes.REVIEW_CREATION)
     public Response createServiceReview(
             @PathParam("serviceId") final long serviceId,
-            final ReviewCreationDTO reviewCreationDTO
+            @Valid final ReviewCreationDTO reviewCreationDTO
     ){
         User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
         Rating review = ratingService.create(
@@ -277,9 +336,20 @@ public class ServiceJerseyController {
         ).build();
     }
 
+    @Path("/{serviceId}/reviews/{reviewId}")
+    @OPTIONS
+    public Response getSupportedMimeTypesForReview() {
+        return Response.ok()
+                .header("Allow", "GET, OPTIONS")
+                .header("Accept", CustomMediaTypes.REVIEW_INFO)
+                .header("Access-Control-Allow-Methods", "GET, OPTIONS")
+                .build();
+    }
+
+
     @GET
     @Path("/{serviceId}/reviews/{reviewId}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = CustomMediaTypes.REVIEW_INFO)
     public Response getReviewById(
             @PathParam("serviceId") final long serviceId,
             @PathParam("reviewId") final long reviewId

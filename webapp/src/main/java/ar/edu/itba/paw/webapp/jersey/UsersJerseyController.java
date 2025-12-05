@@ -36,7 +36,11 @@ public class UsersJerseyController {
     public Response getSupportedMimeTypes() {
         return Response.ok()
                 .header("Allow", "POST, OPTIONS")
-                .header("Accept-Post", "application/vnd.users.user-registration.v1+json, application/vnd.users.password-recovery-request.v1+json, application/vnd.users.password-reset.v1+json")
+                .header("Accept-Post",
+                        String.join(", ",
+                                CustomMediaTypes.USER_REGISTRATION,
+                                CustomMediaTypes.PASSWORD_RECOVERY,
+                                CustomMediaTypes.PASSWORD_RESET))
                 .header("Access-Control-Allow-Methods", "POST, OPTIONS")
                 .build();
     }
@@ -69,7 +73,10 @@ public class UsersJerseyController {
     public Response getSupportedMimeTypesForUser() {
         return Response.ok()
                 .header("Accept", "application/vnd.users.user-info.v1+json")
-                .header("Accept-Patch", "application/vnd.users.user-patch.v1+json, application/vnd.users.password-reset.v1+json")
+                .header("Accept-Patch",
+                        String.join(", ",
+                                CustomMediaTypes.USER_PATCH,
+                                CustomMediaTypes.PASSWORD_MODIFICATION))
                 .header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS")
                 .build();
     }

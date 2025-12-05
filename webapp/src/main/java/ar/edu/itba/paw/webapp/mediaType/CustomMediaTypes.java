@@ -3,12 +3,27 @@ package ar.edu.itba.paw.webapp.mediaType;
 public class CustomMediaTypes {
     private CustomMediaTypes(){}
 
-    public static final String USER_REGISTRATION= "application/vnd.users.user-registration.v1+json";
-    public static final String USER_INFO = "application/vnd.users.user-info.v1+json";
-    public static final String USER_PATCH = "application/vnd.users.user-patch.v1+json";
-    public static final String PASSWORD_RECOVERY = "application/vnd.users.password-recovery-request.v1+json";
-    public static final String PASSWORD_RESET = "application/vnd.users.password-reset.v1+json";
-    public static final String PASSWORD_MODIFICATION = "application/vnd.users.password-modification.v1+json";
+    public static final String USER_REGISTRATION= "application/vnd.servinet.user-registration.v1+json";
+    public static final String USER_INFO = "application/vnd.servinet.user-info.v1+json";
+    public static final String USER_PATCH = "application/vnd.servinet.user-patch.v1+json";
+    public static final String PASSWORD_RECOVERY = "application/vnd.servinet.user-password-recovery-request.v1+json";
+    public static final String PASSWORD_RESET = "application/vnd.servinet.user-password-reset.v1+json";
+    public static final String PASSWORD_MODIFICATION = "application/vnd.servinet.user-password-modification.v1+json";
+
     public static final String APPOINTMENT = "application/vnd.servinet.appointment.v1+json";
+
+    public static final String SERVICE_INFO = "application/vnd.servinet.service-info.v1+json";
+    public static final String SERVICE_LIST = "application/vnd.servinet.service-list.v1+json";
+    public static final String SERVICE_CREATION = "application/vnd.servinet.service-creation.v1+json";
+    public static final String SERVICE_UPDATE = "application/vnd.servinet.service-update.v1+json";
+
+    public static final String QUESTION_INFO = "application/vnd.servinet.question-info.v1+json";
+    public static final String QUESTION_LIST = "application/vnd.servinet.question-list.v1+json";
+    public static final String QUESTION_CREATION = "application/vnd.servinet.question-creation.v1+json";
+    public static final String QUESTION_RESPONSE = "application/vnd.servinet.question-response.v1+json";
+
+    public static final String REVIEW_INFO = "application/vnd.servinet.review-info.v1+json";
+    public static final String REVIEW_LIST = "application/vnd.servinet.review-list.v1+json";
+    public static final String REVIEW_CREATION = "application/vnd.servinet.review-creation.v1+json";
 
 }
