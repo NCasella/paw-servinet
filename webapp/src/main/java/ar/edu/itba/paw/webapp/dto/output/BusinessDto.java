@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.Business;
+import ar.edu.itba.paw.webapp.dto.output.links.BusinessLinks;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,22 +22,38 @@ public class BusinessDto {
     private String telephone;
     private String address;
     private double rating;
-    private URI userOwnerPath;
-    private URI businessStatistics;
-    private URI reviewsPath;
-    private URI self;
+
+    private BusinessLinks links;
 
     public static BusinessDto fromBusiness(Business business, UriInfo uriInfo) {
+        URI userOwnerUri = uriInfo.getBaseUriBuilder()
+                .path("users")
+                .path(String.valueOf(business.getUserId()))
+                .build();
+
+        URI businessStatisticsUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.BUSINESSES_URL.getUrl())
+                .path(String.valueOf(business.getBusinessid()))
+                .path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl())
+                .build();
+
+        URI selfUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.BUSINESSES_URL.getUrl())
+                .path(String.valueOf(business.getBusinessid()))
+                .build();
         return BusinessDto.builder()
                 .address(business.getLocation())
                 .businessName(business.getName())
                 .email(business.getEmail())
                 .telephone(business.getTelephone())
-                .reviewsPath(uriInfo.getBaseUriBuilder().path(PathUrls.SERVICES_URL.getUrl()).queryParam("providedBy",business.getUserId()).build())
                 .rating(business.getBusinessRatingAvg())
-                .userOwnerPath(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(business.getUserId())).build())
-                .businessStatistics(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_URL.getUrl()).path(String.valueOf(business.getBusinessid())).path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl()).build())
-                .self(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl()).path(String.valueOf(business.getBusinessid())).build())
+                .links(
+                    BusinessLinks.builder()
+                            .userOwner(userOwnerUri)
+                            .businessStatistics(businessStatisticsUri)
+                            .self(selfUri)
+                            .build()
+                )
                 .build();
     }
 

@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.webapp.dto.output.links.UserLinks;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,29 +14,54 @@ import java.util.Objects;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserDto {
     private long userId;
     private String fullName;
     private String username;
     private String email;
     private String language;
-    private URI self;
-    private URI businessesOwned;
-    private URI appointmentsRequested;
-    private URI profilePicture;
+
+    private UserLinks links;
 
     public static UserDto fromUser(User user, UriInfo uriInfo){
-        UserDto toReturn = new UserDto();
-        toReturn.setUserId(user.getUserId());
-        toReturn.setFullName(user.getFullName());
-        toReturn.setUsername(user.getUsername());
-        toReturn.setEmail(user.getEmail());
-        toReturn.setLanguage(user.getLocale());
-        toReturn.setSelf(uriInfo.getBaseUriBuilder().path(PathUrls.USERS_URL.getUrl()).path(String.valueOf(user.getUserId())).build());
-        toReturn.setBusinessesOwned(uriInfo.getBaseUriBuilder().path(PathUrls.BUSINESSES_URL.getUrl()).queryParam("ownedBy", user.getUserId()).build());
-        toReturn.setAppointmentsRequested(uriInfo.getBaseUriBuilder().path(PathUrls.APPOINTMENTS_URL.getUrl()).queryParam("forUser", user.getUserId()).build());
-        toReturn.setProfilePicture(uriInfo.getBaseUriBuilder().path(PathUrls.IMAGES_URL.getUrl()).path(String.valueOf(user.getProfilePicId())).build());
-        return toReturn;
+        URI businessesOwnedUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.BUSINESSES_URL.getUrl())
+                .queryParam("ownedBy", user.getUserId())
+                .build();
+
+        URI appointmentsRequestedUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.APPOINTMENTS_URL.getUrl())
+                .queryParam("forUser", user.getUserId())
+                .build();
+
+        URI profilePictureUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.IMAGES_URL.getUrl())
+                .path(String.valueOf(user.getProfilePicId()))
+                .build();
+
+        URI self = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.USERS_URL.getUrl())
+                .path(String.valueOf(user.getUserId()))
+                .build();
+
+        return UserDto.builder()
+                .userId(user.getUserId())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .language(user.getLocale())
+                .links(
+                    UserLinks.builder()
+                            .businessesOwned(businessesOwnedUri)
+                            .appointmentsRequested(appointmentsRequestedUri)
+                            .profilePicture(profilePictureUri)
+                            .self(self)
+                            .build()
+
+                )
+                .build();
     }
     @Override
     public int hashCode(){
