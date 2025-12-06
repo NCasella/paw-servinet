@@ -90,7 +90,11 @@ public class UserServiceImpl implements UserService {
             org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, authorities));
     }
-
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isUserProvidee(long providerUserId, long requestUserId){
+    return userDao.isUserProvidee(providerUserId,requestUserId);
+    }
     @Transactional
     @Override
     public User create(final String username,final String name, final String surname, final String password, final String email, final String telephone) {

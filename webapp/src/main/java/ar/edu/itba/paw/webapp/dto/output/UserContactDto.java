@@ -16,15 +16,15 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class UserContactDto {
     private long userId;
     private String fullName;
     private String username;
     private String language;
-
+    private String email;
     private UserLinks links;
 
-    public static UserDto fromUser(User user, UriInfo uriInfo){
+    public static UserContactDto fromUser(User user, UriInfo uriInfo){
         URI businessesOwnedUri = uriInfo.getBaseUriBuilder()
                 .path(PathUrls.BUSINESSES_URL.getUrl())
                 .queryParam("ownedBy", user.getUserId())
@@ -45,24 +45,25 @@ public class UserDto {
                 .path(String.valueOf(user.getUserId()))
                 .build();
 
-        return UserDto.builder()
+        return UserContactDto.builder()
                 .userId(user.getUserId())
                 .fullName(user.getFullName())
                 .username(user.getUsername())
                 .language(user.getLocale())
+                .email(user.getEmail())
                 .links(
-                    UserLinks.builder()
-                            .businessesOwned(businessesOwnedUri)
-                            .appointmentsRequested(appointmentsRequestedUri)
-                            .profilePicture(profilePictureUri)
-                            .self(self)
-                            .build()
+                        UserLinks.builder()
+                                .businessesOwned(businessesOwnedUri)
+                                .appointmentsRequested(appointmentsRequestedUri)
+                                .profilePicture(profilePictureUri)
+                                .self(self)
+                                .build()
 
                 )
                 .build();
     }
     @Override
     public int hashCode(){
-        return Objects.hash(userId,fullName,username,language);
+        return Objects.hash(userId,fullName,email,username,language);
     }
 }
