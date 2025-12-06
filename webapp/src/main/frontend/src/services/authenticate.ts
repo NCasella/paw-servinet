@@ -53,6 +53,7 @@ import { jwtDecode } from "jwt-decode";
 type TokenPayload = {
   sub: string;
   id: number;
+  roles?: string[];
 };
 
 export function extractUserIdFromToken(): number | null {
@@ -67,4 +68,19 @@ export function extractUserIdFromToken(): number | null {
     console.error("Token inválido:", e);
     return null;
   }
+}
+
+export function extractUserRolesFromToken(): string[] {
+  const token = getAccessToken();
+  if (!token) throw Error("Token not found");
+
+  try {
+    const payload = jwtDecode<TokenPayload>(token);
+    console.log("json:"+  payload)
+    if (payload.roles) return payload.roles;
+
+  } catch (e) {
+    Error("Invalid Token");
+  }
+  return [];
 }

@@ -9,7 +9,7 @@
 	import { getCurrentUser } from '$services/userService';
 	import { type User } from '$models/User';
 
-	let currentUser :User | null;
+	let currentUser :User | null = null;
 	onMount(async () => {
 		try {
 		currentUser = await getCurrentUser();
@@ -18,7 +18,6 @@
 		currentUser = null;
     }})
 
-	let isProvider = true
 
 	function isRouteActive(path: string): boolean {
 	  return page.url.pathname === path;
@@ -57,7 +56,7 @@
 	</div>
 	<div class="top-bar__right">
       <button type="button" class="btn "><a href="/services"> {$t("navbar.all-services")}</a></button>
-	  {#if $user.user }
+	  {#if currentUser }
 		<UserMenu user={currentUser}/>  	
 	  {:else}
 	  <button type="button" class="btn preset-filled-primary-500" on:click={handleLogin}>{$t("login")}</button>

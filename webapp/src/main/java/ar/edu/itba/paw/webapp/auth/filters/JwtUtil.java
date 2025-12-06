@@ -6,10 +6,12 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -46,12 +48,16 @@ public class JwtUtil {
         Long userId = null;
         if (userDetails instanceof ServinetAuthUserDetails servinetUser) {
             userId = servinetUser.getUserId();
-            System.out.println("IDDDDDD = "+userId);
         }
+        List<String> roles = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("id", userId)
+                .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_DURATION))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)

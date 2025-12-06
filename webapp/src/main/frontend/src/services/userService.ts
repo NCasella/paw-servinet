@@ -1,11 +1,14 @@
 import { User } from "$models/User"
 import { getUser, login, logout } from "$stores/userStore"
 import { GET } from "$utils/apiFetch"
-import { extractUserIdFromToken, removeTokens } from "./authenticate";
+import { extractUserIdFromToken, extractUserRolesFromToken, removeTokens } from "./authenticate";
 
 export async function getUserInfo(id: number ) :Promise<User> {
     const data = await GET(`users/${id}`); // ya es un objeto
-    return User.fromJson(data)
+    
+    let user = User.fromJson(data)
+    user.setRole( currentUserIsProvider() );
+    return user;
 }
 
 export async function getCurrentUser() :Promise<User> {
@@ -19,6 +22,7 @@ export async function getCurrentUser() :Promise<User> {
 
     currentUser = await getUserInfo(id);
     login(currentUser);
+    
     return currentUser;
 }
 
@@ -26,3 +30,8 @@ export function closeSession() {
     logout()
     removeTokens()
 }
+
+function currentUserIsProvider() :boolean {
+    let roles :string[] = extractUserRolesFromToken()
+    return roles?.some((r) => r==="ROLE_BUSINESS")
+} 

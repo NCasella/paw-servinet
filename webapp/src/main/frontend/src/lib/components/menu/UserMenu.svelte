@@ -4,6 +4,7 @@
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';
 
 	let {user} = $props()
+	let isProvider = user.isProvider 
 </script>
 
 <Menu>
@@ -31,10 +32,13 @@
 				</Menu.ItemGroup>
 				<Menu.Separator />
 				<Menu.ItemGroup>
-					<Menu.ItemGroupLabel>Business</Menu.ItemGroupLabel>
-					<Menu.Item value="businesses">
-						<Menu.ItemText>{$t("navbar.businesses")}</Menu.ItemText>
-					</Menu.Item>
+					{#if isProvider}
+						<Menu.ItemGroupLabel>Business</Menu.ItemGroupLabel>
+						<Menu.Item value="businesses">
+							<Menu.ItemText>{$t("navbar.businesses")}</Menu.ItemText>
+						</Menu.Item>
+					{/if}
+					
 					<Menu.Item value="create">
 						<Menu.ItemText>{$t("navbar.create-businesses")}</Menu.ItemText>
 					</Menu.Item>
