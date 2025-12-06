@@ -39,10 +39,18 @@ public class QuestionServiceImpl implements  QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public PagedList<Question> getAllQuestions(long serviceId, int page) {
+    public PagedList<Question> getAllQuestions(int page) {
+        List<Question> questions = questionDao.getAllQuestions(page, PAGE_SIZE);
+        int questionsCount = getAllQuestionsCount();
+        return PagedList.of(questions, questionsCount);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PagedList<Question> getQuestionsByService(long serviceId, int page) {
         serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
-        List<Question> questions = questionDao.getAllQuestions(serviceId, page, PAGE_SIZE);
-        int questionsCount = getQuestionsCount(serviceId);
+        List<Question> questions = questionDao.getServiceQuestions(serviceId, page, PAGE_SIZE);
+        int questionsCount = getQuestionsCountByService(serviceId);
         return PagedList.of(questions, questionsCount);
     }
 
@@ -75,32 +83,40 @@ public class QuestionServiceImpl implements  QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public int getQuestionsCount(long serviceId) {
+    public int getAllQuestionsCount() {
+        return questionDao.getQuestionsCount();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getQuestionsCountByService(long serviceId) {
         serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
-        return questionDao.getQuestionsCount(serviceId);
+        return questionDao.getQuestionsCountByService(serviceId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Map<Question, String> getQuestionsToRespond(User user, int page) {
-        userService.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
-        return questionDao.getQuestionsToRespond(user, page, 10);
+    public PagedList<Question> getQuestionsToRespond(long userId, int page) {
+        userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        List<Question> questions = questionDao.getQuestionsToRespond(userId, page, PAGE_SIZE);
+        int questionsCount = getQuestionsToRespondCount(userId);
+        return PagedList.of(questions, questionsCount);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getQuestionsToRespondCount(User user) {
-        userService.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
-        return questionDao.getQuestionsToRespondCount(user);
+    public int getQuestionsToRespondCount(long userId) {
+        userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        return questionDao.getQuestionsToRespondCount(userId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getQuestionsToRespondPageCount(User user) {
-        userService.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
-        int count = getQuestionsToRespondCount(user);
-        int pageCount = count / 10;
-        if(count % 10 != 0) pageCount++;
+    public int getQuestionsToRespondPageCount(long userId) {
+        userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        int count = getQuestionsToRespondCount(userId);
+        int pageCount = count / PAGE_SIZE;
+        if(count % PAGE_SIZE != 0) pageCount++;
         return pageCount;
     }
 }

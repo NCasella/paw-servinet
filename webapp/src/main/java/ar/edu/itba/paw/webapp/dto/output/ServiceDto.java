@@ -19,6 +19,8 @@ import java.util.Objects;
 @Builder
 public class ServiceDto {
     private long serviceId;
+    private long businessId;
+
     private String serviceName;
     private boolean homeService;
 

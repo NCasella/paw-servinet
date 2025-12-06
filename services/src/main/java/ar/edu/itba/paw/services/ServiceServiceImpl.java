@@ -121,7 +121,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
-    public PagedList<Service> getServices(int page, Categories category, Neighbourhoods[] neighbourhoods, int rating, String query, ServicesOrderFilters orderFilter, Boolean homeServiceFilter, Long businessId) {
+    public PagedList<Service> getServices(int page, Categories category, Neighbourhoods[] neighbourhoods, Integer rating, String query, ServicesOrderFilters orderFilter, Boolean homeServiceFilter, Long businessId) {
         if (businessId != null) businessDao.findById(businessId).orElseThrow(BusinessNotFoundException::new);
 
         List<Service> services = serviceDao.getServicesFilteredBy(page, category, neighbourhoods, rating, query, orderFilter,homeServiceFilter, businessId);
@@ -131,13 +131,13 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
-    public int getServiceCount(Categories category, Neighbourhoods[] neighbourhoods, int rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
+    public int getServiceCount(Categories category, Neighbourhoods[] neighbourhoods, Integer rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
         return serviceDao.getServiceCount(category, neighbourhoods, rating, searchQuery,homeServiceFilter, businessId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getPageCount(Categories category, Neighbourhoods[] neighbourhoods, int rating, String searchQuery, Boolean homeServiceCount, Long businessId) {
+    public int getPageCount(Categories category, Neighbourhoods[] neighbourhoods, Integer rating, String searchQuery, Boolean homeServiceCount, Long businessId) {
         int serviceCount = getServiceCount(category, neighbourhoods, rating, searchQuery,homeServiceCount, businessId);
         int pageCount = serviceCount / 10;
         if(serviceCount % 10 != 0) pageCount++;

@@ -8,12 +8,17 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface QuestionService {
-    PagedList<Question> getAllQuestions(long serviceid, int page);
+    PagedList<Question> getAllQuestions(int page);
+    PagedList<Question> getQuestionsByService(long serviceId, int page);
+
     Optional<Question> findById(long id);
     Question create(long serviceid, long userid, String question);
     void addResponse(long id, String response);
-    int getQuestionsCount(long serviceid);
-    Map<Question, String> getQuestionsToRespond(User user, int page);
-    int getQuestionsToRespondCount(User user);
-    int getQuestionsToRespondPageCount(User user);
+
+    int getAllQuestionsCount();
+    int getQuestionsCountByService(long serviceId);
+
+    PagedList<Question> getQuestionsToRespond(long userId, int page);
+    int getQuestionsToRespondCount(long userId);
+    int getQuestionsToRespondPageCount(long userId);
 }

@@ -27,15 +27,9 @@ public class QuestionDto {
     private QuestionLinks links;
 
     public static QuestionDto fromQuestion(Question question, UriInfo uriInfo) {
-        URI serviceUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(question.getServiceid()))
-                .build();
 
         URI selfUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(question.getServiceid()))
-                .path("questions")
+                .path(PathUrls.QUESTIONS_URL.getUrl())
                 .path(String.valueOf(question.getId()))
                 .build();
 
@@ -49,7 +43,6 @@ public class QuestionDto {
                 .links(
                     QuestionLinks.builder()
                             .self(selfUri)
-                            .services(serviceUri)
                             .build()
                 )
                 .build();

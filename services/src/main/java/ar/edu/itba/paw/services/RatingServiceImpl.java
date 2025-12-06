@@ -4,6 +4,8 @@ import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.model.PagedList;
 import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.RatingsFilters;
+import ar.edu.itba.paw.model.exceptions.RatingNotFoundException;
+import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,24 +16,48 @@ import java.util.*;
 public class RatingServiceImpl implements RatingService {
 
     private final RatingDao ratingDao;
+    private final ServiceService serviceService;
+    private final BusinessService businessService;
     private static final int PAGE_SIZE=10;
     @Autowired
-    public RatingServiceImpl(final RatingDao ratingDao) {
+    public RatingServiceImpl(
+            final RatingDao ratingDao,
+            final ServiceService serviceService,
+            final BusinessService businessService
+    ) {
         this.ratingDao = ratingDao;
+        this.serviceService = serviceService;
+        this.businessService = businessService;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public PagedList<Rating> getAllRatings(long serviceId, int page, RatingsFilters filter) {
-        List<Rating> ratings = ratingDao.getAllRatings(serviceId, page, PAGE_SIZE, filter);
-        int ratingsCount = getAllRatingsCount(serviceId, filter);
+    public PagedList<Rating> getAllRatings(int page, RatingsFilters filter) {
+        List<Rating> ratings = ratingDao.getAllRatings(page, PAGE_SIZE, filter);
+        int ratingsCount = getAllRatingsCount(filter);
         return PagedList.of(ratings, ratingsCount);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getAllRatingsCount(long serviceId, RatingsFilters filter) {
-        return ratingDao.getAllRatingsCount(serviceId, filter);
+    public PagedList<Rating> getRatingsByService(long serviceId, int page, RatingsFilters filter) {
+        serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        List<Rating> ratings = ratingDao.getRatingsByService(serviceId, page, PAGE_SIZE, filter);
+        int ratingsCount = getRatingsCountByService(serviceId, filter);
+        return PagedList.of(ratings, ratingsCount);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getAllRatingsCount(RatingsFilters filter) {
+        return ratingDao.getAllRatingsCount(filter);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getRatingsCountByService(long serviceId, RatingsFilters filter) {
+        serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        return ratingDao.getRatingsCountByService(serviceId, filter);
     }
 
     @Transactional(readOnly = true)
@@ -42,8 +68,9 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional
     @Override
-    public Rating create(long serviceid, long userid, int rating, String comment) {
-        return ratingDao.create(serviceid, userid, rating, comment);
+    public Rating create(long serviceId, long userId, int rating, String comment) {
+        serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        return ratingDao.create(serviceId, userId, rating, comment);
     }
 
     @Transactional(readOnly = true)
@@ -57,45 +84,50 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional(readOnly = true)
     @Override
-    public Rating hasAlreadyRated(long userid, long serviceid) {
+    public Rating hasAlreadyRated(long userid, long serviceId) {
         Rating rating;
-        if(ratingDao.hasAlreadyRated(userid, serviceid).isPresent()) {
-            rating = ratingDao.hasAlreadyRated(userid, serviceid).get();
+        if(ratingDao.hasAlreadyRated(userid, serviceId).isPresent()) {
+            rating = ratingDao.hasAlreadyRated(userid, serviceId).get();
         } else rating = null;
         return rating;
     }
 
     @Transactional
     @Override
-    public void edit(long ratingid, int rating, String comment) {
-        ratingDao.edit(ratingid, rating, comment);
+    public void edit(long ratingId, int rating, String comment) {
+        findById(ratingId).orElseThrow(RatingNotFoundException::new);
+        ratingDao.edit(ratingId, rating, comment);
     }
 
 
     @Transactional
     @Override
     public List<Rating> getAllBusinessRatings(long businessId, int page) {
-        return ratingDao.getAllBusinessRatings(businessId, page, 10);
+        businessService.findById(businessId).orElseThrow(ServiceNotFoundException::new);
+        return ratingDao.getAllBusinessRatings(businessId, page, PAGE_SIZE);
     }
 
     @Transactional
     @Override
-    public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, RatingsFilters filter) {
+    public List<Rating> getAllBusinessRatingsFiltered(long businessId, int page, RatingsFilters filter) {
+        businessService.findById(businessId).orElseThrow(ServiceNotFoundException::new);
         if(filter == null) {
-            return getAllBusinessRatings(businessid, page);
+            return getAllBusinessRatings(businessId, page);
         }
-        return ratingDao.getAllBusinessRatingsFiltered(businessid, page, 10, filter);
+        return ratingDao.getAllBusinessRatingsFiltered(businessId, page, PAGE_SIZE, filter);
     }
 
     @Transactional
     @Override
     public Map<Integer, Double> getRatingsAvgByRate(long serviceId) {
+        serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
         return orderRatings(ratingDao.getRatingsAvgByRate(serviceId));
     }
 
     @Transactional
     @Override
     public Map<Integer, Double> getBusinessRatingsAvgByRate(long businessId) {
+        businessService.findById(businessId).orElseThrow(ServiceNotFoundException::new);
         return orderRatings(ratingDao.getBusinessRatingsAvgByRate(businessId));
     }
 
