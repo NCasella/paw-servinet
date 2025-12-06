@@ -48,10 +48,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${SPA_BASE_URL}")
     private String SPA_ORIGIN;
-/*
-    @Value("${rememberMe.key}")
-    private String rememberMeKey;
-*/
+
     @Autowired
     private ServinetAuthControl authControl;
 
@@ -75,14 +72,14 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").permitAll()
-                .requestMatchers("/api/users/{userId}").access(authControl::isCurrentUser)
+                .requestMatchers("/api/users/{userId:\\d+}").access(authControl::isCurrentUser)
                 .requestMatchers("/api/users").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/businesses/{businessId:\\d+}").permitAll()
                 .requestMatchers("/api/businesses/{businessId:\\d+}","/api/businesses/{businessId:\\d+}/statistics").access(authControl::isCurrentUserBusinessOwner)
                 .requestMatchers(HttpMethod.POST,"/api/services/{serviceId:\\d+}/questions","/api/services/{serviceId:\\d+}/reviews").hasRole("USER")
                 .requestMatchers(HttpMethod.GET,"/api/services/**").permitAll()
                 .requestMatchers("/api/services/{serviceId:\\d++}").access(authControl::canChangeService)
-                .requestMatchers("/api/appointments/{appointmentId:\\d+}").access(authControl::canViewAppointment)
+                .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authControl::canViewAppointment)
                 .requestMatchers("/api/").permitAll();
                 //.requestMatchers("/**").authenticated();
 

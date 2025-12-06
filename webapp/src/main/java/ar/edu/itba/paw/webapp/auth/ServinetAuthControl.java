@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.auth;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -133,6 +134,12 @@ public class ServinetAuthControl {
     public AuthorizationDecision canViewAppointment(Supplier<Authentication> auth,RequestAuthorizationContext context){
         long appointmentId=Long.parseLong(context.getVariables().getOrDefault("appointmentId","-1"));
         return new AuthorizationDecision(this.isAdminAppointment(appointmentId)||this.isUserAppointment(appointmentId));
+    }
+    @Transactional(readOnly = true)
+    public AuthorizationDecision canViewUserDetails(Supplier<Authentication> auth,RequestAuthorizationContext context){
+        String contentType=context.getRequest().getContentType();
+        boolean allowed =contentType.equals(CustomMediaTypes.USER_INFO)||(contentType.equals(CustomMediaTypes.USER_CONTACT_INFO));
+        return new AuthorizationDecision(allowed);
     }
 
 }

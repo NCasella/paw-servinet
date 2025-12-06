@@ -30,6 +30,13 @@ public class UserDaoJpa implements UserDao {
         return ((Number) query.getSingleResult()).intValue();
     }
     @Override
+    public boolean isUserProvidee(long providerUserId,long requestUserId){
+        Query query=em.createQuery("select count(a) from Appointment a JOIN a.serviceAppointed s join s.business b where b.ownedBy.userId= :providerUserId and a.appointedBy.userId=:requestUserId");
+        query.setParameter("providerUserId",providerUserId);
+        query.setParameter("requestUserId",requestUserId);
+        return ((Number)query.getSingleResult()).intValue()>0;
+    }
+    @Override
     public User create(final String username, final String name,final String surname, final String password, final String email, final String telephone, final boolean isProvider, final String locale){
         final User user =new User(username,password,name,surname,email,telephone,false,locale);
         em.persist(user);

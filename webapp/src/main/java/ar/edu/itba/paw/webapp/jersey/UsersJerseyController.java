@@ -5,6 +5,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.PasswordRecoveryCodeService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.dto.output.UserContactDto;
 import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import ar.edu.itba.paw.webapp.dto.input.*;
 import ar.edu.itba.paw.webapp.dto.output.UserDto;
@@ -81,6 +82,13 @@ public class UsersJerseyController {
                 .build();
     }
 
+    @GET
+    @Path("/{userid}")
+    @Produces(value = CustomMediaTypes.USER_CONTACT_INFO)
+    public Response getUserWithContact(@PathParam("userid") final long userid){
+        final User user = us.findById(userid).orElseThrow(UserNotFoundException::new);
+        return ConditionalCache.cacheResponse(request, UserContactDto.fromUser(user,uriInfo)).build();
+    }
     @GET
     @Path("/{userid}")
     @Produces(value = CustomMediaTypes.USER_INFO)
