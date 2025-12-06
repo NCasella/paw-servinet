@@ -36,7 +36,9 @@
 					{#if isProvider}
 						<Menu.ItemGroupLabel>Business</Menu.ItemGroupLabel>
 						<Menu.Item value="businesses">
+							<a href="{base}/businesses">
 							<Menu.ItemText>{$t("navbar.businesses")}</Menu.ItemText>
+							</a>
 						</Menu.Item>
 					{/if}
 					

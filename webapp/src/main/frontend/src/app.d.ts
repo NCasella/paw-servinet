@@ -11,3 +11,6 @@ declare global {
 }
 
 export {};
+
+/// <reference types="unplugin-icons/types/svelte" /> 
+import 'unplugin-icons/types/svelte'
