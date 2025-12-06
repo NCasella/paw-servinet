@@ -71,7 +71,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authControl::canViewUserContactInfo)
                 .requestMatchers("/api/users/{userId:\\d+}").access(authControl::isCurrentUser)
                 .requestMatchers("/api/users").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/businesses/{businessId:\\d+}").permitAll()

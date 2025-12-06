@@ -6,6 +6,7 @@ import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -72,9 +73,10 @@ public class ServinetAuthControl {
 
     @Transactional(readOnly = true)
     public boolean isAdminAppointment(long appointmentId){
-        User user =getCurrentUser().orElseThrow(UserNotFoundException::new);
         Optional<Appointment> appointment = appointmentService.findById(appointmentId);
-        return appointment.filter(value -> user.getUserId() == value.getServiceAppointed().getBusiness().getUserId()).isPresent();
+        Optional<User> optUser=getCurrentUser();
+        long currentUserId= optUser.map(User::getUserId).orElse(-1L);
+        return appointment.filter(value -> currentUserId == value.getServiceAppointed().getBusiness().getUserId()).isPresent();
     }
 
     @Transactional(readOnly = true)
@@ -87,9 +89,12 @@ public class ServinetAuthControl {
     }
     @Transactional(readOnly = true)
     public boolean isRatingOwner(long ratingId){
-        User user=getCurrentUser().orElseThrow(UserNotFoundException::new);
+        Optional<User> currentUser=getCurrentUser();
+        if(currentUser.isEmpty()){
+            return false;
+        }
         Optional<Rating> rating = ratingService.findById(ratingId);
-        return rating.filter(value -> value.getUserid() == user.getUserId()).isPresent();
+        return rating.filter(value -> value.getUserid() == currentUser.get().getUserId()).isPresent();
     }
 
     @Transactional(readOnly = true)
@@ -121,8 +126,11 @@ public class ServinetAuthControl {
     @Transactional(readOnly = true)
     public AuthorizationDecision isCurrentUserBusinessOwner(Supplier<Authentication> auth, RequestAuthorizationContext context){
         long businessId=Long.parseLong(context.getVariables().getOrDefault("businessId","-1"));
-        long userId=getCurrentUser().orElseThrow(UserNotFoundException::new).getUserId();
-        return new AuthorizationDecision(this.isBusinessOwner(businessId,userId));
+        Optional<User> currentUser=getCurrentUser();
+        if(currentUser.isEmpty() || businessId==-1){
+            return new AuthorizationDecision(false);
+        }
+        return new AuthorizationDecision(this.isBusinessOwner(businessId,currentUser.get().getUserId()));
 
     }
     @Transactional(readOnly = true)
@@ -133,12 +141,21 @@ public class ServinetAuthControl {
     @Transactional(readOnly = true)
     public AuthorizationDecision canViewAppointment(Supplier<Authentication> auth,RequestAuthorizationContext context){
         long appointmentId=Long.parseLong(context.getVariables().getOrDefault("appointmentId","-1"));
+        if(appointmentId==-1){
+            return new AuthorizationDecision(false);
+        }
         return new AuthorizationDecision(this.isAdminAppointment(appointmentId)||this.isUserAppointment(appointmentId));
     }
     @Transactional(readOnly = true)
-    public AuthorizationDecision canViewUserDetails(Supplier<Authentication> auth,RequestAuthorizationContext context){
-        String contentType=context.getRequest().getContentType();
-        boolean allowed =contentType.equals(CustomMediaTypes.USER_INFO)||(contentType.equals(CustomMediaTypes.USER_CONTACT_INFO));
+    public AuthorizationDecision canViewUserContactInfo(Supplier<Authentication> auth,RequestAuthorizationContext context){
+        String requestMimeType=context.getRequest().getHeader(HttpHeaders.ACCEPT);
+        long userId=Long.parseLong(context.getVariables().getOrDefault("userId","-1"));
+        Optional<User> currentUser=getCurrentUser();
+        if (currentUser.isEmpty()||userId==-1) {
+            return new AuthorizationDecision(false);
+        }
+        long currentUserId=currentUser.get().getUserId();
+        boolean allowed = !requestMimeType.contains(CustomMediaTypes.USER_CONTACT_INFO) || userId==currentUserId || userService.isUserProvidee(currentUserId,userId);
         return new AuthorizationDecision(allowed);
     }
 
