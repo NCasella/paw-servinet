@@ -5,14 +5,14 @@
 	import { base } from "$app/paths";
     
 </script>
-<header class="ml-8 mr-8 flex place-content-between items-baseline">
+<header class="mx-8 flex place-content-between items-baseline">
     <Title text={$t("businesses.my-businesses")}/>
-    <div class="flex flex-row-reverse l-4">
-        <BigButton iconName="notification" title={$t("businesses.questions")}/>
-        <BigButton iconName="calendar" title={$t("businesses.appointments")}/>
+    <div class="flex justify-end l-4 space-x-3">
         <a href="{base}/create-business">
         <BigButton iconName="business" title={$t("businesses.add-business")}/>
         </a>
+        <BigButton iconName="calendar" title={$t("businesses.appointments")}/>
+        <BigButton iconName="notification" title={$t("businesses.questions")}/>
     </div>
 </header>
 

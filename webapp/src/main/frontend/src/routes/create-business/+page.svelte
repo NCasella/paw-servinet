@@ -1,0 +1,105 @@
+<script lang="ts">
+	import BigButton from "$lib/components/global/BigButton.svelte";
+    import { t } from "$lib/i18n/i18n"
+	import { getCurrentUser } from "$services/userService";
+	import { onMount } from "svelte";
+    import { type BusinessForm } from "$models/forms/BusinessCreationForm";
+
+let postUrl, businessForm :BusinessForm, email =""
+function handleSubmit() {
+   
+}
+
+onMount(() =>{
+    getCurrentUser().then( (u)=> {
+        email = u.email;
+        businessForm = { businessEmail: email, businessName:"", businessLocation:"", businessTelephone:""}
+    } )
+})
+
+
+</script>
+{#if businessForm}
+    <div class="flex justify-center px-4 py-8">
+  <form
+    method="post"
+    action={postUrl}
+    class="w-full max-w-md rounded-2xl shadow p-6 space-y-6"
+    on:submit|preventDefault={handleSubmit}
+  >
+    <h2 class="text-xl font-semibold">
+      {$t('register.create-business')}
+    </h2>
+
+    <!-- Nombre del negocio -->
+    <div class="space-y-1">
+      <label for="businessName" class="block text-sm font-medium">
+        {$t('business-name')}
+      </label>
+      <input
+        id="businessName"
+        name="businessName"
+        type="text"
+        class="w-full border rounded-lg px-3 py-2 text-sm"
+        placeholder={$t('input.business')}
+        bind:value={businessForm.businessName}
+      />
+      
+    </div>
+
+    <!-- Email del negocio -->
+    <div class="space-y-1">
+      <label for="businessEmail" class="block text-sm font-medium">
+        {$t('business-email')}
+      </label>
+      <input
+        id="businessEmail"
+        name="businessEmail"
+        type="email"
+        class="w-full border rounded-lg px-3 py-2 text-sm"
+        placeholder={$t('input.business-email')}
+        bind:value={businessForm.businessEmail}
+      />
+   
+    </div>
+
+    <!-- Teléfono -->
+    <div class="space-y-1">
+      <label for="businessTelephone" class="block text-sm font-medium">
+        {$t('telephone')}
+      </label>
+      <input
+        id="businessTelephone"
+        name="businessTelephone"
+        type="text"
+        class="w-full border rounded-lg px-3 py-2 text-sm"
+        placeholder={$t('input.telephone')}
+        bind:value={businessForm.businessTelephone}
+      />
+    
+    </div>
+
+    <!-- Dirección -->
+    <div class="space-y-1">
+      <label for="businessLocation" class="block text-sm font-medium">
+        {$t('address')}
+      </label>
+      <input
+        id="businessLocation"
+        name="businessLocation"
+        type="text"
+        class="w-full border rounded-lg px-3 py-2 text-sm"
+        placeholder={$t('input.business-address')}
+        bind:value={businessForm.businessLocation}
+      />
+
+    </div>
+
+    <!-- Submit -->
+    <div class="flex justify-center pt-2">
+      <BigButton title={$t('register.submit')} iconName=""/>
+    </div>
+  </form>
+</div>
+{/if}
+
