@@ -34,18 +34,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> getAllUsers(int page){
+    public List<User> getAllUsers(int page) {
         return userDao.getUsers(page);
     }
     @Override
     @Transactional(readOnly = true)
-    public int getUserCount(){
+    public int getUserCount() {
         return userDao.getUserCount();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public boolean isProvider(long userid){
+    public boolean isProvider(long userid) {
         return findById(userid).orElseThrow(UserNotFoundException::new).getProvider();
     }
 
@@ -69,12 +69,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public String getUserLocale(long id){
+    public String getUserLocale(long id) {
         return findById(id).orElseThrow(UserNotFoundException::new).getLocale();
     }
     @Transactional
     @Override
-    public void makeProvider(User user){
+    public void makeProvider(User user) {
         boolean isProvider = isProvider(user.getUserId());
         if ( !isProvider) {
             userDao.changeUserType(user.getUserId());
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void revokeProviderRole(User user){
+    public void revokeProviderRole(User user) {
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
             org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, authorities));
@@ -105,7 +105,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void changeUsername(long userid,String value){
+    public void changeUsername(long userid, String value) {
+        userDao.findById(userid).orElseThrow(UserNotFoundException::new);
         if (userDao.findByUsername(value).isPresent()){
             throw new InvalidUsernameException();
         }
@@ -114,26 +115,29 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void changeEmail(long userid,String value){
+    public void changeEmail(long userid, String value) {
+        userDao.findById(userid).orElseThrow(UserNotFoundException::new);
         userDao.changeEmail(userid,value);
     }
 
     @Transactional
     @Override
-    public void changeTelephone(long userid,String value){
+    public void changeTelephone(long userid, String value) {
+        userDao.findById(userid).orElseThrow(UserNotFoundException::new);
         userDao.changeTelephone(userid,value);
     }
 
 
     @Transactional
     @Override
-    public void changePassword(long userid,String password){
+    public void changePassword(long userid, String password) {
+        userDao.findById(userid).orElseThrow(UserNotFoundException::new);
         userDao.changePassword(userid ,passwordEncoder.encode(password));
     }
 
     @Transactional
     @Override
-    public void changeUserInfo(long userid,String username, String email, String telephone) {
+    public void changeUserInfo(long userid, String username, String email, String telephone) {
         changeUsername(userid, username);
         changeEmail(userid, email);
         changeTelephone(userid, telephone);
@@ -156,10 +160,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void changeLocale(long userid) {
+        userDao.findById(userid).orElseThrow(UserNotFoundException::new);
         String locale = getUserLocale(userid);
         locale = locale.equals("es")? "en":"es";
         userDao.changeLocale(userid,locale);
     }
+
     @Transactional
     @Override
     public boolean verifyUser(UUID tokenUrl, String verificationCode){

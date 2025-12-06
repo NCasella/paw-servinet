@@ -20,6 +20,8 @@ public interface BusinessService {
     void changeBusinessLocation(long businessId,String value);
     void changeBusinessEmail(long businessId, String value);
 
+    void editBusiness(long businessId, String email, String location, String telephone);
+
     Business createBusiness(String businessName, long userId, String telephone, String email, String location);
 
 }
