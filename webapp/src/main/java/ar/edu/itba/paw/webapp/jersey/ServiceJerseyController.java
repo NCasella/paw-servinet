@@ -88,8 +88,6 @@ public class ServiceJerseyController {
             Categories categoryEnum = QueryParamsMapper.mapCategory(category);
             ServicesOrderFilters orderFiltersEnum = QueryParamsMapper.mapOrderFilter(orderFilters);
 
-            if (businessId != null) businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
-
             PagedList<Service> pagedList = serviceService.getServices(
                     page,
                     categoryEnum,
@@ -118,8 +116,6 @@ public class ServiceJerseyController {
     @POST
     @Consumes(value = CustomMediaTypes.SERVICE_CREATION)
     public Response createService(@Valid final ServiceCreationDTO serviceCreationDto) {
-
-        businessService.findById(serviceCreationDto.getBusinessId()).orElseThrow(BusinessNotFoundException::new);
 
         final Service service = serviceService.create(
                 serviceCreationDto.getBusinessId(),

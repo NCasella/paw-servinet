@@ -102,7 +102,6 @@ public class UsersJerseyController {
     @Path("/{userid}")
     @Consumes(value = CustomMediaTypes.USER_PATCH)
     public Response changeUserInfo(@PathParam("userid") @NotNull final long userid, @NotNull @Valid UserPatchDTO profilePatch){
-        final User user = us.findById(userid).orElseThrow(UserNotFoundException::new);
         us.changeUserInfo(userid, profilePatch.getUsername(), profilePatch.getEmail(), profilePatch.getTelephone());
         User modifiedUser = us.findById(userid).orElseThrow(UserNotFoundException::new);
         return Response.ok(UserDto.fromUser(modifiedUser, uriInfo)).build();
@@ -112,8 +111,7 @@ public class UsersJerseyController {
     @Path("/{userid}")
     @Consumes(value = CustomMediaTypes.PASSWORD_MODIFICATION)
     public Response changePassword(@PathParam("userid") @NotNull final long userid, @NotNull @Valid UserPasswordModificationDTO passwordModification){
-        final User user = us.findById(userid).orElseThrow(UserNotFoundException::new);
-        us.changePassword(userid,passwordModification.getOldPassword(), passwordModification.getNewPassword());
+        us.changePassword(userid, passwordModification.getOldPassword(), passwordModification.getNewPassword());
         return Response.ok().build();
     }
 

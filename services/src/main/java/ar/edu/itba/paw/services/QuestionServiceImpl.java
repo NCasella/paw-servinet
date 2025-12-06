@@ -39,10 +39,10 @@ public class QuestionServiceImpl implements  QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public PagedList<Question> getAllQuestions(long serviceid, int page) {
-        List<Question> questions;
-        questions = questionDao.getAllQuestions(serviceid, page, PAGE_SIZE);
-        int questionsCount = getQuestionsCount(serviceid);
+    public PagedList<Question> getAllQuestions(long serviceId, int page) {
+        serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        List<Question> questions = questionDao.getAllQuestions(serviceId, page, PAGE_SIZE);
+        int questionsCount = getQuestionsCount(serviceId);
         return PagedList.of(questions, questionsCount);
     }
 
@@ -54,12 +54,11 @@ public class QuestionServiceImpl implements  QuestionService {
 
     @Transactional
     @Override
-    public Question create(long serviceid, long userid, String questionString) {
-        Question question = questionDao.create(serviceid, userid, questionString);
-        BasicService service = serviceService.findBasicServiceById(serviceid).orElseThrow(ServiceNotFoundException::new);
+    public Question create(long serviceId, long userid, String questionString) {
+        BasicService service = serviceService.findBasicServiceById(serviceId).orElseThrow(ServiceNotFoundException::new);
         Business business = businessService.findById(service.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
         User user = userService.findById(userid).orElseThrow(UserNotFoundException::new);
-
+        Question question = questionDao.create(serviceId, userid, questionString);
         emailService.askedQuestion( service, business.getEmail(), user, questionString, userService.getUserLocale(business.getUserId()));
         return question;
     }
@@ -67,35 +66,38 @@ public class QuestionServiceImpl implements  QuestionService {
     @Transactional
     @Override
     public void addResponse(long id, String response) {
-        questionDao.addResponse(id, response);
         Question question = questionDao.findById(id).orElseThrow(QuestionNotFoundException::new);
         BasicService service = serviceService.findBasicServiceById(question.getServiceid()).orElseThrow(ServiceNotFoundException::new);
         User user = userService.findById(question.getUserid()).orElseThrow(UserNotFoundException::new);
-
+        questionDao.addResponse(id, response);
         emailService.answeredQuestion(service, user, question.getQuestion(), response );
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getQuestionsCount(long serviceid) {
-        return questionDao.getQuestionsCount(serviceid);
+    public int getQuestionsCount(long serviceId) {
+        serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        return questionDao.getQuestionsCount(serviceId);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Map<Question, String> getQuestionsToRespond(User user, int page) {
+        userService.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
         return questionDao.getQuestionsToRespond(user, page, 10);
     }
 
     @Transactional(readOnly = true)
     @Override
     public int getQuestionsToRespondCount(User user) {
+        userService.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
         return questionDao.getQuestionsToRespondCount(user);
     }
 
     @Transactional(readOnly = true)
     @Override
     public int getQuestionsToRespondPageCount(User user) {
+        userService.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
         int count = getQuestionsToRespondCount(user);
         int pageCount = count / 10;
         if(count % 10 != 0) pageCount++;
