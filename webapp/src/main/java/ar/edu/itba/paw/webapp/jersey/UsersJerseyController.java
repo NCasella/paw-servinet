@@ -73,7 +73,7 @@ public class UsersJerseyController {
     @OPTIONS
     public Response getSupportedMimeTypesForUser() {
         return Response.ok()
-                .header("Accept", "application/vnd.users.user-info.v1+json")
+                .header("Accept", String.join(", ",CustomMediaTypes.USER_INFO,CustomMediaTypes.USER_CONTACT_INFO))
                 .header("Accept-Patch",
                         String.join(", ",
                                 CustomMediaTypes.USER_PATCH,
