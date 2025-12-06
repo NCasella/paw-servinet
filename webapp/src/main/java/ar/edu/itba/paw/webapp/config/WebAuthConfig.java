@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.webapp.auth.AuthorizationDecider;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.auth.filters.BasicAuthFilter;
 import ar.edu.itba.paw.webapp.auth.filters.AuthEntryPoint;
@@ -51,7 +52,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private ServinetAuthControl authControl;
-
+    @Autowired
+    private AuthorizationDecider authDecider;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -71,15 +73,15 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authControl::canViewUserContactInfo)
-                .requestMatchers("/api/users/{userId:\\d+}").access(authControl::isCurrentUser)
+                .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authDecider::canViewUserContactInfo)
+                .requestMatchers("/api/users/{userId:\\d+}").access(authDecider::isCurrentUser)
                 .requestMatchers("/api/users").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/businesses/{businessId:\\d+}").permitAll()
-                .requestMatchers("/api/businesses/{businessId:\\d+}","/api/businesses/{businessId:\\d+}/statistics").access(authControl::isCurrentUserBusinessOwner)
+                .requestMatchers("/api/businesses/{businessId:\\d+}","/api/businesses/{businessId:\\d+}/statistics").access(authDecider::isCurrentUserBusinessOwner)
                 .requestMatchers(HttpMethod.POST,"/api/services/{serviceId:\\d+}/questions","/api/services/{serviceId:\\d+}/reviews").hasRole("USER")
                 .requestMatchers(HttpMethod.GET,"/api/services/**").permitAll()
-                .requestMatchers("/api/services/{serviceId:\\d++}").access(authControl::canChangeService)
-                .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authControl::canViewAppointment)
+                .requestMatchers("/api/services/{serviceId:\\d++}").access(authDecider::canChangeService)
+                .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
                 .requestMatchers("/api/").permitAll();
                 //.requestMatchers("/**").authenticated();
 

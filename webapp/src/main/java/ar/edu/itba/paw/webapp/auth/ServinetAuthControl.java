@@ -117,46 +117,9 @@ public class ServinetAuthControl {
         Optional<User> user = getCurrentUser();
         return user.map(User::isProvider).orElse(false);
     }
-
-    @Transactional(readOnly = true)
-    public AuthorizationDecision canChangeService (Supplier<Authentication> auth, RequestAuthorizationContext context){
-        long serviceId=Long.parseLong(context.getVariables().getOrDefault("serviceId","-1"));
-        return new AuthorizationDecision(this.isServiceOwner(serviceId));
-    }
-    @Transactional(readOnly = true)
-    public AuthorizationDecision isCurrentUserBusinessOwner(Supplier<Authentication> auth, RequestAuthorizationContext context){
-        long businessId=Long.parseLong(context.getVariables().getOrDefault("businessId","-1"));
-        Optional<User> currentUser=getCurrentUser();
-        if(currentUser.isEmpty() || businessId==-1){
-            return new AuthorizationDecision(false);
-        }
-        return new AuthorizationDecision(this.isBusinessOwner(businessId,currentUser.get().getUserId()));
-
-    }
-    @Transactional(readOnly = true)
-    public AuthorizationDecision isCurrentUser(Supplier<Authentication> auth,RequestAuthorizationContext context){
-        long userId=Long.parseLong(context.getVariables().getOrDefault("userId","-1"));
-        return new AuthorizationDecision(this.isCurrentUser(userId));
-    }
-    @Transactional(readOnly = true)
-    public AuthorizationDecision canViewAppointment(Supplier<Authentication> auth,RequestAuthorizationContext context){
-        long appointmentId=Long.parseLong(context.getVariables().getOrDefault("appointmentId","-1"));
-        if(appointmentId==-1){
-            return new AuthorizationDecision(false);
-        }
-        return new AuthorizationDecision(this.isAdminAppointment(appointmentId)||this.isUserAppointment(appointmentId));
-    }
-    @Transactional(readOnly = true)
-    public AuthorizationDecision canViewUserContactInfo(Supplier<Authentication> auth,RequestAuthorizationContext context){
-        String requestMimeType=context.getRequest().getHeader(HttpHeaders.ACCEPT);
-        long userId=Long.parseLong(context.getVariables().getOrDefault("userId","-1"));
-        Optional<User> currentUser=getCurrentUser();
-        if (currentUser.isEmpty()||userId==-1) {
-            return new AuthorizationDecision(false);
-        }
-        long currentUserId=currentUser.get().getUserId();
-        boolean allowed = !requestMimeType.contains(CustomMediaTypes.USER_CONTACT_INFO) || userId==currentUserId || userService.isUserProvidee(currentUserId,userId);
-        return new AuthorizationDecision(allowed);
+    @Transactional
+    public boolean isUserProvidee(long providerUserId,long requestUserId){
+        return userService.isUserProvidee(providerUserId, requestUserId);
     }
 
 }
