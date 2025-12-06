@@ -55,7 +55,7 @@
 	  </a>
 	</div>
 	<div class="top-bar__right">
-      <button type="button" class="btn "><a href="/services"> {$t("navbar.all-services")}</a></button>
+      <button type="button" class="btn "><a href="{base}/services"> {$t("navbar.all-services")}</a></button>
 	  {#if currentUser }
 		<UserMenu user={currentUser}/>  	
 	  {:else}

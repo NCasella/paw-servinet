@@ -2,6 +2,7 @@
 	import { Menu, Portal } from '@skeletonlabs/skeleton-svelte';
     import { t } from "$lib/i18n/i18n";
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';
+	import { base } from '$app/paths';
 
 	let {user} = $props()
 	let isProvider = user.isProvider 
@@ -20,12 +21,12 @@
 				<Menu.ItemGroup>
 					<Menu.ItemGroupLabel>{$t("navbar.account")}</Menu.ItemGroupLabel>
 					<Menu.Item value="profile">
-						<a href="/profile">
+						<a href="{base}/profile">
 						<Menu.ItemText>{$t("navbar.profile")}</Menu.ItemText>
 						</a>
 					</Menu.Item>
 					<Menu.Item value="appointments">
-						<a href="/appointments">
+						<a href="{base}/appointments">
 						<Menu.ItemText>{$t("navbar.appointments")}</Menu.ItemText>
 						</a>
 					</Menu.Item>
