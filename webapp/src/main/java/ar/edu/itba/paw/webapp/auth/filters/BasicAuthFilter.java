@@ -45,8 +45,11 @@ public class BasicAuthFilter extends OncePerRequestFilter {
                 if (auth.isAuthenticated()) {
                     SecurityContextHolder.getContext().setAuthentication(auth);
 
-                    String token = jwtUtil.generateToken((UserDetails) auth.getPrincipal());
+                    UserDetails us=(UserDetails) auth.getPrincipal();
+                    String token = jwtUtil.generateToken(us);
+                    String refresToken=jwtUtil.generateRefreshToken(us);
                     res.setHeader("Authorization-Access-Token", "Bearer " + token);
+                    res.setHeader("Authorization-Refresh-Token",refresToken);
                 }
             }
             catch (AuthenticationException e){
