@@ -11,6 +11,9 @@ import java.net.URI;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewLinks {
+public class UserLinks {
+    private URI businessesOwned;
+    private URI appointmentsRequested;
+    private URI profilePicture;
     private URI self;
 }

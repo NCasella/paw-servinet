@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
+import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public Service create(long businessId, String name, String description, boolean homeService, Neighbourhoods[] neighbourhoods, String location, Categories category, int minimalDuration, PricingTypes pricing, String price, boolean additionalCharges, MultipartFile image) {
 
-    Business business = businessDao.findById( businessId).orElseThrow(BusinessNotFoundException::new);
+    Business business = businessDao.findById(businessId).orElseThrow(BusinessNotFoundException::new);
 
         Long imageId=null;
         if(!image.isEmpty()){
@@ -70,6 +71,7 @@ public class ServiceServiceImpl implements ServiceService {
     @Transactional
     @Override
     public Service editServiceName(long serviceid, String newvalue) {
+        serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
         return serviceDao.editServiceName(serviceid,newvalue);
     }
 
@@ -93,13 +95,8 @@ public class ServiceServiceImpl implements ServiceService {
     @Transactional
     @Override
     public void delete(long serviceId) {
-
-        Optional<Service> optionalService = findById(serviceId);
-        if (optionalService.isEmpty())
-            return;
-        final Service service = optionalService.get();
-        final Business business = businessDao.findById(service.getBusinessid()).orElseThrow(UserNotFoundException::new);
-
+        final Service service = serviceDao.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
+        final Business business = businessDao.findById(service.getBusinessid()).orElseThrow(BusinessNotFoundException::new);
         delete(service,business,true);
     }
 
@@ -124,7 +121,9 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
-    public PagedList<Service> getServices(int page, Categories category, Neighbourhoods[] neighbourhoods, int rating, String query, ServicesOrderFilters orderFilter, Boolean homeServiceFilter, Long businessId) {
+    public PagedList<Service> getServices(int page, Categories category, Neighbourhoods[] neighbourhoods, Integer rating, String query, ServicesOrderFilters orderFilter, Boolean homeServiceFilter, Long businessId) {
+        if (businessId != null) businessDao.findById(businessId).orElseThrow(BusinessNotFoundException::new);
+
         List<Service> services = serviceDao.getServicesFilteredBy(page, category, neighbourhoods, rating, query, orderFilter,homeServiceFilter, businessId);
         int serviceCount = getServiceCount(category, neighbourhoods, rating, query,homeServiceFilter, businessId);
         return PagedList.of(services, serviceCount);
@@ -132,13 +131,13 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional(readOnly = true)
     @Override
-    public int getServiceCount(Categories category, Neighbourhoods[] neighbourhoods, int rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
+    public int getServiceCount(Categories category, Neighbourhoods[] neighbourhoods, Integer rating, String searchQuery,Boolean homeServiceFilter, Long businessId) {
         return serviceDao.getServiceCount(category, neighbourhoods, rating, searchQuery,homeServiceFilter, businessId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getPageCount(Categories category, Neighbourhoods[] neighbourhoods, int rating, String searchQuery, Boolean homeServiceCount, Long businessId) {
+    public int getPageCount(Categories category, Neighbourhoods[] neighbourhoods, Integer rating, String searchQuery, Boolean homeServiceCount, Long businessId) {
         int serviceCount = getServiceCount(category, neighbourhoods, rating, searchQuery,homeServiceCount, businessId);
         int pageCount = serviceCount / 10;
         if(serviceCount % 10 != 0) pageCount++;
@@ -176,6 +175,7 @@ public class ServiceServiceImpl implements ServiceService {
     @Transactional
     @Override
     public void editService(long serviceId, String newDescription, int newDuration, PricingTypes newPricingType, String newPrice, boolean newAdditionalCharges) {
+        serviceDao.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
         serviceDao.editService(serviceId, newDescription, newDuration, newPricingType, newPrice, newAdditionalCharges);
     }
 

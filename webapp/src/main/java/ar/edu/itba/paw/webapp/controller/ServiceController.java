@@ -124,8 +124,8 @@ public class ServiceController {
         mav.addObject("isOwner", isOwner);
         mav.addObject("option", option);
         mav.addObject("service",serv);
-        mav.addObject("questions", question.getAllQuestions(serviceId, questionPage));
-        mav.addObject("reviews", rating.getAllRatings(serviceId, reviewPage, RatingsFilters.fromValue(reviewFilter)));
+        mav.addObject("questions", question.getAllQuestions(questionPage));
+        mav.addObject("reviews", rating.getAllRatings(reviewPage, RatingsFilters.fromValue(reviewFilter)));
         mav.addObject("questionPage", questionPage);
         mav.addObject("reviewPage", reviewPage);
         mav.addObject("TBDPricing", TBDPricing);

@@ -11,7 +11,6 @@ import java.net.URI;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionsLinks {
-    private URI services;
+public class QuestionLinks {
     private URI self;
 }

@@ -4,7 +4,7 @@ import { GET } from "$utils/apiFetch"
 import { extractUserIdFromToken, extractUserRolesFromToken, removeTokens } from "./authenticate";
 
 export async function getUserInfo(id: number ) :Promise<User> {
-    const data = await GET(`users/${id}`,{contentType:"users.user-info" });
+    const data = await GET(`users/${id}`,{contentType:"user-contact-info" });
     
     let user = User.fromJson(data)
     user.setRole( currentUserIsProvider() );

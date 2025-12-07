@@ -20,4 +20,5 @@ public interface UserDao {
     void changeUserType(long userid);
     void changeLocale(long userid, String locale);
     void verifyUser(long userid);
+    boolean isUserProvidee(long providerUserId, long requestUserId);
 }

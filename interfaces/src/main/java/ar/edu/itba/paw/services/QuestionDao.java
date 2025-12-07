@@ -8,11 +8,15 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface QuestionDao {
-    List<Question> getAllQuestions(long serviceid, int page, int pageSize);
+    List<Question> getAllQuestions(int page, int pageSize);
+    List<Question> getServiceQuestions(long serviceId, int page, int pageSize);
+
+    int getQuestionsCount();
+    int getQuestionsCountByService(long serviceId);
+
     Optional<Question> findById(long id);
-    Question create(long serviceid, long userid, String question);
+    Question create(long serviceId, long userid, String question);
     void addResponse(long id, String response);
-    int getQuestionsCount(long serviceid);
-    Map<Question, String> getQuestionsToRespond(User user, int page, int pageSize);
-    int getQuestionsToRespondCount(User user);
+    List<Question> getQuestionsToRespond(long userId, int page, int pageSize);
+    int getQuestionsToRespondCount(long userId);
 }

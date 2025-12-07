@@ -27,15 +27,8 @@ public class ReviewDto {
     private ReviewLinks links;
 
     public static ReviewDto fromRating(Rating rating, UriInfo uriInfo) {
-        URI serviceUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(rating.getServiceid()))
-                .build();
-
         URI selfUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(rating.getServiceid()))
-                .path("reviews")
+                .path(PathUrls.RATINGS_URL.getUrl())
                 .path(String.valueOf(rating.getId()))
                 .build();
         return ReviewDto.builder()
@@ -48,7 +41,6 @@ public class ReviewDto {
                 .links(
                     ReviewLinks.builder()
                             .self(selfUri)
-                            .services(serviceUri)
                             .build()
                 )
                 .build();

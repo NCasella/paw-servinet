@@ -2,26 +2,23 @@ package ar.edu.itba.paw.webapp.jersey;
 
 import ar.edu.itba.paw.model.ImageModel;
 import ar.edu.itba.paw.model.Service;
-import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
+import ar.edu.itba.paw.model.exceptions.*;
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
-import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
-import ar.edu.itba.paw.webapp.dto.input.QuestionCreationDTO;
-import ar.edu.itba.paw.webapp.dto.input.ReviewCreationDTO;
-import ar.edu.itba.paw.webapp.dto.input.ServiceCreationDTO;
+import ar.edu.itba.paw.webapp.dto.input.*;
 import ar.edu.itba.paw.webapp.dto.output.ImageDto;
-import ar.edu.itba.paw.webapp.dto.output.QuestionDto;
-import ar.edu.itba.paw.webapp.dto.output.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.output.ServiceDto;
+import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.*;
 import java.util.*;
 
@@ -61,13 +58,24 @@ public class ServiceJerseyController {
         this.imageService=imageService;
     }
 
+    @OPTIONS
+    public Response getSupportedMimeTypesForServices() {
+        return Response.ok()
+                .header("Allow", "GET, POST, OPTIONS")
+                .header("Accept", CustomMediaTypes.SERVICE_LIST)
+                .header("Accept-Post", CustomMediaTypes.SERVICE_CREATION)
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .build();
+    }
+
+
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(value = CustomMediaTypes.SERVICE_LIST)
     public Response getServices(
             @QueryParam("businessId") Long businessId,
             @QueryParam("category") String category,
             @QueryParam("neighbourhoods") String neighbourhoods,
-            @QueryParam("rating") int rating,
+            @QueryParam("rating") Integer rating,
             @QueryParam("searchQuery") String searchQuery,
             @QueryParam("orderFilters") String orderFilters,
             @QueryParam("homeServiceFilter") Boolean homeServiceFilter,
@@ -77,8 +85,6 @@ public class ServiceJerseyController {
             Neighbourhoods[] neighbourhoodsEnum = QueryParamsMapper.mapNeighbourhoods(neighbourhoods);
             Categories categoryEnum = QueryParamsMapper.mapCategory(category);
             ServicesOrderFilters orderFiltersEnum = QueryParamsMapper.mapOrderFilter(orderFilters);
-
-            if (businessId != null) businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
 
             PagedList<Service> pagedList = serviceService.getServices(
                     page,
@@ -106,10 +112,8 @@ public class ServiceJerseyController {
 
 
     @POST
-    @Consumes(value={MediaType.APPLICATION_JSON})
-    public Response createService(final ServiceCreationDTO serviceCreationDto) {
-
-        businessService.findById(serviceCreationDto.getBusinessId()).orElseThrow(BusinessNotFoundException::new);
+    @Consumes(value = CustomMediaTypes.SERVICE_CREATION)
+    public Response createService(@Valid final ServiceCreationDTO serviceCreationDto) {
 
         final Service service = serviceService.create(
                 serviceCreationDto.getBusinessId(),
@@ -133,9 +137,20 @@ public class ServiceJerseyController {
         ).build();
     }
 
+    @Path("/{serviceId}")
+    @OPTIONS
+    public Response getSupportedMimeTypesForService() {
+        return Response.ok()
+                .header("Allow", "GET, PATCH, OPTIONS")
+                .header("Accept", CustomMediaTypes.SERVICE_INFO)
+                .header("Accept-Patch", CustomMediaTypes.SERVICE_UPDATE)
+                .header("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS")
+                .build();
+    }
+
     @GET
     @Path("/{serviceid}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = CustomMediaTypes.SERVICE_INFO)
     public Response getService(@PathParam("serviceid") final long serviceId){
         Service service = serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
         return ConditionalCache.cacheResponse(request, ServiceDto.fromService(service,uriInfo)).build();
@@ -143,118 +158,29 @@ public class ServiceJerseyController {
 
     @PATCH
     @Path("/{serviceid}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = CustomMediaTypes.SERVICE_UPDATE)
     public Response changeService(
             @PathParam("serviceid") final long serviceId,
-            final ServiceCreationDTO serviceCreationDto
-    ) {
+            @Valid final ServiceUpdateDTO serviceUpdateDTO
+            ) {
         serviceService.editService(
                 serviceId,
-                serviceCreationDto.getDescription(),
-                serviceCreationDto.getMinimalDuration(),
-                serviceCreationDto.getPricingType(),
-                serviceCreationDto.getPrice(),
-                serviceCreationDto.isAdditionalCharges()
+                serviceUpdateDTO.getDescription(),
+                serviceUpdateDTO.getMinimalDuration(),
+                serviceUpdateDTO.getPricingType(),
+                serviceUpdateDTO.getPrice(),
+                serviceUpdateDTO.getAdditionalCharges()
         );
         return Response.noContent().build();
     }
 
     @DELETE
     @Path("/{serviceId}")
-    @Produces(value = {MediaType.APPLICATION_JSON})
     public Response deleteService(@PathParam("serviceId") final long serviceId){
         serviceService.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
         serviceService.delete(serviceId);
         return Response.noContent().build();
     }
-
-    @GET
-    @Path("/{serviceId}/questions")
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response getServiceQuestions(
-            @PathParam("serviceId") final long serviceId,
-            @QueryParam("page") @DefaultValue("1") final int page
-    ){
-        PagedList<Question> pagedList = questionService.getAllQuestions(serviceId, page);
-        List<QuestionDto> dtoList = pagedList.getList().stream()
-                .map(q -> QuestionDto.fromQuestion(q, uriInfo))
-                .toList();
-
-        return PagedListResponse.generate(
-                dtoList,
-                page,
-                pagedList.getTotalElements(),
-                uriInfo,
-                QuestionDto.class
-        );
-    }
-
-    @POST
-    @Path("/{serviceId}/questions")
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response createServiceQuestion(
-            @PathParam("serviceId") final long serviceId,
-            final QuestionCreationDTO questionCreationDto
-    ){
-        User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
-        Question question = questionService.create(
-                serviceId,
-                currentUser.getUserId(),
-                questionCreationDto.getQuestion()
-        );
-        return Response.created(
-                uriInfo.getAbsolutePathBuilder()
-                        .path(String.valueOf(question.getId()))
-                        .build()
-        ).build();
-    }
-
-    @GET
-    @Path("/{serviceId}/reviews")
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response getServiceQuestions(
-            @PathParam("serviceId") final long serviceId,
-            @QueryParam("filter") String filter,
-            @QueryParam("page") @DefaultValue("1") final int page
-    ){
-        RatingsFilters filterParsed = null;
-        if (filter != null && !filter.isBlank()) filterParsed= RatingsFilters.fromValue(filter);
-
-        PagedList<Rating> pagedList = ratingService.getAllRatings(serviceId, page, filterParsed);
-        List<ReviewDto> dtoList = pagedList.getList().stream()
-                .map(r -> ReviewDto.fromRating(r, uriInfo))
-                .toList();
-
-        return PagedListResponse.generate(
-                dtoList,
-                page,
-                pagedList.getTotalElements(),
-                uriInfo,
-                ReviewDto.class
-        );
-    }
-
-    @POST
-    @Path("/{serviceId}/reviews")
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response createServiceReview(
-            @PathParam("serviceId") final long serviceId,
-            final ReviewCreationDTO reviewCreationDTO
-    ){
-        User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
-        Rating review = ratingService.create(
-                serviceId,
-                currentUser.getUserId(),
-                reviewCreationDTO.getRating(),
-                reviewCreationDTO.getComment()
-        );
-        return Response.created(
-                uriInfo.getAbsolutePathBuilder()
-                        .path(String.valueOf(review.getId()))
-                        .build()
-        ).build();
-    }
-
 
     // TODO IMAGES
 

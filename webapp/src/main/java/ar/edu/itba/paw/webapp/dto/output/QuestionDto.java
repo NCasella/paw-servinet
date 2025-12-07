@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.output;
 
 import ar.edu.itba.paw.model.Question;
-import ar.edu.itba.paw.webapp.dto.output.links.QuestionsLinks;
+import ar.edu.itba.paw.webapp.dto.output.links.QuestionLinks;
 import ar.edu.itba.paw.webapp.jersey.PathUrls;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,18 +24,12 @@ public class QuestionDto {
     private String response;
     private LocalDate date;
 
-    private QuestionsLinks links;
+    private QuestionLinks links;
 
     public static QuestionDto fromQuestion(Question question, UriInfo uriInfo) {
-        URI serviceUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(question.getServiceid()))
-                .build();
 
         URI selfUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(question.getServiceid()))
-                .path("questions")
+                .path(PathUrls.QUESTIONS_URL.getUrl())
                 .path(String.valueOf(question.getId()))
                 .build();
 
@@ -47,9 +41,8 @@ public class QuestionDto {
                 .response(question.getResponse())
                 .date(question.getDate())
                 .links(
-                    QuestionsLinks.builder()
+                    QuestionLinks.builder()
                             .self(selfUri)
-                            .services(serviceUri)
                             .build()
                 )
                 .build();

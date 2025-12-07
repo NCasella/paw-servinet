@@ -5,4 +5,7 @@ public class InvalidFilterException extends InvalidOperationException{
         super("Invalid filter");
     }
 
+    public InvalidFilterException(String message) {
+        super("Invalid filter: " + message);
+    }
 }
