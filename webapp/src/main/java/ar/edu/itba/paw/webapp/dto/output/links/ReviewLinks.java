@@ -12,5 +12,7 @@ import java.net.URI;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewLinks {
+    private URI user;
+    private URI service;
     private URI self;
 }
