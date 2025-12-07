@@ -57,11 +57,17 @@ public class ServiceDto {
                 .queryParam("serviceId", service.getId())
                 .build();
 
+        URI image=uriInfo.getBaseUriBuilder()
+                .path(PathUrls.IMAGES_URL.getUrl())
+                .path(String.valueOf(service.getImageId()))
+                .build();
+
         ServiceLinks links = ServiceLinks.builder()
                 .self(self)
                 .business(business)
                 .questions(questions)
                 .reviews(reviews)
+                .image(image)
                 .build();
 
         return ServiceDto.builder()
