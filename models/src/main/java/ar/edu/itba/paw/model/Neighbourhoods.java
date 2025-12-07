@@ -36,14 +36,14 @@ public enum Neighbourhoods {
         return Arrays.stream(values())
                 .filter(v -> v.getValue().equalsIgnoreCase(value))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid neighbourhood: " + value));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid neighbourhood " + value));
     }
 
     public static Neighbourhoods fromName(String name) {
         try {
             return Neighbourhoods.valueOf(name.toUpperCase());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid neighbourhood: " + name);
+            throw new IllegalArgumentException("Invalid neighbourhood " + name);
         }
     }
 

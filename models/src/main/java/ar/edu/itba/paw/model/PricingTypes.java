@@ -26,6 +26,14 @@ public enum PricingTypes {
         return Arrays.stream(values())
                 .filter(v -> v.getValue().equalsIgnoreCase(value))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid pricing type: " + value));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid pricing type " + value));
+    }
+
+    public static PricingTypes fromName(String name) {
+        try {
+            return PricingTypes.valueOf(name.toUpperCase());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid pricing type " + name);
+        }
     }
 }

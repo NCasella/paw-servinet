@@ -23,7 +23,7 @@ public class AppointmentCreationDTO {
     @Size(max = 255)
     private String description;
 
-    private Neighbourhoods neighborhood;
+    private String neighborhood;
 
     @NotNull
     private long userId;

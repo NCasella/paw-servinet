@@ -14,7 +14,6 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class ServiceCreationDTO {
 
-    @NotEmpty
     @NotNull
     private Long businessId;
 
@@ -30,7 +29,7 @@ public class ServiceCreationDTO {
     private boolean homeService;
 
 
-    private Neighbourhoods[] neighbourhoods;
+    private String[] neighbourhoods;
 
     @Size(max=255)
     private String address;
@@ -41,10 +40,14 @@ public class ServiceCreationDTO {
 
     private boolean additionalCharges;
 
-    private PricingTypes pricingType;
+    @NotNull
+    private String pricingType;
 
-    private Categories category;
+    @NotNull
+    private String category;
 
     @Positive
     private int minimalDuration;
+    @Positive
+    private long imageId;
 }
