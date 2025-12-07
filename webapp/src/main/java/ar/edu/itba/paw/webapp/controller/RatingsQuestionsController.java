@@ -1,3 +1,4 @@
+/*
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
@@ -98,3 +99,4 @@ public class RatingsQuestionsController {
 
 
 }
+*/

@@ -11,19 +11,29 @@
     import { page } from '$app/stores';
     import { InvalidUrlParamError } from '$models/exceptions/InvalidUrlParamError';
 	import { AppointmentForm, type AppointmentFormErrors } from '$models/forms/AppointmentCreationForm';
+	import { createAppointment } from '$services/appointmentService';
+	import { goto } from '$app/navigation';
 
-    let serviceId = Number( $page.params.id)
-   let appointmentForm: AppointmentForm = new AppointmentForm();
+    let serviceId :number
+   let appointmentForm: AppointmentForm;
    let formErrors: AppointmentFormErrors = {};
     let service :Service;
    
    onMount(async ()  => { 
-    if ( serviceId==null )
-        throw new InvalidUrlParamError("id must be a number")
-    
+    try {
+        serviceId = Number( $page.params.id)
+    } catch {throw new InvalidUrlParamError("id must be a number") }
+        
+    appointmentForm  = new AppointmentForm({serviceId});
     service = await getServiceById( serviceId )
    });
-   function handleSubmit() {  }
+   async function handleSubmit() { 
+        formErrors  = appointmentForm.validateAppointmentForm()
+        if (formErrors == null) return
+
+        const appointmentId = await createAppointment(appointmentForm)
+        goto(`/appointments/${appointmentId}`)
+    }
 </script>
 
 {#if service}
@@ -65,15 +75,16 @@
             {$t('address')}
           </label>
           <input
+            maxlength="255"
             id="location"
             name="location"
             type="text"
             class="w-full border rounded-lg px-3 py-2 text-sm"
             placeholder={$t('input.address')}
-            bind:value={appointmentForm.location}
+            bind:value={appointmentForm.address}
           />
-          {#if formErrors.location}
-            <FormError errorMessage={formErrors.location} />
+          {#if formErrors.address}
+            <FormError errorMessage={formErrors.address} />
           {/if}
         </div>
       {:else}
@@ -95,10 +106,10 @@
             type="text"
             class="w-full rounded-lg px-3 py-2 text-sm border border-dashed"
             placeholder={$t('input.address')}
-            bind:value={appointmentForm.location}
+            bind:value={appointmentForm.address}
           />
-          {#if formErrors.location}
-            <FormError errorMessage={formErrors.location} />
+          {#if formErrors.address}
+            <FormError errorMessage={formErrors.address} />
           {/if}
         </div>
       {/if}
@@ -113,10 +124,10 @@
           name="date"
           type="datetime-local"
           class="w-full border rounded-lg px-3 py-2 text-sm"
-          bind:value={appointmentForm.date}
+          bind:value={appointmentForm.startDate}
         />
-        {#if formErrors.date}
-          <FormError errorMessage={formErrors.date} />
+        {#if formErrors.startDate}
+          <FormError errorMessage={formErrors.startDate} />
         {/if}
       </div>
 
@@ -160,13 +171,14 @@
         <a href="{base}/services/{serviceId}" class="inline-flex">
           <button
             type="button"
+            on:click={() => history.back()}
             class="px-4 py-2 rounded-full border text-sm font-medium"
           >
             {$t('cancel')}
           </button>
         </a>
 
-        <BigButton title={$t('appointment.submit')} iconName="" />
+        <BigButton title={$t('appointment.submit')} iconName=""  />
       </div>
     </form>
   </div>

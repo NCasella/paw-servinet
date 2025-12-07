@@ -68,12 +68,11 @@ public class ServiceServiceImplTest {
 
     @Test
     public void testCreate() {
-       MultipartFile image = Mockito.mock(MultipartFile.class);
-       Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.of(mockBusiness));
-       Mockito.when(imageService.addImage(image)).thenReturn(new ImageModel(1, new byte[1]));
-       Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)1)).thenReturn(service);
 
-       Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
+        Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.of(mockBusiness));
+       Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)-1)).thenReturn(service);
+        Mockito.when(imageService.getImageById(-1)).thenReturn(Optional.of(new ImageModel(-1,new byte[2])));
+       Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1);
 
         Assert.assertNotNull(serv);
         Assert.assertEquals(service,serv);
@@ -86,14 +85,11 @@ public class ServiceServiceImplTest {
     }
     @Test
     public void testCreateWithoutImage(){
-        final Service noImageService=new Service(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION, CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,null);
-
-        MultipartFile image = Mockito.mock(MultipartFile.class);
+        final Service noImageService=new Service(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION, CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1L);
         Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.of(mockBusiness));
-        Mockito.when(image.isEmpty()).thenReturn(true);
-        Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,null)).thenReturn(noImageService);
-
-        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
+        Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1L)).thenReturn(noImageService);
+        Mockito.when(imageService.getImageById(-1)).thenReturn(Optional.of(new ImageModel(-1,new byte[2])));
+        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1);
 
         Assert.assertNotNull(serv);
         Assert.assertEquals(noImageService,serv);
@@ -106,10 +102,10 @@ public class ServiceServiceImplTest {
     }
     @Test(expected = BusinessNotFoundException.class)
     public void testCreateBusIdNotFound() {
-        MultipartFile image = Mockito.mock(MultipartFile.class);
+
         Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.empty());
 
-        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,image);
+        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1);
 
         Assert.fail();
     }

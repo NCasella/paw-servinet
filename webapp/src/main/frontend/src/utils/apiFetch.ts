@@ -66,15 +66,22 @@ console.log( BASE_URL+url)
     throw err;
   }
 
-  // Try parsing JSON, but allow empty responses (204)
-  try {
-    return {
-      headers: response.headers,
-      body: await response.json()
-    } as TResponse;
-  } catch {
-    return {} as TResponse;
+  const text = await response.text();
+  let parsed: TResponse | null = null;
+
+  if (text) {
+    try {
+      parsed = JSON.parse(text) as TResponse;
+    } catch {
+      // body no era JSON, lo dejamos en null
+      parsed = null;
+    }
   }
+
+  return {
+    headers: response.headers,
+    body: parsed
+  } as TResponse;
 }
 
 
