@@ -24,6 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -101,8 +102,11 @@ public class AppointmentJerseyController {
     @POST
     @Consumes(value = {CustomMediaTypes.APPOINTMENT_CREATION})
     public Response createAppointment(@Valid final AppointmentCreationDTO appointmentCreationDto){
-        Neighbourhoods neighbourhoodParsed = Neighbourhoods.fromName(appointmentCreationDto.getNeighborhood());
-        Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription());
+        Optional<Neighbourhoods> optionalNeighbourhood = Optional.empty();
+        if (appointmentCreationDto.getNeighborhood() != null)
+            optionalNeighbourhood = Optional.of(Neighbourhoods.fromName(appointmentCreationDto.getNeighborhood())) ;
+
+        Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription(), optionalNeighbourhood );
         return Response.created(
                 uriInfo.getAbsolutePathBuilder().path(String.valueOf(app.getId())).build()
                 ).build();

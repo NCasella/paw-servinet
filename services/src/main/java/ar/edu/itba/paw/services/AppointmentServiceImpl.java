@@ -97,19 +97,6 @@ public class AppointmentServiceImpl implements AppointmentService{
         return count / PAGESIZE + (( count % PAGESIZE !=0 )? 1:0 );
     }
 
-    @Transactional
-    @Override
-    public Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date, String description) {
-        Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
-        User newuser = userService.findByEmail(email).orElseThrow(UserNotFoundException::new);
-        LocalDateTime startDate = LocalDateTime.parse(date);
-        Appointment appointment = appointmentDao.create(service, newuser, startDate, startDate.plusMinutes(service.getDuration()), location, description);
-        Business business = service.getBusiness();
-
-        emailService.requestAppointment(appointment, service, business, newuser, business.getOwnedBy().getLocale());
-        LOGGER.info("Appointment request email sent successfully.");
-        return appointment;
-    }
 
     @Transactional
     @Override
@@ -191,14 +178,14 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Transactional
     @Override
-    public Appointment create(long serviceid, long userid, String location, LocalDateTime startDate, String description) {
+    public Appointment create(long serviceid, long userid, String location, LocalDateTime startDate, String description, Optional<Neighbourhoods> optionalNeighbourhood) {
         try {
             Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
             User newuser = userService.findById(userid).orElseThrow(UserNotFoundException::new);
-            Neighbourhoods neighbourhood = Neighbourhoods.BALVANERA; // todo
-            if (service.getHomeService() ) {
 
-                if ( !service.hasNeighbourhoodAvailable(neighbourhood) )
+            if (service.getHomeService() ) {
+                Neighbourhoods neighbourhood = optionalNeighbourhood.orElseThrow(() -> new InvalidOperationException("Missing Neighbourhood"));
+                if (  !service.hasNeighbourhoodAvailable(neighbourhood) )
                     throw new InvalidOperationException("The selected neighbourhood is not available for this service");
                 if ( location==null || location.isEmpty() ) throw new InvalidOperationException("Address required");
 
