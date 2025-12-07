@@ -20,6 +20,7 @@ public class BusinessServiceImpl implements BusinessService{
     private final UserService userService;
     private final EmailService emailService;
     private final Logger LOGGER = LoggerFactory.getLogger(BusinessServiceImpl.class);
+    private static final int PAGE_SIZE=10;
 
     @Autowired
     public BusinessServiceImpl(final BusinessDao businessDao, final ServiceService serviceService,
@@ -44,9 +45,31 @@ public class BusinessServiceImpl implements BusinessService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Business> findByAdminId(long userId) {
-        User admin = userService.findById(userId).orElseThrow(UserNotFoundException::new);
-        return businessDao.findByUser(admin);
+    public PagedList<Business> getAllBusinesses(int page) {
+        List<Business> businesses = businessDao.getAllBusinesses(page, PAGE_SIZE);
+        return PagedList.of(businesses, getBusinessesCount());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PagedList<Business> getBusinessesByUser(long userId, int page) {
+        userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        List<Business> businesses = businessDao.getBusinessesByUser(userId, page, PAGE_SIZE);
+        int businessesCount = getBusinessesCountByUser(userId);
+        return PagedList.of(businesses, businessesCount);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getBusinessesCount() {
+        return businessDao.getBusinessesCount();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getBusinessesCountByUser(long userId) {
+        userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        return businessDao.getBusinessesCountByUser(userId);
     }
 
     @Transactional

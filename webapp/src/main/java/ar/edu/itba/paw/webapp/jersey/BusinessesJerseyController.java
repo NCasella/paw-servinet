@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.jersey;
 
 
 import ar.edu.itba.paw.model.Business;
+import ar.edu.itba.paw.model.PagedList;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BusinessNotFoundException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
@@ -39,10 +40,38 @@ public class BusinessesJerseyController {
     @OPTIONS
     public Response getSupportedMimeTypesForBusinesses() {
         return Response.ok()
-                .header("Allow", "POST, OPTIONS")
+                .header("Allow", "GET, POST, OPTIONS")
                 .header("Accept-Post", CustomMediaTypes.BUSINESS_CREATION)
-                .header("Access-Control-Allow-Methods", "POST, OPTIONS")
+                .header("Accept", CustomMediaTypes.BUSINESS_LIST)
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
                 .build();
+    }
+
+    @GET
+    @Produces(value = {CustomMediaTypes.BUSINESS_LIST})
+    public Response getAllBusinesses(
+            @QueryParam("ownerId") final Long ownerId,
+            @QueryParam("page") @DefaultValue("1") final int page
+    ) {
+        PagedList<Business> pagedList;
+        if(ownerId != null) {
+            pagedList = businessService.getBusinessesByUser(ownerId, page);
+        } else {
+            pagedList =  businessService.getAllBusinesses(page);
+        }
+
+        List<BusinessDto> dtoList = pagedList.getList().stream()
+                .map(b -> BusinessDto.fromBusiness(b, uriInfo))
+                .toList();
+
+        return PagedListResponse.generate(
+                dtoList,
+                page,
+                pagedList.getTotalElements(),
+                uriInfo,
+                BusinessDto.class,
+                request
+        );
     }
 
     @POST
@@ -100,18 +129,4 @@ public class BusinessesJerseyController {
         businessService.deleteBusiness(businessId);
         return Response.noContent().build();
     }
-
-    @GET
-    @Produces(value = {CustomMediaTypes.BUSINESS_LIST})
-    public Response getAllBusinesses(@QueryParam("ownerId")  final Long ownerId) {
-        //todo: agregar paginacion
-        if ( ownerId==null )
-            throw new BadRequestException();
-        List<Business> list = businessService.findByAdminId(ownerId);
-        return PagedListResponse.generate(
-                list.stream().map( b ->  BusinessDto.fromBusiness(b,uriInfo)).toList(),1,1,uriInfo,BusinessDto.class,request);
-
-    }
-
-    // TODO: /businesses/{businessId}/statistics
 }

@@ -11,14 +11,18 @@ public interface BusinessDao {
 
      Optional<Business> findByBusinessName(String businessName);
 
-     List<Business> findByUser(User user);
+     List<Business> getAllBusinesses(int page, int pageSize);
+     List<Business> getBusinessesByUser(long userId, int page, int pageSize);
 
-     Optional<String> getBusinessEmail(long businessid);
+     int getBusinessesCount();
+     int getBusinessesCountByUser(long userId);
+
+     Optional<String> getBusinessEmail(long businessId);
      void changeBusinessLocation(long businessId,String value);
      void changeBusinessTelephone(long businessId, String value);
      void changeBusinessEmail(long businessId, String value);
 
-     boolean deleteBusiness(long businessid);
+     boolean deleteBusiness(long businessId);
 
      Business createBusiness(String businessName, long userId, String telephone, String email, String location);
 
