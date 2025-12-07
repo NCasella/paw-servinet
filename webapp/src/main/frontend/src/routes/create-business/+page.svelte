@@ -3,17 +3,40 @@
     import { t } from "$lib/i18n/i18n"
 	import { getCurrentUser } from "$services/userService";
 	import { onMount } from "svelte";
-    import { type BusinessForm } from "$models/forms/BusinessCreationForm";
+    import { BusinessForm, type BusinessFormErrors } from "$models/forms/BusinessCreationForm";
+	import { createBusiness } from "$services/businessService";
+	import { isFetchError } from "$utils/apiFetch";
+    import FormError from "$lib/components/global/forms/FormError.svelte"
+	import { createToaster } from "@skeletonlabs/skeleton-svelte";
+    
 
-let postUrl, businessForm :BusinessForm, email =""
+let postUrl, businessForm :BusinessForm, email ="", validationError
+const toaster = createToaster()
+let formErrors :BusinessFormErrors = {businessName:""}
+
 function handleSubmit() {
-   
+   formErrors  = businessForm.validateBusinessForm()
+   if (formErrors){
+    return
+        //console.log("err"+JSON.stringify(formErrors))
+        //toaster.info({ 
+        //    title: 'Error',
+        //    description: "error"+$t(formErrors)})
+        //formErrors.array.forEach(e => createToaster($t(e)) )
+}
+    createBusiness(businessForm)
+        .then( () => console.log("chi") ) //history.back() )
+        .catch( (e) => {
+            //if ( e instanceof FetchError)
+                throw Error
+        })
+
 }
 
 onMount(() =>{
     getCurrentUser().then( (u)=> {
         email = u.email;
-        businessForm = { businessEmail: email, businessName:"", businessLocation:"", businessTelephone:""}
+        businessForm = new BusinessForm( email, "", "", "")
     } )
 })
 
@@ -44,8 +67,11 @@ onMount(() =>{
         placeholder={$t('input.business')}
         bind:value={businessForm.businessName}
       />
-      
+      {#if formErrors.businessName}
+        <FormError errorMessage={formErrors.businessName} />
+        {/if}
     </div>
+        
 
     <!-- Email del negocio -->
     <div class="space-y-1">
@@ -55,13 +81,15 @@ onMount(() =>{
       <input
         id="businessEmail"
         name="businessEmail"
-        type="email"
         class="w-full border rounded-lg px-3 py-2 text-sm"
         placeholder={$t('input.business-email')}
         bind:value={businessForm.businessEmail}
       />
-   
+      {#if formErrors.businessEmail}
+        <FormError errorMessage={formErrors.businessEmail} />
+        {/if}
     </div>
+    
 
     <!-- Teléfono -->
     <div class="space-y-1">
@@ -75,8 +103,10 @@ onMount(() =>{
         class="w-full border rounded-lg px-3 py-2 text-sm"
         placeholder={$t('input.telephone')}
         bind:value={businessForm.businessTelephone}
-      />
-    
+        />
+    {#if formErrors.businessTelephone}
+        <FormError errorMessage={formErrors.businessTelephone} />
+        {/if}
     </div>
 
     <!-- Dirección -->
@@ -92,7 +122,9 @@ onMount(() =>{
         placeholder={$t('input.business-address')}
         bind:value={businessForm.businessLocation}
       />
-
+      {#if formErrors.businessLocation}
+        <FormError errorMessage={formErrors.businessLocation} />
+        {/if}
     </div>
 
     <!-- Submit -->

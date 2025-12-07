@@ -16,6 +16,11 @@ export interface FetchError extends Error {
   status?: number;
 }
 
+export function isFetchError(e: unknown): e is FetchError {
+  return typeof e === "object" && e !== null && "status" in e;
+}
+
+
 export async function apiFetch<TResponse = any, TBody = any>(
   url: string,
   options: FetchOptions<TBody> = {}
@@ -25,14 +30,14 @@ export async function apiFetch<TResponse = any, TBody = any>(
     body,
     contentType,
     headers = {},
-    withAuth = true
+    withAuth = true 
   } = options;
 
   let mediaTypeHeader = method=="GET"? "Accept" : "Content-Type"
 
   const finalHeaders: Record<string, string> = {
-    mediaTypeHeader: contentType
-      ? `application/vnd.servinet.${contentType}.v1+json`
+    [mediaTypeHeader]: contentType
+      ? `application/vnd.${contentType}.v1+json`
       : "application/json" ,
     ...headers
   };
