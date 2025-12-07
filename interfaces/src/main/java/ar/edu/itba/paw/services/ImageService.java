@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface ImageService {
     Optional<ImageModel> getImageById(long id);
-    ImageModel addImage(MultipartFile file);
+    ImageModel addImage(byte[] imageBytes);
 }

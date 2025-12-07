@@ -3,18 +3,14 @@ package ar.edu.itba.paw.persistance;
 import ar.edu.itba.paw.model.Business;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.services.BusinessDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class BusinessDaoJpa implements BusinessDao {
@@ -34,20 +30,80 @@ public class BusinessDaoJpa implements BusinessDao {
     }
 
     @Override
-    public List<Business> findByUser(User user){
-        return em.createQuery("from Business as b where b.ownedBy = :user", Business.class)
-                .setParameter("user", user)
-                .getResultList();
+    public List<Business> getAllBusinesses(int page, int pageSize) {
+        Query nativeQuery = em.createNativeQuery("SELECT b.businessid FROM business b");
+
+        nativeQuery.setMaxResults(pageSize);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+
+        @SuppressWarnings("unchecked")
+        List<Long> ids = (List<Long>) nativeQuery.getResultList()
+                .stream()
+                .map(n -> ((Number) n).longValue())
+                .collect(Collectors.toList());
+
+        if (ids.isEmpty())
+            return Collections.emptyList();
+
+        TypedQuery<Business> query = em.createQuery(
+                "FROM Business b WHERE b.businessid IN :ids",
+                Business.class
+        );
+        query.setParameter("ids", ids);
+
+        return query.getResultList();
     }
 
     @Override
-    public Optional<String> getBusinessEmail(long businessid) {
-        return Optional.ofNullable(em.find(Business.class, businessid).getEmail());
+    public List<Business> getBusinessesByUser(long userId, int page, int pageSize) {
+        Query nativeQuery = em.createNativeQuery(
+                "SELECT b.businessid FROM business b WHERE b.userid = :userId"
+        );
+        nativeQuery.setParameter("userId", userId);
+
+        nativeQuery.setMaxResults(pageSize);
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+
+        @SuppressWarnings("unchecked")
+        List<Long> ids = (List<Long>) nativeQuery.getResultList()
+                .stream()
+                .map(n -> ((Number) n).longValue())
+                .collect(Collectors.toList());
+
+        if (ids.isEmpty())
+            return Collections.emptyList();
+
+        TypedQuery<Business> query = em.createQuery(
+                "FROM Business b WHERE b.businessid IN :ids",
+                Business.class
+        );
+        query.setParameter("ids", ids);
+
+        return query.getResultList();
     }
 
     @Override
-    public boolean deleteBusiness(long businessid) {
-        final Business business = em.find(Business.class, businessid);
+    public int getBusinessesCount() {
+        final Query query= em.createNativeQuery("select count(b.businessid) from business b");
+        return ((Number)query.getSingleResult()).intValue();
+
+    }
+
+    @Override
+    public int getBusinessesCountByUser(long userId) {
+        final Query query= em.createNativeQuery("select count(b.businessid) from business b where b.userid = :userId")
+                .setParameter("userId", userId);
+        return ((Number)query.getSingleResult()).intValue();
+    }
+
+    @Override
+    public Optional<String> getBusinessEmail(long businessId) {
+        return Optional.ofNullable(em.find(Business.class, businessId).getEmail());
+    }
+
+    @Override
+    public boolean deleteBusiness(long businessId) {
+        final Business business = em.find(Business.class, businessId);
         if (business != null) {
             em.remove(business);
             return !business.getOwnedBy().getBusinessOwned().isEmpty();

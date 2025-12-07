@@ -8,10 +8,13 @@ import java.util.Optional;
 public interface BusinessService {
 
     Optional<Business> findById(long id);
-
     Optional<Business> findByBusinessName(String businessName);
 
-    List<Business> findByAdminId(long userId);
+    PagedList<Business> getBusinessesByUser(long userId, int page);
+    PagedList<Business> getAllBusinesses(int page);
+
+    int getBusinessesCount();
+    int getBusinessesCountByUser(long userId);
 
     Optional<String> getBusinessEmail(long businessid);
 

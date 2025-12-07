@@ -31,16 +31,9 @@ public class ImageServiceImpl implements ImageService{
 
     @Transactional
     @Override
-    public ImageModel addImage( MultipartFile file) {
-        try {
-            return imageDao.addImage(file.getBytes());
-        }
-        catch (IOException e){
-            LOGGER.warn("Error while reading image file from");
-            //podría pasar null en vez de instanciar esto
-            //return new ImageModel(0, new byte[1]);
-            return null;
-        }
+    public ImageModel addImage( byte[] bytes) {
+        return imageDao.addImage(bytes);
+
     }
 
 }
