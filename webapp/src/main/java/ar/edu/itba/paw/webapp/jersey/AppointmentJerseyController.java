@@ -137,6 +137,8 @@ public class AppointmentJerseyController {
     public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
         if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.hasFinished() || appointmentStatusDTO.isPending() )
             throw new InvalidOperationException("Invalid status change");
+        if ( !authControl.isProvider() && appointmentStatusDTO.isConfirmed() )
+            throw new ForbiddenOperationException("Invalid status change");
         appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.getStatusEnum());
         return Response.noContent().build();
     }
