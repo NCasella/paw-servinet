@@ -14,7 +14,6 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class ServiceCreationDTO {
 
-    @NotEmpty
     @NotNull
     private Long businessId;
 
