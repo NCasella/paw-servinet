@@ -77,7 +77,8 @@ public class RatingsController {
                 page,
                 pagedList.getTotalElements(),
                 uriInfo,
-                ReviewDto.class
+                ReviewDto.class,
+                request
         );
     }
 

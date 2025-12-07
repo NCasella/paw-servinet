@@ -106,7 +106,8 @@ public class ServiceJerseyController {
                     page,
                     pagedList.getTotalElements(),
                     uriInfo,
-                    ServiceDto.class
+                    ServiceDto.class,
+                    request
             );
     }
 

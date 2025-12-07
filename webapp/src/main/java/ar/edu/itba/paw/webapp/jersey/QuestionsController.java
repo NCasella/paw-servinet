@@ -81,7 +81,8 @@ public class QuestionsController {
                 page,
                 pagedList.getTotalElements(),
                 uriInfo,
-                QuestionDto.class
+                QuestionDto.class,
+                request
         );
     }
 

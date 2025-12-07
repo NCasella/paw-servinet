@@ -93,7 +93,7 @@ public class AppointmentJerseyController {
         final List<AppointmentDto> allAppointments = pagedList.getList().stream()
                 .map(a -> AppointmentDto.fromAppointment(a,uriInfo) ).collect(Collectors.toList());
 
-        return PagedListResponse.generate(allAppointments,page,pagedList.getTotalElements(),uriInfo, AppointmentDto.class);
+        return PagedListResponse.generate(allAppointments,page,pagedList.getTotalElements(),uriInfo, AppointmentDto.class,request);
     }
 
     @POST
