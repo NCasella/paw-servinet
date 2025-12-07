@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -46,11 +47,28 @@ public class AuthorizationDecider {
         String requestMimeType=context.getRequest().getHeader(HttpHeaders.ACCEPT);
         long userId=Long.parseLong(context.getVariables().getOrDefault("userId","-1"));
         Optional<User> currentUser=authControl.getCurrentUser();
-        if (currentUser.isEmpty()||userId==-1) {
+        if (currentUser.isEmpty()||userId==-1 || requestMimeType==null) {
             return new AuthorizationDecision(false);
         }
         long currentUserId=currentUser.get().getUserId();
         boolean allowed = !requestMimeType.contains(CustomMediaTypes.USER_CONTACT_INFO) || userId==currentUserId || authControl.isUserProvidee(currentUserId,userId);
         return new AuthorizationDecision(allowed);
+    }
+
+    public AuthorizationDecision canViewAppointmentList(Supplier<Authentication> auth,RequestAuthorizationContext context){
+        HttpServletRequest request=context.getRequest();
+        Optional<User> currentUser=authControl.getCurrentUser();
+        if(currentUser.isEmpty()){
+            return new AuthorizationDecision(false);
+        }
+
+        String userIdParam=request.getParameter("userId");
+        String businessIdParam=request.getParameter("businessId");
+        long currentUserId=currentUser.get().getUserId();
+
+        boolean allow= (userIdParam!=null && authControl.isCurrentUser(Long.parseLong(userIdParam)))||(businessIdParam!=null && authControl.isBusinessOwner(Long.parseLong(businessIdParam),currentUserId));
+
+        return new AuthorizationDecision(allow);
+
     }
 }
