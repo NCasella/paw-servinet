@@ -9,7 +9,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,7 +16,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Request;
@@ -51,7 +49,7 @@ public class ImageJerseyController {
 
     @POST
     @Consumes(value = MediaType.MULTIPART_FORM_DATA)
-    public Response createImage(@FormDataParam("image") final FormDataBodyPart image){
+    public Response createImage(@ValidImageFile @FormDataParam("image") FormDataBodyPart image){
         ImageModel createdImage=imageService.addImage(image.getEntityAs(byte[].class));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(createdImage.getImageId())).build()).build();
     }
