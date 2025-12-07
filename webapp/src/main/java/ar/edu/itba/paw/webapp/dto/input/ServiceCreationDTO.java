@@ -14,7 +14,6 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class ServiceCreationDTO {
 
-    @NotEmpty
     @NotNull
     private Long businessId;
 
@@ -40,11 +39,13 @@ public class ServiceCreationDTO {
     private String price;
 
     private boolean additionalCharges;
-
+    @NotNull
     private PricingTypes pricingType;
-
+    @NotNull
     private Categories category;
 
     @Positive
     private int minimalDuration;
+    @Positive
+    private long imageId;
 }

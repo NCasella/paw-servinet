@@ -128,7 +128,7 @@ public class ServiceJerseyController {
                 serviceCreationDto.getPricingType(),
                 serviceCreationDto.getPrice(),
                 serviceCreationDto.isAdditionalCharges(),
-                null
+                serviceCreationDto.getImageId()
         );
 
         return Response.created(
@@ -183,15 +183,6 @@ public class ServiceJerseyController {
         return Response.noContent().build();
     }
 
-    // TODO IMAGES
 
-    @GET
-    @Path("/{serviceid}/image")
-    @Produces(value = {MediaType.MULTIPART_FORM_DATA})
-    public Response getServiceImage(@PathParam("serviceid") final long serviceid){
-        ImageModel imageModel = imageService.getImageById(serviceid).orElseThrow(NotFoundException::new);
-        return ConditionalCache.cacheResponse(request, ImageDto.fromImage(imageModel)).build();
-
-    }
 
 }
