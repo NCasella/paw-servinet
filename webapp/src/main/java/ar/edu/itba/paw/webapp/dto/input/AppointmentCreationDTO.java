@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.dto.input;
 
+import ar.edu.itba.paw.model.Neighbourhoods;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,9 @@ public class AppointmentCreationDTO {
 
     @Size(max = 255)
     private String description;
+
+    @Size(max = 255)
+    private Neighbourhoods neighborhood;
 
     @NotNull
     private long userId;

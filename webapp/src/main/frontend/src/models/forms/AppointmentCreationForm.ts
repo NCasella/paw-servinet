@@ -1,15 +1,23 @@
 export class AppointmentForm {
-  date: string;
-  location: string;
+  startDate: string;
+  address: string;
   description: string;
   neighbourhood: string;
+  serviceId: number;
+  userId?: number
 
-
-  constructor(date = "", location = "", description = "",neighbourhood="" ) {
-    this.date = date;
-    this.location = location;
-    this.description = description;
-    this.neighbourhood = neighbourhood
+   constructor(data: {
+    startdate?: string;
+    address?: string;
+    description?: string;
+    neighbourhood?: string;
+    serviceId: number;
+  }) {
+    this.startDate = data.startdate ?? "";
+    this.address = data.address ?? "";
+    this.description = data.description ?? "";
+    this.neighbourhood = data.neighbourhood ?? "";
+    this.serviceId = data.serviceId;
   }
 
   validateAppointmentForm(): AppointmentFormErrors {
@@ -45,13 +53,13 @@ export type AppointmentFormErrorKey =
   // barrio no se chequea xq le tiro las opciones
 
 export const AppointmentFormSchema = z.object({
-  location: z
+  address: z
     .string()
     .trim()
     .min(1, { message: "NotEmpty.appointmentForm.location" })
     .max(MAX_LEN, { message: "Size.appointmentForm.location" }),
 
-  date: z
+  startDate: z
     .string()
     // campo no nulo / no vacío
     .refine(
