@@ -14,7 +14,7 @@ public class PagedListResponse {
         int prev = page-1 > 0 ? page-1 : page;
         int max =  total % 10 == 0 ? total / 10 : (total / 10) + 1;
         int next = page + 1 <= max ? page + 1 : page;
-        Response.ResponseBuilder cachedResponse=ConditionalCache.cacheForPagedResponse(request, getListGenericEntity(list, objClass),list.hashCode());
+        Response.ResponseBuilder cachedResponse=ConditionalCache.cacheResponseFromHashCode(request, getListGenericEntity(list, objClass),list.hashCode());
 
         return cachedResponse
                  .link(String.valueOf(total), "total")

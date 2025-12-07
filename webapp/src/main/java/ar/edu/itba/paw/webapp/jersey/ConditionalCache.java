@@ -10,10 +10,10 @@ public class ConditionalCache {
     private ConditionalCache(){}
 
     public static <T> Response.ResponseBuilder cacheResponse(Request request,T dto){
-        return cacheForPagedResponse(request,dto,dto.hashCode());
+        return cacheResponseFromHashCode(request,dto,dto.hashCode());
     }
 
-    public static <T> Response.ResponseBuilder cacheForPagedResponse(Request request,T dto, int hashCode){
+    public static <T> Response.ResponseBuilder cacheResponseFromHashCode(Request request, T dto, int hashCode){
         EntityTag eTag=new EntityTag(Integer.toString(hashCode));
         CacheControl cc=generateCacheControl();
         Response.ResponseBuilder builder=request.evaluatePreconditions(eTag);
