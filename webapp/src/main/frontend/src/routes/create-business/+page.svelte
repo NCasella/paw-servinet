@@ -40,8 +40,6 @@ onMount(() =>{
 {#if businessForm}
     <div class="flex justify-center px-4 py-8">
   <form
-    method="post"
-    action={postUrl}
     class="w-full max-w-md rounded-2xl shadow p-6 space-y-6"
     on:submit|preventDefault={handleSubmit}
   >
