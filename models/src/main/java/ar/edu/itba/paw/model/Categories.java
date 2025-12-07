@@ -39,14 +39,14 @@ public enum Categories {
         return Arrays.stream(values())
                 .filter(v -> v.getValue().equalsIgnoreCase(value))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category value: " + value));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category value " + value));
     }
 
     public static Categories fromName(String name) {
         try {
             return Categories.valueOf(name.toUpperCase());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid category name: " + name);
+            throw new IllegalArgumentException("Invalid category name " + name);
         }
     }
 

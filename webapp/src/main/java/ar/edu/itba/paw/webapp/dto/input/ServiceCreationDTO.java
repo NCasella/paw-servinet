@@ -29,7 +29,7 @@ public class ServiceCreationDTO {
     private boolean homeService;
 
 
-    private Neighbourhoods[] neighbourhoods;
+    private String[] neighbourhoods;
 
     @Size(max=255)
     private String address;
@@ -39,10 +39,12 @@ public class ServiceCreationDTO {
     private String price;
 
     private boolean additionalCharges;
+
     @NotNull
-    private PricingTypes pricingType;
+    private String pricingType;
+
     @NotNull
-    private Categories category;
+    private String category;
 
     @Positive
     private int minimalDuration;

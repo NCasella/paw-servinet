@@ -1,24 +1,19 @@
 package ar.edu.itba.paw.webapp.jersey;
 
-import ar.edu.itba.paw.model.ImageModel;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.exceptions.*;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.dto.input.*;
-import ar.edu.itba.paw.webapp.dto.output.ImageDto;
 import ar.edu.itba.paw.webapp.dto.output.ServiceDto;
 import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.*;
 import java.util.*;
 
@@ -27,35 +22,22 @@ import java.util.*;
 public class ServiceJerseyController {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ServiceJerseyController.class);
-    private final ImageService imageService;
-    @Value("resources/defaultImg.png")
-    private Resource defaultImage;
+
     @Context
     private UriInfo uriInfo;
     @Context
     private Request request;
     private final ServiceService serviceService;
-    private final QuestionService questionService;
-    private final RatingService ratingService;
-    private final BusinessService businessService;
 
     private final ServinetAuthControl authControl;
 
     @Autowired
     public ServiceJerseyController(
             ServiceService serviceService,
-            QuestionService questionService,
-            RatingService ratingService,
-            BusinessService businessService,
-            ServinetAuthControl authControl,
-            ImageService imageService
+            ServinetAuthControl authControl
     ){
         this.authControl=authControl;
         this.serviceService=serviceService;
-        this.questionService=questionService;
-        this.ratingService=ratingService;
-        this.businessService=businessService;
-        this.imageService=imageService;
     }
 
     @OPTIONS
@@ -115,17 +97,22 @@ public class ServiceJerseyController {
     @POST
     @Consumes(value = CustomMediaTypes.SERVICE_CREATION)
     public Response createService(@Valid final ServiceCreationDTO serviceCreationDto) {
+        Categories categoryParsed = Categories.fromName(serviceCreationDto.getCategory());
+        PricingTypes pricingTypeParsed = PricingTypes.fromName(serviceCreationDto.getPricingType());
+        Neighbourhoods[] neighbourhoodsParsed = Arrays.stream(serviceCreationDto.getNeighbourhoods())
+                .map(Neighbourhoods::fromName)
+                .toArray(Neighbourhoods[]::new);
 
         final Service service = serviceService.create(
                 serviceCreationDto.getBusinessId(),
                 serviceCreationDto.getServiceName(),
                 serviceCreationDto.getDescription(),
                 serviceCreationDto.isHomeService(),
-                serviceCreationDto.getNeighbourhoods(),
+                neighbourhoodsParsed,
                 serviceCreationDto.getAddress(),
-                serviceCreationDto.getCategory(),
+                categoryParsed,
                 serviceCreationDto.getMinimalDuration(),
-                serviceCreationDto.getPricingType(),
+                pricingTypeParsed,
                 serviceCreationDto.getPrice(),
                 serviceCreationDto.isAdditionalCharges(),
                 serviceCreationDto.getImageId()
@@ -163,12 +150,13 @@ public class ServiceJerseyController {
     public Response changeService(
             @PathParam("serviceid") final long serviceId,
             @Valid final ServiceUpdateDTO serviceUpdateDTO
-            ) {
+    ) {
+        PricingTypes pricingTypeParsed = PricingTypes.fromName(serviceUpdateDTO.getPricingType());
         serviceService.editService(
                 serviceId,
                 serviceUpdateDTO.getDescription(),
                 serviceUpdateDTO.getMinimalDuration(),
-                serviceUpdateDTO.getPricingType(),
+                pricingTypeParsed,
                 serviceUpdateDTO.getPrice(),
                 serviceUpdateDTO.getAdditionalCharges()
         );
@@ -182,7 +170,4 @@ public class ServiceJerseyController {
         serviceService.delete(serviceId);
         return Response.noContent().build();
     }
-
-
-
 }

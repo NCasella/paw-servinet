@@ -17,7 +17,7 @@ public class ServiceUpdateDTO {
     @Size(max=255)
     private String description;
 
-    private PricingTypes pricingType;
+    private String pricingType;
 
     @Size(max=10)
     @Pattern(regexp = "[0-9]+(\\.[0-9]{1,2})?$")
