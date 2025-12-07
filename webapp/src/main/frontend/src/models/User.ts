@@ -1,3 +1,5 @@
+import { type TResponse } from "$utils/apiFetch";
+
 export class User {
   userId: number;
   fullName: string;
@@ -25,7 +27,8 @@ export class User {
   }
   
 
-  static fromJson(obj: any): User {
+  static fromJson(response: TResponse): User {
+    const obj = response.body
     if (isUser(obj)) {
       return new User(obj);
     }

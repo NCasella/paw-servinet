@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.List;
 
 @Path("/businesses")
 @Component
@@ -100,6 +101,17 @@ public class BusinessesJerseyController {
         return Response.noContent().build();
     }
 
+    @GET
+    @Produces(value = {CustomMediaTypes.BUSINESS_LIST})
+    public Response getAllBusinesses(@QueryParam("ownerId")  final Long ownerId) {
+        //todo: agregar paginacion
+        if ( ownerId==null )
+            throw new BadRequestException();
+        List<Business> list = businessService.findByAdminId(ownerId);
+        return PagedListResponse.generate(
+                list.stream().map( b ->  BusinessDto.fromBusiness(b,uriInfo)).toList(),1,1,uriInfo,BusinessDto.class,request);
+
+    }
 
     // TODO: /businesses/{businessId}/statistics
 }

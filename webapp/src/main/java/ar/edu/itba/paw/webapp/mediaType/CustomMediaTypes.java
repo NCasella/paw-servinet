@@ -12,6 +12,7 @@ public class CustomMediaTypes {
     public static final String PASSWORD_MODIFICATION = "application/vnd.servinet.user-password-modification.v1+json";
 
     public static final String BUSINESS_INFO = "application/vnd.servinet.business-info.v1+json";
+    public static final String BUSINESS_LIST = "application/vnd.servinet.business-list.v1+json";
     public static final String BUSINESS_CREATION = "application/vnd.servinet.business-creation.v1+json";
     public static final String BUSINESS_UPDATE = "application/vnd.servinet.business-update.v1+json";
 

@@ -17,6 +17,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 public class BusinessDto {
+    private long businessId;
     private String businessName;
     private String email;
     private String telephone;
@@ -42,6 +43,7 @@ public class BusinessDto {
                 .path(String.valueOf(business.getBusinessid()))
                 .build();
         return BusinessDto.builder()
+                .businessId(business.getBusinessid())
                 .address(business.getLocation())
                 .businessName(business.getName())
                 .email(business.getEmail())

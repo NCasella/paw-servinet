@@ -4,6 +4,11 @@ export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
+export interface TResponse {
+  headers: Headers,
+  body: string
+}
+
 interface FetchOptions<TBody> {
   method?: HttpMethod;
   body?: TBody;
@@ -63,7 +68,10 @@ console.log( BASE_URL+url)
 
   // Try parsing JSON, but allow empty responses (204)
   try {
-    return await response.json();
+    return {
+      headers: response.headers,
+      body: await response.json()
+    } as TResponse;
   } catch {
     return {} as TResponse;
   }

@@ -10,7 +10,7 @@
 	import { createToaster } from "@skeletonlabs/skeleton-svelte";
     
 
-let postUrl, businessForm :BusinessForm, email ="", validationError
+let postUrl, businessForm :BusinessForm, email =""
 const toaster = createToaster()
 let formErrors :BusinessFormErrors = {businessName:""}
 
@@ -18,11 +18,6 @@ function handleSubmit() {
    formErrors  = businessForm.validateBusinessForm()
    if (formErrors){
     return
-        //console.log("err"+JSON.stringify(formErrors))
-        //toaster.info({ 
-        //    title: 'Error',
-        //    description: "error"+$t(formErrors)})
-        //formErrors.array.forEach(e => createToaster($t(e)) )
 }
     createBusiness(businessForm)
         .then( () => console.log("chi") ) //history.back() )
