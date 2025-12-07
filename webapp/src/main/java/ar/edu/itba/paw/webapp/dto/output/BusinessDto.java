@@ -28,15 +28,20 @@ public class BusinessDto {
 
     public static BusinessDto fromBusiness(Business business, UriInfo uriInfo) {
         URI userOwnerUri = uriInfo.getBaseUriBuilder()
-                .path("users")
+                .path(PathUrls.USERS_URL.getUrl())
                 .path(String.valueOf(business.getUserId()))
                 .build();
 
-        URI businessStatisticsUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.BUSINESSES_URL.getUrl())
-                .path(String.valueOf(business.getBusinessid()))
-                .path(PathUrls.BUSINESSES_STATISTICS_URL.getUrl())
+        URI serviceUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.SERVICES_URL.getUrl())
+                .queryParam("businessId", business.getBusinessid())
                 .build();
+
+        URI appointmentUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.APPOINTMENTS_URL.getUrl())
+                .queryParam("businessId", business.getBusinessid())
+                .build();
+
 
         URI selfUri = uriInfo.getBaseUriBuilder()
                 .path(PathUrls.BUSINESSES_URL.getUrl())
@@ -52,7 +57,8 @@ public class BusinessDto {
                 .links(
                     BusinessLinks.builder()
                             .userOwner(userOwnerUri)
-                            .businessStatistics(businessStatisticsUri)
+                            .appointmentUri(appointmentUri)
+                            .serviceUri(serviceUri)
                             .self(selfUri)
                             .build()
                 )

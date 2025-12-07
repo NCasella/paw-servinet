@@ -12,5 +12,7 @@ public class IndexDto {
     private String businesses;
     private String services;
     private String appointments;
+    private String questions;
+    private String reviews;
     private String images;
 }

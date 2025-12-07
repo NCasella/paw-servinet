@@ -13,6 +13,7 @@ import java.net.URI;
 @AllArgsConstructor
 public class BusinessLinks {
     private URI userOwner;
-    private URI businessStatistics;
+    private URI appointmentUri;
+    private URI serviceUri;
     private URI self;
 }

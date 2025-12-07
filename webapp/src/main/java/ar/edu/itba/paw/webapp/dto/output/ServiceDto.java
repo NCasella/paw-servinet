@@ -48,15 +48,13 @@ public class ServiceDto {
                 .build();
 
         URI questions = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(service.getId()))
-                .path("questions")
+                .path(PathUrls.QUESTIONS_URL.getUrl())
+                .queryParam("serviceId", service.getId())
                 .build();
 
         URI reviews = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(service.getId()))
-                .path("reviews")
+                .path(PathUrls.RATINGS_URL.getUrl())
+                .queryParam("serviceId", service.getId())
                 .build();
 
         ServiceLinks links = ServiceLinks.builder()

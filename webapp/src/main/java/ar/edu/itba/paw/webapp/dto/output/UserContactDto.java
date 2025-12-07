@@ -32,12 +32,12 @@ public class UserContactDto {
 
         URI appointmentsRequestedUri = uriInfo.getBaseUriBuilder()
                 .path(PathUrls.APPOINTMENTS_URL.getUrl())
-                .queryParam("forUser", user.getUserId())
+                .queryParam("userId", user.getUserId())
                 .build();
 
-        URI profilePictureUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.IMAGES_URL.getUrl())
-                .path(String.valueOf(user.getProfilePicId()))
+        URI questionsToRespondUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.QUESTIONS_URL.getUrl())
+                .queryParam("respondentId", user.getUserId())
                 .build();
 
         URI self = uriInfo.getBaseUriBuilder()
@@ -55,7 +55,7 @@ public class UserContactDto {
                         UserLinks.builder()
                                 .businessesOwned(businessesOwnedUri)
                                 .appointmentsRequested(appointmentsRequestedUri)
-                                .profilePicture(profilePictureUri)
+                                .questionsToRespond(questionsToRespondUri)
                                 .self(self)
                                 .build()
 

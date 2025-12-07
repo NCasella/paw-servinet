@@ -2,10 +2,7 @@ package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.webapp.auth.AuthorizationDecider;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
-import ar.edu.itba.paw.webapp.auth.filters.BasicAuthFilter;
-import ar.edu.itba.paw.webapp.auth.filters.AuthEntryPoint;
-import ar.edu.itba.paw.webapp.auth.filters.DeniedEntryPoint;
-import ar.edu.itba.paw.webapp.auth.filters.JwtFilter;
+import ar.edu.itba.paw.webapp.auth.filters.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +42,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
+    private JwtRefreshFilter jwtRefreshFilter;
+    @Autowired
     private BasicAuthFilter basicAuthFilter;
 
     @Value("${SPA_BASE_URL}")
@@ -71,6 +70,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable() // Disable CSRF for APIs
                 .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint()).accessDeniedHandler(new DeniedEntryPoint()).and()
                 .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtRefreshFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authDecider::canViewUserContactInfo)
