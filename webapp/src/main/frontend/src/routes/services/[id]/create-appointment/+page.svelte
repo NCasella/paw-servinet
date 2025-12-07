@@ -32,7 +32,7 @@
         if (formErrors == null) return
 
         const appointmentId = await createAppointment(appointmentForm)
-        goto(`/appointments/${appointmentId}`)
+        goto(`${base}/appointments/${appointmentId}`)
     }
 </script>
 
