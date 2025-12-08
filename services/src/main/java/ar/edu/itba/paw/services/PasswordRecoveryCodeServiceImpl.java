@@ -29,13 +29,23 @@ public class PasswordRecoveryCodeServiceImpl implements PasswordRecoveryCodeServ
         this.userService = userService;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<User> getUserFromRecoveryCode(UUID recoveryCode){
+        Optional<PasswordRecoveryCode> passwordRecoveryCode = passwordRecoveryCodeDao.getCodeByUUID(recoveryCode);
+        return passwordRecoveryCode.map(PasswordRecoveryCode::getRequestedBy);
+    }
+
     @Transactional
     @Override
     public void sendCode(String email) {
         User user = userService.findByEmail(email).orElseThrow(InvalidEmailException::new);
+        Optional<PasswordRecoveryCode> code = passwordRecoveryCodeDao.getCodeByUserId(user.getUserId());
 
-        PasswordRecoveryCode passwordRecoveryCode = generateCode(user.getUserId());
-        emailService.recoverPassword(user, passwordRecoveryCode);
+        if (code.isEmpty() || code.get().isExpired()) {
+            code = Optional.of(generateCode(user.getUserId()));
+        }
+        emailService.recoverPassword(user, code.get());
     }
 
     @Transactional

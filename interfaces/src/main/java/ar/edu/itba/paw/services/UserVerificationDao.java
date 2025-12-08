@@ -9,8 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserVerificationDao {
-    UserVerificationCode saveCodes(long userid, UUID tokenUrl, String verificationCode, LocalDateTime ExpirationDate);
+    UserVerificationCode saveCodes(long userid, String verificationCode, LocalDateTime ExpirationDate);
     void deleteCode(long userid);
     Optional<UserVerificationCode> getVerificationCodeByUserId(long userid);
-    Optional<UserVerificationCode> getVerificationCodeByTokenUrl(UUID tokenUrl);
+
 }

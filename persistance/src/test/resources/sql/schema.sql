@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
     telephone VARCHAR(255),
     isprovider boolean NOT NULL DEFAULT FALSE,
     Locale varchar(20),
-    isverified boolean not null
+    isverified boolean not null,
+    profile_pic int null
 );
 
 CREATE TABLE IF NOT EXISTS business(
