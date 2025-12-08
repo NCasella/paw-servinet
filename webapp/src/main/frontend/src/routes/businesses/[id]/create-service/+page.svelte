@@ -17,15 +17,15 @@
     const durationTypes = DurationTypesList
     const categories = CategoriesList
     onMount(async () => {
-        formErrors = serviceForm.validateServiceForm()
-        if ( formErrors == null ) return
-
+       
         //const
     })
 
     async function handleSubmit() {
 
-        
+         formErrors = serviceForm.validateServiceForm()
+        if ( formErrors == null ) return
+
     }
 
     function handleImageChange(){
@@ -257,17 +257,22 @@
         </p>
 
         <div class="flex flex-wrap gap-2">
-          {#each durationTypes as d}
-            <button
-              type="button"
-              class="px-3 py-1 rounded-full border text-xs"
-              class:selected={serviceForm.minimalDuration === d.value}
-              on:click={() => (serviceForm.minimalDuration = d.value)}
-            >
-              {$t(d.codeMsg)}
-            </button>
-          {/each}
-        </div>
+  {#each durationTypes as d}
+    <button
+      type="button"
+      on:click={() => (serviceForm.minimalDuration = d.value)}
+      class="
+        px-3 py-1 rounded-full border text-xs transition
+      "
+      class:bg-primary-500={serviceForm.minimalDuration === d.value}
+      class:text-white={serviceForm.minimalDuration === d.value}
+      class:border-primary-600={serviceForm.minimalDuration === d.value}
+    >
+      {$t(d.codeMsg)}
+    </button>
+  {/each}
+</div>
+
         {#if formErrors.minimalDuration}
           <FormError errorMessage={formErrors.minimalDuration} />
         {/if}
