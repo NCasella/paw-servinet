@@ -29,6 +29,9 @@ public class PasswordRecoveryCode {
         return id;
     }
 
+    public User getRequestedBy(){
+        return requestedBy;
+    }
     public long getUserId() {
         return requestedBy.getUserId();
     }
@@ -39,5 +42,9 @@ public class PasswordRecoveryCode {
 
     public LocalDateTime getExpirationDate() {
         return expirationDate;
+    }
+
+    public boolean isExpired(){
+        return expirationDate.isBefore(LocalDateTime.now());
     }
 }
