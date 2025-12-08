@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.exceptions.InvalidOperationException;
+
 import java.util.Arrays;
 
 public enum Categories {
@@ -39,14 +41,14 @@ public enum Categories {
         return Arrays.stream(values())
                 .filter(v -> v.getValue().equalsIgnoreCase(value))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category value: " + value));
+                .orElseThrow(() -> new InvalidOperationException("Invalid category value " + value));
     }
 
     public static Categories fromName(String name) {
         try {
             return Categories.valueOf(name.toUpperCase());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid category name: " + name);
+            throw new InvalidOperationException("Invalid category name " + name);
         }
     }
 

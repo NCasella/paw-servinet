@@ -2,21 +2,21 @@ package ar.edu.itba.paw.webapp.jersey;
 
 import ar.edu.itba.paw.model.PagedList;
 
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
 public class PagedListResponse {
 
-    public static <T> Response generate(List<T> list, int page, int total, UriInfo uriInfo, Class<T> objClass) {
+    public static <T> Response generate(List<T> list, int page, int total, UriInfo uriInfo, Class<T> objClass, Request request) {
 
         int prev = page-1 > 0 ? page-1 : page;
         int max =  total % 10 == 0 ? total / 10 : (total / 10) + 1;
         int next = page + 1 <= max ? page + 1 : page;
-        return Response.ok( getListGenericEntity(list, objClass) )
+        Response.ResponseBuilder cachedResponse=ConditionalCache.cacheResponseFromHashCode(request, getListGenericEntity(list, objClass),list.hashCode());
+
+        return cachedResponse
                  .link(String.valueOf(total), "total")
                  .link(uriInfo.getAbsolutePathBuilder().queryParam("page", prev).build(),"prev")
                  .link(uriInfo.getAbsolutePathBuilder().queryParam("page", next).build(),"next")
@@ -46,7 +46,7 @@ public class PagedListResponse {
         return new GenericEntity<>(list, type);
     }
 
-    public static <T> Response generate(PagedList<T> pagedList,  int page, UriInfo uriInfo, Class<T> objClass) {
-         return generate(pagedList.getList(), page, pagedList.getTotalElements(), uriInfo, objClass);
+    public static <T> Response generate(PagedList<T> pagedList,  int page, UriInfo uriInfo, Class<T> objClass,Request request) {
+         return generate(pagedList.getList(), page, pagedList.getTotalElements(), uriInfo, objClass,request);
      }
 }

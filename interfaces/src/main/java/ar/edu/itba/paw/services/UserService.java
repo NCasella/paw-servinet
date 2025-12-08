@@ -29,4 +29,5 @@ public interface UserService {
 
     void changeLocale(long userid);
     boolean verifyUser(long userid, String verificationCode);
+    boolean isUserProvidee(long providerUserId,long requestUserId);
 }

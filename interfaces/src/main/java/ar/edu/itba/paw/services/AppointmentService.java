@@ -31,7 +31,6 @@ public interface AppointmentService {
 
     long getPageCount(long count);
 
-    Appointment create(long serviceid, String name, String surname, String email, String location, String telephone, String date, String description);
 
     long confirmAppointment(long appointmentid);
 
@@ -39,7 +38,7 @@ public interface AppointmentService {
 
     long denyAppointment(long appointmentid);
 
-    Appointment create(long serviceid, long userid, String location, LocalDateTime startDate, String description);
+    Appointment create(long serviceid, long userid, String location, LocalDateTime startDate, String description, Optional<Neighbourhoods> optionalNeighbourhood);
 
     void changePendingAppointmentStatus(long appointmentid, AppointmentStatus status);
 

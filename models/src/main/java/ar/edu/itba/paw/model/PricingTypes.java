@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.exceptions.InvalidOperationException;
+
 import java.util.Arrays;
 
 public enum PricingTypes {
@@ -26,6 +28,14 @@ public enum PricingTypes {
         return Arrays.stream(values())
                 .filter(v -> v.getValue().equalsIgnoreCase(value))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid pricing type: " + value));
+                .orElseThrow(() -> new InvalidOperationException("Invalid pricing type " + value));
+    }
+
+    public static PricingTypes fromName(String name) {
+        try {
+            return PricingTypes.valueOf(name.toUpperCase());
+        } catch (Exception e) {
+            throw new InvalidOperationException("Invalid pricing type " + name);
+        }
     }
 }

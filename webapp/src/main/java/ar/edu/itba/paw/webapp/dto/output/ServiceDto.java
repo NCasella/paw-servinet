@@ -19,6 +19,8 @@ import java.util.Objects;
 @Builder
 public class ServiceDto {
     private long serviceId;
+    private long businessId;
+
     private String serviceName;
     private boolean homeService;
 
@@ -46,15 +48,18 @@ public class ServiceDto {
                 .build();
 
         URI questions = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(service.getId()))
-                .path("questions")
+                .path(PathUrls.QUESTIONS_URL.getUrl())
+                .queryParam("serviceId", service.getId())
                 .build();
 
         URI reviews = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.SERVICES_URL.getUrl())
-                .path(String.valueOf(service.getId()))
-                .path("reviews")
+                .path(PathUrls.RATINGS_URL.getUrl())
+                .queryParam("serviceId", service.getId())
+                .build();
+
+        URI image=uriInfo.getBaseUriBuilder()
+                .path(PathUrls.IMAGES_URL.getUrl())
+                .path(String.valueOf(service.getImageId()))
                 .build();
 
         ServiceLinks links = ServiceLinks.builder()
@@ -62,6 +67,7 @@ public class ServiceDto {
                 .business(business)
                 .questions(questions)
                 .reviews(reviews)
+                .image(image)
                 .build();
 
         return ServiceDto.builder()

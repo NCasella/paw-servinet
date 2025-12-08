@@ -1,26 +1,19 @@
 package ar.edu.itba.paw.webapp.jersey;
 
-import ar.edu.itba.paw.model.ImageModel;
 import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.exceptions.*;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.dto.input.*;
-import ar.edu.itba.paw.webapp.dto.output.ImageDto;
-import ar.edu.itba.paw.webapp.dto.output.QuestionDto;
-import ar.edu.itba.paw.webapp.dto.output.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.output.ServiceDto;
 import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.*;
 import java.util.*;
 
@@ -29,35 +22,22 @@ import java.util.*;
 public class ServiceJerseyController {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ServiceJerseyController.class);
-    private final ImageService imageService;
-    @Value("resources/defaultImg.png")
-    private Resource defaultImage;
+
     @Context
     private UriInfo uriInfo;
     @Context
     private Request request;
     private final ServiceService serviceService;
-    private final QuestionService questionService;
-    private final RatingService ratingService;
-    private final BusinessService businessService;
 
     private final ServinetAuthControl authControl;
 
     @Autowired
     public ServiceJerseyController(
             ServiceService serviceService,
-            QuestionService questionService,
-            RatingService ratingService,
-            BusinessService businessService,
-            ServinetAuthControl authControl,
-            ImageService imageService
+            ServinetAuthControl authControl
     ){
         this.authControl=authControl;
         this.serviceService=serviceService;
-        this.questionService=questionService;
-        this.ratingService=ratingService;
-        this.businessService=businessService;
-        this.imageService=imageService;
     }
 
     @OPTIONS
@@ -88,8 +68,6 @@ public class ServiceJerseyController {
             Categories categoryEnum = QueryParamsMapper.mapCategory(category);
             ServicesOrderFilters orderFiltersEnum = QueryParamsMapper.mapOrderFilter(orderFilters);
 
-            if (businessId != null) businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
-
             PagedList<Service> pagedList = serviceService.getServices(
                     page,
                     categoryEnum,
@@ -110,7 +88,8 @@ public class ServiceJerseyController {
                     page,
                     pagedList.getTotalElements(),
                     uriInfo,
-                    ServiceDto.class
+                    ServiceDto.class,
+                    request
             );
     }
 
@@ -118,22 +97,25 @@ public class ServiceJerseyController {
     @POST
     @Consumes(value = CustomMediaTypes.SERVICE_CREATION)
     public Response createService(@Valid final ServiceCreationDTO serviceCreationDto) {
-
-        businessService.findById(serviceCreationDto.getBusinessId()).orElseThrow(BusinessNotFoundException::new);
+        Categories categoryParsed = Categories.fromName(serviceCreationDto.getCategory());
+        PricingTypes pricingTypeParsed = PricingTypes.fromName(serviceCreationDto.getPricingType());
+        Neighbourhoods[] neighbourhoodsParsed = Arrays.stream(serviceCreationDto.getNeighbourhoods())
+                .map(Neighbourhoods::fromName)
+                .toArray(Neighbourhoods[]::new);
 
         final Service service = serviceService.create(
                 serviceCreationDto.getBusinessId(),
                 serviceCreationDto.getServiceName(),
                 serviceCreationDto.getDescription(),
                 serviceCreationDto.isHomeService(),
-                serviceCreationDto.getNeighbourhoods(),
+                neighbourhoodsParsed,
                 serviceCreationDto.getAddress(),
-                serviceCreationDto.getCategory(),
+                categoryParsed,
                 serviceCreationDto.getMinimalDuration(),
-                serviceCreationDto.getPricingType(),
+                pricingTypeParsed,
                 serviceCreationDto.getPrice(),
                 serviceCreationDto.isAdditionalCharges(),
-                null
+                serviceCreationDto.getImageId()
         );
 
         return Response.created(
@@ -168,12 +150,13 @@ public class ServiceJerseyController {
     public Response changeService(
             @PathParam("serviceid") final long serviceId,
             @Valid final ServiceUpdateDTO serviceUpdateDTO
-            ) {
+    ) {
+        PricingTypes pricingTypeParsed = PricingTypes.fromName(serviceUpdateDTO.getPricingType());
         serviceService.editService(
                 serviceId,
                 serviceUpdateDTO.getDescription(),
                 serviceUpdateDTO.getMinimalDuration(),
-                serviceUpdateDTO.getPricingType(),
+                pricingTypeParsed,
                 serviceUpdateDTO.getPrice(),
                 serviceUpdateDTO.getAdditionalCharges()
         );
@@ -187,188 +170,4 @@ public class ServiceJerseyController {
         serviceService.delete(serviceId);
         return Response.noContent().build();
     }
-
-    @Path("/{serviceId}/questions")
-    @OPTIONS
-    public Response getSupportedMimeTypesForQuestions() {
-        return Response.ok()
-                .header("Allow", "GET, POST, OPTIONS")
-                .header("Accept", CustomMediaTypes.QUESTION_LIST)
-                .header("Accept-Post", CustomMediaTypes.QUESTION_CREATION)
-                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-                .build();
-    }
-
-
-    @GET
-    @Path("/{serviceId}/questions")
-    @Produces(value = CustomMediaTypes.QUESTION_LIST)
-    public Response getServiceQuestions(
-            @PathParam("serviceId") final long serviceId,
-            @QueryParam("page") @DefaultValue("1") final int page
-    ){
-        PagedList<Question> pagedList = questionService.getAllQuestions(serviceId, page);
-        List<QuestionDto> dtoList = pagedList.getList().stream()
-                .map(q -> QuestionDto.fromQuestion(q, uriInfo))
-                .toList();
-
-        return PagedListResponse.generate(
-                dtoList,
-                page,
-                pagedList.getTotalElements(),
-                uriInfo,
-                QuestionDto.class
-        );
-    }
-
-    @POST
-    @Path("/{serviceId}/questions")
-    @Consumes(value = CustomMediaTypes.QUESTION_CREATION)
-    public Response createServiceQuestion(
-            @PathParam("serviceId") final long serviceId,
-            @Valid final QuestionCreationDTO questionCreationDto
-    ){
-        User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
-        Question question = questionService.create(
-                serviceId,
-                currentUser.getUserId(),
-                questionCreationDto.getQuestion()
-        );
-        return Response.created(
-                uriInfo.getAbsolutePathBuilder()
-                        .path(String.valueOf(question.getId()))
-                        .build()
-        ).build();
-    }
-
-
-    @Path("/{serviceId}/questions/{questionId}")
-    @OPTIONS
-    public Response getSupportedMimeTypesForQuestion() {
-        return Response.ok()
-                .header("Allow", "GET, PATCH, OPTIONS")
-                .header("Accept", CustomMediaTypes.QUESTION_INFO)
-                .header("Accept-Patch", CustomMediaTypes.QUESTION_RESPONSE)
-                .header("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS")
-                .build();
-    }
-
-    @GET
-    @Path("/{serviceId}/questions/{questionId}")
-    @Produces(value = CustomMediaTypes.QUESTION_INFO)
-    public Response getServiceQuestionById(
-            @PathParam("serviceId") final long serviceId,
-            @PathParam("questionId") final long questionId
-    ){
-        Question question = questionService.findById(questionId).orElseThrow(QuestionNotFoundException::new);
-        if (question.getServiceid() != serviceId) throw new QuestionNotFoundException();
-        return ConditionalCache.cacheResponse(request, QuestionDto.fromQuestion(question, uriInfo)).build();
-    }
-
-    @PATCH
-    @Path("/{serviceId}/questions/{questionId}")
-    @Consumes(value = CustomMediaTypes.QUESTION_RESPONSE)
-    public Response updateQuestionResponse(
-            @PathParam("serviceId") final long serviceId,
-            @PathParam("questionId") final long questionId,
-            @Valid final QuestionResponseDTO questionResponseDTO
-            ){
-        Question question = questionService.findById(questionId).orElseThrow(QuestionNotFoundException::new);
-        if (question.getServiceid() != serviceId) throw new QuestionNotFoundException();
-        questionService.addResponse(questionId, questionResponseDTO.getResponse());
-        return Response.noContent().build();
-    }
-
-    @Path("/{serviceId}/reviews")
-    @OPTIONS
-    public Response getSupportedMimeTypesForReviews() {
-        return Response.ok()
-                .header("Allow", "GET, POST, OPTIONS")
-                .header("Accept", CustomMediaTypes.REVIEW_LIST)
-                .header("Accept-Post", CustomMediaTypes.REVIEW_CREATION)
-                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-                .build();
-    }
-
-    @GET
-    @Path("/{serviceId}/reviews")
-    @Produces(value = CustomMediaTypes.REVIEW_LIST)
-    public Response getServiceReviews(
-            @PathParam("serviceId") final long serviceId,
-            @QueryParam("filter") String filter,
-            @QueryParam("page") @DefaultValue("1") final int page
-    ){
-        RatingsFilters filterParsed = null;
-        if (filter != null && !filter.isBlank()) filterParsed= RatingsFilters.fromValue(filter);
-
-        PagedList<Rating> pagedList = ratingService.getAllRatings(serviceId, page, filterParsed);
-        List<ReviewDto> dtoList = pagedList.getList().stream()
-                .map(r -> ReviewDto.fromRating(r, uriInfo))
-                .toList();
-
-        return PagedListResponse.generate(
-                dtoList,
-                page,
-                pagedList.getTotalElements(),
-                uriInfo,
-                ReviewDto.class
-        );
-    }
-
-    @POST
-    @Path("/{serviceId}/reviews")
-    @Consumes(value = CustomMediaTypes.REVIEW_CREATION)
-    public Response createServiceReview(
-            @PathParam("serviceId") final long serviceId,
-            @Valid final ReviewCreationDTO reviewCreationDTO
-    ){
-        User currentUser = authControl.getCurrentUser().orElseThrow(UserNotFoundException::new);
-        Rating review = ratingService.create(
-                serviceId,
-                currentUser.getUserId(),
-                reviewCreationDTO.getRating(),
-                reviewCreationDTO.getComment()
-        );
-        return Response.created(
-                uriInfo.getAbsolutePathBuilder()
-                        .path(String.valueOf(review.getId()))
-                        .build()
-        ).build();
-    }
-
-    @Path("/{serviceId}/reviews/{reviewId}")
-    @OPTIONS
-    public Response getSupportedMimeTypesForReview() {
-        return Response.ok()
-                .header("Allow", "GET, OPTIONS")
-                .header("Accept", CustomMediaTypes.REVIEW_INFO)
-                .header("Access-Control-Allow-Methods", "GET, OPTIONS")
-                .build();
-    }
-
-
-    @GET
-    @Path("/{serviceId}/reviews/{reviewId}")
-    @Produces(value = CustomMediaTypes.REVIEW_INFO)
-    public Response getReviewById(
-            @PathParam("serviceId") final long serviceId,
-            @PathParam("reviewId") final long reviewId
-    ){
-        Rating rating = ratingService.findById(reviewId).orElseThrow(RatingNotFoundException::new);
-        if (rating.getServiceid() != serviceId) throw new RatingNotFoundException();
-        return ConditionalCache.cacheResponse(request, ReviewDto.fromRating(rating, uriInfo)).build();
-    }
-
-
-    // TODO IMAGES
-
-    @GET
-    @Path("/{serviceid}/image")
-    @Produces(value = {MediaType.MULTIPART_FORM_DATA})
-    public Response getServiceImage(@PathParam("serviceid") final long serviceid){
-        ImageModel imageModel = imageService.getImageById(serviceid).orElseThrow(NotFoundException::new);
-        return ConditionalCache.cacheResponse(request, ImageDto.fromImage(imageModel)).build();
-
-    }
-
 }

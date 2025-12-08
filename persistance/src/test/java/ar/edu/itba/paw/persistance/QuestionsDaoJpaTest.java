@@ -82,7 +82,7 @@ public class QuestionsDaoJpaTest {
         em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1,"+ USERID +", 'question', null, '2024-01-01')").executeUpdate();
         em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (3, 1,"+ USERID +", 'question3', null, '2024-01-01')").executeUpdate();
         em.flush();
-        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user, 1, 10).size());
+        Assert.assertEquals(QUESTIONS_TO_RESPOND, questionDao.getQuestionsToRespond(user.getUserId(), 1, 10).size());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class QuestionsDaoJpaTest {
         em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (1, 1, 1, 'question', 'responded', '2024-01-01')").executeUpdate();
         em.createNativeQuery("insert into questions (questionid, serviceid, userid, question, response, date) values (2, 1, 1, 'question', null, '2024-01-01')").executeUpdate();
         em.flush();
-        Assert.assertEquals(QUESTIONS_COUNT, questionDao.getQuestionsCount(SERVICEID));
+        Assert.assertEquals(QUESTIONS_COUNT, questionDao.getQuestionsCount());
     }
 
 }

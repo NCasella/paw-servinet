@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.dto.input;
 
+import ar.edu.itba.paw.model.Neighbourhoods;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,8 @@ public class AppointmentCreationDTO {
     @Size(max = 255)
     private String description;
 
+    private String neighborhood;
+
     @NotNull
     private long userId;
 
@@ -30,6 +33,6 @@ public class AppointmentCreationDTO {
 
     @Override
     public int hashCode(){
-        return Objects.hash(userId,serviceId,startDate,address,description);
+        return Objects.hash(userId,serviceId,startDate,address,description,neighborhood);
     }
 }

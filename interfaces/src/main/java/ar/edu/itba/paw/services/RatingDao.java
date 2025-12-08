@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RatingDao {
-    List<Rating> getAllRatings(long serviceId, int page, int pageSize, RatingsFilters filter);
-    int getAllRatingsCount(long serviceId, RatingsFilters filter);
+    List<Rating> getAllRatings(int page, int pageSize, RatingsFilters filter);
+    List<Rating> getRatingsByService(long serviceId, int page, int pageSize, RatingsFilters filter);
+
+    int getAllRatingsCount(RatingsFilters filter);
+    int getRatingsCountByService(long serviceId, RatingsFilters filter);
+
     List<Rating> getAllBusinessRatings(long businessId, int page, int pageSize);
     List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, int pageSize, RatingsFilters filter);
     Optional<Rating> findById(long id);

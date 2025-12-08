@@ -30,8 +30,11 @@ public class FilterArgument {
         return this;
     }
 
-    public FilterArgument addRating(int rating) {
-        return addParameter(FilterTypes.RATING, rating);
+    public FilterArgument addRating(Integer rating) {
+        if(rating != null){
+            return addParameter(FilterTypes.RATING,rating);
+        }
+        return this;
     }
 
     private FilterArgument addParameter(FilterTypes type,String value){

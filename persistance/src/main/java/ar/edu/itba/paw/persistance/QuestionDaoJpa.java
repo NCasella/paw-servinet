@@ -17,9 +17,31 @@ import java.util.stream.Collectors;
 public class QuestionDaoJpa implements QuestionDao {
     @PersistenceContext
     private EntityManager em;
+
     @Override
-    public List<Question> getAllQuestions(long serviceid, int page, int pageSize){
-        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions as q WHERE serviceid = :serviceid").setParameter("serviceid", serviceid);
+    public List<Question> getAllQuestions(int page, int pageSize){
+        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions q");
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+
+        @SuppressWarnings("unchecked")
+        final List<Long> idList = (List<Long>) nativeQuery.getResultList()
+                .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
+
+        final TypedQuery<Question> query = em.createQuery(" from Question as q where q.questionid in :idList ", Question.class);
+        query.setParameter("idList", idList);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Question> getServiceQuestions(long serviceId, int page, int pageSize){
+        StringBuilder sql = new StringBuilder("""
+        SELECT q.questionid
+        FROM questions q
+        WHERE q.serviceid = :serviceid
+        """);
+
+        Query nativeQuery = em.createNativeQuery(sql.toString()).setParameter("serviceid", serviceId);
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
 
@@ -38,8 +60,8 @@ public class QuestionDaoJpa implements QuestionDao {
     }
 
     @Override
-    public Question create(long serviceid, long userid, String question) {
-        Question newQuestion = new Question(em.find(Service.class, serviceid), em.find(User.class, userid), question, null, LocalDate.now() );
+    public Question create(long serviceId, long userId, String question) {
+        Question newQuestion = new Question(em.find(Service.class, serviceId), em.find(User.class, userId), question, null, LocalDate.now() );
         em.persist(newQuestion);
         return newQuestion;
     }
@@ -52,15 +74,32 @@ public class QuestionDaoJpa implements QuestionDao {
     }
 
     @Override
-    public int getQuestionsCount(long serviceid) {
-        return em.createQuery("SELECT COUNT(q) FROM Question q WHERE q.service.id = :serviceid", Long.class)
-                .setParameter("serviceid", serviceid).getSingleResult().intValue();
+    public int getQuestionsCount() {
+        return em.createQuery("SELECT COUNT(q) FROM Question q", Long.class)
+                .getSingleResult()
+                .intValue();
     }
 
     @Override
-    public Map<Question, String> getQuestionsToRespond(User user, int page, int pageSize) {
+    public int getQuestionsCountByService(long serviceId) {
+        return em.createQuery("SELECT COUNT(q) FROM Question q WHERE q.service.id = :serviceid", Long.class)
+                .setParameter("serviceid", serviceId)
+                .getSingleResult()
+                .intValue();
+    }
 
-        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions q WHERE q.response is null and q.serviceid IN (SELECT s.id FROM services s WHERE s.businessid IN (SELECT b.businessid FROM business b WHERE b.userid = :userid)) ORDER BY q.date DESC").setParameter("userid", user.getUserId());
+    @Override
+    public List<Question> getQuestionsToRespond(long userId, int page, int pageSize) {
+
+        StringBuilder sql = new StringBuilder("""
+        SELECT q.questionid 
+        FROM questions q 
+        WHERE q.response is null 
+        AND q.serviceid IN (SELECT s.id FROM services s WHERE s.businessid IN (SELECT b.businessid FROM business b WHERE b.userid = :userid)) 
+        ORDER BY q.date DESC
+        """);
+
+        Query nativeQuery = em.createNativeQuery(sql.toString()).setParameter("userid", userId);
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
 
@@ -71,19 +110,13 @@ public class QuestionDaoJpa implements QuestionDao {
         final TypedQuery<Question> questions = em.createQuery(" from Question as q where q.questionid in :idList ", Question.class);
         questions.setParameter("idList", idList);
 
-        Map<Question, String> questionServiceMap = new HashMap<>();
-
-        for (Question question : questions.getResultList()) {
-            String serviceName = getServiceNameForQuestion(question.getServiceid());
-            questionServiceMap.put(question, serviceName);
-        }
-        return questionServiceMap;
+        return questions.getResultList();
     }
 
     @Override
-    public int getQuestionsToRespondCount(User user) {
+    public int getQuestionsToRespondCount(long userId) {
         final TypedQuery<Long> query = em.createQuery("select COUNT(q) from Question as q where q.response is null and q.service.business.ownedBy.id = :userid", Long.class);
-        query.setParameter("userid", user.getUserId());
+        query.setParameter("userid", userId);
         return query.getSingleResult().intValue();
     }
 

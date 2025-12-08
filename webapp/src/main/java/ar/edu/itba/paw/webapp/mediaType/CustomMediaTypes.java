@@ -5,10 +5,16 @@ public class CustomMediaTypes {
 
     public static final String USER_REGISTRATION= "application/vnd.servinet.user-registration.v1+json";
     public static final String USER_INFO = "application/vnd.servinet.user-info.v1+json";
+    public static final String USER_CONTACT_INFO = "application/vnd.servinet.user-contact-info.v1+json";
     public static final String USER_PATCH = "application/vnd.servinet.user-patch.v1+json";
     public static final String PASSWORD_RECOVERY = "application/vnd.servinet.user-password-recovery-request.v1+json";
     public static final String PASSWORD_RESET = "application/vnd.servinet.user-password-reset.v1+json";
     public static final String PASSWORD_MODIFICATION = "application/vnd.servinet.user-password-modification.v1+json";
+
+    public static final String BUSINESS_INFO = "application/vnd.servinet.business-info.v1+json";
+    public static final String BUSINESS_LIST = "application/vnd.servinet.business-list.v1+json";
+    public static final String BUSINESS_CREATION = "application/vnd.servinet.business-creation.v1+json";
+    public static final String BUSINESS_UPDATE = "application/vnd.servinet.business-update.v1+json";
 
     public static final String APPOINTMENT_INFO = "application/vnd.servinet.appointment-info.v1+json";
     public static final String APPOINTMENT_LIST = "application/vnd.servinet.appointment-list.v1+json";
@@ -28,5 +34,6 @@ public class CustomMediaTypes {
     public static final String REVIEW_INFO = "application/vnd.servinet.review-info.v1+json";
     public static final String REVIEW_LIST = "application/vnd.servinet.review-list.v1+json";
     public static final String REVIEW_CREATION = "application/vnd.servinet.review-creation.v1+json";
+
 
 }

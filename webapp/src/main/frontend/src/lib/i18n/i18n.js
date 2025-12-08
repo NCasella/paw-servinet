@@ -10,7 +10,7 @@ export const translations = {
 
 export const locales = Object.keys(translations);
 
-export const locale = writable("en");
+export const locale = writable( getNavLanguage() );
 
 function translate(locale, key, vars) {
   if (!key) throw new Error("no key provided to $t()");
@@ -36,7 +36,22 @@ function translate(locale, key, vars) {
   return text;
 }
 
+export function setLanguage(lang) {
+  locale.set(lang)
+}
+
+export function resetLanguage() {
+  setLanguage( getNavLanguage())
+}
 
 export const t = derived(locale, ($locale) => (key, vars = {}) =>
   translate($locale, key, vars)
 );
+
+const DEFAULT_LANG = "en"
+
+function getNavLanguage() {
+  var userLang = navigator.language || navigator.userLanguage
+  return( userLang=="es" || userLang=="en")? userLang : DEFAULT_LANG
+}
+

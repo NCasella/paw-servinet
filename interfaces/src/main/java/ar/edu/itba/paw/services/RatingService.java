@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface RatingService {
-    PagedList<Rating> getAllRatings(long serviceid, int page, RatingsFilters filter);
-    int getAllRatingsCount(long serviceId, RatingsFilters filter);
+    PagedList<Rating> getAllRatings(int page, RatingsFilters filter);
+    PagedList<Rating> getRatingsByService(long serviceId, int page, RatingsFilters filter);
+    int getAllRatingsCount(RatingsFilters filter);
+    int getRatingsCountByService(long serviceId, RatingsFilters filter);
     List<Rating> getAllBusinessRatings(long businessId, int page);
     List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, RatingsFilters filter);
     Optional<Rating> findById(long id);

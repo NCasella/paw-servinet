@@ -20,7 +20,6 @@ public class UserDto {
     private long userId;
     private String fullName;
     private String username;
-    private String email;
     private String language;
 
     private UserLinks links;
@@ -33,12 +32,12 @@ public class UserDto {
 
         URI appointmentsRequestedUri = uriInfo.getBaseUriBuilder()
                 .path(PathUrls.APPOINTMENTS_URL.getUrl())
-                .queryParam("forUser", user.getUserId())
+                .queryParam("userId", user.getUserId())
                 .build();
 
-        URI profilePictureUri = uriInfo.getBaseUriBuilder()
-                .path(PathUrls.IMAGES_URL.getUrl())
-                .path(String.valueOf(user.getProfilePicId()))
+        URI questionsToRespondUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.QUESTIONS_URL.getUrl())
+                .queryParam("respondentId", user.getUserId())
                 .build();
 
         URI self = uriInfo.getBaseUriBuilder()
@@ -50,13 +49,12 @@ public class UserDto {
                 .userId(user.getUserId())
                 .fullName(user.getFullName())
                 .username(user.getUsername())
-                .email(user.getEmail())
                 .language(user.getLocale())
                 .links(
                     UserLinks.builder()
                             .businessesOwned(businessesOwnedUri)
                             .appointmentsRequested(appointmentsRequestedUri)
-                            .profilePicture(profilePictureUri)
+                            .questionsToRespond(questionsToRespondUri)
                             .self(self)
                             .build()
 
@@ -65,6 +63,6 @@ public class UserDto {
     }
     @Override
     public int hashCode(){
-        return Objects.hash(userId,fullName,username,email,language);
+        return Objects.hash(userId,fullName,username,language);
     }
 }

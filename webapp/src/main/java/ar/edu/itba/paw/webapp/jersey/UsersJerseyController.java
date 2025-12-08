@@ -5,6 +5,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.PasswordRecoveryCodeService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.dto.output.UserContactDto;
 import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import ar.edu.itba.paw.webapp.dto.input.*;
 import ar.edu.itba.paw.webapp.dto.output.UserDto;
@@ -72,7 +73,7 @@ public class UsersJerseyController {
     @OPTIONS
     public Response getSupportedMimeTypesForUser() {
         return Response.ok()
-                .header("Accept", "application/vnd.users.user-info.v1+json")
+                .header("Accept", String.join(", ",CustomMediaTypes.USER_INFO,CustomMediaTypes.USER_CONTACT_INFO))
                 .header("Accept-Patch",
                         String.join(", ",
                                 CustomMediaTypes.USER_PATCH,
@@ -81,6 +82,13 @@ public class UsersJerseyController {
                 .build();
     }
 
+    @GET
+    @Path("/{userid}")
+    @Produces(value = CustomMediaTypes.USER_CONTACT_INFO)
+    public Response getUserWithContact(@PathParam("userid") final long userid){
+        final User user = us.findById(userid).orElseThrow(UserNotFoundException::new);
+        return ConditionalCache.cacheResponse(request, UserContactDto.fromUser(user,uriInfo)).build();
+    }
     @GET
     @Path("/{userid}")
     @Produces(value = CustomMediaTypes.USER_INFO)
@@ -94,7 +102,6 @@ public class UsersJerseyController {
     @Path("/{userid}")
     @Consumes(value = CustomMediaTypes.USER_PATCH)
     public Response changeUserInfo(@PathParam("userid") @NotNull final long userid, @NotNull @Valid UserPatchDTO profilePatch){
-        final User user = us.findById(userid).orElseThrow(UserNotFoundException::new);
         us.changeUserInfo(userid, profilePatch.getUsername(), profilePatch.getEmail(), profilePatch.getTelephone());
         User modifiedUser = us.findById(userid).orElseThrow(UserNotFoundException::new);
         return Response.ok(UserDto.fromUser(modifiedUser, uriInfo)).build();
@@ -104,8 +111,7 @@ public class UsersJerseyController {
     @Path("/{userid}")
     @Consumes(value = CustomMediaTypes.PASSWORD_MODIFICATION)
     public Response changePassword(@PathParam("userid") @NotNull final long userid, @NotNull @Valid UserPasswordModificationDTO passwordModification){
-        final User user = us.findById(userid).orElseThrow(UserNotFoundException::new);
-        us.changePassword(userid,passwordModification.getOldPassword(), passwordModification.getNewPassword());
+        us.changePassword(userid, passwordModification.getOldPassword(), passwordModification.getNewPassword());
         return Response.ok().build();
     }
 

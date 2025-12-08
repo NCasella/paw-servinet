@@ -20,6 +20,7 @@ public class BusinessServiceImpl implements BusinessService{
     private final UserService userService;
     private final EmailService emailService;
     private final Logger LOGGER = LoggerFactory.getLogger(BusinessServiceImpl.class);
+    private static final int PAGE_SIZE=10;
 
     @Autowired
     public BusinessServiceImpl(final BusinessDao businessDao, final ServiceService serviceService,
@@ -29,6 +30,7 @@ public class BusinessServiceImpl implements BusinessService{
         this.userService = userService;
         this.emailService = emailService;
     }
+
     @Transactional(readOnly = true)
     @Override
     public Optional<Business> findById(long id) {
@@ -43,41 +45,78 @@ public class BusinessServiceImpl implements BusinessService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Business> findByAdminId(User admin){
-        return businessDao.findByUser(admin);
+    public PagedList<Business> getAllBusinesses(int page) {
+        List<Business> businesses = businessDao.getAllBusinesses(page, PAGE_SIZE);
+        return PagedList.of(businesses, getBusinessesCount());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PagedList<Business> getBusinessesByUser(long userId, int page) {
+        userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        List<Business> businesses = businessDao.getBusinessesByUser(userId, page, PAGE_SIZE);
+        int businessesCount = getBusinessesCountByUser(userId);
+        return PagedList.of(businesses, businessesCount);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getBusinessesCount() {
+        return businessDao.getBusinessesCount();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getBusinessesCountByUser(long userId) {
+        userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        return businessDao.getBusinessesCountByUser(userId);
     }
 
     @Transactional
     @Override
-    public Optional<String> getBusinessEmail(long businessid) {
-        return businessDao.getBusinessEmail(businessid);
+    public Optional<String> getBusinessEmail(long businessId) {
+        return businessDao.getBusinessEmail(businessId);
     }
 
     @Transactional
     @Override
-    public void changeBusinessEmail(long businessId, String value){
+    public void changeBusinessEmail(long businessId, String value) {
+        findById(businessId).orElseThrow(BusinessNotFoundException::new);
         businessDao.changeBusinessEmail(businessId,value);
     }
+
     @Transactional
     @Override
     public void changeBusinessLocation(long businessId,String value){
+        findById(businessId).orElseThrow(BusinessNotFoundException::new);
         businessDao.changeBusinessLocation(businessId,value);
     }
+
     @Transactional
     @Override
-    public void changeBusinessTelephone(long businessId,String value){
+    public void changeBusinessTelephone(long businessId,String value) {
+        findById(businessId).orElseThrow(BusinessNotFoundException::new);
         businessDao.changeBusinessTelephone(businessId,value);
     }
+
     @Transactional
     @Override
-    public void deleteBusiness(long businessid){
+    public void editBusiness(long businessId, String email, String location, String telephone) {
+        changeBusinessEmail(businessId, email);
+        changeBusinessLocation(businessId, location);
+        changeBusinessTelephone(businessId, telephone);
+    }
 
-        final Business business = findById(businessid).orElseThrow(BusinessNotFoundException::new);
-        List<Service> servicesList = serviceService.getAllBusinessServices(businessid);
+    @Transactional
+    @Override
+    public void deleteBusiness(long businessId) {
+
+        final Business business = findById(businessId).orElseThrow(BusinessNotFoundException::new);
+        List<Service> servicesList = serviceService.getAllBusinessServices(businessId);
             for ( Service service : servicesList)
                 serviceService.delete(service, business,false);
 
-        boolean isStillProvider = businessDao.deleteBusiness(businessid);
+        boolean isStillProvider = businessDao.deleteBusiness(businessId);
         User user = userService.findById(business.getUserId()).orElseThrow(UserNotFoundException::new);
         if (!isStillProvider) {
             userService.revokeProviderRole(user);
@@ -87,7 +126,7 @@ public class BusinessServiceImpl implements BusinessService{
 
     @Transactional
     @Override
-    public Business createBusiness(String businessName, long userId, String telephone, String email, String location){
+    public Business createBusiness(String businessName, long userId, String telephone, String email, String location) {
         Business business = businessDao.createBusiness(businessName,userId,telephone,email,location);
         User user= userService.findById(userId).orElseThrow(UserNotFoundException::new);
         userService.makeProvider(user);

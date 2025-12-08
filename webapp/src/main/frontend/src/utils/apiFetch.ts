@@ -4,6 +4,11 @@ export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
+export interface TResponse {
+  headers: Headers,
+  body: string
+}
+
 interface FetchOptions<TBody> {
   method?: HttpMethod;
   body?: TBody;
@@ -16,6 +21,11 @@ export interface FetchError extends Error {
   status?: number;
 }
 
+export function isFetchError(e: unknown): e is FetchError {
+  return typeof e === "object" && e !== null && "status" in e;
+}
+
+
 export async function apiFetch<TResponse = any, TBody = any>(
   url: string,
   options: FetchOptions<TBody> = {}
@@ -25,13 +35,13 @@ export async function apiFetch<TResponse = any, TBody = any>(
     body,
     contentType,
     headers = {},
-    withAuth = true
+    withAuth = true 
   } = options;
 
   let mediaTypeHeader = method=="GET"? "Accept" : "Content-Type"
 
   const finalHeaders: Record<string, string> = {
-    mediaTypeHeader: contentType
+    [mediaTypeHeader]: contentType
       ? `application/vnd.servinet.${contentType}.v1+json`
       : "application/json" ,
     ...headers
@@ -56,12 +66,22 @@ console.log( BASE_URL+url)
     throw err;
   }
 
-  // Try parsing JSON, but allow empty responses (204)
-  try {
-    return await response.json();
-  } catch {
-    return {} as TResponse;
+  const text = await response.text();
+  let parsed: TResponse | null = null;
+
+  if (text) {
+    try {
+      parsed = JSON.parse(text) as TResponse;
+    } catch {
+      // body no era JSON, lo dejamos en null
+      parsed = null;
+    }
   }
+
+  return {
+    headers: response.headers,
+    body: parsed
+  } as TResponse;
 }
 
 

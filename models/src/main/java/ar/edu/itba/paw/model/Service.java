@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.exceptions.InvalidOperationException;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -92,6 +93,10 @@ public class Service extends BasicService {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public boolean hasNeighbourhoodAvailable(Neighbourhoods neighbourhood) {
+        return neighbourhoodAvailable.stream().anyMatch((nbservices -> nbservices.getNeighbourhood().equals(neighbourhood.getValue())));
     }
 
     public List<String> getNeighbourhoodAvailable() {

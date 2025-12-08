@@ -14,6 +14,6 @@ import java.net.URI;
 public class UserLinks {
     private URI businessesOwned;
     private URI appointmentsRequested;
-    private URI profilePicture;
+    private URI questionsToRespond;
     private URI self;
 }

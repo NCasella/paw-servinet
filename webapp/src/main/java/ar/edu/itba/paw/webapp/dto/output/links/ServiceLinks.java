@@ -16,4 +16,5 @@ public class ServiceLinks {
     private URI questions;
     private URI reviews;
     private URI self;
+    private URI image;
 }

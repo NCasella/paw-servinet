@@ -15,7 +15,7 @@
         <h2><spring:message code="businesses.my-businesses"/></h2>
         <div class="flex center-vertically">
             <c:if test="${not empty businessList}" >
-                <a href="${urlCreateBusiness}" class="none-decoration mr">
+                <a href="${urlCreateBusiness}" cl   ass="none-decoration mr">
                     <button class="btn center-vertically"><i class="material-icons">storefront</i> <spring:message code="businesses.add-business"/></button>
                 </a>
                 <a href="${pageContext.request.contextPath}/negocios/turnos/?confirmados=true" class="none-decoration mr">

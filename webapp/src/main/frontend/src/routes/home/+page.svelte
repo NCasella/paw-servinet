@@ -1,1 +1,0 @@
-<h1>BOM DIA MININA</h1>

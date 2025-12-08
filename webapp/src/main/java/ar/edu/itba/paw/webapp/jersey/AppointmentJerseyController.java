@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.jersey;
 
 import ar.edu.itba.paw.model.Appointment;
 import ar.edu.itba.paw.model.AppointmentStatus;
+import ar.edu.itba.paw.model.Neighbourhoods;
 import ar.edu.itba.paw.model.PagedList;
 import ar.edu.itba.paw.model.exceptions.*;
 import ar.edu.itba.paw.services.AppointmentService;
@@ -21,7 +22,9 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -93,13 +96,17 @@ public class AppointmentJerseyController {
         final List<AppointmentDto> allAppointments = pagedList.getList().stream()
                 .map(a -> AppointmentDto.fromAppointment(a,uriInfo) ).collect(Collectors.toList());
 
-        return PagedListResponse.generate(allAppointments,page,pagedList.getTotalElements(),uriInfo, AppointmentDto.class);
+        return PagedListResponse.generate(allAppointments,page,pagedList.getTotalElements(),uriInfo, AppointmentDto.class,request);
     }
 
     @POST
     @Consumes(value = {CustomMediaTypes.APPOINTMENT_CREATION})
     public Response createAppointment(@Valid final AppointmentCreationDTO appointmentCreationDto){
-        Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription());
+        Optional<Neighbourhoods> optionalNeighbourhood = Optional.empty();
+        if (appointmentCreationDto.getNeighborhood() != null &&  !appointmentCreationDto.getNeighborhood().isBlank())
+            optionalNeighbourhood = Optional.of(Neighbourhoods.fromName(appointmentCreationDto.getNeighborhood())) ;
+
+        Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription(), optionalNeighbourhood );
         return Response.created(
                 uriInfo.getAbsolutePathBuilder().path(String.valueOf(app.getId())).build()
                 ).build();
@@ -130,6 +137,8 @@ public class AppointmentJerseyController {
     public Response changeAppointmentStatus(@PathParam("appointmentid")final long appointmentId,final AppointmentStatusDTO appointmentStatusDTO) {
         if (!appointmentStatusDTO.hasValidStatus() || appointmentStatusDTO.hasFinished() || appointmentStatusDTO.isPending() )
             throw new InvalidOperationException("Invalid status change");
+        if ( !authControl.isProvider() && appointmentStatusDTO.isConfirmed() )
+            throw new ForbiddenOperationException("Invalid status change");
         appointmentService.changePendingAppointmentStatus(appointmentId,appointmentStatusDTO.getStatusEnum());
         return Response.noContent().build();
     }

@@ -6,6 +6,8 @@ import ar.edu.itba.paw.webapp.auth.filters.AuthEntryPoint;
 import ar.edu.itba.paw.webapp.auth.filters.AuthFilter;
 import ar.edu.itba.paw.webapp.auth.filters.DeniedEntryPoint;
 import ar.edu.itba.paw.webapp.auth.filters.JwtFilter;
+import ar.edu.itba.paw.webapp.auth.AuthorizationDecider;
+import ar.edu.itba.paw.webapp.auth.filters.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +32,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @EnableWebSecurity
@@ -46,16 +47,14 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     @Autowired
     private AuthFilter basicAuthFilter;
+    @Autowired
+    private JwtRefreshFilter jwtRefreshFilter;
 
     @Value("${SPA_BASE_URL}")
     private String SPA_ORIGIN;
-/*
-    @Value("${rememberMe.key}")
-    private String rememberMeKey;
-*/
-    @Autowired
-    private ServinetAuthControl authControl;
 
+    @Autowired
+    private AuthorizationDecider authDecider;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -73,63 +72,21 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable() // Disable CSRF for APIs
                 .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint()).accessDeniedHandler(new DeniedEntryPoint()).and()
                 .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtRefreshFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").permitAll()
-                .requestMatchers("/api/users/{userId}").access(authControl::isCurrentUser)
-                .requestMatchers("/api/users").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authDecider::canViewUserContactInfo)
+                .requestMatchers("/api/users/{userId:\\d+}").access(authDecider::isCurrentUser)
                 .requestMatchers(HttpMethod.GET,"/api/businesses/{businessId:\\d+}").permitAll()
-                .requestMatchers("/api/businesses/{businessId:\\d+}","/api/businesses/{businessId:\\d+}/statistics").access(authControl::isCurrentUserBusinessOwner)
+                .requestMatchers("/api/businesses/{businessId:\\d+}").access(authDecider::isCurrentUserBusinessOwner)
                 .requestMatchers(HttpMethod.POST,"/api/services/{serviceId:\\d+}/questions","/api/services/{serviceId:\\d+}/reviews").hasRole("USER")
                 .requestMatchers(HttpMethod.GET,"/api/services/**").permitAll()
-                .requestMatchers("/api/services/{serviceId:\\d++}").access(authControl::canChangeService)
-                .requestMatchers("/api/appointments/{appointmentId:\\d+}").access(authControl::canViewAppointment)
+                .requestMatchers("/api/services/{serviceId:\\d++}").access(authDecider::canChangeService)
+                .requestMatchers(HttpMethod.GET,"/api/appointments").access(authDecider::canViewAppointmentList)
+                .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
                 .requestMatchers("/api/").permitAll();
                 //.requestMatchers("/**").authenticated();
 
-       /*        .and()
-                .authorizeRequests()
-                .requestMatchers("/login", "/registrarse", "/olvide-mi-clave", "/restablecer-clave/**", "/verificar-cuenta/**").anonymous()
-                .requestMatchers("/editar-opinion/{serviceID:\\d+}/{ratingId:\\d+}").access("hasRole('USER') && @servinetAuthControl.isRatingOwner(#ratingId)")
-                .requestMatchers("/perfil", "/contratar-servicio/{serviceId:\\d+}", "/preguntar/**", "/opinar/**").hasRole("USER")
-                .requestMatchers("/negocio/{businessID:\\d+}/turnos","/negocio/{businessID:\\d+}/estadisticas", "/borrar-negocio/{businessID:\\d+}", "/crear-servicio/{businessID:\\d+}", "/{businessID:\\d+}/editar-negocio").access(" hasRole('BUSINESS') && @servinetAuthControl.isBusinessOwner(#businessID,@servinetAuthControl.currentUser.get().userId)")
-                .requestMatchers("/borrar-servicio/{serviceId:\\d+}", "/editar-servicio/{serviceId:\\d+}").access("hasRole('BUSINESS') && @servinetAuthControl.isServiceOwner(#serviceId)")
-                .requestMatchers("/rechazar-turno/{appointmentId:\\d+}","/aceptar-turno/{appointmentId:\\d+}", "/negocio/solicitud-turno/{appointmentId:\\d+}").access("hasRole('BUSINESS') && @servinetAuthControl.isAdminAppointment(#appointmentId)")
-                .requestMatchers("/turno/{serviceId:\\d+}/{appointmentId:\\d+}", "/cancelar-turno/{appointmentId:\\d+}").access("hasRole('USER') && (@servinetAuthControl.isUserAppointment(#appointmentId) || @servinetAuthControl.isAdminAppointment(#appointmentId))")
-                .requestMatchers("/negocios/**").hasRole("BUSINESS")
-                .requestMatchers("/servicios/**").permitAll()
-                .requestMatchers("/servicio/**").permitAll()
-                .requestMatchers("/negocio/{businessID:\\d+}").permitAll()
-                .requestMatchers("/negocio/opiniones/{businessID:\\d+}/**").permitAll()
-                .requestMatchers("/").permitAll().
-                requestMatchers("/**").authenticated().and()
-            .formLogin()
-                .loginPage("/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/", false).failureHandler((request,response,exception)-> {
-                    String url;
-                    if (exception instanceof DisabledException) {
-                        url="/login?notVerified";
-                    }else{
-                        url="/login?error";
-                    }
-                    response.sendRedirect(request.getContextPath()+url);
-                }) .and()
-            .rememberMe()
-                .userDetailsService(userDetailsService)
-                .rememberMeParameter("remember-me").key(rememberMeKey)
-                .tokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(6)).and()
-            .logout().logoutUrl("/logout").logoutSuccessUrl("/login").and()
-                .exceptionHandling().accessDeniedHandler((request,response,accessDeniedException) ->{
-                    if (request.getServletPath().contains("/negocios")) {
-                        response.sendRedirect(request.getContextPath()+"/registrar-negocio");
-                    }else {
-                        response.sendRedirect(request.getContextPath()+"/403");
-                    }
-                }).and()
-            .csrf().disable();
-            */
     }
 
     @Override

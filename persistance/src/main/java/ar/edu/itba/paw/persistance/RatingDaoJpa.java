@@ -21,7 +21,42 @@ public class RatingDaoJpa implements RatingDao {
     private EntityManager em;
 
     @Override
-    public List<Rating> getAllRatings(long serviceId, int page, int pageSize, RatingsFilters filter) {
+    public List<Rating> getAllRatings(int page, int pageSize, RatingsFilters filter) {
+
+        String orderBy = "";
+        if (filter != null) {
+            String column = filter.getType();
+            String direction = filter.getOrder();
+            orderBy = " ORDER BY " + column + " " + direction;
+        }
+
+        Query nativeQuery = em.createNativeQuery(
+                "SELECT ratingid FROM ratings" + orderBy
+        );
+        nativeQuery.setFirstResult((page - 1) * pageSize);
+        nativeQuery.setMaxResults(pageSize);
+
+        @SuppressWarnings("unchecked")
+        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream())
+                .map(Integer::longValue)
+                .toList();
+
+        if (idList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        TypedQuery<Rating> query = em.createQuery(
+                "SELECT r FROM Rating r WHERE r.id IN :idList" +
+                        (filter != null ? " ORDER BY r." + filter.getType() + " " + filter.getOrder() : ""),
+                Rating.class
+        );
+
+        query.setParameter("idList", idList);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Rating> getRatingsByService(long serviceId, int page, int pageSize, RatingsFilters filter) {
 
         String orderBy = "";
         if (filter != null) {
@@ -57,7 +92,17 @@ public class RatingDaoJpa implements RatingDao {
     }
 
     @Override
-    public int getAllRatingsCount(long serviceId, RatingsFilters filter) {
+    public int getAllRatingsCount(RatingsFilters filter) {
+        Query nativeQuery = em.createNativeQuery(
+                "SELECT COUNT(*) FROM ratings"
+        );
+
+        Number count = (Number) nativeQuery.getSingleResult();
+        return count.intValue();
+    }
+
+    @Override
+    public int getRatingsCountByService(long serviceId, RatingsFilters filter) {
         Query nativeQuery = em.createNativeQuery(
                 "SELECT COUNT(*) FROM ratings WHERE serviceid = :serviceid"
         );
@@ -66,7 +111,6 @@ public class RatingDaoJpa implements RatingDao {
         Number count = (Number) nativeQuery.getSingleResult();
         return count.intValue();
     }
-
 
     @Override
     public Optional<Rating> findById(long id) {

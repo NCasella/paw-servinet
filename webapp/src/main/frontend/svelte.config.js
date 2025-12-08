@@ -29,7 +29,8 @@ const config = {
 			$utils: 'src/utils',
 			$services: 'src/services',
 			$stores: 'src/stores',
-			$models: 'src/models'
+			$models: 'src/models',
+			$icons: 'src/lib/components/global/Icon.svelte'
 		}
   },
 };
