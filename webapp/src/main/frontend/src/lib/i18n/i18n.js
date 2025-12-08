@@ -3,6 +3,8 @@ import { writable, derived } from "svelte/store";
 import en from "./messages-en";
 import es from "./messages-es";
 
+const DEFAULT_LANG = "en"
+
 export const translations = {
   en,
   es,
@@ -47,8 +49,6 @@ export function resetLanguage() {
 export const t = derived(locale, ($locale) => (key, vars = {}) =>
   translate($locale, key, vars)
 );
-
-const DEFAULT_LANG = "en"
 
 function getNavLanguage() {
   var userLang = navigator.language || navigator.userLanguage
