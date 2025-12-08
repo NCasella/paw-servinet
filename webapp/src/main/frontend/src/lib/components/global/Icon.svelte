@@ -7,6 +7,7 @@ import Business from 'virtual:icons/material-symbols/store';
 import Phone from 'virtual:icons/material-symbols/call';
 import Notification from 'virtual:icons/material-symbols/notifications';
 import Calendar from 'virtual:icons/material-symbols/calendar-today';
+import Add from 'virtual:icons/material-symbols/add-2';
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
   language: Language,
@@ -15,7 +16,8 @@ export const icons: Record<string, any> = {
   business: Business,
   phone: Phone,
   calendar: Calendar,
-  notification: Notification
+  notification: Notification,
+  add: Add
 };
 
 function iconFor(name: string) {

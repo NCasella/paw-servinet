@@ -30,7 +30,8 @@ const config = {
 			$services: 'src/services',
 			$stores: 'src/stores',
 			$models: 'src/models',
-			$icons: 'src/lib/components/global/Icon.svelte'
+			$icons: 'src/lib/components/global/Icon.svelte',
+			$i18: 'src/lib/i18n/i18n.js'
 		}
   },
 };
