@@ -18,15 +18,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiFunction;
 
 
 @Component
@@ -123,6 +120,7 @@ public class AuthFilter extends OncePerRequestFilter {
                     res.setHeader("Authorization-Refresh-Token", "Bearer " + refreshToken);
 
                     res.setStatus(HttpServletResponse.SC_OK);
+                    chain.doFilter(req,res);
                     return;
                 }
             }
