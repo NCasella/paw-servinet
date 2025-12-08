@@ -6,10 +6,10 @@
    import BigButton from '$lib/components/global/BigButton.svelte';
 	import type { Service } from '$models/Service';
 	import { getServiceById } from '$services/serviceService';
-    import { base } from '$app/paths';
+  import { base } from '$app/paths';
   
-    import { page } from '$app/stores';
-    import { InvalidUrlParamError } from '$models/exceptions/InvalidUrlParamError';
+  
+  import { InvalidUrlParamError } from '$models/exceptions/InvalidUrlParamError';
 	import { AppointmentForm, type AppointmentFormErrors } from '$models/forms/AppointmentCreationForm';
 	import { createAppointment } from '$services/appointmentService';
 	import { goto } from '$app/navigation';

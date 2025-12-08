@@ -8,23 +8,19 @@
 	import { isFetchError } from "$utils/apiFetch";
     import FormError from "$lib/components/global/forms/FormError.svelte"
 	import { createToaster } from "@skeletonlabs/skeleton-svelte";
-    
+  import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
 
 let postUrl, businessForm :BusinessForm, email =""
 const toaster = createToaster()
 let formErrors :BusinessFormErrors = {businessName:""}
 
-function handleSubmit() {
+async function handleSubmit() {
    formErrors  = businessForm.validateBusinessForm()
-   if (formErrors){
-    return
-}
-    createBusiness(businessForm)
-        .then( () => console.log("chi") ) //history.back() )
-        .catch( (e) => {
-            //if ( e instanceof FetchError)
-                throw Error
-        })
+    if (formErrors == null) return
+
+    const businessId = await createBusiness(businessForm)
+    goto(`${base}/businesses/${businessId}`)
 
 }
 
