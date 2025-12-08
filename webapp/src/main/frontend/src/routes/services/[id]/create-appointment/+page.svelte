@@ -7,7 +7,7 @@
 	import type { Service } from '$models/Service';
 	import { getServiceById } from '$services/serviceService';
   import { base } from '$app/paths';
-  
+  import { page } from '$app/state';
   
   import { InvalidUrlParamError } from '$models/exceptions/InvalidUrlParamError';
 	import { AppointmentForm, type AppointmentFormErrors } from '$models/forms/AppointmentCreationForm';
@@ -21,7 +21,7 @@
    
    onMount(async ()  => { 
     try {
-        serviceId = Number( $page.params.id)
+        serviceId = Number( page.params.id)
     } catch {throw new InvalidUrlParamError("id must be a number") }
         
     appointmentForm  = new AppointmentForm({serviceId});
