@@ -36,6 +36,9 @@ function translate(locale, key, vars) {
   return text;
 }
 
+export function setLanguage(lang) {
+  locale.set(lang)
+}
 
 export const t = derived(locale, ($locale) => (key, vars = {}) =>
   translate($locale, key, vars)

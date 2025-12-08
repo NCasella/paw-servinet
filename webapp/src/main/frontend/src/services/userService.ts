@@ -1,3 +1,4 @@
+import { setLanguage } from "$lib/i18n/i18n";
 import { User } from "$models/User"
 import { getUser, login, logout } from "$stores/userStore"
 import { GET } from "$utils/apiFetch"
@@ -22,7 +23,8 @@ export async function getCurrentUser() :Promise<User> {
 
     currentUser = await getUserInfo(id);
     login(currentUser);
-    
+    setLanguage(currentUser.language);
+
     return currentUser;
 }
 

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.exceptions.InvalidAppointmentStatusException;
 import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 
 import java.util.Arrays;
@@ -22,7 +23,7 @@ public enum AppointmentStatus {
         return Arrays.stream(values())
                 .filter(s -> s.value.equalsIgnoreCase(value))
                 .findFirst()
-                .orElseThrow(InvalidFilterException::new);
+                .orElseThrow(InvalidAppointmentStatusException::new);
     }
 
     public String getValue() {
