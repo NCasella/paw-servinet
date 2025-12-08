@@ -6,32 +6,48 @@
 	import BigButton from "$lib/components/global/BigButton.svelte";
 	import { PricingTypes, PricingTypesInfo, PricingTypesList } from "$models/enums/PricingType";
 	import { DurationTypes, DurationTypesList } from "$models/enums/DurationType";
-	import { Categories, CategoriesList } from "$models/enums/CategoryType";
-	import { NeighbourhoodsList } from "$models/enums/Neighbourhoods";
+	import { Categories, CategoriesInfo, CategoriesList, CategoriesTypeList } from "$models/enums/CategoryType";
+	import { NeighbourhoodsList, NeighbourhoodsMap } from "$models/enums/Neighbourhoods";
+	import { goto } from "$app/navigation";
+	import { base } from "$app/paths";
+	import { createService } from "$services/serviceService";
+	import { Business } from "$models/Business";
+	import { getParamIdFromUrl } from "$lib/navigation/pageInfo";
 
-    let serviceForm: ServiceForm = new ServiceForm();
+    let serviceForm: ServiceForm;
     let formErrors: ServiceFormErrors = {};
  
     const neighbourhoods = NeighbourhoodsList
-    const pricingTypes = PricingTypesList
     const durationTypes = DurationTypesList
     const categories = CategoriesList
     onMount(async () => {
        
-        //const
+      let businessId = getParamIdFromUrl()
+      serviceForm = new ServiceForm({businessId:businessId});
     })
 
     async function handleSubmit() {
-
-         formErrors = serviceForm.validateServiceForm()
-        if ( formErrors == null ) return
-
+        
+        formErrors = serviceForm.validateServiceForm()
+        if ( formErrors==null ) return
+        console.log(serviceForm)
+        const id = await createService( serviceForm )
+        goto(`${base}/services/${id}`)
     }
 
     function handleImageChange(){
 
     }
    
+    function toggleNeighbourhood(n: string) {
+    if (serviceForm.neighbourhoods.includes(n)) {
+      serviceForm.neighbourhoods = serviceForm.neighbourhoods.filter(x => x !== n);
+    } else {
+      serviceForm.neighbourhoods = [...serviceForm.neighbourhoods, n];
+    }
+  }
+
+
 </script>
 
 {#if serviceForm}
@@ -124,30 +140,55 @@
             {$t('input.service.noneHomeService')}
           {/if}
         </p>
+        {#if serviceForm.homeService}
+              <!-- barrios (multi-select) -->
+              <div class="space-y-1">
+                <label for="neighbourhoods" class="block text-sm font-medium">
+                  {$t('input.service.select-neighbourhood')}
+                </label>
+                <div class="flex flex-wrap gap-2">
+                  {#each neighbourhoods as n}
+                    <button
+                      type="button"
+                      class={`px-3 py-1 rounded-full border text-sm 
+                        ${serviceForm.neighbourhoods.includes(n)
+                          ? 'bg-primary-100 border-primary-600 text-primary-800'
+                          : 'bg-gray-100 border-gray-300 text-gray-600'
+                        }`}
+                      on:click={() => toggleNeighbourhood(n)}
+                    >
+                      {NeighbourhoodsMap[n] }
+                    </button>
+                  {/each}
+                </div>
 
-        <!-- Neighbourhoods / address -->
-        <div class="grid gap-3 sm:grid-cols-2">
-          <!-- barrios (multi-select) -->
-          <div class="space-y-1">
-            <label for="neighbourhoods" class="block text-sm font-medium">
-              {$t('input.service.location')}
-            </label>
-            <select
-              id="neighbourhoods"
-              name="neighbourhoods"
-              multiple
-              class="w-full border rounded-lg px-3 py-2 text-sm h-28"
-              bind:value={serviceForm.neighbourhoods}
-            >
-              {#each neighbourhoods as n}
-                <option value={n}>{n}</option>
-              {/each}
-            </select>
-            {#if formErrors.neighbourhoods}
-              <FormError errorMessage={formErrors.neighbourhoods} />
-            {/if}
-          </div>
-
+                {#if formErrors.neighbourhoods}
+                  <FormError errorMessage={formErrors.neighbourhoods} />
+                {/if}
+              </div>
+        {:else}
+          <!-- Neighbourhoods / address -->
+          <div class="grid gap-3 sm:grid-cols-2">
+            <!-- barrios (multi-select) -->
+            <div class="space-y-1">
+              <label for="neighbourhoods" class="block text-sm font-medium">
+                {$t('input.service.select-neighbourhood')}
+              </label>
+              <select
+                id="neighbourhoods"
+                name="neighbourhoods"
+                class="w-full border rounded-lg px-3 py-2 text-sm"
+                bind:value={serviceForm.neighbourhoods}
+              >
+                {#each neighbourhoods as n}
+                  <option value={n}>{n}</option>
+                {/each}
+              </select>
+              {#if formErrors.neighbourhoods}
+                <FormError errorMessage={formErrors.neighbourhoods} />
+              {/if}
+            </div>
+          
           <!-- dirección libre -->
           <div class="space-y-1">
             <label for="address" class="block text-sm font-medium">
@@ -165,7 +206,9 @@
               <FormError errorMessage={formErrors.address} />
             {/if}
           </div>
+
         </div>
+        {/if}
       </div>
 
       <!-- Precio -->
@@ -197,8 +240,10 @@
               class="w-full border rounded-lg px-3 py-2 text-sm"
               bind:value={serviceForm.pricingType}
             >
-              {#each pricingTypes as pt}
-                <option value={pt.value}>{$t(pt.codeMsg)}</option>
+              {#each PricingTypesList as type}
+                <option value={type}>
+                  {$t(PricingTypesInfo[type].codeMsg)}
+                </option>
               {/each}
             </select>
             {#if formErrors.pricingType}
@@ -207,11 +252,11 @@
           </div>
 
           <!-- Monto -->
-          <div class="space-y-1">
+          {#if serviceForm.pricingType!=PricingTypes.TBD}
+            <div class="space-y-1">
             <label for="price" class="block text-sm font-medium">
               {$t('input.service.price')}
             </label>
-            <!-- Podés ocultarlo según pricingType en el script -->
             <input
               id="price"
               name="price"
@@ -224,6 +269,8 @@
               <FormError errorMessage={formErrors.price} />
             {/if}
           </div>
+          {/if}
+          
         </div>
       </div>
 
@@ -238,8 +285,10 @@
           class="w-full border rounded-lg px-3 py-2 text-sm"
           bind:value={serviceForm.category}
         >
-          {#each categories as c}
-            <option value={c.value}>{$t(c.codeMsg)}</option>
+          {#each CategoriesTypeList as c}
+            <option value={c}>
+                  {$t(CategoriesInfo[c].codeMsg)}
+              </option>
           {/each}
         </select>
         {#if formErrors.category}

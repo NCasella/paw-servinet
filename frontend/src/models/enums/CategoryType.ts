@@ -79,3 +79,17 @@ export const CategoriesList = [
   CategoriesInfo.PELUQUERIA,
   CategoriesInfo.SALUD,
 ];
+
+export const CategoriesTypeList = [
+  Categories.LIMPIEZA,
+  Categories.BELLEZA,
+  Categories.ARREGLOS_CALIFICADOS,
+  Categories.MASCOTAS,
+  Categories.EXTERIORES,
+  Categories.EVENTOS_Y_CELEBRACIONES,
+  Categories.TRANSPORTE,
+  Categories.CONSULTORIA,
+  Categories.PELUQUERIA,
+  Categories.SALUD,
+];
+
