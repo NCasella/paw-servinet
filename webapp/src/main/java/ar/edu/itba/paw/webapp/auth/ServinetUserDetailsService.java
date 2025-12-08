@@ -18,8 +18,6 @@ import java.util.regex.Pattern;
 public class ServinetUserDetailsService implements UserDetailsService {
 
     private final UserService us;
-    private final Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2(a|y|b)?\\$\\d\\d\\$[./0-9A-Za-z]{53}");
-
 
     @Autowired
     public ServinetUserDetailsService(UserService us) {
@@ -31,17 +29,15 @@ public class ServinetUserDetailsService implements UserDetailsService {
         User user = us.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException( "no user for email" + email));
 
-        if(!BCRYPT_PATTERN.matcher(user.getPassword()).matches()){
-            us.changePassword(user.getUserId(),user.getPassword());
-            return loadUserByUsername(email);
-        }
-
         final Collection<GrantedAuthority> authorities = new HashSet<>();
-        //check if user is verified
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        if (us.isVerified(user.getUserId())){
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }else{
+            authorities.add(new SimpleGrantedAuthority("ROLE_UNVERIFIED_USER"));
+        }
         if(us.isProvider(user.getUserId()))
             authorities.add(new SimpleGrantedAuthority("ROLE_BUSINESS"));
-        return new ServinetAuthUserDetails(user.getEmail(), user.getPassword(), user.getUserId(), user.getIsVerified(),true,true,true, authorities);
+        return new ServinetAuthUserDetails(user.getEmail(), user.getPassword(), user.getUserId(), true,true,true,true, authorities);
     }
 
 

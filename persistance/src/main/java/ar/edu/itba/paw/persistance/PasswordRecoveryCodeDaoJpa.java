@@ -49,9 +49,10 @@ public class PasswordRecoveryCodeDaoJpa implements PasswordRecoveryCodeDao {
 
     @Override
     public void deleteCode(long userid) {
-        final PasswordRecoveryCode passwordRecoveryCode = getCodeByUserId(userid).orElse(null);
-        if (passwordRecoveryCode != null) {
-            em.remove(passwordRecoveryCode);
+        Optional<PasswordRecoveryCode> passwordRecoveryCode = getCodeByUserId(userid);
+        if (passwordRecoveryCode.isPresent()) {
+            em.remove(passwordRecoveryCode.get());
+            em.flush();
         }
     }
 

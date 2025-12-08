@@ -21,29 +21,25 @@ public class UserVerificationDaoJpa implements UserVerificationDao {
 
 
     @Override
-    public UserVerificationCode saveCodes(long userid, UUID tokenUrl, String verificationCode, LocalDateTime expirationDate) {
-         UserVerificationCode user= new UserVerificationCode(em.find(User.class, userid), tokenUrl, verificationCode, expirationDate);
+    public UserVerificationCode saveCodes(long userid, String verificationCode, LocalDateTime expirationDate) {
+         UserVerificationCode user= new UserVerificationCode(em.find(User.class, userid), verificationCode, expirationDate);
          em.persist(user);
          return user;
     }
 
     @Override
     public Optional<UserVerificationCode> getVerificationCodeByUserId(long userid) {
-        return em.createQuery("from UserVerificationCode u where u.requestedBy.userId = :userid",UserVerificationCode.class).setParameter("userid", userid).getResultStream().findFirst();
-    }
-    @Override
-    public Optional<UserVerificationCode> getVerificationCodeByTokenUrl(UUID tokenUrl) {
-        return em.createQuery("from UserVerificationCode as p where p.tokenUrl= :code", UserVerificationCode.class)
-                .setParameter("code", tokenUrl)
-                .getResultList().stream().findFirst();
+        return em.createQuery("from UserVerificationCode u where u.requestedBy.userId = :userid",
+                        UserVerificationCode.class)
+                .setParameter("userid", userid)
+                .getResultStream()
+                .findFirst();
     }
 
     @Override
     public void deleteCode(long userid) {
-        final UserVerificationCode userVerificationCode = getVerificationCodeByUserId(userid).orElse(null);
-        if (userVerificationCode!= null) {
-            em.remove(userVerificationCode);
-        }
+        getVerificationCodeByUserId(userid)
+                .ifPresent(em::remove);
     }
 
 }
