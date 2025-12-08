@@ -51,17 +51,17 @@
       {#if service.homeService}
         <!-- Select de barrio/zona -->
         <div class="space-y-1">
-          <label for="neighbourhood" class="block text-sm font-medium">
+          <label for="neighborhood" class="block text-sm font-medium">
             {$t('appointment.home-service')}
           </label>
           <p class="text-xs opacity-80">
             {$t('input.appointment-neighbourhood')}
           </p>
           <select
-            id="neighbourhood"
-            name="neighbourhood"
+            id="neighborhood"
+            name="neighborhood"
             class="w-full border rounded-lg px-3 py-2 text-sm"
-            bind:value={appointmentForm.neighbourhood}
+            bind:value={appointmentForm.neighborhood}
           >
             {#each service.neighbourhoods ?? [] as neighbour}
               <option value={neighbour}>{neighbour}</option>
@@ -80,31 +80,6 @@
             name="location"
             type="text"
             class="w-full border rounded-lg px-3 py-2 text-sm"
-            placeholder={$t('input.address')}
-            bind:value={appointmentForm.address}
-          />
-          {#if formErrors.address}
-            <FormError errorMessage={formErrors.address} />
-          {/if}
-        </div>
-      {:else}
-        <!-- Servicio en local / ubicación fija -->
-        <div class="space-y-1">
-          <p class="text-sm font-medium">
-            {$t('appointment.location')} {service.address}
-          </p>
-        </div>
-
-        <!-- Campo location “informativo” (como en el JSP) -->
-        <div class="space-y-1">
-          <label for="location" class="block text-sm font-medium">
-            {$t('address')}
-          </label>
-          <input
-            id="location"
-            name="location"
-            type="text"
-            class="w-full rounded-lg px-3 py-2 text-sm border border-dashed"
             placeholder={$t('input.address')}
             bind:value={appointmentForm.address}
           />

@@ -33,6 +33,6 @@ public class AppointmentCreationDTO {
 
     @Override
     public int hashCode(){
-        return Objects.hash(userId,serviceId,startDate,address,description);
+        return Objects.hash(userId,serviceId,startDate,address,description,neighborhood);
     }
 }

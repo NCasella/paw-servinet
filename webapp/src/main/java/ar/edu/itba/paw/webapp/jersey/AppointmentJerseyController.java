@@ -103,7 +103,7 @@ public class AppointmentJerseyController {
     @Consumes(value = {CustomMediaTypes.APPOINTMENT_CREATION})
     public Response createAppointment(@Valid final AppointmentCreationDTO appointmentCreationDto){
         Optional<Neighbourhoods> optionalNeighbourhood = Optional.empty();
-        if (appointmentCreationDto.getNeighborhood() != null)
+        if (appointmentCreationDto.getNeighborhood() != null &&  !appointmentCreationDto.getNeighborhood().isBlank())
             optionalNeighbourhood = Optional.of(Neighbourhoods.fromName(appointmentCreationDto.getNeighborhood())) ;
 
         Appointment app = appointmentService.create(appointmentCreationDto.getServiceId(), appointmentCreationDto.getUserId(), appointmentCreationDto.getAddress(), appointmentCreationDto.getStartDate(),appointmentCreationDto.getDescription(), optionalNeighbourhood );

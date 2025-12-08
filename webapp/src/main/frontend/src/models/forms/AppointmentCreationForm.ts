@@ -2,7 +2,7 @@ export class AppointmentForm {
   startDate: string;
   address: string;
   description: string;
-  neighbourhood: string;
+  neighborhood: string;
   serviceId: number;
   userId?: number
 
@@ -10,13 +10,13 @@ export class AppointmentForm {
     startdate?: string;
     address?: string;
     description?: string;
-    neighbourhood?: string;
+    neighborhood?: string;
     serviceId: number;
   }) {
     this.startDate = data.startdate ?? "";
     this.address = data.address ?? "";
     this.description = data.description ?? "";
-    this.neighbourhood = data.neighbourhood ?? "";
+    this.neighborhood = data.neighborhood ?? "";
     this.serviceId = data.serviceId;
   }
 
