@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
-//import ar.edu.itba.paw.webapp.auth.filters.BasicAuthFilter;
+
 import ar.edu.itba.paw.webapp.auth.filters.AuthEntryPoint;
 import ar.edu.itba.paw.webapp.auth.filters.AuthFilter;
 import ar.edu.itba.paw.webapp.auth.filters.DeniedEntryPoint;
@@ -84,8 +83,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers("/api/services/{serviceId:\\d++}").access(authDecider::canChangeService)
                 .requestMatchers(HttpMethod.GET,"/api/appointments").access(authDecider::canViewAppointmentList)
                 .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
-                .requestMatchers("/api/").permitAll();
-                //.requestMatchers("/**").authenticated();
+                .requestMatchers(HttpMethod.PATCH,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
+                .requestMatchers("/api/").permitAll()
+                .requestMatchers("/**").authenticated();
 
     }
 
