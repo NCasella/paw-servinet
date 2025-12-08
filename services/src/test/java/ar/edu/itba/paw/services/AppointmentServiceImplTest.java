@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.exceptions.AppointmentAlreadyConfirmed;
-import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
-import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
-import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
+import ar.edu.itba.paw.model.exceptions.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -69,12 +67,12 @@ public class AppointmentServiceImplTest {
     @Test
     public void testCreate() {
         // 1. Precondiciones
-
-        Mockito.when(userService.findByEmail(Mockito.eq(EMAIL))).thenReturn(Optional.of(userAppointment));
-        Mockito.when(appointmentDao.create(Mockito.eq(service),Mockito.eq(userAppointment),Mockito.eq(STARTDATE),Mockito.any(),Mockito.eq(LOCATION),Mockito.eq(APPDESCRIPTION))).thenReturn(appointment);
+        service.setNeighbourhoodAvailable(List.of(new Nbservices(service,Neighbourhoods.ALMAGRO)));
+        Mockito.when(userService.findById(USERID)).thenReturn(Optional.of(userAppointment));
+        Mockito.when(appointmentDao.create(Mockito.eq(service),Mockito.any(),Mockito.eq(STARTDATE),Mockito.any(),Mockito.eq(LOCATION),Mockito.eq(DESCRIPTION))).thenReturn(appointment);
         Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(service));
         // 2. Ejecuta la class under test (una sola)
-        Appointment appointment = appointmentService.create(SERVICEID,USERID,LOCATION,STARTDATE,DESCRIPTION, Optional.empty());
+        Appointment appointment = appointmentService.create(SERVICEID,USERID,LOCATION,STARTDATE,DESCRIPTION, Optional.of(Neighbourhoods.ALMAGRO));
 
         // 3. Postcondiciones - assertions (todas las que sean necesarias)
         Assert.assertNotNull(appointment);
@@ -90,13 +88,13 @@ public class AppointmentServiceImplTest {
 
     }
 
-    @Test(expected = ServiceNotFoundException.class)
+    @Test(expected = InvalidOperationException.class)
     public void createAppointmentForNonExistentService(){
         Appointment appointment = appointmentService.create(SERVICEID,USERID,LOCATION,STARTDATE,DESCRIPTION, Optional.empty());
         Assert.fail();
     }
 
-    @Test(expected = UserNotFoundException.class)
+    @Test(expected = InvalidOperationException.class)
     public void createAppointmentForNonExistentUser(){
         Mockito.when(serviceDao.findById(Mockito.eq(SERVICEID))).thenReturn(Optional.of(service));
         Appointment appointment = appointmentService.create(SERVICEID,USERID,LOCATION,STARTDATE,DESCRIPTION, Optional.empty());
