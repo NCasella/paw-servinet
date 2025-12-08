@@ -18,6 +18,7 @@ import java.util.Objects;
 @Builder
 public class BusinessDto {
     private long businessId;
+    private long userId;
     private String businessName;
     private String email;
     private String telephone;
@@ -49,6 +50,7 @@ public class BusinessDto {
                 .build();
         return BusinessDto.builder()
                 .businessId(business.getBusinessid())
+                .userId(business.getUserId())
                 .address(business.getLocation())
                 .businessName(business.getName())
                 .email(business.getEmail())

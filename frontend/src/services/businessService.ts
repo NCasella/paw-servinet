@@ -19,3 +19,11 @@ export async function getUserBusinesses() : Promise<PagedResult<Business>> {
     
     return parsePagedResponse(response, Business)
 }
+
+export async function getBusinessById(businessId: number) : Promise<Business> {
+    const response = await GET(`businesses/${businessId}`,
+        {contentType: "business-info"}
+    )
+    console.log( JSON.stringify(response))
+    return Business.fromJson(response)
+}

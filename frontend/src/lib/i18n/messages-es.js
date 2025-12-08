@@ -81,6 +81,7 @@ export default {
   "service.additionalCharges": "Puede incluir costos adicionales",
   "service.image": "Imagen del servicio",
   "service.delete": "Eliminar servicio",
+  "service.delete-error": "No se pudo eliminar el servicio",
   "service.at-home": "A domicilio",
   "service.at-professional-house": "En el domicilio del profesional",
   "service.time": "{0} min",

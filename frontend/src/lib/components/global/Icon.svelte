@@ -8,6 +8,13 @@ import Phone from 'virtual:icons/material-symbols/call';
 import Notification from 'virtual:icons/material-symbols/notifications';
 import Calendar from 'virtual:icons/material-symbols/calendar-today';
 import Add from 'virtual:icons/material-symbols/add-2';
+import Location from 'virtual:icons/material-symbols/location-on';
+import Address from 'virtual:icons/material-symbols/location-away-rounded';
+import Timer from 'virtual:icons/material-symbols/timer-rounded';
+import Money from 'virtual:icons/material-symbols/attach-money-rounded';
+import Warning from 'virtual:icons/material-symbols/warning-rounded';
+import Star from 'virtual:icons/material-symbols/star-rounded';
+
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
   language: Language,
@@ -17,7 +24,13 @@ export const icons: Record<string, any> = {
   phone: Phone,
   calendar: Calendar,
   notification: Notification,
-  add: Add
+  add: Add,
+  location: Location,
+  address: Address,
+  timer: Timer,
+  money: Money,
+  warning: Warning,
+  star: Star,
 };
 
 function iconFor(name: string) {
