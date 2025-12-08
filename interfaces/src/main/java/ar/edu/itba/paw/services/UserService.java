@@ -20,6 +20,7 @@ public interface UserService {
 
     void changeUsername(long userid,String value);
     boolean isProvider(long userid);
+    boolean isVerified(long userid);
     void changeEmail(long userid,String value);
     void changeTelephone(long userid,String value);
 
@@ -27,5 +28,5 @@ public interface UserService {
     void changePassword(long userid,String oldPass, String newPass);
 
     void changeLocale(long userid);
-    boolean verifyUser(UUID tokenUrl, String verificationCode);
+    boolean verifyUser(long userid, String verificationCode);
 }

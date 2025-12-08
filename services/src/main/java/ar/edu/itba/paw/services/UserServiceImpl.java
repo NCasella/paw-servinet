@@ -51,6 +51,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
+    public boolean isVerified(long userid){
+        return findById(userid).orElseThrow(UserNotFoundException::new).getIsVerified();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public Optional<User> findById(long id) {
         return userDao.findById(id);
     }
@@ -97,10 +103,12 @@ public class UserServiceImpl implements UserService {
         String locale = LocaleContextHolder.getLocale().getLanguage();
 
         User user= userDao.create(username,name,surname, passwordEncoder.encode(password), email, telephone,false,locale);
-        //userVerificationService.sendVerificationCode(user);
+        userVerificationService.sendVerificationCode(user);
+        Set<GrantedAuthority> authorities= Set.of(new SimpleGrantedAuthority("ROLE_UNVERIFIED_USER"));
+        org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, authorities));
 
         return user;
-
     }
 
     @Transactional
@@ -162,9 +170,9 @@ public class UserServiceImpl implements UserService {
     }
     @Transactional
     @Override
-    public boolean verifyUser(UUID tokenUrl, String verificationCode){
-        if(userVerificationService.verifyUser(tokenUrl, verificationCode)) {
-            Optional<UserVerificationCode> userVerificationCode = userVerificationService.getUserVerificationCodeByTokenUrl(tokenUrl);
+    public boolean verifyUser(long userId, String verificationCode){
+        if(userVerificationService.verifyUser(userId, verificationCode)) {
+            Optional<UserVerificationCode> userVerificationCode = userVerificationService.getUserVerificationCodeByUserId(userId);
             if (userVerificationCode.isEmpty()){
                 return false;
             }
@@ -173,10 +181,13 @@ public class UserServiceImpl implements UserService {
             userDao.verifyUser(userid);
             userVerificationService.deleteCode(userid);
             Set<GrantedAuthority> authorities= Set.of(new SimpleGrantedAuthority("ROLE_USER"));
-            org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, authorities));return true;
+            org.springframework.security.core.userdetails.User userDetails =
+                    new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+            SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, authorities));
+            return true;
         }
-        //agregar cambio de roles
         return false;
     }
 }
