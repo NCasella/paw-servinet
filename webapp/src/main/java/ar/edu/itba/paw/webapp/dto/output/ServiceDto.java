@@ -78,8 +78,8 @@ public class ServiceDto {
                 .description(service.getDescription())
                 .duration(service.getDuration())
                 .price(service.getPrice())
-                .category(service.getCategory().getValue())
-                .pricingType(service.getPricing().getValue())
+                .category(service.getCategory().name())
+                .pricingType(service.getPricing().name())
                 .neighbourhoods(service.getNeighbourhoodAvailable().toArray(String[]::new))
                 .links(links)
                 .build();
