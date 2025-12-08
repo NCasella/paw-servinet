@@ -1,8 +1,9 @@
 package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
-import ar.edu.itba.paw.webapp.auth.filters.BasicAuthFilter;
+//import ar.edu.itba.paw.webapp.auth.filters.BasicAuthFilter;
 import ar.edu.itba.paw.webapp.auth.filters.AuthEntryPoint;
+import ar.edu.itba.paw.webapp.auth.filters.AuthFilter;
 import ar.edu.itba.paw.webapp.auth.filters.DeniedEntryPoint;
 import ar.edu.itba.paw.webapp.auth.filters.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
-    private BasicAuthFilter basicAuthFilter;
+    private AuthFilter basicAuthFilter;
 
     @Value("${SPA_BASE_URL}")
     private String SPA_ORIGIN;

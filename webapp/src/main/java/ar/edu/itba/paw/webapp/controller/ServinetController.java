@@ -59,9 +59,9 @@ public class ServinetController {
 
     @RequestMapping(path="/verificar-cuenta/{token}", method=RequestMethod.GET)
     public ModelAndView verifyAccountRequest(@PathVariable(value = "token")final String token, @ModelAttribute("ValidateUserForm") ValidateUserForm form) {
-        if (!userVerificationService.validateTokenUrl(UUID.fromString(token))){
-            return new ModelAndView("redirect:/login");
-        }
+        //if (!userVerificationService.validateTokenUrl(UUID.fromString(token))){
+        //    return new ModelAndView("redirect:/login");
+        //}
         return new ModelAndView("verifyAccount");
     }
     @RequestMapping(method=RequestMethod.POST,path = "/verificar-cuenta/{token}")
@@ -69,9 +69,9 @@ public class ServinetController {
         if (errors.hasErrors()){
             return verifyAccountRequest(token, form);
         }
-        if (us.verifyUser(UUID.fromString(token), form.getVerificationCode())){
-            return new ModelAndView("redirect:/perfil");
-        }
+        //if (us.verifyUser(UUID.fromString(token), form.getVerificationCode())){
+        //    return new ModelAndView("redirect:/perfil");
+        //}
         return new ModelAndView("redirect:/verificar-cuenta/"+token);
     }
 
