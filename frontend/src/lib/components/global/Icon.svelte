@@ -29,6 +29,8 @@ import Transport from 'virtual:icons/material-symbols/delivery-truck-speed-round
 import Consulting from 'virtual:icons/material-symbols/shield-question-rounded';
 import HairSalon from 'virtual:icons/material-symbols/health-and-beauty-rounded';
 import Health from 'virtual:icons/material-symbols/health-metrics-rounded';
+import ResponseArrow from 'virtual:icons/material-symbols/subdirectory-arrow-right-rounded';
+import Send from 'virtual:icons/material-symbols/send-rounded';
 
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
@@ -60,7 +62,9 @@ export const icons: Record<string, any> = {
   transport: Transport,
   consulting: Consulting,
   hairSalon: HairSalon,
-  health: Health
+  health: Health,
+  responseArrow: ResponseArrow,
+  send: Send,
 };
 
 function iconFor(name: string) {
