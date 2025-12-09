@@ -6,10 +6,10 @@ export interface FromJsonStatic<T> {
 
 export type PaginationLinks = {
   total?: number;
-  //first?: string;
-  //last?: string;
-  //next?: string;
-  //prev?: string;
+  first?: string;
+  last?: string;
+  next?: string;
+  prev?: string;
 };
 
 export type PagedResult<T> = {
@@ -37,25 +37,20 @@ function parseLinkHeader(header: string | null): PaginationLinks {
 
     const [, url, rel] = match;
 
-    switch (rel) {
-      //case 'first':
-      //  links.first = url;
-      //  break;
-      //case 'last':
-      //  links.last = url;
-      //  break;
-      //case 'next':
-      //  links.next = url;
-      //  break;
-      //case 'prev':
-      //  links.prev = url;
-      //  break;
-      case 'total':
-        const n = Number(url);
-        if (!Number.isNaN(n)) {
-          links.total = n;
-        }
-        break;
+    // si es total, viene como <9>; rel="total"
+    if (rel === "total") {
+      const n = Number(url);
+      if (!isNaN(n)) links.total = n;
+      continue;
+    }
+
+    const pageMatch = url.match(/page=(\d+)/);
+    if (!pageMatch) continue;
+
+    const pageNum = Number(pageMatch[1]);
+
+    if (!isNaN(pageNum)) {
+      links[rel as keyof PaginationLinks] = pageNum;
     }
   }
 
@@ -63,16 +58,15 @@ function parseLinkHeader(header: string | null): PaginationLinks {
 }
 
 export function parsePagedResponse<T>(
-  response: TResponse,
-  clazz: FromJsonStatic<T>
+    response: TResponse,
+    clazz: FromJsonStatic<T>
 ): PagedResult<T> {
-  const json = response.body
-    
-  // el back te devuelve directamente un array
-  const itemsRaw = Array.isArray(json) ? json : [];
-  const items = itemsRaw.map((item) => clazz.fromJson({body:item}) );
+  const json = response.body;
 
-  const linkHeader = response.headers.get('Link');
+  const itemsRaw = Array.isArray(json) ? json : [];
+  const items = itemsRaw.map((item) => clazz.fromJson({ body: item }));
+
+  const linkHeader = response.headers.get("Link");
   const links = parseLinkHeader(linkHeader);
 
   return { items, links };

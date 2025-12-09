@@ -495,7 +495,7 @@ export default {
   "pricing.perhour": "Per Hour",
   "pricing.total": "Total",
   "pricing.budget": "Budget",
-  "pricing.tbd": "To be arranged",
+  "pricing.tbd": "Price to be arranged",
 
   "rating.regular": "Regular",
   "rating.good": "Good",

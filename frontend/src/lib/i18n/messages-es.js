@@ -466,7 +466,7 @@ export default {
   "pricing.perhour": "Por hora",
   "pricing.total": "Total",
   "pricing.budget": "Producto",
-  "pricing.tbd": "A determinar",
+  "pricing.tbd": "Precio a determinar",
 
   "rating.regular": "Regular",
   "rating.good": "Bueno",
