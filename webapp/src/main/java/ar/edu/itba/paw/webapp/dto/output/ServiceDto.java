@@ -72,6 +72,7 @@ public class ServiceDto {
 
         return ServiceDto.builder()
                 .serviceId(service.getId())
+                .businessId(service.getBusinessid())
                 .serviceName(service.getName())
                 .homeService(service.getHomeService())
                 .address(service.getLocation())
