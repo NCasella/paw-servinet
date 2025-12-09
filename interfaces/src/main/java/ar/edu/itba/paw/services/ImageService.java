@@ -6,6 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 public interface ImageService {
-    Optional<ImageModel> getImageById(long id);
+    Optional<ImageModel> getImageById(Long id);
     ImageModel addImage(byte[] imageBytes);
 }
