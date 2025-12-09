@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public @interface EmailNotUsed {
 
-   String message() default "{ar.edu.itba.paw.webapp.validation.EmailNotUsedValidator.message}";
+   String message() default "EmailNotUsed.registerUserForm.email";
 
 
    Class<?>[] groups() default {};
