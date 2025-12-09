@@ -52,9 +52,10 @@
 
   import ConfirmModal from '$lib/components/global/modal/ConfirmModal.svelte';
 	import { boolean, type number } from "zod";
-	import { getPageNumFromParam } from "$lib/navigation/pageInfo";
+	import { getPageNumFromParam, getPath } from "$lib/navigation/pageInfo";
 	import Title from "$lib/components/global/Title.svelte";
 	import Icon from "$icons";
+	import NoResults from "$lib/components/global/pagedResults/NoResults.svelte";
 
   let showCancelModal = false;
   let selectedAppointment: Appointment | null = null;
@@ -181,6 +182,9 @@ notConfirmed = !confirmed;
         <AppointmentCard appointment={app} user={user} service={getService(app)} status={status} business={getBusiness(app)}   onRequestCancel={openCancel}
            onAccept={acceptAppointment} view={AppointmentView.USER}  />    
     {/each}
+    {#if appoinmentList.items.length==0}
+        <NoResults actionUrl={getPath("/")}  actionLabel={$t("services.look-for-services")}/>
+    {/if}
 {:else}
  error
 {/if}
