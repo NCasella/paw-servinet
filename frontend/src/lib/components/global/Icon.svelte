@@ -14,6 +14,8 @@ import Timer from 'virtual:icons/material-symbols/timer-rounded';
 import Money from 'virtual:icons/material-symbols/attach-money-rounded';
 import Warning from 'virtual:icons/material-symbols/warning-rounded';
 import Star from 'virtual:icons/material-symbols/star-rounded';
+import LeftArrow from 'virtual:icons/material-symbols/arrow-left-alt-rounded';
+import RightArrow from 'virtual:icons/material-symbols/arrow-right-alt-rounded';
 
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
@@ -31,6 +33,8 @@ export const icons: Record<string, any> = {
   money: Money,
   warning: Warning,
   star: Star,
+  leftArrow: LeftArrow,
+  rightArrow: RightArrow
 };
 
 function iconFor(name: string) {
