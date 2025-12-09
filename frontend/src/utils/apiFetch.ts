@@ -43,7 +43,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
   const finalHeaders: Record<string, string> = {
     [mediaTypeHeader]: contentType
       ? `application/vnd.servinet.${contentType}.v1+json`
-      : "application/json" ,
+      : "multipart/form-data" ,
     ...headers
   };
 

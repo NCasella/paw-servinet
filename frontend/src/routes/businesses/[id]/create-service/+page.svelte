@@ -19,7 +19,8 @@
  
     const neighbourhoods = NeighbourhoodsList
     const durationTypes = DurationTypesList
-    const categories = CategoriesList
+    let image: File | null = null;
+    
     onMount(async () => {
        
       let businessId = getParamIdFromUrl()
@@ -31,12 +32,16 @@
         formErrors = serviceForm.validateServiceForm()
         if ( formErrors==null ) return
         console.log(serviceForm)
-        const id = await createService( serviceForm )
+        const id = await createService( serviceForm, image )
         goto(`${base}/services/${id}`)
     }
 
-    function handleImageChange(){
 
+
+    function handleImageChange(e: Event) {
+      const target = e.target as HTMLInputElement;
+      const files = target.files;
+      image = files && files.length > 0 ? files[0] : null;
     }
    
     function toggleNeighbourhood(n: string) {
