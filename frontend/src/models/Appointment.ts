@@ -30,7 +30,6 @@ export class Appointment {
 
   static fromJson(response: TResponse): Appointment {
     const obj = response.body;
-    console.log("Appointment fromJson:", obj);
 
     if (isAppointment(obj)) {
       return new Appointment(obj);
