@@ -18,7 +18,7 @@ export async function postImage(image:File | null, defaultImageUrl:string) {
 
 
 async function getDefaultAsFile(defaultImageUrl:string): Promise<File> {
-    defaultImageUrl = asset(`/images/default/${defaultImageUrl}.png`)
+    defaultImageUrl = "j" //asset(`/images/default/${defaultImageUrl}.png`)
     const blob = await fetch(defaultImageUrl).then(r => r.blob());
     return new File([blob], "default.png", { type: blob.type });
 }

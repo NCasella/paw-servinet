@@ -3,7 +3,6 @@
 	import { page } from "$app/stores";
 	import { Appointment } from "$models/Appointment";
 	import { AppointmentStatus, AppointmentView, getAppointmentStatus } from "$models/enums/AppointmentStatus";
-	import { base } from "$service-worker";
 	import { onMount } from "svelte";
     import type { PagedResult } from "$models/PagedList";
 	import { getCurrentUser } from "$services/userService";

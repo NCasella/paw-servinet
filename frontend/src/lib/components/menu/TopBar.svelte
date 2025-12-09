@@ -16,7 +16,7 @@
 		console.log(currentUser.profilePicture)
 		} catch {
 		currentUser = null;
-    }})
+    }})	
 
 
 	function isRouteActive(path: string): boolean {
