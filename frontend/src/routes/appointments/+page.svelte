@@ -17,7 +17,7 @@
 	import { getServiceBusinesses } from "$services/businessService";
     $: status = getAppointmentStatus( $page.url.searchParams.get('status'), AppointmentStatus.PENDING);
     
-    $: pageNum =  getPageNumFromParam()
+    let pageNum = 1//  getPageNumFromParam()
     let appoinmentList :PagedResult<Appointment>
     let user :User
     $: loading = true
@@ -33,7 +33,7 @@
         
         try {
             user = await getCurrentUser()
-            appoinmentList = await getAppointmentsPagedList(user.userId, status, AppointmentView.USER )
+            appoinmentList = await getAppointmentsPagedList(user.userId, status, AppointmentView.USER, pageNum )
             serviceList = await getAppointmentServices( appoinmentList.items ) 
             if ( status==AppointmentStatus.CONFIRMED)
                 businessList = await getServiceBusinesses(Object.values(serviceList))
@@ -56,6 +56,7 @@
 	import Title from "$lib/components/global/Title.svelte";
 	import Icon from "$icons";
 	import NoResults from "$lib/components/global/pagedResults/NoResults.svelte";
+	import PaginationControls from "$lib/components/global/pagedResults/PaginationControls.svelte";
 
   let showCancelModal = false;
   let selectedAppointment: Appointment | null = null;
@@ -112,6 +113,7 @@ notConfirmed = !confirmed;
         replaceState: false // evita agregar historial en el navegador
     });
     status = newStatus
+    pageNum = 1
     await loadData()
   }
   
@@ -182,6 +184,15 @@ notConfirmed = !confirmed;
         <AppointmentCard appointment={app} user={user} service={getService(app)} status={status} business={getBusiness(app)}   onRequestCancel={openCancel}
            onAccept={acceptAppointment} view={AppointmentView.USER}  />    
     {/each}
+    <PaginationControls
+    pagedList={appoinmentList}
+    page={pageNum}
+    onPageChange={(newPage) => {
+        pageNum = newPage;
+        loadData();
+    }}
+    />
+
     {#if appoinmentList.items.length==0}
         <NoResults actionUrl={getPath("/")}  actionLabel={$t("services.look-for-services")}/>
     {/if}

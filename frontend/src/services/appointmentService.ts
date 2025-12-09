@@ -19,8 +19,8 @@ export async function createAppointment(form: AppointmentForm) :Promise<number> 
 }
 
 
-export async function getAppointmentsPagedList(id: number, appointmentStatus: AppointmentStatus, view: AppointmentView ) : Promise<PagedResult<Appointment>> {
-    const response = await GET(`appointments?${view}=${id}&status=${appointmentStatus}`,
+export async function getAppointmentsPagedList(id: number, appointmentStatus: AppointmentStatus, view: AppointmentView, pageNum:number ) : Promise<PagedResult<Appointment>> {
+    const response = await GET(`appointments?${view}=${id}&status=${appointmentStatus}&page=${pageNum}`,
                                 { contentType: "appointment-list"}    )
     return parsePagedResponse( response, Appointment)
 }

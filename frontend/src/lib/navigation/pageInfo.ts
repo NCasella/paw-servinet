@@ -13,12 +13,12 @@ export function getParamIdFromUrl() :number {
     
 }
 
-const DEFAULT_PAGE_VALUE = 1
+const DEFAULT_PAGE_VALUE :number = 1
 
 /* Default value = 1 */
 export function getPageNumFromParam() :number {
     try {
-        const pageNum = Number( page.url.searchParams.get('status'))
+        const pageNum = Number( page.url.searchParams.get('page')) ?? 1
         return pageNum
     } catch {
         return DEFAULT_PAGE_VALUE
