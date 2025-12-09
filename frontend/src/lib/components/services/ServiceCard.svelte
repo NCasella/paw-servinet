@@ -17,10 +17,9 @@
 
     let pricingEnum: PricingTypes = PricingTypes[service.pricingType as keyof typeof PricingTypes];
     let categoryEnum: Categories = Categories[service.category as keyof typeof Categories];
-
 </script>
 
-<a class="block bg-surface-100 rounded-xl p-3 shadow-md hover:bg-primary-100 transition cursor-pointer no-underline text-black mb-5"
+<a class="block bg-surface-100 rounded-xl p-3 shadow-md hover:bg-surface-200 transition cursor-pointer no-underline text-black mb-5"
    href="{base}/services/{service.serviceId}"
 >
     <div class="flex gap-4">

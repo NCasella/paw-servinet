@@ -21,6 +21,7 @@
     import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
     import {get} from "svelte/store";
     import {getImage} from "$services/imageService";
+    import Spinner from "$lib/components/global/Spinner.svelte";
 
     let serviceId :number
     let loading = true
@@ -64,7 +65,9 @@
     }
 </script>
 
-{#if !loading}
+{#if loading}
+    <Spinner/>
+{:else}
     <header>
         <Title text={service.serviceName}/>
     </header>
