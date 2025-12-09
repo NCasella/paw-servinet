@@ -19,12 +19,13 @@
     import BigButtonSecondary from "$lib/components/global/BigButtonSecondary.svelte";
     import BigButtonWarning from "$lib/components/global/BigButtonWarning.svelte";
     import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-    import {isFetchError} from "$utils/apiFetch";
     import {get} from "svelte/store";
+    import {getImage} from "$services/imageService";
 
     let serviceId :number
     let loading = true
     let isOwner :boolean
+    let imageUrl: string = "";
     let service :Service
     let user :User
     let business :Business
@@ -43,6 +44,7 @@
             user = null;
         }
         service = await getServiceById(serviceId);
+        imageUrl = await getImage(service.imageId);
         business = await getBusinessById(service.businessId);
         isOwner = user? user.userId === business.userId : false;
 
@@ -98,7 +100,8 @@
         </div>
 
         <div class="flex gap-8 mt-6">
-            <div class="w-72">
+            <div class="w-120 rounded-lg overflow-hidden">
+                <img src={imageUrl} alt="Service image" />
             </div>
 
             <div class="flex-1">
