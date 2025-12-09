@@ -62,13 +62,15 @@ public class ServiceDto {
                 .path(String.valueOf(service.getImageId()))
                 .build();
 
-        ServiceLinks links = ServiceLinks.builder()
+        ServiceLinks.ServiceLinksBuilder linksBuilder = ServiceLinks.builder()
                 .self(self)
                 .business(business)
                 .questions(questions)
-                .reviews(reviews)
-                .image(image)
-                .build();
+                .reviews(reviews);
+        if(service.getImageId()!=null && service.getImageId()!=-1){
+            linksBuilder.image(image);
+        }
+        ServiceLinks links=linksBuilder.build();
 
         return ServiceDto.builder()
                 .serviceId(service.getId())

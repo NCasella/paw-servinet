@@ -71,8 +71,8 @@ public class ServiceServiceImplTest {
 
         Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.of(mockBusiness));
        Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,(long)-1)).thenReturn(service);
-        Mockito.when(imageService.getImageById(-1)).thenReturn(Optional.of(new ImageModel(-1,new byte[2])));
-       Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1);
+        Mockito.when(imageService.getImageById(-1L)).thenReturn(Optional.of(new ImageModel(-1,new byte[2])));
+       Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1L);
 
         Assert.assertNotNull(serv);
         Assert.assertEquals(service,serv);
@@ -88,8 +88,8 @@ public class ServiceServiceImplTest {
         final Service noImageService=new Service(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION, CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1L);
         Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.of(mockBusiness));
         Mockito.when(serviceDao.create(mockBusiness,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,LOCATION,NEIGHBOURHOODS,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1L)).thenReturn(noImageService);
-        Mockito.when(imageService.getImageById(-1)).thenReturn(Optional.of(new ImageModel(-1,new byte[2])));
-        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1);
+        Mockito.when(imageService.getImageById(-1L)).thenReturn(Optional.of(new ImageModel(-1,new byte[2])));
+        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1L);
 
         Assert.assertNotNull(serv);
         Assert.assertEquals(noImageService,serv);
@@ -105,7 +105,7 @@ public class ServiceServiceImplTest {
 
         Mockito.when(businessDao.findById(BUSINESSID)).thenReturn(Optional.empty());
 
-        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1);
+        Service serv=serviceService.create(BUSINESSID,SERVICENAME,SERVICEDESCRIPTION,HOMESERVICE,NEIGHBOURHOODS,LOCATION,CATEGORY,DURATION,PRICING,PRICE,ADDITIONALCHARGES,-1L);
 
         Assert.fail();
     }

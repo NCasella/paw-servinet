@@ -49,5 +49,5 @@ public class ServiceCreationDTO {
     @Positive
     private int minimalDuration;
     @Positive
-    private long imageId;
+    private Long imageId;
 }

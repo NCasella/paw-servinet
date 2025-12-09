@@ -47,14 +47,15 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Transactional
     @Override
-    public Service create(long businessId, String name, String description, boolean homeService, Neighbourhoods[] neighbourhoods, String location, Categories category, int minimalDuration, PricingTypes pricing, String price, boolean additionalCharges, long imageId) {
+    public Service create(long businessId, String name, String description, boolean homeService, Neighbourhoods[] neighbourhoods, String location, Categories category, int minimalDuration, PricingTypes pricing, String price, boolean additionalCharges, Long imageId) {
 
     Business business = businessDao.findById(businessId).orElseThrow(BusinessNotFoundException::new);
     Optional<ImageModel> img=imageService.getImageById(imageId);
-    if(img.isEmpty()){
-        throw new ImageNonExistentException();
+    Long imageIdCreation=null;
+    if (img.isPresent()){
+        imageIdCreation=imageId;
     }
-    Service service = serviceDao.create(business, name, description, homeService, homeService? "":location, neighbourhoods, category, minimalDuration ,pricing, price, additionalCharges, imageId);
+    Service service = serviceDao.create(business, name, description, homeService, homeService? "":location, neighbourhoods, category, minimalDuration ,pricing, price, additionalCharges, imageIdCreation);
     emailService.createdService(service, business, business.getOwnedBy().getLocale());
     return service;
     }
