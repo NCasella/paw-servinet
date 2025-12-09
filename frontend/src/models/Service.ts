@@ -1,4 +1,5 @@
 import type { TResponse } from "$utils/apiFetch";
+import { DurationTypes } from "./enums/DurationType";
 import { PricingTypes } from "./enums/PricingType";
 
 export class Service {
@@ -73,6 +74,7 @@ export class Service {
   hasPriceTBD() {
     return this.pricingType == PricingTypes.TBD
   }
+
 
 }
 

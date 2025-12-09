@@ -17,7 +17,8 @@ import Star from 'virtual:icons/material-symbols/star-rounded';
 import LeftArrow from 'virtual:icons/material-symbols/arrow-left-alt-rounded';
 import RightArrow from 'virtual:icons/material-symbols/arrow-right-alt-rounded';
 import Schedule from 'virtual:icons/material-symbols/schedule';
-import Cancel from 'virtual:icons/material-symbols/cancel';
+import Cancel from 'virtual:icons/material-symbols/delete-outline';
+import ArrowDropDown from 'virtual:icons/material-symbols/arrow-drop-down';
 import Cleaning from 'virtual:icons/material-symbols/cleaning-rounded';
 import Beauty from 'virtual:icons/material-symbols/diamond-rounded';
 import Repair from 'virtual:icons/material-symbols/build-circle-rounded';
@@ -48,7 +49,8 @@ export const icons: Record<string, any> = {
   leftArrow: LeftArrow,
   rightArrow: RightArrow,
   schedule: Schedule,
-  cancel: Cancel,
+  delete: Cancel,
+  downArrow: ArrowDropDown,
   cleaning: Cleaning,
   beauty: Beauty,
   repair: Repair,
