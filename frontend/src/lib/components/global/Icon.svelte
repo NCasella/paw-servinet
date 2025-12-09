@@ -16,6 +16,16 @@ import Warning from 'virtual:icons/material-symbols/warning-rounded';
 import Star from 'virtual:icons/material-symbols/star-rounded';
 import LeftArrow from 'virtual:icons/material-symbols/arrow-left-alt-rounded';
 import RightArrow from 'virtual:icons/material-symbols/arrow-right-alt-rounded';
+import Cleaning from 'virtual:icons/material-symbols/cleaning-rounded';
+import Beauty from 'virtual:icons/material-symbols/diamond-rounded';
+import Repair from 'virtual:icons/material-symbols/build-circle-rounded';
+import Pet from 'virtual:icons/material-symbols/pets';
+import Exteriors from 'virtual:icons/material-symbols/potted-plant-rounded';
+import Celebrations from 'virtual:icons/material-symbols/celebration-rounded';
+import Transport from 'virtual:icons/material-symbols/delivery-truck-speed-rounded';
+import Consulting from 'virtual:icons/material-symbols/shield-question-rounded';
+import HairSalon from 'virtual:icons/material-symbols/health-and-beauty-rounded';
+import Health from 'virtual:icons/material-symbols/health-metrics-rounded';
 
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
@@ -34,7 +44,17 @@ export const icons: Record<string, any> = {
   warning: Warning,
   star: Star,
   leftArrow: LeftArrow,
-  rightArrow: RightArrow
+  rightArrow: RightArrow,
+    cleaning: Cleaning,
+    beauty: Beauty,
+    repair: Repair,
+    pet: Pet,
+    exteriors: Exteriors,
+    celebrations: Celebrations,
+    transport: Transport,
+    consulting: Consulting,
+    hairSalon: HairSalon,
+    health: Health
 };
 
 function iconFor(name: string) {

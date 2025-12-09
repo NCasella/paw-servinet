@@ -115,6 +115,7 @@ export default {
   "service.no-questions": "There are no questions",
   "service.details": "Service details",
   "service.unrated": "Unrated",
+  "service.empty-services":"No services found. Try with other filters.",
 
   "duration.fifteenmins": "15 minutes",
   "duration.halfhour": "30 minutes",
