@@ -27,6 +27,7 @@ public class AppointmentDto {
     private LocalDateTime endDate;
     private String address;
     private String description;
+    private long serviceId;
 
     private AppointmentStatus status;
 
@@ -53,6 +54,7 @@ public class AppointmentDto {
                 .startDate(app.getStartDate())
                 .endDate(app.getEndDate())
                 .address(app.getLocation())
+                .serviceId(app.getServiceid())
                 .description(app.getDescription())
                 .status(AppointmentStatus.getStatusFromAppointment(app))
                 .links(

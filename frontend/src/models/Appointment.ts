@@ -8,6 +8,7 @@ export class Appointment {
   address: string;
   description: string | null;
   status: AppointmentStatus;
+  serviceId: number;
 
   constructor(data: {
     appointmentId: number;
@@ -16,6 +17,7 @@ export class Appointment {
     address: string;
     description: string | null;
     status: AppointmentStatus;
+    serviceId: number
   }) {
     this.appointmentId = data.appointmentId;
     this.startDate = data.startDate;
@@ -23,6 +25,7 @@ export class Appointment {
     this.address = data.address;
     this.description = data.description;
     this.status = data.status;
+    this.serviceId = data.serviceId;
   }
 
   static fromJson(response: TResponse): Appointment {
@@ -35,6 +38,18 @@ export class Appointment {
 
     throw new Error("Invalid Appointment JSON");
   }
+  hasFinished(): boolean {
+    const start = new Date(this.startDate).getTime(); 
+    return start < Date.now();
+  }
+
+  isConfirmed() :boolean {
+    return this.status == AppointmentStatus.CONFIRMED
+  }
+
+  formatedDate() :Date {
+    return new Date(this.startDate); 
+  }
 }
 
 function isAppointment(obj: any): obj is Appointment {
@@ -45,7 +60,9 @@ function isAppointment(obj: any): obj is Appointment {
     typeof obj.endDate === "string" &&
     typeof obj.address === "string" &&
     (typeof obj.description === "string" || obj.description == null) &&
-    typeof obj.status === "string"
+    typeof obj.status === "string" &&
+    typeof obj.serviceId === "number"
+
   );
 }
 

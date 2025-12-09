@@ -1,6 +1,7 @@
 export enum AppointmentStatus {
     CONFIRMED = "confirmed",
     PENDING = "pending",
+	FINISHED = "FINISHED",
 }
 
 export function getAppointmentStatus(status: any, defaultStatus: AppointmentStatus): AppointmentStatus {
@@ -12,5 +13,5 @@ export function getAppointmentStatus(status: any, defaultStatus: AppointmentStat
 
 export enum AppointmentView {
     BUSINESS= "businessId",
-    USER= "userId:"
+    USER= "userId"
 } 

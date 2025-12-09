@@ -1,4 +1,5 @@
 import type { TResponse } from "$utils/apiFetch";
+import { PricingTypes } from "./enums/PricingType";
 
 export class Service {
   additionalCosts: boolean;
@@ -68,6 +69,11 @@ export class Service {
     }
     throw new Error("Invalid Service JSON");
   }
+
+  hasPriceTBD() {
+    return this.pricingType == PricingTypes.TBD
+  }
+
 }
 
 function isService(obj: any): obj is Service {

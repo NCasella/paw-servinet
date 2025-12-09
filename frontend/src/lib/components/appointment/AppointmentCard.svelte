@@ -5,29 +5,25 @@
   import type { Service } from '$models/Service';
   import {t} from '$i18'
 
-  export let appointment: Appointment;
-  export let user: User;
-  export let service: Service;
+  let { appointment, user, service, state } = $props()
 
   // Datos que no vienen en las clases pero quizá sí de la API o de otro lado:
-  export let businessName: string = '';      // nombre del negocio del servicio
-  export let serviceUrl: string | null = null; // link a la página del servicio
-  export let isPreviousAppointment = false;  // equivalente a appointment.previous en el JSP
+   let businessName: string = '';      // nombre del negocio del servicio
+   let serviceUrl: string | null = null; // link a la página del servicio
+   //let isPreviousAppointment = false;  // equivalente a appointment.previous en el JSP
 
-  // Derivados
-  $: confirmed = appointment.status === AppointmentStatus.CONFIRMED;
-
+   let confirmed = state===AppointmentStatus.CONFIRMED
+   let isPreviousAppointment = appointment.startDate
+  
   // Ubicación: si es a domicilio uso la del turno, si no la del servicio
-  $: finalLocation = service.homeService
-    ? (appointment.address || service.address)
-    : service.address;
+  let finalLocation = service.homeService
+    ? appointment.address 
+    : $t("service.location");
 
   // Precio a determinar (ajustá según cómo guardes el tipo de pricing)
-  $: isPriceTbd =
-    service.pricingType === 'TBD' /* || service.pricingType === PricingTypes.TBD */;
 
   // Formato de fecha (rellenalo bien vos)
-  $: startDateFormatted = formatAppointmentDate(appointment.startDate);
+  let startDateFormatted = formatAppointmentDate(appointment.startDate);
 
   function formatAppointmentDate(dateIso: string): string {
     // TODO: formatear como quieras
@@ -121,14 +117,7 @@
       {/if}
 
       <p class="text-sm mt-1">
-        {#if isPriceTbd}
-          <span class="font-semibold">$ </span>
-          <span class="italic">{$t('pricing.tbd')}</span>
-        {:else}
-          <span class="font-semibold">
-            $ {service.price}
-          </span>
-        {/if}
+        
       </p>
     </div>
 
