@@ -84,9 +84,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(HttpMethod.GET,"/api/appointments").access(authDecider::canViewAppointmentList)
                 .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
                 .requestMatchers(HttpMethod.PATCH,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
+                .requestMatchers(HttpMethod.GET, "/api/images/{imageId:\\d+}").permitAll()
                 .requestMatchers("/api/").permitAll()
                 .requestMatchers("/**").authenticated();
-
     }
 
     @Override

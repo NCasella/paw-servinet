@@ -85,6 +85,7 @@ export default {
   "service.additionalCharges": "It may have additional charges",
   "service.image": "Service Image",
   "service.delete": "Delete Service",
+  "service.delete-error": "There was an error deleting the service.",
   "service.at-home": "At your home",
   "service.at-professional-house": "At the professional's location",
   "service.time": "{0} min",
