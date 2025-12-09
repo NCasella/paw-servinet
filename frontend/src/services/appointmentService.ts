@@ -5,7 +5,6 @@ import { parsePagedResponse, type PagedResult } from "$models/PagedList";
 import type { Service } from "$models/Service";
 import { GET, getNewIdFromPostResponse, POST, type TResponse } from "$utils/apiFetch";
 import { number } from "zod";
-import { getServiceById } from "./serviceService";
 import { getCurrentUser } from "./userService";
 
 export async function createAppointment(form: AppointmentForm) :Promise<number> {
@@ -26,17 +25,6 @@ export async function getAppointmentsPagedList(id: number, appointmentStatus: Ap
     return parsePagedResponse( response, Appointment)
 }
 
-export async function getAppointmentServices(appointmentsList:Appointment[]) :Promise<Map<number,Service>>{
-    const serviceIds = [...new Set(appointmentsList.map(a => a.serviceId))];
-
-  const services = await Promise.all(
-    serviceIds.map(id => getServiceById(id))
-  );
-
-  return new Map(
-    services.map((service, i) => [serviceIds[i], service])
-  );
-}
 
 export async function getAppointmentById(appointmentId:number) :Promise<Appointment> {
     const response = await GET(`appointments/${appointmentId}`, 

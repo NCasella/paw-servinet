@@ -4,214 +4,223 @@
   import type { User } from '$models/User';
   import type { Service } from '$models/Service';
   import {t} from '$i18'
+	import Icon from '$icons';
 
-  let { appointment, user, service, state } = $props()
 
-  // Datos que no vienen en las clases pero quizá sí de la API o de otro lado:
-   let businessName: string = '';      // nombre del negocio del servicio
-   let serviceUrl: string | null = null; // link a la página del servicio
-   //let isPreviousAppointment = false;  // equivalente a appointment.previous en el JSP
+  // Props principales
+  export let appointment: Appointment;
+  export let user: User;
+  export let service: Service;
+  export let status: AppointmentStatus;
 
-   let confirmed = state===AppointmentStatus.CONFIRMED
-   let isPreviousAppointment = appointment.startDate
+  // ¿Es un turno del historial?
+  export let history = status == AppointmentStatus.FINISHED;
+  // ¿La vista es del usuario (cliente) o del provider?
+  export let isUser = false;
+
+  // Labels ya formateadas (vos te encargás de armarlas en el padre)
+  export let dayLabel = appointment.formatedDate();           // startDateString
+  export let dayWithYearLabel = '';   // startDateWithYearString
+  export let timeStartLabel = appointment.formatedDate().getHours();     // startDateTimeString
   
-  // Ubicación: si es a domicilio uso la del turno, si no la del servicio
-  let finalLocation = service.homeService
-    ? appointment.address 
-    : $t("service.location");
 
-  // Precio a determinar (ajustá según cómo guardes el tipo de pricing)
+  // Descripción larga para “leer más” (si querés separar de appointment.description)
+  export let longDescription: string | null = null;
 
-  // Formato de fecha (rellenalo bien vos)
-  let startDateFormatted = formatAppointmentDate(appointment.startDate);
+  // URLs que usabas en los <a> del JSP
+  export let serviceUrl = '';          // /servicio/{serviceid}
+  export let renewUrl = '';            // /contratar-servicio/{serviceid}
+  export let userAppointmentUrl = '';  // /turno/{serviceid}/{appointmentId}
 
-  function formatAppointmentDate(dateIso: string): string {
-    // TODO: formatear como quieras
-    return dateIso;
+  // Callbacks que implementás en el padre
+  export let onAccept: (appointment: Appointment) => void;
+  export let onRequestCancel: (appointment: Appointment) => void;     // abrir popup cancel
+  export let onReadMore: (appointment: Appointment) => void;          // abrir popup desc
+  export let onOpenInfo: (appointment: Appointment) => void;          // ir a detalle
+
+  // Estado interno: accordion
+  let expanded = false;
+
+  // Derivados
+  $: confirmed = status === AppointmentStatus.CONFIRMED;
+  $: dayText = history ? (dayWithYearLabel || dayLabel) : dayLabel;
+
+  // Home service vs en el local
+  $: locationText = service.homeService
+    ? (appointment.address || service.address)
+    : service.address;
+
+  function handleAccept() {
+    onAccept?.(appointment);
   }
 
-  // Popup cancelar turno
-  let showCancelPopup = false;
-
-  function handleBackClick() {
-    // TODO: navegar a la página del servicio (p.ej. goto(serviceUrl ?? `/services/${service.serviceId}`))
+  function handleCancelClick() {
+    onRequestCancel?.(appointment);
   }
 
-  function openCancelPopup() {
-    showCancelPopup = true;
+  function handleReadMore() {
+    onReadMore?.(appointment);
   }
 
-  function closeCancelPopup() {
-    showCancelPopup = false;
+  function handleInfo() {
+    onOpenInfo?.(appointment);
   }
 
-  async function confirmCancelAppointment() {
-    // TODO: llamar a la API para cancelar el turno
-    // luego cerrar popup / redirigir
+  function toggleAccordion() {
+    expanded = !expanded;
   }
 </script>
 
-<div class="max-w-3xl mx-auto px-4 py-8 space-y-6">
-  <!-- Back -->
-  <button
-    type="button"
-    class="inline-flex items-center gap-2 text-sm mb-2"
-    on:click={handleBackClick}
-  >
-    <span class="material-icons text-base">arrow_back</span>
-    <span>{$t('back.service')}</span>
-  </button>
+<div class="w-full">
+  <div class="flex flex-col gap-2 rounded-2xl shadow px-4 py-3 bg-white">
+    <!-- fila principal -->
+    <div class="grid grid-cols-[auto,auto,1fr,auto,auto] items-center gap-3">
+      <!-- Día -->
+      <span class="text-sm font-medium">
+        {dayText}
+      </span>
 
-  <!-- Estado general del turno -->
-  <div class="rounded-2xl shadow p-5">
-    <div class="flex flex-col items-center gap-3 text-center">
-      {#if confirmed}
-        <span class="material-icons text-3xl text-green-600">check</span>
-        <h2 class="text-lg font-semibold">
-          {$t('appointment.ready')}
-          <!-- si usás params: {$t('appointment.ready', { name: user.fullName })} -->
-        </h2>
-        <p class="text-sm opacity-80">
-          {$t('appointment.confirmed')}
-        </p>
-      {:else}
-        <span class="material-icons text-3xl text-yellow-500">schedule</span>
-        <h2 class="text-lg font-semibold">
-          {$t('appointment.waiting-confirmation')}
-        </h2>
-        <div class="text-sm opacity-80 space-y-1">
-          <p>{$t('appointment.successfully-requested')}</p>
-          <p>{$t('appointment.mail-send')}</p>
-        </div>
-      {/if}
-    </div>
-  </div>
+      <!-- Horario -->
+      <span class="flex items-center gap-1 text-sm">
+        <Icon name="schedule"/>
+        {appointment.formatedTime()}
 
-  <!-- Detalle servicio + turno -->
-  <div class="rounded-2xl shadow p-5 space-y-4">
-    <!-- Info servicio -->
-    <div class="space-y-2">
-      <h3 class="text-base font-semibold">
-        {$t('service.info')}
-      </h3>
+      </span>
 
-      <p class="flex items-center gap-2 text-sm">
-        <span class="material-icons text-base">storefront</span>
-        {#if serviceUrl}
-          <a href={serviceUrl} class="underline decoration-dotted">
-            {service.serviceName}
-            {#if businessName} – {businessName}{/if}
-          </a>
-        {:else}
-          <span>
-            {service.serviceName}
-            {#if businessName} – {businessName}{/if}
-          </span>
-        {/if}
-      </p>
-
-      {#if service.description}
-        <p class="text-sm opacity-80">
-          {service.description}
-        </p>
-      {/if}
-
-      <p class="text-sm mt-1">
-        
-      </p>
-    </div>
-
-    <!-- Info turno -->
-    <div class="border-t pt-4 space-y-2">
-      <h3 class="text-base font-semibold">
-        {$t('appointment.info')}
-      </h3>
-
-      <!-- Persona -->
-      <p class="flex items-center gap-2 text-sm">
-        <span class="material-icons text-base">person</span>
-        <span>{user.fullName}</span>
-      </p>
-
-      <!-- Fecha -->
-      <p class="flex items-center gap-2 text-sm">
-        <span class="material-icons text-base">calendar_today</span>
-        <span>{startDateFormatted}</span>
-      </p>
-
-      <!-- Ubicación -->
-      <p class="flex items-center gap-2 text-sm">
-        <span class="material-icons text-base">location_on</span>
-        {#if !finalLocation}
-          <span class="opacity-80">
-            {$t('appointment.no-location')}
-          </span>
-        {:else}
-          <span>{finalLocation}</span>
-        {/if}
-      </p>
-
-      <!-- Número de seguimiento -->
-      <p class="text-sm">
-        <span class="font-semibold">
-          {$t('appointment.tracking-number')}{" "}
-        </span>
-        <span>{appointment.appointmentId}</span>
-      </p>
-
-      <!-- Descripción del usuario -->
-      {#if appointment.description}
-        <p class="text-sm">
-          <span class="font-semibold">
-            {$t('appointment.user-description')}{" "}
-          </span>
-          <span>{appointment.description}</span>
-        </p>
-      {/if}
-    </div>
-  </div>
-
-  <!-- Botón cancelar (si no es turno pasado) -->
-  {#if !isPreviousAppointment}
-    <div class="flex justify-center">
-      <button
-        type="button"
-        class="btn variant-outline"
-        on:click={openCancelPopup}
+      <!-- Nombre servicio -->
+      <a
+        class="text-sm hover:underline truncate"
+        href={serviceUrl}
       >
-        {$t('appointment.cancel')}
-      </button>
-    </div>
-  {/if}
+        {service.serviceName}
+      </a>
 
-  <!-- Popup cancelar turno -->
-  {#if showCancelPopup}
-    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div class="bg-white rounded-2xl shadow-lg max-w-sm w-full p-6 space-y-4">
-        <h3 class="text-lg font-semibold">
-          {$t('popup.appointment.title')}
-        </h3>
-        <p class="text-sm opacity-80">
-          {$t('popup.appointment.message')}
-        </p>
+      <!-- ID turno -->
+      <span class="text-xs opacity-70">
+        #{appointment.appointmentId}
+      </span>
 
-        <div class="flex justify-end gap-3 pt-2">
+      <!-- Botones decisión -->
+      <div class="flex items-center gap-1 justify-end">
+        {#if history}
+          <!-- Renovar -->
           <button
             type="button"
-            class="btn variant-ghost"
-            on:click={closeCancelPopup}
+            class="inline-flex items-center justify-center rounded-full border px-2 py-1 text-xs"
+            on:click={() => {/* p.ej. navigate(renewUrl) */}}
+            title="Renovar"
           >
-            {$t('cancel')}
+            <span class="material-icons text-base">event_repeat</span>
           </button>
+        {:else if confirmed || isUser}
+          <!-- Solo cancelar -->
           <button
             type="button"
-            class="btn variant-destructive"
-            on:click={confirmCancelAppointment}
+            class="inline-flex items-center justify-center rounded-full border px-2 py-1 text-xs"
+            on:click={handleCancelClick}
           >
-            {$t('popup.appointment.cancel')}
+            <Icon name="cancel"/>
           </button>
-        </div>
+        {:else}
+          <!-- Aceptar -->
+          <button
+            type="button"
+            class="inline-flex items-center justify-center rounded-full border px-2 py-1 text-xs"
+            on:click={handleAccept}
+          >
+            <span class="material-icons text-base">check</span>
+          </button>
+          <!-- Cancelar / popUp -->
+          <button
+            type="button"
+            class="inline-flex items-center justify-center rounded-full border px-2 py-1 text-xs"
+            on:click={handleCancelClick}
+          >
+            <span class="material-icons text-base">add</span>
+          </button>
+        {/if}
+
+        <!-- Botón accordion -->
+        <button
+          type="button"
+          class="inline-flex items-center justify-center rounded-full border px-1 py-1"
+          on:click={toggleAccordion}
+        >
+          <span class="material-icons text-base">
+            {#if expanded}
+              arrow_drop_up
+            {:else}
+              arrow_drop_down
+            {/if}
+          </span>
+        </button>
       </div>
     </div>
-  {/if}
+
+    <!-- Accordion -->
+    {#if expanded}
+      <div class="pt-2 border-t mt-2 space-y-2 text-sm">
+        <!-- Contacto si está confirmado -->
+        {#if confirmed}
+          <div class="flex flex-col gap-1">
+            {#if !isUser}
+              <span class="flex items-center gap-1">
+                <span class="material-icons text-base">account_circle</span>
+                <span>{user.fullName}</span>
+              </span>
+            {/if}
+            <span class="flex items-center gap-1">
+              <span class="material-icons text-base">mail</span>
+              <span>{user.email}</span>
+            </span>
+          </div>
+        {/if}
+
+        <!-- Dirección + descripción -->
+        <div class="flex flex-col gap-1">
+          <span class="flex items-center gap-1">
+            <span class="material-icons text-base">house</span>
+            {#if service.homeService}
+              <span>{locationText}</span>
+            {:else}
+              <span>{$t('service.at-professional-house')}</span>
+            {/if}
+          </span>
+
+          {#if !isUser}
+            <span class="mt-1 text-sm">
+              {#if appointment.description}
+                {appointment.description}
+              {:else}
+                {$t('appointment.no-description')}
+              {/if}
+            </span>
+          {/if}
+        </div>
+
+        <!-- Info / leer más -->
+        <div class="pt-1">
+          {#if isUser}
+            <button
+              type="button"
+              class="inline-flex items-center gap-1 text-xs underline"
+              on:click={handleInfo}
+            >
+              <span class="material-icons text-base">info</span>
+              {$t('appointment.info')}
+            </button>
+          {:else if longDescription}
+            <button
+              type="button"
+              class="inline-flex items-center gap-1 text-xs underline"
+              on:click={handleReadMore}
+            >
+              <span class="material-icons text-base">info</span>
+              {$t('read-more')}
+            </button>
+          {/if}
+        </div>
+      </div>
+    {/if}
+  </div>
 </div>

@@ -50,6 +50,11 @@ export class Appointment {
   formatedDate() :Date {
     return new Date(this.startDate); 
   }
+
+  formatedTime() :string {
+    return new Date(this.startDate).getHours()+"-";  ; 
+  }
+
 }
 
 function isAppointment(obj: any): obj is Appointment {

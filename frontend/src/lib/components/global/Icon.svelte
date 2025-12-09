@@ -16,7 +16,8 @@ import Warning from 'virtual:icons/material-symbols/warning-rounded';
 import Star from 'virtual:icons/material-symbols/star-rounded';
 import LeftArrow from 'virtual:icons/material-symbols/arrow-left-alt-rounded';
 import RightArrow from 'virtual:icons/material-symbols/arrow-right-alt-rounded';
-
+import Schedule from 'virtual:icons/material-symbols/schedule';
+import Cancel from 'virtual:icons/material-symbols/cancel';
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
   language: Language,
@@ -34,7 +35,9 @@ export const icons: Record<string, any> = {
   warning: Warning,
   star: Star,
   leftArrow: LeftArrow,
-  rightArrow: RightArrow
+  rightArrow: RightArrow,
+  schedule: Schedule,
+  cancel: Cancel,
 };
 
 function iconFor(name: string) {

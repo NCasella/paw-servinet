@@ -5,6 +5,7 @@ import { postImage } from "./imageService";
 import { DefaultImg } from "$models/enums/DefaultImg";
 import type {PagedResult} from "$models/PagedList";
 import {parsePagedResponse} from "$models/PagedList";
+import type { Appointment } from "$models/Appointment";
 
 export async function getServices(params: {
     businessId?: number;
@@ -55,3 +56,17 @@ export async function createService(form:ServiceForm, image: File | null) :Promi
 export async function deleteService(serviceId:number) :Promise<void>  {
     await DELETE(`services/${serviceId}`)
 }
+
+
+export async function getAppointmentServices(appointmentsList:Appointment[]) :Promise<Map<number,Service>>{
+    const serviceIds = [...new Set(appointmentsList.map(a => a.serviceId))];
+
+  const services = await Promise.all(
+    serviceIds.map(id => getServiceById(id))
+  );
+
+  return new Map(
+    services.map((service, i) => [serviceIds[i], service])
+  );
+}
+
