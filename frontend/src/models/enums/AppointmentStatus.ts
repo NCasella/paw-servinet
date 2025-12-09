@@ -1,7 +1,9 @@
 export enum AppointmentStatus {
     CONFIRMED = "confirmed",
     PENDING = "pending",
-	FINISHED = "FINISHED",
+    DENIED = "denied"
+,    CANCELLED = "cancelled",
+	FINISHED = "finished",
 }
 
 export function getAppointmentStatus(status: any, defaultStatus: AppointmentStatus): AppointmentStatus {

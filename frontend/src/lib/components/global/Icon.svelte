@@ -29,6 +29,9 @@ import Transport from 'virtual:icons/material-symbols/delivery-truck-speed-round
 import Consulting from 'virtual:icons/material-symbols/shield-question-rounded';
 import HairSalon from 'virtual:icons/material-symbols/health-and-beauty-rounded';
 import Health from 'virtual:icons/material-symbols/health-metrics-rounded';
+import EventRepeat from 'virtual:icons/material-symbols/event-repeat';
+import Accept from 'virtual:icons/material-symbols/done';
+import History from 'virtual:icons/material-symbols/history-rounded';
 import ResponseArrow from 'virtual:icons/material-symbols/subdirectory-arrow-right-rounded';
 import Send from 'virtual:icons/material-symbols/send-rounded';
 
@@ -51,8 +54,11 @@ export const icons: Record<string, any> = {
   leftArrow: LeftArrow,
   rightArrow: RightArrow,
   schedule: Schedule,
+  eventRepeat: EventRepeat,
   delete: Cancel,
+  accept: Accept,
   downArrow: ArrowDropDown,
+  history: History,
   cleaning: Cleaning,
   beauty: Beauty,
   repair: Repair,

@@ -8,15 +8,19 @@
     import type { PagedResult } from "$models/PagedList";
 	import { getUserBusinesses } from "$services/businessService";
 	import Icon from "$icons";
+	import NoResults from "$lib/components/global/pagedResults/NoResults.svelte";
+	import PaginationControls from "$lib/components/global/pagedResults/PaginationControls.svelte";
 
     let loading = true
     let pagedList :PagedResult<Business> = {items: [], links: {}}
-    onMount(async () => {
-        pagedList = await getUserBusinesses()
+    let pageNum = 1
+    onMount(loadData)
+
+    async function loadData() {
+        pagedList = await getUserBusinesses(pageNum)
             .then(r => r)
             .finally(() => loading = false);
-        
-    })
+    }
 </script>
 <header class="mx-8 flex place-content-between items-baseline">
     <Title text={$t("businesses.my-businesses")}/>
@@ -64,5 +68,13 @@
     </div>
   {/each}
 </div>
+{#if pagedList.items.length ==0}
+    <NoResults />
+  {:else }
+    <PaginationControls 
+    page={pageNum}
+    pagedList={pagedList}
+    onPageChange={(newPage) => {pageNum = newPage; loadData()}  }/>
+  {/if} 
 
 {/if}
