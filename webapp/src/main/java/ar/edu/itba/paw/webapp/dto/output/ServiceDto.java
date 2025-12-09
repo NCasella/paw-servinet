@@ -33,6 +33,7 @@ public class ServiceDto {
     private String price;
     private String category;
     private String pricingType;
+    private long imageId;
 
     private ServiceLinks links;
 
@@ -84,6 +85,7 @@ public class ServiceDto {
                 .category(service.getCategory().name())
                 .pricingType(service.getPricing().name())
                 .neighbourhoods(service.getNeighbourhoodAvailable().toArray(String[]::new))
+                .imageId(service.getImageId())
                 .links(links)
                 .build();
     }
