@@ -12,10 +12,10 @@ export async function createBusiness(form:BusinessForm) :Promise<number> {
     return getNewIdFromPostResponse(response)
 }
 
-export async function getUserBusinesses() : Promise<PagedResult<Business>> {
+export async function getUserBusinesses(pageNum:number) : Promise<PagedResult<Business>> {
     const user = await getCurrentUser().catch( (e) => e)
         
-    const response = await GET(`businesses?ownerId=${user.userId}`, 
+    const response = await GET(`businesses?ownerId=${user.userId}&page=${pageNum}`, 
         {contentType: "business-list"} ) 
     
     return parsePagedResponse(response, Business)
