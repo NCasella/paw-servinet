@@ -6,14 +6,15 @@
     import {t} from "$lib/i18n/i18n"
 	import { user } from '$stores/userStore';
 	import { onMount } from 'svelte';
-	import { getCurrentUser } from '$services/userService';
+	import { getCurrentUser, getCurrentUserContactInfo } from '$services/userService';
 	import { type User } from '$models/User';
+	import type { UserContactInfo } from '$models/ContactInfo';
 
-	let currentUser :User | null = null;
+	let currentUser :UserContactInfo | null = null;
 	onMount(async () => {
 		try {
-		currentUser = await getCurrentUser();
-		console.log(currentUser.profilePicture)
+		currentUser = await getCurrentUserContactInfo()
+		
 		} catch {
 		currentUser = null;
     }})	

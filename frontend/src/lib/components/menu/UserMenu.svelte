@@ -4,6 +4,7 @@
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';
 	import { asset, base } from '$app/paths';
 	import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
+	import { UserContactInfo } from '$models/ContactInfo';
 
 	let {user} = $props()
 	let isProvider = user.isProvider 
@@ -13,8 +14,8 @@
 <Menu>
 	<Menu.Trigger class="btn">
 		<Avatar class="h-12 w-12">
-				<Avatar.Image src="{user?.profilePicture}" alt="base" />
-				<Avatar.Fallback><img src={asset("/images/profile_default.png")}></Avatar.Fallback>
+				<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />
+				<Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()}/></Avatar.Fallback>
 		</Avatar>
 	</Menu.Trigger>
 	<Portal>

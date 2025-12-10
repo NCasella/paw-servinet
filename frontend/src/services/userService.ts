@@ -13,8 +13,7 @@ import type { TResponse } from "$utils/apiFetch";
 import type { ResetPasswordForm } from "$models/forms/ResetPasswordForm";
 
 export async function getUserInfo(id: number ) :Promise<User> {
-    const data = await GET(`users/${id}`,{contentType:"user-contact-info" });
-    
+    const data = await GET(`users/${id}`,{contentType:"user-contact-info" });  
     let user = User.fromJson(data)
     user.setRole( currentUserIsProvider() );
     return user;
@@ -55,6 +54,19 @@ export async function getCurrentUser() :Promise<User> {
     return currentUser;
 }
 
+export async function getCurrentUserContactInfo() :Promise<UserContactInfo> {
+    let currentUser = getUser(), userid
+    if ( !currentUser ) {
+        userid = extractUserIdFromToken();
+        if ( userid==null ) 
+            throw Error("Current user not found: auth is missing");
+    } else userid = currentUser.userId
+    
+    return await getUserContactInfo(userid)
+    
+
+}
+
 function loadUser(currentUser:User) {
     login(currentUser);
     setLanguage(currentUser.language);
@@ -74,7 +86,7 @@ function currentUserIsProvider() :boolean {
 export async function  getUserContactInfo(userId:number) :Promise<UserContactInfo> {
     const response = await GET(`users/${userId}`, 
         {contentType: "user-contact-info"})
-
+        
     return UserContactInfo.fromJson(response)
 }
 

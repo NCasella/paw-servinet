@@ -92,7 +92,7 @@
       await deleteBusiness(business.businessId);
       showDeleteModal = false;
       // redirigimos a listado de negocios o home
-      await goto(getPath('/businesses'));
+      await goto(getPath('/my-businesses'));
     } catch (e) {
       console.error(e);
       // TODO: toaster de error

@@ -22,12 +22,19 @@ public class UserContactDto {
     private String username;
     private String language;
     private String email;
+    private long profilePicId;
     private UserLinks links;
 
     public static UserContactDto fromUser(User user, UriInfo uriInfo){
         URI businessesOwnedUri = uriInfo.getBaseUriBuilder()
                 .path(PathUrls.BUSINESSES_URL.getUrl())
                 .queryParam("ownedBy", user.getUserId())
+                .build();
+
+
+        URI profilePicUri=uriInfo.getBaseUriBuilder()
+                .path(PathUrls.IMAGES_URL.getUrl())
+                .path(String.valueOf(user.getProfilePicId()))
                 .build();
 
         URI appointmentsRequestedUri = uriInfo.getBaseUriBuilder()
@@ -51,9 +58,11 @@ public class UserContactDto {
                 .username(user.getUsername())
                 .language(user.getLocale())
                 .email(user.getEmail())
+                .profilePicId(user.getProfilePicId())
                 .links(
                         UserLinks.builder()
                                 .businessesOwned(businessesOwnedUri)
+                                .profilePic(profilePicUri)
                                 .appointmentsRequested(appointmentsRequestedUri)
                                 .questionsToRespond(questionsToRespondUri)
                                 .self(self)
@@ -64,6 +73,6 @@ public class UserContactDto {
     }
     @Override
     public int hashCode(){
-        return Objects.hash(userId,fullName,email,username,language);
+        return Objects.hash(userId,fullName,email,username,language,profilePicId);
     }
 }

@@ -15,5 +15,6 @@ public class UserLinks {
     private URI businessesOwned;
     private URI appointmentsRequested;
     private URI questionsToRespond;
+    private URI profilePic;
     private URI self;
 }

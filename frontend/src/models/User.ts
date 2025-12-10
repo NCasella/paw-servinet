@@ -29,6 +29,7 @@ export class User {
 
   static fromJson(response: TResponse): User {
     const obj = response.body
+    
     if (isUser(obj)) {
       return new User(obj);
     }
@@ -51,7 +52,6 @@ function isUser(obj: any): obj is User {
     typeof obj.userId === "number" &&
     typeof obj.fullName === "string" &&
     typeof obj.username === "string" &&
-    typeof obj.email === "string" &&
     typeof obj.language === "string"
   );
 }

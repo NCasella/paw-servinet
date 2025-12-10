@@ -1,21 +1,28 @@
 <script lang="ts">
     import { t } from "$lib/i18n/i18n";
-	import { closeSession } from "$services/userService";
+	import { closeSession, getCurrentUserContactInfo } from "$services/userService";
 	import { getCurrentUser } from "$services/userService";
     import {type User } from "$models/User"
     import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
     import { Avatar } from "@skeletonlabs/skeleton-svelte";
+	import { UserContactInfo } from "$models/ContactInfo";
+	import Spinner from "$lib/components/global/Spinner.svelte";
 
-    let user :User;
+    let user :UserContactInfo;
     let otherLang :string;
+    let loading = true
     onMount(async () => {
 		try {
-		user = await getCurrentUser()
+		  user = await getCurrentUserContactInfo()
+
 		otherLang = user.language === 'es' ? 'en' : 'es'
-		} catch {
-		goto("login")
-    }})
+		//} catch {
+		  //goto("login")
+    } finally {
+      loading = false
+    }
+  })
   
     function logUserOut () {
         closeSession()
@@ -23,15 +30,19 @@
     }
 
 </script>
-{#if user}
+
+{#if loading}
+<Spinner/>
+
+{:else if user}
 <div class="max-w-5xl mx-auto space-y-8">
   <!-- Perfil -->
   <section class="rounded-2xl shadow p-6 flex items-center gap-6">
     <!-- Avatar -->
     
     <Avatar class="size-30 ">
-				<Avatar.Image src="{user.getProfilePicture()}" alt="base" />
-				<Avatar.Fallback><img class="rounded-2xl" src="https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"/></Avatar.Fallback>
+				<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />
+				<Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()}/></Avatar.Fallback>
     </Avatar>
     <!-- Datos usuario -->
     <div class="flex-1 space-y-3">
