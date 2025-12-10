@@ -1,5 +1,11 @@
 import type { TResponse } from "$utils/apiFetch";
 
+export interface BusinessUpdateInfo {
+  businessEmail: string,
+  businessTelephone: string,
+  businessLocation: string
+}
+
 export class Business {
     businessId :number;
     userId: number;

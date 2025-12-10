@@ -2,17 +2,19 @@
 	import { Menu, Portal } from '@skeletonlabs/skeleton-svelte';
     import { t } from "$lib/i18n/i18n";
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';
-	import { base } from '$app/paths';
+	import { asset, base } from '$app/paths';
+	import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
 
 	let {user} = $props()
 	let isProvider = user.isProvider 
+	
 </script>
 
 <Menu>
-	<Menu.Trigger class="btn preset-filled">
-		<Avatar>
+	<Menu.Trigger class="btn">
+		<Avatar class="h-12 w-12">
 				<Avatar.Image src="{user?.profilePicture}" alt="base" />
-				<Avatar.Fallback>SK</Avatar.Fallback>
+				<Avatar.Fallback><img src={asset("/images/profile_default.png")}></Avatar.Fallback>
 		</Avatar>
 	</Menu.Trigger>
 	<Portal>

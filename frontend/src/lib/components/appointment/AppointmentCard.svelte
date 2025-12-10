@@ -25,9 +25,8 @@
 
   export let history = isUser && status === AppointmentStatus.FINISHED;
 
-  export let dayLabel: string = appointment.formatedDate().toDateString(); // ej: "12/08"
-  export let dayWithYearLabel: string = '';                  // ej: "12/08/2025"
-
+  export let dayWithYearLabel: string = '';                 
+ 
   // URLs
   export let serviceUrl = getPath(`/services/${service.serviceId}`);         // /servicio/{serviceid}
   export let renewUrl = serviceUrl + '/create-appointment' ;           // /contratar-servicio/{serviceid}
@@ -42,7 +41,6 @@
 
   // Derivados
   $: confirmed = status === AppointmentStatus.CONFIRMED;
-  $: dayText = history && dayWithYearLabel ? dayWithYearLabel : dayLabel;
 
   // Home service vs en el local
   $: locationText = service.homeService
@@ -74,17 +72,27 @@
     >
       <div
         class="grid items-center gap-3 w-full"
-        style="grid-template-columns: 150px 170px minmax(0,1fr) 55px auto;"
+        style="grid-template-columns: 180px 220px minmax(0,2fr) 55px auto;"
       >
         <!-- Día -->
         <span class="text-sm font-medium truncate">
-          {dayText}
+          <span class="appointment-field day">
+  {history
+    ? appointment.getStartDateWithYearString()
+    : appointment.getStartDateString()}
+</span>
         </span>
 
         <!-- Horario -->
+         
         <span class="flex items-center gap-1 text-sm text-slate-500">
           <Icon name="schedule" />
-          {appointment.formatedTime()}
+          <span>
+          {appointment.getStartDateTimeString()}
+          {#if appointment.hasDuration()}
+            {' - '}
+            {appointment.getEndDateTimeString()}
+          {/if}</span>
         </span>
 
         <!-- Nombre servicio -->

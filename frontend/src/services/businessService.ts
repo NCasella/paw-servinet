@@ -1,8 +1,11 @@
-import { Business } from "$models/Business";
+import { Business, type BusinessUpdateInfo } from "$models/Business";
 import type { BusinessForm } from "$models/forms/BusinessCreationForm";
 import { parsePagedResponse, type PagedResult } from "$models/PagedList";
+import type { Review } from "$models/Review";
 import type { Service } from "$models/Service";
-import { POST, GET, getNewIdFromPostResponse } from "$utils/apiFetch";
+import { POST, GET, getNewIdFromPostResponse, DELETE, PATCH } from "$utils/apiFetch";
+import { getAllServiceReviews, getServiceReviews } from "./reviewsService";
+import { getAllBusinessServices } from "./serviceService";
 import { getCurrentUser } from "./userService";
 
 export async function createBusiness(form:BusinessForm) :Promise<number> {
@@ -39,4 +42,24 @@ console.log(businesses, ids)
   return new Map(
     businesses.map((business, i) => [ids[i], business])
   );
+}
+
+
+export async function deleteBusiness(businessId:number) {
+    await DELETE(`businesses/${businessId}`)
+}
+
+export async function updateBusiness(businessId:number, form:BusinessUpdateInfo ) {
+    PATCH(`businesses/${businessId}`, form, {contentType:"business-update"})
+}
+
+
+export async function getBusinessReviews(businessId :number) : Promise<Review[]> {
+  const serviceIds = await getAllBusinessServices(businessId);
+
+  const reviewsPerService = await Promise.all(
+    serviceIds.map((id) => getAllServiceReviews(id))
+  );
+
+  return reviewsPerService.flat();
 }

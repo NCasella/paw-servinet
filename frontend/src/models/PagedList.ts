@@ -17,9 +17,11 @@ export type PagedResult<T> = {
   links: PaginationLinks;
 };
 
-export function isLastPage<T>(pageNum:number, pagedList :PagedResult<T> ) :boolean{
-    return pageNum == pagedList.links.total
+export function isLastPage<T>(pageNum: number, pagedList: PagedResult<T>): boolean {
+  const totalPages = pagedList.links.total ?? 1;
+  return pageNum >= totalPages;
 }
+
 
 function parseLinkHeader(header: string | null): PaginationLinks {
   const links: PaginationLinks = {};
