@@ -16,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface UsernameNotUsed {
 
     String USERNAME_REGEX= "^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
-    String message() default "{ar.edu.itba.paw.webapp.validation.UsernameNotUsed.message}";
+    String message() default "UsernameNotUsed.registerUserForm.username";
 
     String regex() default USERNAME_REGEX;
 

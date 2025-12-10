@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface LocationFormatted {
 
-    String message() default "{ar.edu.itba.paw.webapp.validation.LocationFormatted.message}";
+    String message() default "LocationFormatted.serviceForm";
 
     Class<?>[] groups() default { };
 
