@@ -4,12 +4,15 @@
     import Title from "$lib/components/global/Title.svelte";
     import { Pagination } from "@skeletonlabs/skeleton-svelte";
     import { t } from "$lib/i18n/i18n";
+    import { goto } from '$app/navigation';
 
     import type { Question } from "$models/Question";
     import { QuestionResponseForm } from "$models/forms/QuestionResponseForm";
     import { getRespondentQuestions, respondQuestion } from "$services/questionService";
+    import { getServiceById } from "$services/serviceService";
     import Icon from "$icons";
     import FormError from "$lib/components/global/forms/FormError.svelte";
+    import {base} from "$app/paths";
 
     let questions: Question[] = [];
     let loading = true;
@@ -17,9 +20,10 @@
     let page = 1;
     let lastPage = 1;
 
-    // Formularios y errores por pregunta
     const forms: Record<number, QuestionResponseForm> = {};
     const errors: Record<number, Record<string, string>> = {};
+
+    const services: Record<number, string> = {};
 
     async function loadQuestions(pageNum: number) {
         loading = true;
@@ -29,11 +33,16 @@
             lastPage = response.links.last ?? 1;
             page = pageNum;
 
-            // Inicializar formularios vacíos para cada pregunta
             questions.forEach(q => {
                 if (!forms[q.questionId]) forms[q.questionId] = new QuestionResponseForm();
                 if (!errors[q.questionId]) errors[q.questionId] = {};
             });
+
+            const serviceIds = questions.map(q => q.serviceId).filter(id => !services[id]);
+            await Promise.all(serviceIds.map(async id => {
+                const service = await getServiceById(id);
+                services[id] = service.serviceName;
+            }));
         } finally {
             loading = false;
         }
@@ -50,6 +59,10 @@
 
         await respondQuestion(qId, form);
         await loadQuestions(page);
+    }
+
+    function gotoService(serviceId: number) {
+        goto(`${base}/services/${serviceId}`);
     }
 
     $: pages = (() => {
@@ -82,8 +95,9 @@
 
             {#each questions as q (q.questionId)}
                 <div class="question-box mb-4 p-4 rounded-xl bg-gray-100 border border-gray-300">
-                    <p class="qst-service font-semibold mb-2">
-                        QUESTION IN SERVICE: ...
+                    <p class="qst-service font-semibold mb-2 cursor-pointer text-blue-600 hover:underline"
+                       on:click={() => gotoService(q.serviceId)}>
+                        {services[q.serviceId]}
                     </p>
 
                     <div class="qst-date-box flex mb-2">
@@ -111,6 +125,7 @@
                     {/if}
                 </div>
             {/each}
+
             <Pagination
                     count={lastPage}
                     pageSize={1}
@@ -128,9 +143,9 @@
                             <span class="w-8 flex items-center justify-center">…</span>
                         {:else}
                             <button
-                                class={`w-8 h-8 flex items-center justify-center rounded cursor-pointer hover:shadow-lg
+                                    class={`w-8 h-8 flex items-center justify-center rounded cursor-pointer hover:shadow-lg
                                 ${p === page ? 'bg-primary-500 text-white font-bold' : 'bg-gray-200 text-black'}`}
-                                on:click={() => loadQuestions(p)}
+                                    on:click={() => loadQuestions(p)}
                             >
                                 {p}
                             </button>
