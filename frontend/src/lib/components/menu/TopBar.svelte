@@ -9,14 +9,16 @@
 	import { getCurrentUser, getCurrentUserContactInfo } from '$services/userService';
 	import { type User } from '$models/User';
 	import type { UserContactInfo } from '$models/ContactInfo';
+	import { removeTokens } from '$services/authenticate';
 
 	let currentUser :UserContactInfo | null = null;
 	onMount(async () => {
 		try {
 		currentUser = await getCurrentUserContactInfo()
 		
-		} catch {
+		} catch(e) {
 		currentUser = null;
+		throw e
     }})	
 
 
@@ -25,7 +27,7 @@
 	}
   
 	async function handleLogin(event: Event): Promise<void> {
-        goto('login');
+		goto('login');
     }
     
     async function handleLogout(event: Event): Promise<void> {

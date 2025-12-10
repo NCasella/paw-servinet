@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
 	import FormError from "$lib/components/global/forms/FormError.svelte";
 	import { loginWithBasicAuth } from '$services/authenticate';
-	import { closeSession, getCurrentUser } from '$services/userService';
+	import { getCurrentUser } from '$services/userService';
 	import { base } from '$app/paths';
   	import { requestPasswordRecovery } from '$services/userService';
 	import { RequestPasswordRecoveryForm, type RequestPasswordRecoveryFormErrors } from '$models/forms/RequestPasswordRecoveryForm';
@@ -32,7 +32,7 @@
 		loading = false;
 
 		if (ok) {
-			getCurrentUser().then(() => history.back());
+			await getCurrentUser().then(() => history.back());
 			return; 
 		}
 		errorMessage = 'Invalid username or password';
@@ -60,7 +60,6 @@
 	}
 
 	onMount(() => {
-		closeSession()
 		requestPasswordRecoveryForm = new RequestPasswordRecoveryForm("");
 	});
 </script>
