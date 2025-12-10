@@ -5,7 +5,8 @@ import Mail from 'virtual:icons/material-symbols/mail';
 import Person from 'virtual:icons/material-symbols/account-circle';
 import Business from 'virtual:icons/material-symbols/store';
 import Phone from 'virtual:icons/material-symbols/call';
-import Notification from 'virtual:icons/material-symbols/notifications';
+import Notification from 'virtual:icons/material-symbols/notifications-rounded';
+import NoNotification from 'virtual:icons/material-symbols/notifications-off-rounded';
 import Calendar from 'virtual:icons/material-symbols/calendar-today';
 import Add from 'virtual:icons/material-symbols/add-2';
 import Location from 'virtual:icons/material-symbols/location-on';
@@ -44,6 +45,7 @@ export const icons: Record<string, any> = {
   phone: Phone,
   calendar: Calendar,
   notification: Notification,
+  noNotification: NoNotification,
   add: Add,
   location: Location,
   address: Address,

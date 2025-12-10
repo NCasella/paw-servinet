@@ -3,9 +3,8 @@ import { z } from "zod";
 const MAX_LEN = 255;
 
 export type QuestionResponseFormErrorKey =
-    | "NotEmpty.questionResponse.response"
-    | "NotNull.questionResponse.response"
-    | "Size.questionResponse.response";
+    | "NotEmpty.responseForm.response"
+    | "Size.responseForm.response";
 
 export const QuestionResponseFormSchema = z.object({
     /** DTO: response
@@ -14,13 +13,10 @@ export const QuestionResponseFormSchema = z.object({
      *  @Size(max=255)
      */
     response: z.coerce
-        .string({
-            required_error: "NotNull.questionResponse.response",
-            invalid_type_error: "NotNull.questionResponse.response",
-        })
+        .string()
         .trim()
-        .min(1, { message: "NotEmpty.questionResponse.response" })
-        .max(MAX_LEN, { message: "Size.questionResponse.response" }),
+        .min(1, { message: "NotEmpty.responseForm.response" })
+        .max(MAX_LEN, { message: "Size.responseForm.response" }),
 });
 
 export type QuestionResponseFormData = z.infer<typeof QuestionResponseFormSchema>;

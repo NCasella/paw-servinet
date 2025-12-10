@@ -169,10 +169,7 @@
         {#each reviews as r (r.ratingId)}
             {#if !hasRated || r.ratingId !== hasRated.ratingId}
                 <div class="mb-3">
-                    <div class="flex items-center">
-                        <span class="text-primary-700 font-semibold mr-3">@USERNAME</span>
-
-                        <!-- stars -->
+                    <div class="flex items-center ml-3">
                         <div class="flex mr-3">
                             {#each Array(r.rating) as _}
                                 <div class="text-yellow-400">
@@ -185,7 +182,6 @@
                                 </div>
                             {/each}
                         </div>
-
                         <span class="text-surface-500">{r.date}</span>
                     </div>
                     <p class="ml-6">{r.comment}</p>
@@ -196,14 +192,14 @@
         {/each}
 
         <Pagination
-                count={lastPage}
-                pageSize={1}
-                {page}
-                onPageChange={(event) => {
-            page = event.page;
-            loadReviews(page);
-        }}
-                class="mt-6 flex justify-center"
+            count={lastPage}
+            pageSize={1}
+            {page}
+            onPageChange={(event) => {
+                page = event.page;
+                loadReviews(page);
+            }}
+            class="m-15 flex justify-center items-center space-x-2"
         >
             <Pagination.PrevTrigger>
                 <Icon name="leftArrow"/>
@@ -215,9 +211,9 @@
                         <span class="w-8 flex items-center justify-center">…</span>
                     {:else}
                         <button
-                                class={`w-8 h-8 rounded flex items-center justify-center cursor-pointer
+                            class={`w-8 h-8 rounded flex items-center justify-center cursor-pointer
                             ${p === page ? 'bg-primary-500 text-white font-bold' : 'bg-gray-200'}`}
-                                on:click={() => loadReviews(p)}
+                            on:click={() => loadReviews(p)}
                         >{p}</button>
                     {/if}
                 {/each}
