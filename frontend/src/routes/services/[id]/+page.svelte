@@ -64,6 +64,7 @@
             goto(`${base}/businesses/${business.businessId}`);
         } catch (error) {
             alert(get(t)("service.delete-error"));
+            throw error
         }
     }
 
@@ -87,11 +88,11 @@
             {#if isOwner}
                 <div class="flex gap-2">
                     <a href="{base}/services/{serviceId}/edit">
-                        <BigButtonSecondary title={$t("service.edit")}/>
+                        <BigButtonSecondary title={$t("service.edit")} iconName=""/>
                     </a>
                     <Dialog role="alertdialog">
                         <Dialog.Trigger>
-                            <BigButtonWarning title={$t("service.delete")}/>
+                            <BigButtonWarning title={$t("service.delete") } iconName="" onclick={null}/>
                         </Dialog.Trigger>
                         <Portal>
                             <Dialog.Backdrop class="fixed inset-0 z-50" />
@@ -176,7 +177,7 @@
                 {#if !isOwner}
                     <div class="flex mt-3 justify-center">
                         <a href="{base}/services/{serviceId}/create-appointment">
-                            <BigButton title={$t("service.new-appointment")}/>
+                            <BigButton title={$t("service.new-appointment")} iconName=""/>
                         </a>
                     </div>
                 {/if}

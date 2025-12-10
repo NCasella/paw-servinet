@@ -16,6 +16,7 @@
 	import { getParamIdFromUrl } from '$lib/navigation/pageInfo';
   import {getCurrentUser} from "$services/userService";
   import {User} from "$models/User";
+	import { toNeighbourhoodEnum } from '$models/enums/Neighbourhoods';
 
   let serviceId :number
   let appointmentForm: AppointmentForm;
@@ -72,7 +73,7 @@
             bind:value={appointmentForm.neighborhood}
           >
             {#each service.neighbourhoods ?? [] as neighbour}
-              <option value={neighbour}>{neighbour}</option>
+              <option value={ toNeighbourhoodEnum(neighbour)}>{neighbour}</option>
             {/each}
           </select>
         </div>
