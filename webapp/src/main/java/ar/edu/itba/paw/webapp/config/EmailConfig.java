@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -23,9 +24,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 @EnableAsync
-@PropertySource("classpath:mail/emailConfig.properties")
 public class EmailConfig {
-    private static final String JAVA_MAIL_FILE = "classpath:mail/javamail.properties";
 
     /* en prop */
 
@@ -53,7 +52,7 @@ public class EmailConfig {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        //props.put("mail.debug", "true");
+        props.put("mail.debug", "true");
 
         return mailSender;
 

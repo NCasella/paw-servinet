@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.services.emailEnums.EmailTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,7 +26,8 @@ public class EmailServiceImpl implements EmailService{
     private final MessageSource messageSource;
     private final static String SERVINET_EMAIL = "servinet.servinet.servinet@gmail.com";
 
-    private final String APP_URL = "http://localhost:8080/webapp_war/"; //! CAMBIAR EN DEPLOY
+    @Value("${APP_BASE_URL}")
+    private String APP_URL;
     private final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     @Autowired

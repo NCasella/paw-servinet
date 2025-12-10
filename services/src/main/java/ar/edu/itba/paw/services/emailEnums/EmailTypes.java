@@ -1,6 +1,6 @@
-package ar.edu.itba.paw.model;
+package ar.edu.itba.paw.services.emailEnums;
 
-import static ar.edu.itba.paw.model.EmailTemplates.*;
+import static ar.edu.itba.paw.services.emailEnums.EmailTemplates.*;
 
 public enum EmailTypes {
     WAITING("WAITING","subject.appointment.waiting"),

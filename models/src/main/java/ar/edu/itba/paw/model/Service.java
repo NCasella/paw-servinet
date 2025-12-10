@@ -18,7 +18,7 @@ public class Service extends BasicService {
     private boolean homeService;
 
 
-    @OneToMany(mappedBy = "serviceIn")
+    @OneToMany(mappedBy = "serviceIn",cascade = CascadeType.REMOVE,orphanRemoval = true)
     private List<Nbservices> neighbourhoodAvailable;
 
 
