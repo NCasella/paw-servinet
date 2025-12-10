@@ -209,7 +209,7 @@
         </div>
 
         <div class={!isQuestions ? "" : "opacity-0 h-0 overflow-hidden pointer-events-none"}>
-            <Reviews />
+            <Reviews serviceId={serviceId} isOwner={isOwner} user={user}/>
         </div>
     </div>
 {/if}

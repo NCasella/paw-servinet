@@ -479,7 +479,7 @@ export default {
   "review.business": "Opiniones en {0}",
   "review.see": "Ver opiniones",
   "reviews.not-found": "No se han encontrado opiniones en {0}",
-  "reviews.opinions-amount": "{0} opiniones",
+  "reviews.opinions-amount": "opiniones",
   "reviews.recent": "Últimas realizadas",
   "reviews.date-asc": "Menos recientes",
   "reviews.date-desc": "Más recientes",
