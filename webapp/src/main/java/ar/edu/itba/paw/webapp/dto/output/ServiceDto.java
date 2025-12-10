@@ -79,6 +79,7 @@ public class ServiceDto {
                 .serviceName(service.getName())
                 .homeService(service.getHomeService())
                 .address(service.getLocation())
+                .rating(service.getRatingAvg())
                 .description(service.getDescription())
                 .duration(service.getDuration())
                 .price(service.getPrice())

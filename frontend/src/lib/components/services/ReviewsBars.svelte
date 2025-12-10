@@ -10,7 +10,7 @@
     $: rating = allRatingCount === 0
         ? 0
         : Number(
-            (reviews.reduce((acc, r) => acc + r.rating, 0) / allRatingCount).toFixed(1)
+            (reviews.reduce((acc, r) => acc + r.rating, 0) / allRatingCount).toFixed(2)
         );
 
 

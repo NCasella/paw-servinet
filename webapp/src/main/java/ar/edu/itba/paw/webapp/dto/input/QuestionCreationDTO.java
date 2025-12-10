@@ -15,7 +15,7 @@ public class QuestionCreationDTO {
     @NotNull
     private long serviceId;
 
-    @NotEmpty
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.questionForm.question")
+    @Size(max=255,message = "Size.questionForm.question")
     private String question;
 }

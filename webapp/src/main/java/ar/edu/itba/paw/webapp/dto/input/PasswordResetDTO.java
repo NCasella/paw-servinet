@@ -12,9 +12,9 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class PasswordResetDTO {
-    @NotNull
-    @NotEmpty
-    @Size(max=255, min = 8)
+    @NotNull(message = "NotNull.PasswordResetForm.password")
+    @NotEmpty(message = "NotEmpty.PasswordResetForm.password")
+    @Size(max=255, min = 8,message = "Size.PasswordResetForm.password")
     private String newPassword;
 
     @NotNull

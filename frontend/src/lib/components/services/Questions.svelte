@@ -11,6 +11,7 @@
     import type {User} from "$models/User";
     import {goto} from "$app/navigation";
     import {base} from "$app/paths";
+    import FormError from "$lib/components/global/forms/FormError.svelte";
 
     export let serviceId: number;
     export let isOwner: boolean = false;
@@ -93,19 +94,24 @@
     <div>
         <Title text={$t("service.q&r")}/>
         {#if !isOwner}
-            <div class="flex">
-                <textarea
-                    class="bg-surface-200 mb-5 mt-5 w-2/3 p-5 rounded-2xl"
-                    maxlength="255"
-                    bind:value={form.question}
-                    placeholder={$t("service.ask")}
-                ></textarea>
-                <div
-                    on:click={submitQuestion}
-                    class="cursor-pointer flex items-center justify-center p-2 hover:opacity-80 text-2xl text-primary-500"
-                >
-                    <Icon name="send"/>
+            <div class="mb-5">
+                <div class="flex">
+                    <textarea
+                        class="bg-surface-200 mt-5 w-2/3 p-5 rounded-2xl"
+                        maxlength="255"
+                        bind:value={form.question}
+                        placeholder={$t("service.ask")}
+                    ></textarea>
+                    <div
+                        on:click={submitQuestion}
+                        class="cursor-pointer flex items-center justify-center p-2 hover:opacity-80 text-2xl text-primary-500"
+                    >
+                        <Icon name="send"/>
+                    </div>
                 </div>
+                {#if errors.question}
+                    <FormError errorMessage={errors.question} />
+                {/if}
             </div>
         {/if}
 
