@@ -80,12 +80,12 @@
                     <p th:text="#{template.appointment.select-option}"/>
 
                     <div class="btn-container">
-                        <a th:href="${url}+'negocio/'+ ${business.getBusinessid()} + '/turnos?confirmados=false'">
+                        <a th:href="${url}+'businesses/'+ ${business.getBusinessid()} + '/appointments?status=confirmed'">
                             <button class="btn confirm" th:text="#{template.view-request}"/>
                         </a>
                     </div>
                     <p class="align-center">
-                        <em><span class="align-center" th:text="#{template.url}"/> <a th:href="${url}+'servicio/'+${serviceId}" th:text="${url}+'servicio/'+${serviceId}"/>.</em>
+                        <em><span class="align-center" th:text="#{template.url}"/> <a th:href="${url}+'services/'+${serviceId}" th:text="${url}+'services/'+${serviceId}"/>.</em>
                     </p>
             </div>
 
@@ -111,7 +111,7 @@
                 <p th:if="${isClient}" th:fragment="newAppointment">
                     <span th:if="!${isServiceDeleted}">
                         <span th:text="#{template.appointment.new-request}"/>
-                        <a th:href="${url}+'contratar-servicio/'+ ${serviceId}" th:text="#{template.here}"/>.
+                        <a th:href="${url}+'services/'+ ${serviceId}+'/create-appointment' " th:text="#{template.here}"/>.
                     </span>
                     <span th:text="#{template.other-services}"/> <a th:href="${url}" th:text="${url}"></a>.
                 </p>
@@ -127,7 +127,7 @@
         <div th:if="${ isClient &&  type != 'CANCELLED' && type != 'DENIED'}" >
             <p th:text="#{template.appointment.more-details}"/>
             <div class="btn-container">
-                <a th:href="${url}+'turno/'+${serviceId}+'/'+${appointmentId}">
+                <a th:href="${url}+'appointments/'+${appointmentId}">
                     <button class="btn confirm" th:text="#{template.view-appointment}"/>
                 </a>
             </div>

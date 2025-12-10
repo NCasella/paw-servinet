@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.model;
+package ar.edu.itba.paw.services.emailEnums;
 
 public enum EmailTemplates {
     APPOINTMENT_TEMPLATE("html/appointment.html"),

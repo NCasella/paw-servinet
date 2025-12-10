@@ -71,10 +71,10 @@
 
             <div th:switch="${type}">
                 <div class="btn-container" th:case="'CREATED'">
-                    <a th:href="${url}+'servicio/'+${serviceId}">
+                    <a th:href="${url}+'services/'+${serviceId}">
                         <button class="btn confirm" th:text="#{template.service.view-btn}"/>
                     </a>
-                    <p><em><span class="align-center" th:text="#{template.url}"/> <a th:href="${url}+'servicio/'+${serviceId}" th:text="${url}+'servicio/'+${serviceId}"/>.</em></p>
+                    <p><em><span class="align-center" th:text="#{template.url}"/> <a th:href="${url}+'services/'+${serviceId}" th:text="${url}+'services/'+${serviceId}"/>.</em></p>
                 </div>
                 <p th:case="*">
                     <span th:text="#{template.service.url.view-all}"/> <a th:href="${url}+'negocios'" th:text="#{template.here}"/>.
