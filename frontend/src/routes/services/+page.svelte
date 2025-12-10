@@ -57,13 +57,13 @@
 {#if loading}
     <Spinner/>
 {:else}
-    <div class="flex gap-6">
+    <div class="flex gap-6 w-full">
         {#if pagedList.items.length === 0}
             <div class="flex-1 flex items-center justify-center">
                 <p class="text-gray-500 text-lg">{$t("service.empty-services")}</p>
             </div>
         {:else}
-            <div class="services-container">
+            <div class="flex-1">
                 {#each pagedList.items as service}
                     <div class="service-card">
                         <ServiceCard {service} />
@@ -75,13 +75,13 @@
         <div class="p-4 rounded-xl shadow-sm bg-primary-200 w-64 flex-shrink-0">
             <h4 class="font-semibold mb-2">{$t('services.filter-rate')}</h4>
             {#each Object.values(Ratings) as r}
-                <button
-                        class="flex items-center gap-2 w-full text-left p-2 rounded hover:bg-primary-100"
-                        on:click={() => {
-                        params.rating = RatingsInfo[r].minValue;
-                        page = 1;
-                        loadServices();
-                    }}
+                <button class={`flex items-center gap-2 w-full text-left p-2 rounded hover:bg-primary-100
+                ${params.rating === RatingsInfo[r].minValue ? 'bg-primary-300' : ''}`}
+                on:click={() => {
+                    params.rating = params.rating === RatingsInfo[r].minValue ? undefined : RatingsInfo[r].minValue;
+                    page = 1;
+                    loadServices();
+                }}
                 >
                     <span>{$t(RatingsInfo[r].codeMsg)}</span>
                     <span class="flex gap-0.5 text-yellow-400">
@@ -91,12 +91,13 @@
                     </span>
                 </button>
             {/each}
+
             <h4 class="font-semibold mb-2 mt-5">{$t('services.filter-category')}</h4>
             {#each categoryList as c}
-                <button
-                    class="flex items-center gap-2 w-full text-left p-2 rounded hover:bg-primary-100"
+                <button class={`flex items-center gap-2 w-full text-left p-2 rounded hover:bg-primary-100
+                    ${params.category === c ? 'bg-primary-300' : ''}`}
                     on:click={() => {
-                        params.category = c;
+                        params.category = params.category === c ? undefined : c;
                         page = 1;
                         loadServices();
                     }}

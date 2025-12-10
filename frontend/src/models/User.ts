@@ -59,3 +59,4 @@ function isUser(obj: any): obj is User {
 //function extractProfileImageURLFromJson(url: String) :number{
 //    return new Number (url.split('/').pop());
 //}
+

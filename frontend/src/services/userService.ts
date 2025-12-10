@@ -1,4 +1,7 @@
 import { resetLanguage, setLanguage } from "$lib/i18n/i18n";
+import { Appointment } from "$models/Appointment";
+import { UserContactInfo, type ContactInfo } from "$models/ContactInfo";
+import { parsePagedResponse, type PagedResult } from "$models/PagedList";
 import { User } from "$models/User"
 import { getUser, login, logout } from "$stores/userStore"
 import { GET, POST } from "$utils/apiFetch"
@@ -67,3 +70,24 @@ function currentUserIsProvider() :boolean {
     let roles :string[] = extractUserRolesFromToken()
     return roles?.some((r) => r==="ROLE_BUSINESS")
 } 
+
+export async function  getUserContactInfo(userId:number) :Promise<UserContactInfo> {
+    const response = await GET(`users/${userId}`, 
+        {contentType: "user-contact-info"})
+
+    return UserContactInfo.fromJson(response)
+}
+
+export async function getAppointmentClients(  appointmentList: Appointment[] ): Promise<Map<number, ContactInfo>> {
+
+  const userIds = [...new Set(appointmentList.map(a => a.userId))];
+
+  const users = await Promise.all(
+    userIds.map(id => getUserContactInfo(id))
+  );
+
+  return new Map(
+    users.map((u, i) => [userIds[i], u.toContactInfo()])
+  );
+
+}

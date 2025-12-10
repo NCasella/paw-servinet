@@ -33,6 +33,7 @@ import Health from 'virtual:icons/material-symbols/health-metrics-rounded';
 import EventRepeat from 'virtual:icons/material-symbols/event-repeat';
 import Accept from 'virtual:icons/material-symbols/done';
 import History from 'virtual:icons/material-symbols/history-rounded';
+import Info from 'virtual:icons/material-symbols/info';
 import ResponseArrow from 'virtual:icons/material-symbols/subdirectory-arrow-right-rounded';
 import Send from 'virtual:icons/material-symbols/send-rounded';
 
@@ -56,6 +57,7 @@ export const icons: Record<string, any> = {
   leftArrow: LeftArrow,
   rightArrow: RightArrow,
   schedule: Schedule,
+  info: Info,
   eventRepeat: EventRepeat,
   delete: Cancel,
   accept: Accept,

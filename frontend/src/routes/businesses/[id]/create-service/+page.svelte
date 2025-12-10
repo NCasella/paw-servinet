@@ -28,14 +28,14 @@
     })
 
     async function handleSubmit() {
-        
-        formErrors = serviceForm.validateServiceForm()
-        if ( formErrors==null ) return
-        console.log(serviceForm)
-        const id = await createService( serviceForm, image )
-        goto(`${base}/services/${id}`)
+      formErrors = serviceForm.validateServiceForm();
+      /*
+      if (Object.keys(formErrors).length > 0) {
+          return;
+      }*/
+      const id = await createService(serviceForm, image);
+      goto(`${base}/services/${id}`);
     }
-
 
 
     function handleImageChange(e: Event) {
@@ -51,8 +51,6 @@
       serviceForm.neighbourhoods = [...serviceForm.neighbourhoods, n];
     }
   }
-
-
 </script>
 
 {#if serviceForm}
@@ -268,7 +266,7 @@
               type="text"
               class="w-full border rounded-lg px-3 py-2 text-sm"
               placeholder={$t('input.service.price')}
-              bind:value={serviceForm.price}
+              bind:value={serviceForm.priceValue}
             />
             {#if formErrors.price}
               <FormError errorMessage={formErrors.price} />
