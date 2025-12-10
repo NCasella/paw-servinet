@@ -28,14 +28,10 @@
     })
 
     async function handleSubmit() {
-        
-        formErrors = serviceForm.validateServiceForm()
-        if ( formErrors==null ) return
-        console.log(serviceForm)
-        const id = await createService( serviceForm, image )
-        goto(`${base}/services/${id}`)
+      formErrors = serviceForm.validateServiceForm();
+      const id = await createService(serviceForm, image);
+      goto(`${base}/services/${id}`);
     }
-
 
 
     function handleImageChange(e: Event) {
@@ -51,8 +47,6 @@
       serviceForm.neighbourhoods = [...serviceForm.neighbourhoods, n];
     }
   }
-
-
 </script>
 
 {#if serviceForm}

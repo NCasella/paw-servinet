@@ -10,12 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Request;
@@ -36,6 +31,16 @@ public class ImageJerseyController {
     @Autowired
     public ImageJerseyController(ImageService imageService){
         this.imageService=imageService;
+    }
+
+    @OPTIONS
+    public Response getSupportedMimeTypesForServices() {
+        return Response.ok()
+                .header("Allow", "GET, POST, OPTIONS")
+                .header("Accept", MediaType.MULTIPART_FORM_DATA)
+                .header("Accept-Post", MediaType.MULTIPART_FORM_DATA)
+                .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .build();
     }
 
     @GET

@@ -1,8 +1,7 @@
 import { DELETE, GET, getNewIdFromPostResponse, POST } from "$utils/apiFetch";
 import { Service } from "$models/Service";
 import { ServiceForm } from "$models/forms/ServiceCreationForm";
-import { postImage } from "./imageService";
-import { DefaultImg } from "$models/enums/DefaultImg";
+import {uploadImage} from "./imageService";
 import type {PagedResult} from "$models/PagedList";
 import {parsePagedResponse} from "$models/PagedList";
 import type { Appointment } from "$models/Appointment";
@@ -43,7 +42,7 @@ export async function getServiceById(serviceId:number) :Promise<Service> {
 }
 
 export async function createService(form:ServiceForm, image: File | null) :Promise<number> {
-    form.imageId = await postImage(image, 'service')
+    if(image != null) form.imageId = await uploadImage(image);
 
     const response = await POST("services",form, {
             contentType: "service-creation"

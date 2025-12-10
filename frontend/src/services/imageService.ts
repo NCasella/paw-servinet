@@ -1,19 +1,19 @@
-import { asset, base } from "$app/paths";
+import { base } from "$app/paths";
 import { getNewIdFromPostResponse, POST, GET } from "$utils/apiFetch";
 
-export async function postImage(image:File | null, defaultImageUrl:string) {
-    if (image == null) image = await getDefaultAsFile(defaultImageUrl)
-    
+export async function uploadImage(file: File): Promise<number> {
     const formData = new FormData();
-    formData.append('image', image)
+    formData.append("image", file);
 
-    try {
-        const response = await POST("images", formData)
+    const response = await POST<{ headers: Headers; body: any }, FormData>(
+        "images",
+        formData,
+        {
+            genericContentType: "multipart/form-data",
+        }
+    );
 
-        return getNewIdFromPostResponse(response)
-    } catch {
-        throw new Error("Error uploading picture")
-    }
+    return getNewIdFromPostResponse(response);
 }
 
 

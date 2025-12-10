@@ -42,55 +42,46 @@ export async function apiFetch<TResponse = any, TBody = any>(
     binary = false
   } = options;
 
-  let mediaTypeHeader = method=="GET"? "Accept" : "Content-Type"
-
-  const finalHeaders: Record<string, string> = {
-    [mediaTypeHeader]: contentType
-      ? `application/vnd.servinet.${contentType}.v1+json`
-      : (genericContentType? genericContentType : "application/json" ),
-    ...headers
-  };
-
+  const finalHeaders: Record<string, string> = { ...headers };
   const token = withAuth ? getAccessToken() : null;
   if (token) {
     finalHeaders["Authorization"] = `Bearer ${token}`;
   }
-console.log( BASE_URL+url)
-  const response = await fetch(BASE_URL+url, {
+
+  const isFormData = body instanceof FormData;
+  if (!isFormData) {
+    finalHeaders["Content-Type"] = contentType
+        ? `application/vnd.servinet.${contentType}.v1+json`
+        : (genericContentType ? genericContentType : "application/json");
+  }
+
+  const response = await fetch(BASE_URL + url, {
     method,
     headers: finalHeaders,
-    body: body ? JSON.stringify(body) : undefined,
+    body: isFormData ? body : body ? JSON.stringify(body) : undefined,
   });
 
   if (!response.ok) {
-      //if ( response.status == 401 )
-      //  refreshToken() y rehago request
     const err: FetchError = new Error(`Request failed: ${response.status}`);
     err.status = response.status;
     throw err;
   }
 
-  if (binary) {
-    return response.blob() as any;
-  }
+  if (binary) return response.blob() as any;
 
   const text = await response.text();
   let parsed: TResponse | null = null;
-
   if (text) {
     try {
       parsed = JSON.parse(text) as TResponse;
     } catch {
-      // body no era JSON, lo dejamos en null
       parsed = null;
     }
   }
 
-  return {
-    headers: response.headers,
-    body: parsed
-  } as TResponse;
+  return { headers: response.headers, body: parsed } as TResponse;
 }
+
 
 
 export const GET = <T = any>(
