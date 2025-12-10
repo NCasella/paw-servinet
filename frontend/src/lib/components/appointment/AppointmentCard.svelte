@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Appointment } from '$models/Appointment';
   import { AppointmentStatus } from '$models/enums/AppointmentStatus';
-  import type { User } from '$models/User';
+  
   import type { Service } from '$models/Service';
   import { t } from '$i18';
   import Icon from '$icons';
@@ -9,21 +9,22 @@
 	import { base } from '$app/paths';
 	import { AppointmentView} from '$models/enums/AppointmentStatus';
 	import { getPath } from '$lib/navigation/pageInfo';
+	import type { ContactInfo } from '$models/ContactInfo';
 
   // Props principales
   export let appointment: Appointment;
-  export let user: User;
+  //export let user: User;
   export let service: Service;
   export let status: AppointmentStatus;
-  export let business;
+  export let contactInfo :ContactInfo;
 
-  // ¿Es un turno del historial?
-  export let history = status === AppointmentStatus.FINISHED;
+
   
   export let view :AppointmentView
   export let isUser = view == AppointmentView.USER;
 
-  // Labels (si no te los pasan desde afuera, los podés derivar acá)
+  export let history = isUser && status === AppointmentStatus.FINISHED;
+
   export let dayLabel: string = appointment.formatedDate().toDateString(); // ej: "12/08"
   export let dayWithYearLabel: string = '';                  // ej: "12/08/2025"
 
@@ -118,7 +119,7 @@
                 class="inline-flex items-center justify-center rounded-full border border-emerald-200 px-2 py-1 text-xs text-emerald-600 hover:bg-emerald-50"
                 on:click={handleAccept}
               >
-                <Icon name="check" />
+                <Icon name="accept" />
               </button>
             <!-- deny -->
             <button
@@ -162,12 +163,12 @@
             {#if !isUser}
               <span class="flex items-center gap-1">
                 <Icon name="account-circle" />
-                <span class="truncate">{user.fullName}</span>
+                <span class="truncate">{contactInfo.username}</span>
               </span>
             {/if}
             <span class="flex items-center gap-1">
               <Icon name="mail" />
-              <span class="truncate">{user.email}</span>
+              <span class="truncate">{contactInfo.email}</span>
             </span>
           {/if}
         </div>
@@ -175,7 +176,7 @@
         <!-- Dirección + descripción -->
         <div class="flex-1 flex flex-col gap-2">
           <span class="flex items-center gap-1">
-            <Icon name="house" />
+            <Icon name="location" />
             {#if service.homeService}
               <span class="truncate">{locationText}</span>
             {:else}
@@ -197,6 +198,7 @@
         </div>
 
         <!-- Info / leer más -->
+         {#if isUser}
         <div class="flex items-end">
             <button
               type="button"
@@ -206,8 +208,8 @@
               <Icon name="info" />
               {$t('read-more')}
             </button>
-          
         </div>
+        {/if}
       </div>
     {/if}
   </div>

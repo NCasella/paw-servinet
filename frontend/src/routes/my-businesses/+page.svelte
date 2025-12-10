@@ -28,7 +28,6 @@
         <a href="{base}/create-business">
         <BigButton iconName="business" title={$t("businesses.add-business")}/>
         </a>
-        <BigButton iconName="calendar" title={$t("businesses.appointments")}/>
         <a href="{base}/my-businesses/questions">
         <BigButton iconName="notification" title={$t("businesses.questions")}/>
         </a>

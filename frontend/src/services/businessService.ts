@@ -35,7 +35,7 @@ export async function getServiceBusinesses(serviceList:Service[]) :Promise<Map<n
   const businesses = await Promise.all(
     ids.map(id => getBusinessById(id))
   );
-
+console.log(businesses, ids)
   return new Map(
     businesses.map((business, i) => [ids[i], business])
   );

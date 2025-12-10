@@ -1,8 +1,16 @@
 import { resetLanguage, setLanguage } from "$lib/i18n/i18n";
+import { Appointment } from "$models/Appointment";
+import { UserContactInfo, type ContactInfo } from "$models/ContactInfo";
+import { parsePagedResponse, type PagedResult } from "$models/PagedList";
 import { User } from "$models/User"
 import { getUser, login, logout } from "$stores/userStore"
-import { GET } from "$utils/apiFetch"
-import { extractUserIdFromToken, extractUserRolesFromToken, removeTokens } from "./authenticate";
+import { GET, POST } from "$utils/apiFetch"
+import { RegisterUserForm } from "$models/forms/UserCreationForm";
+import { getNewIdFromPostResponse } from "$utils/apiFetch";
+import { extractUserIdFromToken, extractUserRolesFromToken, loginWithBasicAuth, removeTokens } from "./authenticate";
+import type { RequestPasswordRecoveryForm } from "$models/forms/RequestPasswordRecoveryForm";
+import type { TResponse } from "$utils/apiFetch";
+import type { ResetPasswordForm } from "$models/forms/ResetPasswordForm";
 
 export async function getUserInfo(id: number ) :Promise<User> {
     const data = await GET(`users/${id}`,{contentType:"user-contact-info" });
@@ -10,6 +18,25 @@ export async function getUserInfo(id: number ) :Promise<User> {
     let user = User.fromJson(data)
     user.setRole( currentUserIsProvider() );
     return user;
+}
+
+export async function createUser(form:RegisterUserForm) :Promise<number> {
+    const response = await POST("users",form, {
+        contentType: "user-registration" 
+    })  
+    return getNewIdFromPostResponse(response)
+}
+
+export async function requestPasswordRecovery(form:RequestPasswordRecoveryForm) : Promise<TResponse> {
+    const response = await POST("users",form, {
+        contentType: "user-password-recovery-request" 
+    })  
+    return response
+}
+
+export async function resetPassword(form:ResetPasswordForm) : Promise<Boolean> {
+    const response = await loginWithBasicAuth(form.code, form.password); 
+    return response
 }
 
 /* Retrieves user login data */
@@ -43,3 +70,24 @@ function currentUserIsProvider() :boolean {
     let roles :string[] = extractUserRolesFromToken()
     return roles?.some((r) => r==="ROLE_BUSINESS")
 } 
+
+export async function  getUserContactInfo(userId:number) :Promise<UserContactInfo> {
+    const response = await GET(`users/${userId}`, 
+        {contentType: "user-contact-info"})
+
+    return UserContactInfo.fromJson(response)
+}
+
+export async function getAppointmentClients(  appointmentList: Appointment[] ): Promise<Map<number, ContactInfo>> {
+
+  const userIds = [...new Set(appointmentList.map(a => a.userId))];
+
+  const users = await Promise.all(
+    userIds.map(id => getUserContactInfo(id))
+  );
+
+  return new Map(
+    users.map((u, i) => [userIds[i], u.toContactInfo()])
+  );
+
+}

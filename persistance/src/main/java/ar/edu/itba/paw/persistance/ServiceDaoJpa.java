@@ -33,7 +33,13 @@ public class ServiceDaoJpa implements ServiceDao {
         final List<BasicService> list = query.getResultList();
         return list.stream().findFirst();
     }
-
+    @Override
+    public boolean isServiceOwner(long serviceId,long userId){
+        Query query = em.createQuery("select count(s) from Service as s where s.business.ownedBy.userId = :userId and s.id= :serviceId");
+        query.setParameter("serviceId",serviceId);
+       query.setParameter("userId",userId);
+       return ((Number)query.getSingleResult()).intValue()>0;
+    }
     @Override
     public Service create(Business business, String name, String description, boolean homeservice, String location, Neighbourhoods[] neighbourhoods, Categories category, int minimalduration, PricingTypes pricing, String price, boolean additionalCharges, Long imageId) {
         Service service = new Service(business, name, description, homeservice, location, category, minimalduration, pricing, price, additionalCharges, imageId);
