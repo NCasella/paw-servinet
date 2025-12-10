@@ -29,6 +29,10 @@
 
     async function handleSubmit() {
       formErrors = serviceForm.validateServiceForm();
+      /*
+      if (Object.keys(formErrors).length > 0) {
+          return;
+      }*/
       const id = await createService(serviceForm, image);
       goto(`${base}/services/${id}`);
     }
@@ -262,7 +266,7 @@
               type="text"
               class="w-full border rounded-lg px-3 py-2 text-sm"
               placeholder={$t('input.service.price')}
-              bind:value={serviceForm.price}
+              bind:value={serviceForm.priceValue}
             />
             {#if formErrors.price}
               <FormError errorMessage={formErrors.price} />
