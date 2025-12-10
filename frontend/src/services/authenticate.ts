@@ -3,7 +3,7 @@ import { setTokens, clearTokens, auth, getAccessToken, type AuthState } from '$s
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 console.log("base:"+BASE_URL)
-console.log
+
 export async function loginWithBasicAuth(
   username: string,
   password: string
@@ -76,7 +76,7 @@ export function extractUserRolesFromToken(): string[] {
 
   try {
     const payload = jwtDecode<TokenPayload>(token);
-    console.log("json:"+  payload)
+
     if (payload.roles) return payload.roles;
 
   } catch (e) {

@@ -78,7 +78,7 @@ export function closeSession() {
     removeTokens()
 }
 
-function currentUserIsProvider() :boolean {
+export function currentUserIsProvider() :boolean {
     let roles :string[] = extractUserRolesFromToken()
     return roles?.some((r) => r==="ROLE_BUSINESS")
 } 

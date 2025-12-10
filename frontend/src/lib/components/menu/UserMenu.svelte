@@ -5,9 +5,10 @@
 	import { asset, base } from '$app/paths';
 	import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
 	import { UserContactInfo } from '$models/ContactInfo';
+	import { currentUserIsProvider } from '$services/userService';
 
 	let {user} = $props()
-	let isProvider = user.isProvider 
+	let isProvider = currentUserIsProvider()
 	
 </script>
 
