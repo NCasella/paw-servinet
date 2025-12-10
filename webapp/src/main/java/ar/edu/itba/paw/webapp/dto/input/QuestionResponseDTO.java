@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuestionResponseDTO {
-    @NotEmpty
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.responseForm.response")
+    @Size(max=255,message = "Size.responseForm.response")
     private String response;
 }

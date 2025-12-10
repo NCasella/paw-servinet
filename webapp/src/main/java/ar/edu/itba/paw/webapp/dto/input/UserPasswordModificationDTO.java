@@ -11,13 +11,13 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 public class UserPasswordModificationDTO {
-    @NotNull
-    @NotEmpty
-    @Size(max=255, min = 8)
+    @NotNull(message = "NotNull.PasswordResetForm.passwordConfirmation")
+    @NotEmpty(message = "NotEmpty.PasswordResetForm.passwordConfirmation")
+    @Size(max=255, min = 8,message = "Size.PasswordResetForm.passwordConfirmation")
     private String oldPassword;
-    @NotNull
-    @NotEmpty
-    @Size(max=255, min = 8)
+    @NotNull(message = "NotNull.PasswordResetForm.passwordConfirmation")
+    @NotEmpty(message = "NotEmpty.PasswordResetForm.passwordConfirmation")
+    @Size(max=255, min = 8, message = "Size.PasswordResetForm.passwordConfirmation")
     private String newPassword;
 
     @Override

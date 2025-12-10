@@ -13,10 +13,10 @@ public class ReviewCreationDTO {
     @NotNull
     private long serviceId;
 
-    @Min(value=1)
-    @Max(value=5)
+    @Min(value=1,message = "Min.reviewForm.rating")
+    @Max(value=5,message = "Max.reviewForm.rating")
     private int rating;
 
-    @Size(max=255)
+    @Size(max=255,message = "Size.reviewForm.comment")
     private String comment;
 }

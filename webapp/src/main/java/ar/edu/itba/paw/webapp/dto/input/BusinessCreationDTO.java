@@ -11,21 +11,21 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 public class BusinessCreationDTO {
-    @NotEmpty
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.BusinessForm.businessName")
+    @Size(max=255,message="Size.BusinessForm.businessName")
     private String businessName;
 
-    @NotEmpty
-    @Email
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.BusinessForm.businessEmail")
+    @Email(message = "Email.BusinessForm.businessEmail")
+    @Size(max=255, message = "Size.BusinessForm.businessEmail")
     private String businessEmail;
 
-    @NotEmpty
-    @Pattern(regexp = "^\\+(\\d{1,3})?\\s?9?\\s?(\\d{1,4})?\\s?(\\d{6,8})$")
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.BusinessForm.businessTelephone")
+    @Pattern(regexp = "^\\+(\\d{1,3})?\\s?9?\\s?(\\d{1,4})?\\s?(\\d{6,8})$",message = "Pattern.BusinessForm.businessTelephone")
+    @Size(max=255,message="Size.BusinessForm.businessTelephone")
     private String businessTelephone;
 
-    @NotEmpty
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.BusinessForm.businessLocation")
+    @Size(max=255,message = "Size.BusinessForm.businessLocation")
     private String businessLocation;
 }
