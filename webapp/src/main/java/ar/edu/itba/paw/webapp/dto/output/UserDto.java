@@ -45,20 +45,27 @@ public class UserDto {
                 .path(String.valueOf(user.getUserId()))
                 .build();
 
+        URI profilePicUri = uriInfo.getBaseUriBuilder()
+                .path(PathUrls.IMAGES_URL.getUrl())
+                .path(String.valueOf(user.getProfilePicId().orElse(null)))
+                .build();
+
+        UserLinks.UserLinksBuilder linksBuilder = UserLinks.builder()
+                .businessesOwned(businessesOwnedUri)
+                .appointmentsRequested(appointmentsRequestedUri)
+                .questionsToRespond(questionsToRespondUri)
+                .self(self);
+
+        if (user.getProfilePicId().isPresent()){
+            linksBuilder.profilePic(profilePicUri);
+        }
+
         return UserDto.builder()
                 .userId(user.getUserId())
                 .fullName(user.getFullName())
                 .username(user.getUsername())
                 .language(user.getLocale())
-                .links(
-                    UserLinks.builder()
-                            .businessesOwned(businessesOwnedUri)
-                            .appointmentsRequested(appointmentsRequestedUri)
-                            .questionsToRespond(questionsToRespondUri)
-                            .self(self)
-                            .build()
-
-                )
+                .links(linksBuilder.build())
                 .build();
     }
     @Override
