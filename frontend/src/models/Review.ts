@@ -7,7 +7,7 @@ export interface ReviewLinks {
 }
 
 export class Review {
-    ratingIdd: number;
+    ratingId: number;
     serviceId: number;
     userId: number;
     rating: number;
@@ -16,7 +16,7 @@ export class Review {
     links: ReviewLinks;
 
     constructor(data: {
-        ratingIdd: number;
+        ratingId: number;
         serviceId: number;
         userId: number;
         rating: number;
@@ -24,7 +24,7 @@ export class Review {
         date: string;
         links: ReviewLinks;
     }) {
-        this.ratingIdd = data.ratingIdd;
+        this.ratingId = data.ratingId;
         this.serviceId = data.serviceId;
         this.userId = data.userId;
         this.rating = data.rating;
@@ -45,7 +45,7 @@ export class Review {
 function isReview(obj: any): obj is Review {
     return (
         obj &&
-        typeof obj.ratingIdd === "number" &&
+        typeof obj.ratingId === "number" &&
         typeof obj.serviceId === "number" &&
         typeof obj.userId === "number" &&
         typeof obj.rating === "number" &&

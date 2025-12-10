@@ -11,6 +11,10 @@ export default {
   "login.submit": "Sign in",
   "login.emailSent":
     "An email to verify your account has been sent, check your inbox!",
+  "login.passwordrecovery.send": "Send",
+  "login.passwordrecovery.instruction": "Enter the email with which you registered your account to recover your password",
+  "login.passwordrecovery.title": "Reset Password",
+  "login.passwordrecovery.success": "An email has been sent with instructions to reset your password",
 
   "email": "Email",
   "login": "Log in",
@@ -508,7 +512,7 @@ export default {
   "review.business": "Reviews on {0}",
   "review.see": "Go to reviews",
   "reviews.not-found": "No reviews found in {0}",
-  "reviews.opinions-amount": "{0} reviews",
+  "reviews.opinions-amount": "reviews",
   "reviews.recent": "Recent reviews",
   "reviews.date-asc": "Last recent",
   "reviews.date-desc": "Most recent",

@@ -1,25 +1,21 @@
 package ar.edu.itba.paw.webapp.dto.input;
 
-import ar.edu.itba.paw.model.Service;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class QuestionCreationDTO {
-    @NotEmpty
     @NotNull
     private long serviceId;
 
-    @NotEmpty
-    @NotNull
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.questionForm.question")
+    @Size(max=255,message = "Size.questionForm.question")
     private String question;
 }

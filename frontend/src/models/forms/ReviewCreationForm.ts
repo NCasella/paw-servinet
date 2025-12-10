@@ -4,20 +4,17 @@ const MAX_LEN = 255;
 
 export type ReviewFormErrorKey =
     | "NotNull.reviewForm.serviceId"
-    | "NotEmpty.reviewForm.serviceId"
     | "Min.reviewForm.rating"
     | "Max.reviewForm.rating"
     | "Size.reviewForm.comment";
 
 export const ReviewFormSchema = z.object({
     /** DTO: serviceId
-     *  @NotEmpty
      *  @NotNull
      */
     serviceId: z.coerce
         .number({
             required_error: "NotNull.reviewForm.serviceId",
-            invalid_type_error: "NotEmpty.reviewForm.serviceId",
         })
         .int()
         .positive(),
@@ -51,7 +48,7 @@ export type ReviewFormErrors = {
 
 export class ReviewForm implements ReviewFormData {
     serviceId = 0;
-    rating = 1;
+    rating = 0;
     comment = "";
 
     constructor(init?: Partial<ReviewFormData>) {

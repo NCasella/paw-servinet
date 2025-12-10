@@ -13,11 +13,11 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 public class AppointmentCreationDTO {
-    @Future
-    @NotNull
+    @Future(message = "FutureDate.appointmentForm.date")
+    @NotNull(message="NotNull.appointmentForm.date")
     private LocalDateTime startDate;
 
-    @Size(max = 255)
+    @Size(max = 255,message = "Size.appointmentForm.location")
     private String address;
 
     @Size(max = 255)

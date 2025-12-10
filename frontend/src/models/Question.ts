@@ -49,7 +49,11 @@ function isQuestion(obj: any): obj is Question {
         typeof obj.serviceId === "number" &&
         typeof obj.userId === "number" &&
         typeof obj.question === "string" &&
-        (typeof obj.response === "string" || obj.response === null) &&
+        (
+            obj.response === undefined ||
+            obj.response === null ||
+            typeof obj.response === "string"
+        ) &&
         typeof obj.date === "string" &&
         obj.links &&
         typeof obj.links.self === "string" &&

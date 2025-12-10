@@ -22,10 +22,13 @@
     import {get} from "svelte/store";
     import {getImage} from "$services/imageService";
     import Spinner from "$lib/components/global/Spinner.svelte";
+    import Questions from "$lib/components/services/Questions.svelte";
+    import Reviews from "$lib/components/services/Reviews.svelte";
 
     let serviceId :number
     let loading = true
     let isOwner :boolean
+    let isQuestions = true;
     let imageUrl: string = "";
     let service :Service
     let user :User
@@ -62,6 +65,14 @@
         } catch (error) {
             alert(get(t)("service.delete-error"));
         }
+    }
+
+    function showQuestions() {
+        isQuestions = true;
+    }
+
+    function showReviews() {
+        isQuestions = false;
     }
 </script>
 
@@ -174,6 +185,31 @@
 
         <div class="mt-6 p-4 bg-gray-100 rounded">
             <p>{service.description}</p>
+        </div>
+
+        <div class="flex justify-center m-4">
+            <button
+                    class="px-4 py-2 bg-primary-200 rounded-l-3xl font-bold text-white hover:bg-primary-500"
+                    class:bg-primary-500={isQuestions}
+                    on:click={showQuestions}
+            >
+                Questions
+            </button>
+            <button
+                    class="px-4 py-2 bg-primary-200 rounded-r-3xl font-bold text-white hover:bg-primary-500"
+                    class:bg-primary-500={!isQuestions}
+                    on:click={showReviews}
+            >
+                Reviews
+            </button>
+        </div>
+
+        <div class={isQuestions ? "" : "opacity-0 h-0 overflow-hidden pointer-events-none"}>
+            <Questions serviceId={serviceId} isOwner={isOwner} user={user}/>
+        </div>
+
+        <div class={!isQuestions ? "" : "opacity-0 h-0 overflow-hidden pointer-events-none"}>
+            <Reviews serviceId={serviceId} isOwner={isOwner} user={user}/>
         </div>
     </div>
 {/if}

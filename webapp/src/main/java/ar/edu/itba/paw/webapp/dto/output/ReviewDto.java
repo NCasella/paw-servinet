@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-    private long ratingIdd;
+    private long ratingId;
     private long serviceId;
     private long userId;
     private int rating;
@@ -43,7 +43,7 @@ public class ReviewDto {
                 .build();
 
         return ReviewDto.builder()
-                .ratingIdd(rating.getId())
+                .ratingId(rating.getId())
                 .serviceId(rating.getServiceid())
                 .userId(rating.getUserid())
                 .rating(rating.getRating())

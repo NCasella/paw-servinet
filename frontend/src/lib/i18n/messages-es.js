@@ -10,6 +10,11 @@ export default {
   "login.forgotpassword": "Olvidé mi contraseña",
   "login.submit": "Iniciar sesión",
   "login.emailSent": "Se envió un mail para la verificación de su cuenta, revise su bandeja de entrada!",
+  "login.passwordrecovery.send": "Enviar",
+  "login.passwordrecovery.instruction": "Ingrese el correo electrónico con el que registró su cuenta para recuperar su contraseña",
+  "login.passwordrecovery.title": "Restablecer Contraseña",
+  "login.passwordrecovery.success":
+    "Se ha enviado un correo electrónico con las instrucciones para restablecer su contraseña",
 
   "email": "Correo electrónico",
   "login": "Iniciar sesión",
@@ -479,7 +484,7 @@ export default {
   "review.business": "Opiniones en {0}",
   "review.see": "Ver opiniones",
   "reviews.not-found": "No se han encontrado opiniones en {0}",
-  "reviews.opinions-amount": "{0} opiniones",
+  "reviews.opinions-amount": "opiniones",
   "reviews.recent": "Últimas realizadas",
   "reviews.date-asc": "Menos recientes",
   "reviews.date-desc": "Más recientes",

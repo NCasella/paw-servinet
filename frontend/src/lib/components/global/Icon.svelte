@@ -5,7 +5,8 @@ import Mail from 'virtual:icons/material-symbols/mail';
 import Person from 'virtual:icons/material-symbols/account-circle';
 import Business from 'virtual:icons/material-symbols/store';
 import Phone from 'virtual:icons/material-symbols/call';
-import Notification from 'virtual:icons/material-symbols/notifications';
+import Notification from 'virtual:icons/material-symbols/notifications-rounded';
+import NoNotification from 'virtual:icons/material-symbols/notifications-off-rounded';
 import Calendar from 'virtual:icons/material-symbols/calendar-today';
 import Add from 'virtual:icons/material-symbols/add-2';
 import Location from 'virtual:icons/material-symbols/location-on';
@@ -33,6 +34,9 @@ import EventRepeat from 'virtual:icons/material-symbols/event-repeat';
 import Accept from 'virtual:icons/material-symbols/done';
 import History from 'virtual:icons/material-symbols/history-rounded';
 import Info from 'virtual:icons/material-symbols/info';
+import ResponseArrow from 'virtual:icons/material-symbols/subdirectory-arrow-right-rounded';
+import Send from 'virtual:icons/material-symbols/send-rounded';
+
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
   language: Language,
@@ -42,6 +46,7 @@ export const icons: Record<string, any> = {
   phone: Phone,
   calendar: Calendar,
   notification: Notification,
+  noNotification: NoNotification,
   add: Add,
   location: Location,
   address: Address,
@@ -68,7 +73,8 @@ export const icons: Record<string, any> = {
   consulting: Consulting,
   hairSalon: HairSalon,
   health: Health,
-
+  responseArrow: ResponseArrow,
+  send: Send,
 };
 
 function iconFor(name: string) {

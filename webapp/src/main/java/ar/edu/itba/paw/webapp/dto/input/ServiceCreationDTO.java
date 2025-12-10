@@ -17,25 +17,25 @@ public class ServiceCreationDTO {
     @NotNull
     private Long businessId;
 
-    @Size(max=255)
-    @NotEmpty
-    @NotNull
+    @Size(max=255,message = "Size.serviceForm.title")
+    @NotEmpty(message = "NotEmpty.serviceForm.title")
+    @NotNull(message = "NotNull.serviceForm.title")
     private String serviceName;
 
-    @Size(max=255)
+    @Size(max=255,message = "Size.serviceForm.description")
     private String description;
 
-    @NotNull
+    @NotNull(message = "NotNull.serviceForm.homeserv")
     private boolean homeService;
 
 
     private String[] neighbourhoods;
 
-    @Size(max=255)
+    @Size(max=255,message = "Size.serviceForm.location")
     private String address;
 
-    @Size(max=10)
-    @Pattern(regexp = "[0-9]+(\\.[0-9]{1,2})?$")
+    @Size(max=10,message = "Size.serviceForm.price")
+    @Pattern(regexp = "[0-9]+(\\.[0-9]{1,2})?$",message = "Pattern.serviceForm.price")
     private String price;
 
     private boolean additionalCharges;
@@ -46,7 +46,7 @@ public class ServiceCreationDTO {
     @NotNull
     private String category;
 
-    @Positive
+    @Positive(message = "Positive.serviceForm.minimalduration")
     private int minimalDuration;
     @Positive
     private Long imageId;
