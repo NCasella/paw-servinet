@@ -132,16 +132,16 @@
             <!-- deny -->
             <button
               type="button"
-              class="inline-flex items-center justify-center rounded-full border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
+              class="inline-flex items-center justify-center rounded-full border border-error-200 px-2 py-1 text-xs text-error-600 hover:bg-error-50"
               on:click={handleCancelClick}
             >
-              <Icon name="delete" />
+              <Icon name="deny" />
             </button>  
           {:else}
             <!-- Cancelar / popUp -->
             <button
               type="button"
-              class="inline-flex items-center justify-center rounded-full border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
+               class="inline-flex items-center justify-center rounded-full border border-error-200 px-2 py-1 text-xs text-error-600 hover:bg-error-50"
               on:click={handleCancelClick}
             >
               <Icon name="delete" />

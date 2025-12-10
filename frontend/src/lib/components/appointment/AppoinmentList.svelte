@@ -84,6 +84,16 @@
         return { email:  business.email } as ContactInfo
     }
 
+    function getConfirmLabel() {
+        return isUser? 'popup.appointment.cancel' : "popup.appointment.deny"
+    }
+
+    function getLabel() {
+        return   isUser? 'popup.appointment.message':'popup.deny-appointment.message'
+    }
+
+
+
   import ConfirmModal from '$lib/components/global/modal/ConfirmModal.svelte';
 	import { boolean, email, type number } from "zod";
 	import { getPageNumFromParam, getPath } from "$lib/navigation/pageInfo";
@@ -244,9 +254,9 @@ notConfirmed = !confirmed;
 <ConfirmModal
   open={showCancelModal}
   title={$t('popup.appointment.title')}
-  message={$t('popup.appointment.message')}
+  message={$t(getLabel())}
   cancelLabel={$t('service.cancel')}
-  confirmLabel={$t('popup.appointment.cancel')}
+  confirmLabel={$t(getConfirmLabel())}
   on:cancel={() => (showCancelModal = false)}
   on:confirm={confirmCancel}
 />
