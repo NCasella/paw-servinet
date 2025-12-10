@@ -6,7 +6,7 @@
 # Node artifact files
 node_modules/
 dist/
-
+node/
 webapp/src/main/resources/application.properties
 
 

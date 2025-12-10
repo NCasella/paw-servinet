@@ -89,7 +89,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(HttpMethod.GET, "/api/questions").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
                 .requestMatchers("/api").permitAll()
-                .requestMatchers("/**").authenticated();
+                .requestMatchers("/**").permitAll();
     }
 
     @Override

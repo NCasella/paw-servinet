@@ -22,7 +22,7 @@ const config = {
 			fallback: 'index.html'
 		}),
 		paths: {
-			base: '/webapp_war_exploded', // Ruta base de tu aplicación
+			base: '', // Ruta base de tu aplicación
 			relative: false,	
 		},
 		alias: {
