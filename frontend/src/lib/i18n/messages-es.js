@@ -199,6 +199,13 @@ export default {
   "error.notVerified":
     "Usuario no verificado, revise su mail para acceder al link de verificación",
 
+  "verification.error.no-user": "No hay ningún usuario conectado actualmente.",
+  "verification.error.failed": "La verificación del correo electrónico falló. Por favor, inténtelo de nuevo.",
+  "verification.success": "¡Su correo electrónico ha sido verificado con éxito!",
+  "verification.resend": "Reenviar correo de verificación",
+  "verification.email-sent": "Se ha enviado un nuevo correo de verificación a su dirección de correo electrónico.",
+  "verification.verifying": "Verificando su correo electrónico...",
+
   "business.confirm-delete":
     "¿Estás seguro que quieres eliminar el negocio? Ten en cuenta que todos sus servicios también serán eliminados.",
   "business.business": "Negocio",
