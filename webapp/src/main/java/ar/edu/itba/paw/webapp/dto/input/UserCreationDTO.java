@@ -11,33 +11,37 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 public class UserCreationDTO {
-    @NotEmpty
-    @NotNull
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.registerUserForm.name")
+    @NotNull(message = "NotNull.registerUserForm.name")
+    @Size(max=255,message = "Size.registerUserForm.name")
     private String name;
-    @NotNull
-    @NotEmpty
-    @Size(max=255)
+
+    @NotNull(message = "NotNull.registerUserForm.surname")
+    @NotEmpty(message = "NotEmpty.registerUserForm.surname")
+    @Size(max=255,message = "Size.registerUserForm.surname")
     private String surname;
-    @NotNull
-    @NotEmpty
-    @Email(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
+
+    @NotNull(message = "NotNull.registerUserForm.email")
+    @NotEmpty(message = "NotEmpty.registerUserForm.email")
+    @Email(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$",message = "Email.registerUserForm.email")
     @EmailNotUsed
-    @Size(max=255)
+    @Size(max=255,message = "Size.registerUserForm.email")
     private String email;
-    @NotNull
-    @NotEmpty
-    @Size(max=255)
-    @Pattern(regexp = "^\\+(\\d{1,3})?\\s?9?\\s?(\\d{1,4})?\\s?(\\d{6,8})$")
+
+    @NotNull(message = "NotNull.registerUserForm.telephone")
+    @NotEmpty(message = "NotEmpty.registerUserForm.telephone")
+    @Size(max=255,message = "Size.registerUserForm.telephone")
+    @Pattern(regexp = "^\\+(\\d{1,3})?\\s?9?\\s?(\\d{1,4})?\\s?(\\d{6,8})$",message = "Pattern.registerUserForm.telephone")
     private String telephone;
-    @NotNull
-    @NotEmpty
+
+    @NotNull(message = "NotNull.registerUserForm.username")
+    @NotEmpty(message = "NotEmpty.registerUserForm.username")
     @UsernameNotUsed
-    @Size(max=255)
+    @Size(max=255,message="Size.registerUserForm.username")
     private String username;
-    @NotNull
-    @NotEmpty
-    @Size(max=255, min = 8)
+    @NotNull(message = "NotNull.registerUserForm.password")
+    @NotEmpty(message = "NotEmpty.registerUserForm.password")
+    @Size(max=255, min = 8,message = "Size.registerUserForm.password")
     private String password;
 
     @Override

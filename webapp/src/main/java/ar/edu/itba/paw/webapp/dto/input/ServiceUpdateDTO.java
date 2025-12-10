@@ -14,17 +14,17 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class ServiceUpdateDTO {
 
-    @Size(max=255)
+    @Size(max=255,message = "Size.editServiceForm.description")
     private String description;
 
     private String pricingType;
 
-    @Size(max=10)
+    @Size(max=10,message="Size.editServiceForm.price")
     @Pattern(regexp = "[0-9]+(\\.[0-9]{1,2})?$")
     private String price;
 
     private Boolean additionalCharges;
 
-    @Positive
+    @Positive(message = "Positive.editServiceForm.minimalduration")
     private int minimalDuration;
 }

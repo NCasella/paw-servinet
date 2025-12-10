@@ -10,8 +10,8 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 public class QuestionResponseDTO {
-    @NotEmpty
-    @NotNull
-    @Size(max=255)
+    @NotEmpty(message = "NotEmpty.responseForm.response")
+    @NotNull(message = "NotEmpty.responseForm.response")
+    @Size(max=255,message = "Size.responseForm.response")
     private String response;
 }
