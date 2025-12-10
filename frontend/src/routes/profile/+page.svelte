@@ -9,12 +9,12 @@
 	import { UserContactInfo } from "$models/ContactInfo";
 	import Spinner from "$lib/components/global/Spinner.svelte";
 
-    let user :UserContactInfo;
+    let user :User;
     let otherLang :string;
     let loading = true
     onMount(async () => {
 		try {
-		  user = await getCurrentUserContactInfo()
+		  user = await getCurrentUser()
 
 		otherLang = user.language === 'es' ? 'en' : 'es'
 		//} catch {
@@ -41,7 +41,7 @@
     <!-- Avatar -->
     
     <Avatar class="size-30 ">
-				<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />
+				<!--<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />-->
 				<Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()}/></Avatar.Fallback>
     </Avatar>
     <!-- Datos usuario -->

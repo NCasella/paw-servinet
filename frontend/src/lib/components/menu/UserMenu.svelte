@@ -15,7 +15,7 @@
 <Menu>
 	<Menu.Trigger class="btn">
 		<Avatar class="h-12 w-12">
-				<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />
+				<!--<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />-->
 				<Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()}/></Avatar.Fallback>
 		</Avatar>
 	</Menu.Trigger>

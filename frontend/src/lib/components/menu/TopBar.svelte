@@ -6,15 +6,15 @@
     import {t} from "$lib/i18n/i18n"
 	import { user } from '$stores/userStore';
 	import { onMount } from 'svelte';
-	import { getCurrentUser, getCurrentUserContactInfo } from '$services/userService';
+	import { getCurrentUser,  } from '$services/userService';
 	import { type User } from '$models/User';
 	import type { UserContactInfo } from '$models/ContactInfo';
 	import { removeTokens } from '$services/authenticate';
 
-	let currentUser :UserContactInfo | null = null;
+	let currentUser :User | null = null;
 	onMount(async () => {
 		try {
-		currentUser = await getCurrentUserContactInfo()
+		currentUser = await getCurrentUser()
 		
 		} catch(e) {
 		currentUser = null;

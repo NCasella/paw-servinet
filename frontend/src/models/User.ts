@@ -1,3 +1,4 @@
+import { asset } from "$app/paths";
 import { type TResponse } from "$utils/apiFetch";
 
 export class User {
@@ -6,7 +7,7 @@ export class User {
   username: string;
   email: string;
   language: string;
-  profilePicture: string; 
+  profilePicture: string | null;
   isProvider: boolean;
   constructor(data: {
     userId: number;
@@ -14,7 +15,7 @@ export class User {
     username: string;
     email: string;
     language: string;
-    profilePicture: string;
+    links?: { profilePic?: string; };
     isProvider: boolean;
   }) {
     this.userId = data.userId;
@@ -22,7 +23,7 @@ export class User {
     this.username = data.username;
     this.email = data.email;
     this.language = data.language;
-    this.profilePicture = data.profilePicture  //extractProfileImageURLFromJson( data.profilePictureURL);
+    this.profilePicture = data.links?.profilePic ?? null;
     this.isProvider = false;
   }
   
@@ -44,6 +45,15 @@ export class User {
   setRole(isProvider :boolean) {
     this.isProvider = isProvider
   }
+
+  getProfilePictureSrc() {
+      if ( this.profilePicture) return this.profilePicture
+      return asset("/images/profile_default.png")
+   }
+  
+   static getFallbackImage() {
+      return asset("/images/profile_default.png")
+  }
 }
 
 function isUser(obj: any): obj is User {
@@ -52,7 +62,7 @@ function isUser(obj: any): obj is User {
     typeof obj.userId === "number" &&
     typeof obj.fullName === "string" &&
     typeof obj.username === "string" &&
-    typeof obj.language === "string"
+    typeof obj.language === "string" 
   );
 }
 
