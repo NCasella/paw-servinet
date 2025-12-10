@@ -74,14 +74,11 @@
 
     <p> <span th:text="#{template.greeting}"/> <span th:text="${user.getFullName()}"/>,</p>
     <p th:text="#{template.user-verification.intro}" />
-    <div class="question-or-answer-container">
-      <span th:text="${code}"/>
-    </div>
 
     <div>
       <p th:text="#{template.user-verification.url}"/>
       <div class="btn-container">
-        <a th:href="${url}+'verificar-cuenta/'+${token}">
+        <a th:href="${url}+'verify-email/'+${code}">
           <button class="btn confirm" th:text="#{template.verify-btn}"/>
         </a>
       </div>

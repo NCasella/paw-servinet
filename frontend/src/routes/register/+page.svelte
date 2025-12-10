@@ -29,7 +29,7 @@
         try {
             await createUser(registerForm); 
 
-            const ok = await loginWithBasicAuth(registerForm.username, registerForm.password);
+            const ok = await loginWithBasicAuth(registerForm.email, registerForm.password);
 
             loading = false;
 
