@@ -22,7 +22,6 @@ public class UserContactDto {
     private String username;
     private String language;
     private String email;
-    private long profilePicId;
     private UserLinks links;
 
     public static UserContactDto fromUser(User user, UriInfo uriInfo){
@@ -34,7 +33,7 @@ public class UserContactDto {
 
         URI profilePicUri=uriInfo.getBaseUriBuilder()
                 .path(PathUrls.IMAGES_URL.getUrl())
-                .path(String.valueOf(user.getProfilePicId()))
+                .path(String.valueOf(user.getProfilePicId().orElse(null)))
                 .build();
 
         URI appointmentsRequestedUri = uriInfo.getBaseUriBuilder()
@@ -52,27 +51,29 @@ public class UserContactDto {
                 .path(String.valueOf(user.getUserId()))
                 .build();
 
-        return UserContactDto.builder()
+        UserContactDtoBuilder builder = UserContactDto.builder()
                 .userId(user.getUserId())
                 .fullName(user.getFullName())
                 .username(user.getUsername())
                 .language(user.getLocale())
-                .email(user.getEmail())
-                .profilePicId(user.getProfilePicId())
-                .links(
-                        UserLinks.builder()
-                                .businessesOwned(businessesOwnedUri)
-                                .profilePic(profilePicUri)
-                                .appointmentsRequested(appointmentsRequestedUri)
-                                .questionsToRespond(questionsToRespondUri)
-                                .self(self)
-                                .build()
+                .email(user.getEmail());
 
-                )
+        UserLinks.UserLinksBuilder linksBuilder = UserLinks.builder()
+            .businessesOwned(businessesOwnedUri)
+            .appointmentsRequested(appointmentsRequestedUri)
+            .questionsToRespond(questionsToRespondUri)
+            .self(self);
+
+            if (user.getProfilePicId().isPresent()){
+                linksBuilder.profilePic(profilePicUri);
+            }
+
+        return builder
+                .links(linksBuilder.build())
                 .build();
     }
     @Override
     public int hashCode(){
-        return Objects.hash(userId,fullName,email,username,language,profilePicId);
+        return Objects.hash(userId,fullName,email,username,language);
     }
 }

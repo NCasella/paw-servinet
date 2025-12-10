@@ -5,6 +5,7 @@ import org.hibernate.annotations.ColumnDefault;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Table(name="users")
@@ -36,8 +37,8 @@ public class User {
     @Column(nullable = false)
     private String telephone;
 
-    @Column(nullable = false, name = "profilePic")
-    private Long profilePicId = 3L;
+    @Column(name = "profilePic")
+    private Long profilePicId;
 
     @Column(nullable = false)
     private boolean isProvider;
@@ -85,8 +86,8 @@ public class User {
         return isProvider;
     }
 
-    public Long getProfilePicId() {
-        return profilePicId;
+    public Optional<Long> getProfilePicId() {
+        return Optional.ofNullable(profilePicId);
     }
 
     protected User(){}

@@ -45,7 +45,7 @@
         try {
             user = await getCurrentUser();
         } catch (e) {
-            user = null;
+            throw e
         }
         service = await getServiceById(serviceId);
         imageUrl = await getImage(service.imageId);
@@ -87,9 +87,6 @@
         <div class="flex justify-end items-center mt-4">
             {#if isOwner}
                 <div class="flex gap-2">
-                    <a href="{base}/services/{serviceId}/edit">
-                        <BigButtonSecondary title={$t("service.edit")} iconName=""/>
-                    </a>
                     <Dialog role="alertdialog">
                         <Dialog.Trigger>
                             <BigButtonWarning title={$t("service.delete") } iconName="" onclick={null}/>
@@ -101,9 +98,9 @@
                                     <Dialog.Title class="text-2xl text-black font-bold">{$t("popup.service.title")}</Dialog.Title>
                                     <Dialog.Description class="text-black">{$t("popup.service.message")}</Dialog.Description>
                                     <Dialog.CloseTrigger class="flex gap-5">
-                                        <BigButtonSecondary title={$t("service.cancel")}/>
+                                        <BigButtonSecondary title={$t("service.cancel")} iconName=""/>
                                         <div on:click={handleServiceDelete}>
-                                            <BigButtonWarning title={$t("service.delete")}/>
+                                            <BigButtonWarning title={$t("service.delete")} iconName="" onclick={()=>{}}/>
                                         </div>
                                     </Dialog.CloseTrigger>
                                 </Dialog.Content>
