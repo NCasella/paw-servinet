@@ -65,10 +65,10 @@
   <div class="rounded-2xl shadow p-5">
     <div class="flex flex-col items-center gap-3 text-center">
       {#if appointment.isConfirmed()}
-        <span class="material-icons text-3xl text-green-600">check</span>
+        <Icon name="accept"/>
         <h2 class="text-lg font-semibold">
-          {$t('appointment.ready')}
-          <!-- si usás params: {$t('appointment.ready', { name: user.fullName })} -->
+          {$t('appointment.ready', [user.fullName])}
+          
         </h2>
         <p class="text-sm opacity-80">
           {$t('appointment.confirmed')}

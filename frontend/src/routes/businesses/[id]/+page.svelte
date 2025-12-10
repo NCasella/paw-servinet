@@ -11,7 +11,7 @@
   import ConfirmModal from '$lib/components/global/modal/ConfirmModal.svelte';
 
   import { getParamIdFromUrl, getPath } from '$lib/navigation/pageInfo';
-  import type { Business } from '$models/Business';
+  import type { Business, BusinessUpdateInfo } from '$models/Business';
   import type { PagedResult } from '$models/PagedList';
   import type { Service } from '$models/Service';
 
@@ -35,9 +35,7 @@
 
   // edición de datos de contacto
   let editing = false;
-  let editEmail = '';
-  let editTelephone = '';
-  let editLocation = '';
+	let businessEditInfo :BusinessUpdateInfo = {} as BusinessUpdateInfo
 
   // modal borrar negocio
   let showDeleteModal = false;
@@ -47,26 +45,28 @@
       const businessId = getParamIdFromUrl();
       business = await getBusinessById(businessId);
       servicesList = await getServices({ businessId, page: pageNum });
-
+	 loadBusinessInfoToUpdate()
       // TODO: setear isOwner real (por ejemplo, comparando ownerId con currentUserId)
       // isOwner = business?.isOwner ?? false;
-
-      if (business) {
-        editEmail = business.email;
-        editTelephone = business.telephone;
-        editLocation = business.address;
-      }
     } finally {
       loading = false;
     }
   });
 
+  function loadBusinessInfoToUpdate() {
+	if (!business) return
+	businessEditInfo = {
+        businessEmail : business.email,
+        businessTelephone : business.telephone,
+        businessLocation : business.address,
+	}
+
+  }
+
   function toggleEdit() {
     if (!editing && business) {
       // al entrar a modo edición, copiar valores actuales
-      editEmail = business.email;
-      editTelephone = business.telephone;
-      editLocation = business.address;
+      loadBusinessInfoToUpdate()
     }
     editing = !editing;
   }
@@ -76,11 +76,7 @@
 
     try {
       // ajustá el DTO según tu API
-      await updateBusiness(business.businessId, {
-        businessEmail: editEmail,
-        businessTelephone: editTelephone,
-        businessLocation: editLocation
-      });
+      await updateBusiness(business.businessId, businessEditInfo);
       // refrescamos entidad
       business = await getBusinessById(business.businessId);
       editing = false;
@@ -239,7 +235,7 @@
             <input
               type="text"
               class="flex-1 border rounded-lg px-3 py-1"
-              bind:value={editEmail}
+              bind:value={businessEditInfo.businessEmail}
               placeholder={$t('business-email')}
             />
           </div>
@@ -248,7 +244,7 @@
             <input
               type="text"
               class="flex-1 border rounded-lg px-3 py-1"
-              bind:value={editTelephone}
+              bind:value={businessEditInfo.businessTelephone}
               placeholder={$t('telephone')}
             />
           </div>
@@ -257,7 +253,7 @@
             <input
               type="text"
               class="flex-1 border rounded-lg px-3 py-1"
-              bind:value={editLocation}
+              bind:value={businessEditInfo.businessLocation}
               placeholder={$t('address')}
             />
           </div>

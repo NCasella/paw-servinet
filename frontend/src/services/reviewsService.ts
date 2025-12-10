@@ -1,6 +1,6 @@
 import type {PagedResult} from "$models/PagedList";
 import {GET, getNewIdFromPostResponse, PATCH, POST} from "$utils/apiFetch";
-import {parsePagedResponse} from "$models/PagedList";
+import {isLastPage, parsePagedResponse} from "$models/PagedList";
 import type {ReviewForm} from "$models/forms/ReviewCreationForm";
 import {Review} from "$models/Review";
 
@@ -30,4 +30,21 @@ export async function createReview(form: ReviewForm) :Promise<number> {
         contentType: "review-creation"
     });
     return getNewIdFromPostResponse(response)
+}
+
+export async function getAllServiceReviews(serviceId: number): Promise<Review[]> {
+  const all: Review[] = [];
+  let page = 1;
+  let pageResult: PagedResult<Review>;
+
+  while (true) {
+    pageResult = await getServiceReviews(serviceId, undefined, page);
+
+    all.push(...pageResult.items);
+
+    if (isLastPage(page, pageResult)) break;
+    page++;
+  }
+
+  return all;
 }

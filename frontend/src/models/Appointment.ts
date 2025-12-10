@@ -49,12 +49,66 @@ export class Appointment {
     return this.status == AppointmentStatus.CONFIRMED
   }
 
-  formatedDate() :Date {
-    return new Date(this.startDate); 
+    private get start(): Date {
+    return new Date(this.startDate);
   }
 
-  formatedTime() :string {
-    return new Date(this.startDate).getHours()+"-";  ; 
+  private get end(): Date {
+    return new Date(this.endDate);
+  }
+
+  private formatDate(     { withYear }: { withYear: boolean } ) {
+  const date = new Date(this.startDate);
+
+  const raw = new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    day: "2-digit",
+    month: "long",
+          ...(withYear ? { year: "numeric" } : {})
+  }).format(date);
+
+  return raw.replace(",", "");  // "Sat 20 December"
+}
+
+  private formatTime(date: Date): string {
+  return new Intl.DateTimeFormat("es-AR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"   // ⇐ formato 24 hs, sin AM/PM
+  }).format(date);
+}
+
+  getStartDateString(): string {
+    return this.formatDate({ withYear: false });
+  }
+
+  /** startDateWithYearString: con año (ej: 07/12/2025) */
+  getStartDateWithYearString(): string {
+    return this.formatDate( { withYear: true });
+  }
+
+  /** startDateTimeString: solo hora (ej: 14:30) */
+  getStartDateTimeString(): string {
+    return this.formatTime(this.start);
+  }
+
+  /** endDateTimeString: solo hora (ej: 15:00) */
+  getEndDateTimeString(): string {
+    return this.formatTime(this.end);
+  }
+
+  /** Tiene duración? (ej: start != end) */
+  hasDuration(): boolean {
+    return !!this.endDate && this.endDate !== this.startDate;
+  }
+
+  /** Si querés mantener compatibilidad con lo que ya usabas */
+  formatedDate(): string {
+    return this.getStartDateString();
+  }
+
+  formatedTime(): string {
+    return this.getStartDateTimeString();
   }
 
 }

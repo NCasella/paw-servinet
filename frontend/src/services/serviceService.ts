@@ -4,7 +4,7 @@ import { ServiceForm } from "$models/forms/ServiceCreationForm";
 import { postImage } from "./imageService";
 import { DefaultImg } from "$models/enums/DefaultImg";
 import type {PagedResult} from "$models/PagedList";
-import {parsePagedResponse} from "$models/PagedList";
+import {isLastPage, parsePagedResponse} from "$models/PagedList";
 import type { Appointment } from "$models/Appointment";
 
 export async function getServices(params: {
@@ -70,3 +70,18 @@ export async function getAppointmentServices(appointmentsList:Appointment[]) :Pr
   );
 }
 
+export async function getAllBusinessServices(businessId: number): Promise<number[]> {
+  const ids: number[] = [];
+  let page = 1;
+  let services: PagedResult<Service>;
+
+  while (true) {
+    services = await getServices({ businessId, page });
+    services.items.forEach((s) => ids.push(s.serviceId));
+
+    if (isLastPage(page, services)) break;
+    page++;
+  }
+
+  return ids;
+}
