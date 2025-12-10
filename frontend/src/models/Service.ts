@@ -4,10 +4,10 @@ import { PricingTypes } from "./enums/PricingType";
 
 export class Service {
   additionalCosts: boolean;
-  address: string;
+  address: string | null;
   businessId: number;
   category: string;
-  description: string;
+  description: string | null;
   duration: number;
   homeService: boolean;
   links: {
@@ -17,7 +17,7 @@ export class Service {
     self: string;
   };
   neighbourhoods: string[];
-  price: string;
+  price: string | null;
   pricingType: string;
   rating: number;
   serviceId: number;
@@ -26,10 +26,10 @@ export class Service {
 
   constructor(data: {
     additionalCosts: boolean;
-    address: string;
+    address: string | null;
     businessId: number;
     category: string;
-    description: string;
+    description: string | null;
     duration: number;
     homeService: boolean;
     links: {
@@ -39,7 +39,7 @@ export class Service {
       self: string;
     };
     neighbourhoods: string[];
-    price: string;
+    price: string | null;
     pricingType: string;
     rating: number;
     serviceId: number;
@@ -82,10 +82,10 @@ function isService(obj: any): obj is Service {
   return (
     obj &&
     typeof obj.additionalCosts === "boolean" &&
-    typeof obj.address === "string" &&
+    (typeof obj.address === "string" || obj.address === null) &&
     typeof obj.businessId === "number" &&
     typeof obj.category === "string" &&
-    typeof obj.description === "string" &&
+    (typeof obj.description === "string" || obj.description === null) &&
     typeof obj.duration === "number" &&
     typeof obj.homeService === "boolean" &&
     obj.links &&
@@ -94,7 +94,7 @@ function isService(obj: any): obj is Service {
     typeof obj.links.reviews === "string" &&
     typeof obj.links.self === "string" &&
     Array.isArray(obj.neighbourhoods) &&
-    typeof obj.price === "string" &&
+    (typeof obj.price === "string" || obj.price === null) &&
     typeof obj.pricingType === "string" &&
     typeof obj.rating === "number" &&
     typeof obj.serviceId === "number" &&

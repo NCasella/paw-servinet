@@ -4,7 +4,7 @@ export class ServiceForm implements ServiceFormData {
   homeService = false;
   neighbourhoods: string[] = [];
   address = "";
-  price = "";
+  price: string | null = null;
   additionalCharges = false;
   pricingType = "";
   category = "";
@@ -14,6 +14,13 @@ export class ServiceForm implements ServiceFormData {
 
   constructor(init?: Partial<ServiceFormData>) {
     Object.assign(this, init);
+  }
+
+  get priceValue(): string | null {
+    return this.price;
+  }
+  set priceValue(val: string) {
+    this.price = val === "" ? null : val;
   }
 
   validateServiceForm(): ServiceFormErrors {
@@ -105,8 +112,7 @@ export const ServiceFormSchema = z.object({
     .string()
     .max(MAX_PRICE_LEN, { message: "Size.serviceForm.price" })
     .regex(PRICE_REGEX, { message: "Size.serviceForm.price" })
-    .optional()
-    .or(z.literal("")),
+    .optional(),
 
   /** DTO: additionalCharges (sin constraints) */
   additionalCharges: z.boolean().optional(),

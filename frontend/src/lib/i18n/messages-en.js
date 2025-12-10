@@ -209,6 +209,13 @@ export default {
   "error.500": "Oops! An error occurred on the server.",
   "error.notVerified":
     "The account is not verified, please check your email for verification link",
+  
+  "verification.error.no-user": "No user is currently logged in.",
+  "verification.error.failed": "Email verification failed. Please try again.",
+  "verification.success": "Your email has been successfully verified!",
+  "verification.resend": "Resend verification email",
+  "verification.email-sent": "A new verification email has been sent to your email address.",
+  "verification.verifying": "Verifying your email...",
 
   "business.confirm-delete":
     "Are you sure you want to delete the business? Please note that all its services will also be deleted.",

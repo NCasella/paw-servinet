@@ -182,7 +182,9 @@ public class AppointmentServiceImpl implements AppointmentService{
         try {
             Service service = serviceDao.findById(serviceid).orElseThrow(ServiceNotFoundException::new);
             User newuser = userService.findById(userid).orElseThrow(UserNotFoundException::new);
-
+            if(serviceDao.isServiceOwner(serviceid,userid)){
+                throw new InvalidOperationException("Can't create an appointment for the owner of the service business");
+            }
             if (service.getHomeService() ) {
                 Neighbourhoods neighbourhood = optionalNeighbourhood.orElseThrow(() -> new InvalidOperationException("Missing Neighbourhood"));
                 if (  !service.hasNeighbourhoodAvailable(neighbourhood) )
