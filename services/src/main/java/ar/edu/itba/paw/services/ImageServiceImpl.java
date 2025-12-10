@@ -25,7 +25,10 @@ public class ImageServiceImpl implements ImageService{
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<ImageModel> getImageById(long id) {
+    public Optional<ImageModel> getImageById(Long id) {
+        if(id==null){
+            return Optional.empty();
+        }
         return imageDao.getImageById(id);
     }
 

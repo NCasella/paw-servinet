@@ -1,4 +1,6 @@
 import type { TResponse } from "$utils/apiFetch";
+import { DurationTypes } from "./enums/DurationType";
+import { PricingTypes } from "./enums/PricingType";
 
 export class Service {
   additionalCosts: boolean;
@@ -20,6 +22,7 @@ export class Service {
   rating: number;
   serviceId: number;
   serviceName: string;
+  imageId: number;
 
   constructor(data: {
     additionalCosts: boolean;
@@ -41,6 +44,7 @@ export class Service {
     rating: number;
     serviceId: number;
     serviceName: string;
+    imageId: number;
   }) {
     this.additionalCosts = data.additionalCosts;
     this.address = data.address;
@@ -56,6 +60,7 @@ export class Service {
     this.rating = data.rating;
     this.serviceId = data.serviceId;
     this.serviceName = data.serviceName;
+    this.imageId = data.imageId;
   }
 
   static fromJson(response: TResponse): Service {
@@ -65,6 +70,12 @@ export class Service {
     }
     throw new Error("Invalid Service JSON");
   }
+
+  hasPriceTBD() {
+    return this.pricingType == PricingTypes.TBD
+  }
+
+
 }
 
 function isService(obj: any): obj is Service {
@@ -87,6 +98,7 @@ function isService(obj: any): obj is Service {
     typeof obj.pricingType === "string" &&
     typeof obj.rating === "number" &&
     typeof obj.serviceId === "number" &&
-    typeof obj.serviceName === "string"
+    typeof obj.serviceName === "string" &&
+    typeof obj.imageId === "number"
   );
 }

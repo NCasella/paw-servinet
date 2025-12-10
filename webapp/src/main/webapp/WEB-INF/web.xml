@@ -27,7 +27,8 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>ar.edu.itba.paw.webapp.jersey,
-                ar.edu.itba.paw.webapp.mapper</param-value>
+                ar.edu.itba.paw.webapp.mapper,
+                ar.edu.itba.paw.webapp.contextResolver</param-value>
         </init-param>
         <init-param>
             <param-name>jersey.config.server.response.setStatusOverSendError</param-name>
@@ -84,14 +85,11 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <!-- Unconditional Cache Filter -->
-<!--    <filter>-->
-<!--        <filter-name>unconditionalCacheFilter</filter-name>-->
-<!--        <filter-class>ar.edu.itba.paw.webapp.config.UnconditionalCacheFilter</filter-class>-->
-<!--    </filter>-->
-<!--    <filter-mapping>-->
-<!--        <filter-name>unconditionalCacheFilter</filter-name>-->
-<!--        <url-pattern>TODO:agregar url </url-pattern>-->
-<!--    </filter-mapping>-->
+    <filter>
+        <filter-name>unconditionalCacheFilter</filter-name>
+        <filter-class>ar.edu.itba.paw.webapp.config.UnconditionalCacheFilter</filter-class>
+    </filter>
+
 
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -110,7 +108,14 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <filter-name>jersey</filter-name>
         <url-pattern>/api/*</url-pattern>
     </filter-mapping>
-
+    <filter-mapping>
+        <filter-name>unconditionalCacheFilter</filter-name>
+        <url-pattern>/assets/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>unconditionalCacheFilter</filter-name>
+        <url-pattern>/static/*</url-pattern>
+    </filter-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

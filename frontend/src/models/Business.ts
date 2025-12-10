@@ -2,14 +2,16 @@ import type { TResponse } from "$utils/apiFetch";
 
 export class Business {
     businessId :number;
+    userId: number;
     businessName :string;
     email :string;
     telephone :string;
     address :string;
     rating :number;
 
-    constructor( data: { businessId :number, businessName :string, email :string, telephone: string, address:string , rating :number}) {
+    constructor( data: { businessId :number, userId: number, businessName :string, email :string, telephone: string, address:string , rating :number}) {
         this.businessId =  data.businessId
+        this.userId = data.userId
         this.businessName = data.businessName
         this.email = data.email
         this.telephone = data.telephone
@@ -33,6 +35,7 @@ function isBusiness(obj: any): obj is Business {
     return (
     obj &&
     typeof obj.businessId === "number" &&
+    typeof obj.userId === "number" &&
     typeof obj.businessName === "string" &&
     typeof obj.telephone === "string" &&
     typeof obj.email === "string" &&

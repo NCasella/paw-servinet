@@ -89,6 +89,7 @@ export default {
   "service.additionalCharges": "It may have additional charges",
   "service.image": "Service Image",
   "service.delete": "Delete Service",
+  "service.delete-error": "There was an error deleting the service.",
   "service.at-home": "At your home",
   "service.at-professional-house": "At the professional's location",
   "service.time": "{0} min",
@@ -118,6 +119,7 @@ export default {
   "service.no-questions": "There are no questions",
   "service.details": "Service details",
   "service.unrated": "Unrated",
+  "service.empty-services":"No services found. Try with other filters.",
 
   "duration.fifteenmins": "15 minutes",
   "duration.halfhour": "30 minutes",
@@ -498,7 +500,7 @@ export default {
   "pricing.perhour": "Per Hour",
   "pricing.total": "Total",
   "pricing.budget": "Budget",
-  "pricing.tbd": "To be arranged",
+  "pricing.tbd": "Price to be arranged",
 
   "rating.regular": "Regular",
   "rating.good": "Good",
@@ -510,7 +512,7 @@ export default {
   "review.business": "Reviews on {0}",
   "review.see": "Go to reviews",
   "reviews.not-found": "No reviews found in {0}",
-  "reviews.opinions-amount": "{0} reviews",
+  "reviews.opinions-amount": "reviews",
   "reviews.recent": "Recent reviews",
   "reviews.date-asc": "Last recent",
   "reviews.date-desc": "Most recent",

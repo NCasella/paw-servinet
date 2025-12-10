@@ -86,6 +86,7 @@ export default {
   "service.additionalCharges": "Puede incluir costos adicionales",
   "service.image": "Imagen del servicio",
   "service.delete": "Eliminar servicio",
+  "service.delete-error": "No se pudo eliminar el servicio",
   "service.at-home": "A domicilio",
   "service.at-professional-house": "En el domicilio del profesional",
   "service.time": "{0} min",
@@ -137,6 +138,7 @@ export default {
   "services.no-search-results": "No se encontraron resultados de búsqueda, lo sentimos.",
   "services.look-for-services": "Buscar servicios",
   "services.remove-all-filters": "Restablecer filtros",
+  "service.empty-services":"No se encontraron. Intente con otros filtros.",
 
   "appointment.create": "Contratar el servicio:",
   "appointment.home-service": "Este servicio se realiza a domicilio.",
@@ -470,7 +472,7 @@ export default {
   "pricing.perhour": "Por hora",
   "pricing.total": "Total",
   "pricing.budget": "Producto",
-  "pricing.tbd": "A determinar",
+  "pricing.tbd": "Precio a determinar",
 
   "rating.regular": "Regular",
   "rating.good": "Bueno",
@@ -482,7 +484,7 @@ export default {
   "review.business": "Opiniones en {0}",
   "review.see": "Ver opiniones",
   "reviews.not-found": "No se han encontrado opiniones en {0}",
-  "reviews.opinions-amount": "{0} opiniones",
+  "reviews.opinions-amount": "opiniones",
   "reviews.recent": "Últimas realizadas",
   "reviews.date-asc": "Menos recientes",
   "reviews.date-desc": "Más recientes",

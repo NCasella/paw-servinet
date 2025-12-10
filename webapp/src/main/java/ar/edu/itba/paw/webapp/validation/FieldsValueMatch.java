@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FieldsValueMatch {
 
-        String message() default "{ar.edu.itba.paw.webapp.validation.FieldsValueMatch.message}";
+        String message() default "FieldsValueMatch.registerUserForm.password";
 
         String field();
 

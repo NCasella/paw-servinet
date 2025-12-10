@@ -13,16 +13,24 @@
 	import { AppointmentForm, type AppointmentFormErrors } from '$models/forms/AppointmentCreationForm';
 	import { createAppointment } from '$services/appointmentService';
 	import { goto } from '$app/navigation';
+	import { getParamIdFromUrl } from '$lib/navigation/pageInfo';
+  import {getCurrentUser} from "$services/userService";
+  import {User} from "$models/User";
 
-    let serviceId :number
-   let appointmentForm: AppointmentForm;
-   let formErrors: AppointmentFormErrors = {};
-    let service :Service;
-   
-   onMount(async ()  => { 
-    try {
-        serviceId = Number( page.params.id)
-    } catch {throw new InvalidUrlParamError("id must be a number") }
+  let serviceId :number
+  let appointmentForm: AppointmentForm;
+  let formErrors: AppointmentFormErrors = {};
+  let service :Service;
+  let user :User
+
+  onMount(async ()  => {
+     try {
+       user = await getCurrentUser();
+     } catch (e) {
+       goto(`${base}/login`);
+     }
+
+    serviceId = getParamIdFromUrl()
         
     appointmentForm  = new AppointmentForm({serviceId});
     service = await getServiceById( serviceId )

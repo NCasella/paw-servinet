@@ -17,52 +17,52 @@ export const CategoriesInfo: Record<
 > = {
   [Categories.LIMPIEZA]: {
     value: "Limpieza",
-    icon: "cleaning_services",
+    icon: "cleaning",
     codeMsg: "category.cleaning",
   },
   [Categories.BELLEZA]: {
     value: "Belleza",
-    icon: "diamond",
+    icon: "beauty",
     codeMsg: "category.beauty",
   },
   [Categories.ARREGLOS_CALIFICADOS]: {
     value: "Arreglos Calificados",
-    icon: "handyman",
+    icon: "repair",
     codeMsg: "category.qualified",
   },
   [Categories.MASCOTAS]: {
     value: "Mascotas",
-    icon: "pets",
+    icon: "pet",
     codeMsg: "category.pets",
   },
   [Categories.EXTERIORES]: {
     value: "Exteriores",
-    icon: "local_florist",
+    icon: "exteriors",
     codeMsg: "category.outdoors",
   },
   [Categories.EVENTOS_Y_CELEBRACIONES]: {
     value: "Eventos y Celebraciones",
-    icon: "celebration",
+    icon: "celebrations",
     codeMsg: "category.events",
   },
   [Categories.TRANSPORTE]: {
     value: "Transporte",
-    icon: "local_shipping",
+    icon: "transport",
     codeMsg: "category.transport",
   },
   [Categories.CONSULTORIA]: {
     value: "Consultoria",
-    icon: "help",
+    icon: "consulting",
     codeMsg: "category.consulting",
   },
   [Categories.PELUQUERIA]: {
     value: "Peluqueria",
-    icon: "face",
+    icon: "hairSalon",
     codeMsg: "category.hairdressing",
   },
   [Categories.SALUD]: {
     value: "Salud",
-    icon: "health_and_safety",
+    icon: "health",
     codeMsg: "category.health",
   },
 };
@@ -79,3 +79,17 @@ export const CategoriesList = [
   CategoriesInfo.PELUQUERIA,
   CategoriesInfo.SALUD,
 ];
+
+export const CategoriesTypeList = [
+  Categories.LIMPIEZA,
+  Categories.BELLEZA,
+  Categories.ARREGLOS_CALIFICADOS,
+  Categories.MASCOTAS,
+  Categories.EXTERIORES,
+  Categories.EVENTOS_Y_CELEBRACIONES,
+  Categories.TRANSPORTE,
+  Categories.CONSULTORIA,
+  Categories.PELUQUERIA,
+  Categories.SALUD,
+];
+

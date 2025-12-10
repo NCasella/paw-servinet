@@ -3,93 +3,143 @@
     import BigButton from "$lib/components/global/BigButton.svelte";
     import {t} from "$lib/i18n/i18n"
     import { base } from "$app/paths";
-    import type {User} from "$models/User";
     import {onMount} from "svelte";
-    import {closeSession, getCurrentUser} from "$services/userService";
+    import {getCurrentUser} from "$services/userService";
     import {goto} from "$app/navigation";
     import type {Service} from "$models/Service";
-    import {getServiceById} from "$services/serviceService";
-    import type {PagedResult} from "$models/PagedList";
+    import {deleteService, getServiceById} from "$services/serviceService";
     import type {Business} from "$models/Business";
-    import {getUserBusinesses} from "$services/businessService";
+    import {getBusinessById} from "$services/businessService";
     import Icon from "$icons";
     import {page} from "$app/stores";
     import {InvalidUrlParamError} from "$models/exceptions/InvalidUrlParamError";
     import {PricingTypes, PricingTypesInfo} from "$models/enums/PricingType";
+    import type {User} from "$models/User";
+    import {Categories, CategoriesInfo} from "$models/enums/CategoryType";
+    import BigButtonSecondary from "$lib/components/global/BigButtonSecondary.svelte";
+    import BigButtonWarning from "$lib/components/global/BigButtonWarning.svelte";
+    import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
+    import {get} from "svelte/store";
+    import {getImage} from "$services/imageService";
+    import Spinner from "$lib/components/global/Spinner.svelte";
+    import Questions from "$lib/components/services/Questions.svelte";
+    import Reviews from "$lib/components/services/Reviews.svelte";
 
     let serviceId :number
     let loading = true
-    let service:Service
-    let user:User
+    let isOwner :boolean
+    let isQuestions = true;
+    let imageUrl: string = "";
+    let service :Service
+    let user :User
+    let business :Business
 
     let pricingEnum: PricingTypes;
+    let categoryEnum: Categories;
 
     onMount(async () => {
         try {
             serviceId = Number( $page.params.id)
         } catch {throw new InvalidUrlParamError("id must be a number") }
 
-        user = await getCurrentUser()
-
-        service = await getServiceById(serviceId)
-            .then(s => s)
-            .finally(() => loading = false);
+        try {
+            user = await getCurrentUser();
+        } catch (e) {
+            user = null;
+        }
+        service = await getServiceById(serviceId);
+        imageUrl = await getImage(service.imageId);
+        business = await getBusinessById(service.businessId);
+        isOwner = user? user.userId === business.userId : false;
 
         pricingEnum = PricingTypes[service.pricingType as keyof typeof PricingTypes];
-        console.log(pricingEnum);
-        console.log(service.pricingType)
+        categoryEnum = Categories[service.category as keyof typeof Categories];
+
+        loading = false
     })
 
-
-    let isOwner = false;
-
-    function showPopUp() {
-        alert("¿Seguro que desea eliminar el servicio?");
+    async function handleServiceDelete() {
+        try {
+            await deleteService(serviceId);
+            goto(`${base}/businesses/${business.businessId}`);
+        } catch (error) {
+            alert(get(t)("service.delete-error"));
+        }
     }
 
-    let contratarUrl = `/reservar`;
+    function showQuestions() {
+        isQuestions = true;
+    }
+
+    function showReviews() {
+        isQuestions = false;
+    }
 </script>
 
-{#if service}
+{#if loading}
+    <Spinner/>
+{:else}
     <header>
         <Title text={service.serviceName}/>
     </header>
     <div>
-        <button on:click={() => history.back()} class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">⬅ Volver</button>
-
-        <div class="flex justify-between items-center mt-4">
+        <div class="flex justify-end items-center mt-4">
             {#if isOwner}
                 <div class="flex gap-2">
-                    <a href={`/editar-servicio/${service.serviceId}`}>
-                        <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Editar</button>
+                    <a href="{base}/services/{serviceId}/edit">
+                        <BigButtonSecondary title={$t("service.edit")}/>
                     </a>
-                    <button on:click={showPopUp} class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Eliminar</button>
+                    <Dialog role="alertdialog">
+                        <Dialog.Trigger>
+                            <BigButtonWarning title={$t("service.delete")}/>
+                        </Dialog.Trigger>
+                        <Portal>
+                            <Dialog.Backdrop class="fixed inset-0 z-50" />
+                            <Dialog.Positioner class="fixed inset-0 z-50 flex justify-center items-center">
+                                <Dialog.Content class="card preset-filled bg-white w-md space-y-2 shadow-xl rounded-2xl p-10">
+                                    <Dialog.Title class="text-2xl text-black font-bold">{$t("popup.service.title")}</Dialog.Title>
+                                    <Dialog.Description class="text-black">{$t("popup.service.message")}</Dialog.Description>
+                                    <Dialog.CloseTrigger class="flex gap-5">
+                                        <BigButtonSecondary title={$t("service.cancel")}/>
+                                        <div on:click={handleServiceDelete}>
+                                            <BigButtonWarning title={$t("service.delete")}/>
+                                        </div>
+                                    </Dialog.CloseTrigger>
+                                </Dialog.Content>
+                            </Dialog.Positioner>
+                        </Portal>
+                    </Dialog>
                 </div>
             {/if}
         </div>
 
         <div class="flex gap-8 mt-6">
-            <div class="w-72">
+            <div class="w-120 rounded-lg overflow-hidden">
+                <img src={imageUrl} alt="Service image" />
             </div>
 
             <div class="flex-1">
-                <h3 class="text-xl font-semibold mb-2">Detalles</h3>
+                <h3 class="text-xl font-semibold mb-2">{$t("service.info")}</h3>
 
                 <div class="flex justify-between items-center mb-2">
-                    <p class="text-gray-600">{PricingTypesInfo[PricingTypes.TBD].codeMsg}</p>
+                    <p class="text-gray-600">{$t(CategoriesInfo[categoryEnum].codeMsg)}</p>
                     <div class="flex items-center gap-1">
-                        <p>{service.rating > 0 ? service.rating : "Sin calificar"}</p>
-                        <span class="text-yellow-400 text-lg">⭐</span>
+                        <p>{service.rating > 0 ? service.rating : $t("service.unrated")}</p>
+                        <div class="text-yellow-400">
+                            <Icon name="star"/>
+                        </div>
                     </div>
                 </div>
 
-                <p class="flex items-center gap-1 mb-1">📍
+                <p class="flex items-center gap-1 mb-1">
+                    <Icon name="location"/>
                     {#each service.neighbourhoods as neighbour}
                         {neighbour}{#if !neighbour.endsWith(service.neighbourhoods[service.neighbourhoods.length-1])}, {/if}
                     {/each}
                 </p>
 
-                <p class="flex items-center gap-1 mb-1">🏠
+                <p class="flex items-center gap-1 mb-1">
+                    <Icon name="address"/>
                     {#if service.homeService}
                         Atención a domicilio
                     {:else}
@@ -97,28 +147,36 @@
                     {/if}
                 </p>
 
-                <p class="flex items-center gap-1 mb-1">⏱ Tiempo: {service.duration}</p>
+                <p class="flex items-center gap-1 mb-1">
+                    <Icon name="timer"/>
+                    {service.duration} min
+                </p>
 
-                <p class="flex items-center gap-1 mb-1">💲
-                    {#if PricingTypes.TBD === PricingTypes.TBD}
-                        <span class="text-gray-500 italic">{PricingTypesInfo[PricingTypes.TBD].codeMsg}</span>
+                <p class="flex items-center gap-1 mb-1">
+                    <Icon name="money"/>
+                    {#if pricingEnum === PricingTypes.TBD}
+                        <span class="text-gray-500 italic">{$t(PricingTypesInfo[pricingEnum].codeMsg)}}</span>
                     {:else}
-                        {service.price} <span class="text-gray-500 italic">{PricingTypesInfo[PricingTypes.TBD].codeMsg}</span>
+                        {service.price} <span class="text-gray-500 italic">{$t(PricingTypesInfo[pricingEnum].codeMsg)}</span>
                     {/if}
                 </p>
 
                 {#if service.additionalCosts}
-                    <p class="flex items-center gap-1 text-red-600 mb-2">⚠ Costos adicionales</p>
+                    <p class="flex items-center gap-1 text-error-400 mb-2">
+                        <Icon name="warning"/>
+                        {$t("service.additional-costs")}
+                    </p>
                 {/if}
 
-                <a href={`/negocio/${service.businessId}`} class="text-blue-600 hover:underline">
-                    🏪 NOMBRE DEL SERVICIO
+                <a href="{base}/businesses/{business.businessId}" class="flex items-center text-primary-500 font-bold hover:underline">
+                    <Icon name="business"/>
+                    {business.businessName}
                 </a>
 
                 {#if !isOwner}
-                    <div class="mt-3">
-                        <a href={contratarUrl}>
-                            <button class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">Reservar turno</button>
+                    <div class="flex mt-3 justify-center">
+                        <a href="{base}/services/{serviceId}/create-appointment">
+                            <BigButton title={$t("service.new-appointment")}/>
                         </a>
                     </div>
                 {/if}
@@ -127,6 +185,31 @@
 
         <div class="mt-6 p-4 bg-gray-100 rounded">
             <p>{service.description}</p>
+        </div>
+
+        <div class="flex justify-center m-4">
+            <button
+                    class="px-4 py-2 bg-primary-200 rounded-l-3xl font-bold text-white hover:bg-primary-500"
+                    class:bg-primary-500={isQuestions}
+                    on:click={showQuestions}
+            >
+                Questions
+            </button>
+            <button
+                    class="px-4 py-2 bg-primary-200 rounded-r-3xl font-bold text-white hover:bg-primary-500"
+                    class:bg-primary-500={!isQuestions}
+                    on:click={showReviews}
+            >
+                Reviews
+            </button>
+        </div>
+
+        <div class={isQuestions ? "" : "opacity-0 h-0 overflow-hidden pointer-events-none"}>
+            <Questions serviceId={serviceId} isOwner={isOwner} user={user}/>
+        </div>
+
+        <div class={!isQuestions ? "" : "opacity-0 h-0 overflow-hidden pointer-events-none"}>
+            <Reviews serviceId={serviceId} isOwner={isOwner} user={user}/>
         </div>
     </div>
 {/if}

@@ -12,9 +12,11 @@ export interface TResponse {
 interface FetchOptions<TBody> {
   method?: HttpMethod;
   body?: TBody;
-  contentType?: string; 
+  contentType?: string;
+  genericContentType?: string;
   headers?: Record<string, string>;
-  withAuth?: boolean; // para saltearnos AUTH 
+  withAuth?: boolean; // para saltearnos AUTH
+  binary?: boolean;
 }
 
 export interface FetchError extends Error {
@@ -34,8 +36,10 @@ export async function apiFetch<TResponse = any, TBody = any>(
     method = "GET",
     body,
     contentType,
+    genericContentType,
     headers = {},
-    withAuth = true 
+    withAuth = true,
+    binary = false
   } = options;
 
   let mediaTypeHeader = method=="GET"? "Accept" : "Content-Type"
@@ -43,7 +47,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
   const finalHeaders: Record<string, string> = {
     [mediaTypeHeader]: contentType
       ? `application/vnd.servinet.${contentType}.v1+json`
-      : "application/json" ,
+      : (genericContentType? genericContentType : "application/json" ),
     ...headers
   };
 
@@ -64,6 +68,10 @@ console.log( BASE_URL+url)
     const err: FetchError = new Error(`Request failed: ${response.status}`);
     err.status = response.status;
     throw err;
+  }
+
+  if (binary) {
+    return response.blob() as any;
   }
 
   const text = await response.text();
