@@ -107,7 +107,7 @@ public class AppointmentServiceImpl implements AppointmentService{
 
         if (appointment.isCancelled())
             throw new AppointmentWasCancelled();
-        if (appointment.getConfirmed())
+        if (appointment.getConfirmed() && (status==AppointmentStatus.CONFIRMED || status==AppointmentStatus.DENIED))
             throw new AppointmentAlreadyConfirmed();
 
         Business business = service.getBusiness();

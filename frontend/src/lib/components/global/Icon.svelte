@@ -32,7 +32,7 @@ import Health from 'virtual:icons/material-symbols/health-metrics-rounded';
 import EventRepeat from 'virtual:icons/material-symbols/event-repeat';
 import Accept from 'virtual:icons/material-symbols/done';
 import History from 'virtual:icons/material-symbols/history-rounded';
-
+import Info from 'virtual:icons/material-symbols/info';
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
   language: Language,
@@ -52,6 +52,7 @@ export const icons: Record<string, any> = {
   leftArrow: LeftArrow,
   rightArrow: RightArrow,
   schedule: Schedule,
+  info: Info,
   eventRepeat: EventRepeat,
   delete: Cancel,
   accept: Accept,
@@ -66,7 +67,8 @@ export const icons: Record<string, any> = {
   transport: Transport,
   consulting: Consulting,
   hairSalon: HairSalon,
-  health: Health
+  health: Health,
+
 };
 
 function iconFor(name: string) {
