@@ -116,9 +116,9 @@ public class BusinessesJerseyController {
     ) {
         businessService.editBusiness(
                 businessId,
-                businessUpdateDTO.getBusinessTelephone(),
                 businessUpdateDTO.getBusinessEmail(),
-                businessUpdateDTO.getBusinessLocation()
+                businessUpdateDTO.getBusinessLocation(),
+                businessUpdateDTO.getBusinessTelephone()
         );
         return Response.noContent().build();
     }
