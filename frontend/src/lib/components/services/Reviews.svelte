@@ -4,10 +4,8 @@
     import Spinner from "$lib/components/global/Spinner.svelte";
     import Title from "$lib/components/global/Title.svelte";
     import { Pagination } from "@skeletonlabs/skeleton-svelte";
-
     import type { User } from "$models/User";
     import type { Review } from "$models/Review";
-
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { t } from "$lib/i18n/i18n";
@@ -15,6 +13,7 @@
     import {createReview, getServiceReviews} from "$services/reviewsService";
     import {ReviewFilters, ReviewFiltersInfo} from "$models/enums/ReviewFilters";
     import ReviewsBars from "$lib/components/services/ReviewsBars.svelte";
+    import FormError from "$lib/components/global/forms/FormError.svelte";
 
     export let serviceId: number;
     export let isOwner: boolean = false;
@@ -31,8 +30,8 @@
 
     let hasRated: Review | null = null;
 
-    let newForm = new ReviewForm({ serviceId, comment: "", rating: 0 });
-    let newErrors = {};
+    let form = new ReviewForm({ serviceId, comment: "", rating: 0 });
+    let errors = {};
 
     async function loadReviews(pageNum: number) {
         loading = true;
@@ -49,17 +48,16 @@
     }
 
     function selectRating(num: number) {
-        newForm.rating = num;
+        form.rating = num;
     }
 
     async function submitNewReview() {
         if (!user) goto(`${base}/login`);
 
-        newErrors = newForm.validateReviewForm();
-        if (Object.keys(newErrors).length > 0) return;
-
-        await createReview(newForm);
-        newForm = new ReviewForm({ serviceId, comment: "", rating: 0 });
+        errors = form.validateReviewForm();
+        if (Object.keys(errors).length > 0) return;
+        await createReview(form);
+        form = new ReviewForm({ serviceId, comment: "", rating: 0 });
 
         await loadReviews(page);
     }
@@ -115,7 +113,7 @@
             <div class="bg-surface-100 p-4 rounded-2xl mb-4">
                 <div class="flex mb-3">
                     {#each Array(5) as _, i}
-                        <div class={`cursor-pointer text-lg mr-0.5 ${i < newForm.rating ? "text-yellow-400" : "text-gray-400"}`}
+                        <div class={`cursor-pointer text-lg mr-0.5 ${i < (form.rating ?? 0) ? "text-yellow-400" : "text-gray-400"}`}
                              on:click={() => selectRating(i + 1)}>
                             <Icon name="star"/>
                         </div>
@@ -123,21 +121,22 @@
                 </div>
 
                 <div class="flex">
-                    <textarea bind:value={newForm.comment}
+                    <textarea bind:value={form.comment}
                               maxlength="255"
                               class="w-3/4 p-3 rounded-xl bg-surface-200"
                               placeholder={$t("service.write-review")}/>
-
-                    {#if newErrors.comment}
-                        <p class="text-red-500 text-sm">{newErrors.comment}</p>
-                    {/if}
-
                     <div on:click={submitNewReview}
                          class="cursor-pointer flex items-center justify-center p-2 hover:opacity-80 text-2xl text-primary-500">
                         <Icon name="send"/>
                     </div>
                 </div>
+                {#if errors.rating}
+                    <p class="text-red-500 text-sm">{$t(errors.rating)}</p>
+                {/if}
             </div>
+            {#if errors.reviews}
+                <FormError errorMessage={errors.reviews} />
+            {/if}
         {/if}
 
         {#if reviews.length > 0}

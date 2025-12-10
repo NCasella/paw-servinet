@@ -48,7 +48,7 @@ export type ReviewFormErrors = {
 
 export class ReviewForm implements ReviewFormData {
     serviceId = 0;
-    rating = 1;
+    rating = 0;
     comment = "";
 
     constructor(init?: Partial<ReviewFormData>) {
