@@ -55,7 +55,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
         : (genericContentType ? genericContentType : "application/json");
   }
 
-  const response = await fetch(BASE_URL + url, {
+  const response = await fetch(BASE_URL + "/" + url, {
     method,
     headers: finalHeaders,
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,

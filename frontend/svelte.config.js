@@ -22,7 +22,7 @@ const config = {
 			fallback: 'index.html'
 		}),
 		paths: {
-			base: '', // Ruta base de tu aplicación
+			base: '/paw-2024a-04', // Ruta base de tu aplicación
 			relative: false,	
 		},
 		alias: {
