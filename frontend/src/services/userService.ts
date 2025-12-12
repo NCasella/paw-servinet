@@ -12,8 +12,8 @@ import type { RequestPasswordRecoveryForm } from "$models/forms/RequestPasswordR
 import type { TResponse } from "$utils/apiFetch";
 import type { ResetPasswordForm } from "$models/forms/ResetPasswordForm";
 
-export async function getUserInfo(id: number ) :Promise<User> {
-    const data = await GET(`users/${id}`,{contentType:"user-contact-info" });  
+export async function getUserInfo(id: number,fetchFn?: typeof fetch ) :Promise<User> {
+    const data = await GET(`users/${id}`,{contentType:"user-info", fetchFn: fetchFn });  
     let user = User.fromJson(data)
     user.setRole( currentUserIsProvider() );
     return user;
@@ -39,7 +39,7 @@ export async function resetPassword(form:ResetPasswordForm) : Promise<Boolean> {
 }
 
 /* Retrieves user login data */
-export async function getCurrentUser() :Promise<User> {
+export async function getCurrentUser(fetchFn?: typeof fetch) :Promise<User> {
     let currentUser = getUser()
     if ( currentUser )
         return currentUser;
@@ -48,7 +48,7 @@ export async function getCurrentUser() :Promise<User> {
     if ( id==null ) 
         throw Error("Current user not found: auth is missing");
 
-    currentUser = await getUserInfo(id);
+    currentUser = await getUserInfo(id, fetchFn);
     loadUser(currentUser)
 
     return currentUser;

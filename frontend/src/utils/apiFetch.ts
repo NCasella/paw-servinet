@@ -17,6 +17,7 @@ interface FetchOptions<TBody> {
   headers?: Record<string, string>;
   withAuth?: boolean; // para saltearnos AUTH
   binary?: boolean;
+  fetchFn?: typeof fetch;
 }
 
 export interface FetchError extends Error {
@@ -39,7 +40,8 @@ export async function apiFetch<TResponse = any, TBody = any>(
     genericContentType,
     headers = {},
     withAuth = true,
-    binary = false
+    binary = false,
+    fetchFn = fetch
   } = options;
 
   const finalHeaders: Record<string, string> = { ...headers };
@@ -55,7 +57,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
         : (genericContentType ? genericContentType : "application/json");
   }
 
-  const response = await fetch(BASE_URL + "/" + url, {
+  const response = await fetchFn(BASE_URL + "/" + url, {
     method,
     headers: finalHeaders,
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,

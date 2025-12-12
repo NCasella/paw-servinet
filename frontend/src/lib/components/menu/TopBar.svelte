@@ -4,22 +4,18 @@
     import { base } from '$app/paths';
     import UserMenu from '$lib/components/menu/UserMenu.svelte';
     import {t} from "$lib/i18n/i18n"
-	import { user } from '$stores/userStore';
+	
 	import { onMount } from 'svelte';
 	import { getCurrentUser,  } from '$services/userService';
 	import { type User } from '$models/User';
 	import type { UserContactInfo } from '$models/ContactInfo';
 	import { removeTokens } from '$services/authenticate';
 
-	let currentUser :User | null = null;
-	onMount(async () => {
-		try {
-		currentUser = await getCurrentUser()
-		
-		} catch(e) {
-		currentUser = null;
-		throw e
-    }})	
+	import type { LayoutData } from '../../../routes/$types';
+	import { user } from '$stores/userStore';
+    export let data :LayoutData
+    let currentUser :User | null;
+	user.subscribe((u) => currentUser=u.user)
 
 
 	function isRouteActive(path: string): boolean {
@@ -29,6 +25,7 @@
 	async function handleLogin(event: Event): Promise<void> {
 		goto('login');
     }
+	
     
     async function handleLogout(event: Event): Promise<void> {
 	  event.preventDefault();
@@ -60,7 +57,7 @@
 	<div class="top-bar__right">
       <button type="button" class="btn "><a href="{base}/services"> {$t("navbar.all-services")}</a></button>
 	  {#if currentUser }
-		<UserMenu user={currentUser}/>  	
+		<UserMenu currentUser={currentUser}/>  	
 	  {:else}
 	  <button type="button" class="btn preset-filled-primary-500" on:click={handleLogin}>{$t("login")}</button>
 		{/if}

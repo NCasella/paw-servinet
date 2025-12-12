@@ -5,18 +5,28 @@
 	import { asset, base } from '$app/paths';
 	import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
 	import { UserContactInfo } from '$models/ContactInfo';
-	import { currentUserIsProvider } from '$services/userService';
+	import { closeSession, currentUserIsProvider } from '$services/userService';
+	import { invalidateAll } from '$app/navigation';
+	import { navTo } from '$lib/navigation/pageInfo';
 
-	let {user} = $props()
-	let isProvider = currentUserIsProvider()
 	
+	let {currentUser} = $props()
+
+
+	async function logUserOut () {
+        closeSession()
+        await invalidateAll(); 
+        navTo("/login") 
+    }
+
+
 </script>
 
 <Menu>
-	<Menu.Trigger class="btn">
+	<Menu.Trigger class="btn" >
 		<Avatar class="h-12 w-12">
-				<!--<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />-->
-				<Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()}/></Avatar.Fallback>
+				<Avatar.Image src={currentUser.getProfilePictureSrc()} alt="base" />
+				<Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()} alt="pic"/></Avatar.Fallback>
 		</Avatar>
 	</Menu.Trigger>
 	<Portal>
@@ -34,10 +44,17 @@
 						<Menu.ItemText>{$t("navbar.appointments")}</Menu.ItemText>
 						</a>
 					</Menu.Item>
+					<Menu.Item value="close session" class="btn  bg-error-400 text-error-700">
+						 <!-- Logout -->
+						  <Menu.ItemText 
+        onclick={logUserOut}>
+        {$t('profile.logout')}    
+						  </Menu.ItemText>
+					</Menu.Item>
 				</Menu.ItemGroup>
 				<Menu.Separator />
 				<Menu.ItemGroup>
-					{#if isProvider}
+					{#if currentUser.isProvider}
 						<Menu.ItemGroupLabel>Business</Menu.ItemGroupLabel>
 						<Menu.Item value="businesses">
 							<a href="{base}/my-businesses">
@@ -54,3 +71,4 @@
 		</Menu.Positioner>
 	</Portal>
 </Menu>
+        

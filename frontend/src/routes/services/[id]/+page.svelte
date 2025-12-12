@@ -24,30 +24,33 @@
     import Spinner from "$lib/components/global/Spinner.svelte";
     import Questions from "$lib/components/services/Questions.svelte";
     import Reviews from "$lib/components/services/Reviews.svelte";
+	import { error } from "@sveltejs/kit";
+	import ErrorPage from "$lib/components/global/errors/ErrorPage.svelte";
 
     let serviceId :number
     let loading = true
     let isOwner :boolean
     let isQuestions = true;
     let imageUrl: string = "";
-    let service :Service
+    
     let user :User
     let business :Business
 
     let pricingEnum: PricingTypes;
     let categoryEnum: Categories;
 
+    import type { PageData } from './$types';
+    export let data :PageData
+    const { service } = data
+    serviceId = service.serviceId
     onMount(async () => {
-        try {
-            serviceId = Number( $page.params.id)
-        } catch {throw new InvalidUrlParamError("id must be a number") }
-
+    
         try {
             user = await getCurrentUser();
         } catch (e) {
-            throw e
+           
         }
-        service = await getServiceById(serviceId);
+        
         imageUrl = await getImage(service.imageId);
         business = await getBusinessById(service.businessId);
         isOwner = user? user.userId === business.userId : false;

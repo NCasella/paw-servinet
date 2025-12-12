@@ -37,6 +37,7 @@ import History from 'virtual:icons/material-symbols/history-rounded';
 import Info from 'virtual:icons/material-symbols/info';
 import ResponseArrow from 'virtual:icons/material-symbols/subdirectory-arrow-right-rounded';
 import Send from 'virtual:icons/material-symbols/send-rounded';
+import Edit from 'virtual:icons/material-symbols/edit';
 
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
@@ -48,6 +49,7 @@ export const icons: Record<string, any> = {
   calendar: Calendar,
   notification: Notification,
   noNotification: NoNotification,
+  edit: Edit,
   add: Add,
   location: Location,
   address: Address,

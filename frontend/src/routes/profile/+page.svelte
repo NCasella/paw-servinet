@@ -4,90 +4,88 @@
 	import { getCurrentUser } from "$services/userService";
     import {type User } from "$models/User"
     import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
+	import { goto, invalidateAll } from "$app/navigation";
     import { Avatar } from "@skeletonlabs/skeleton-svelte";
 	import { UserContactInfo } from "$models/ContactInfo";
 	import Spinner from "$lib/components/global/Spinner.svelte";
+	import Icon from "$icons";
+	import type { PageData } from "./$types";
 
-    let user :User;
-    let otherLang :string;
-    let loading = true
-    onMount(async () => {
-		try {
-		  user = await getCurrentUser()
+    
+    
+    export let data :PageData
+    let { user, otherLang } = data
 
-		otherLang = user.language === 'es' ? 'en' : 'es'
-		//} catch {
-		  //goto("login")
-    } finally {
-      loading = false
-    }
-  })
+
+  function editProfile() {}
   
-    function logUserOut () {
-        closeSession()
-        goto("login") 
-    }
-
 </script>
 
-{#if loading}
-<Spinner/>
+  <div class="max-w-xl mx-auto ">
+  <section class="rounded-2xl shadow p-8 space-y-5" >
+ 
 
-{:else if user}
-<div class="max-w-5xl mx-auto space-y-8">
-  <!-- Perfil -->
-  <section class="rounded-2xl shadow p-6 flex items-center gap-6">
-    <!-- Avatar -->
-    
-    <Avatar class="size-30 ">
-				<!--<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />-->
-				<Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()}/></Avatar.Fallback>
-    </Avatar>
-    <!-- Datos usuario -->
-    <div class="flex-1 space-y-3">
-      <div>
-        <h2 class="text-2xl font-semibold leading-tight">{user.fullName}</h2>
-        <p class="text-sm opacity-80">{user.username}</p>
-      </div>
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
+         <!-- Top: avatar + identity + actions -->
+       <Avatar class="size-30">
+        <!--<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />-->
+        <Avatar.Fallback>
+          <img class="rounded-2xl" src={UserContactInfo.getFallbackImage()} alt="profile" />
+        </Avatar.Fallback>
+      </Avatar>
+      <div class="flex-1 min-w-0">
+        <div class="">
+          
+            <h2 class="text-2xl font-semibold leading-tight truncate">{user.fullName}</h2>
+           <div class="text-sm opacity-80 truncate text-primary-500 flex items-center gap-1">
+              <Icon name="person"  />
+              <span>{user.username}</span>
+            </div>
 
-      <div class="space-y-1 text-sm">
-        <div class="flex items-center gap-2">
-          <span class="material-icons text-base">mail</span>
-          <span>{user.email}</span>
+        </div>
+
+        <!-- Datos -->
+        <div class="mt-4 space-y-2 text-sm">
+          <div class="flex items-center gap-2 opacity-90">
+            <Icon name="mail"/>
+            <span class="truncate">{user.email}</span>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Idioma preferido -->
-      <div class="mt-2 flex flex-wrap items-center gap-3 text-sm">
-        <span class="material-icons text-base">language</span>
-        <span>{$t('profile.favourite-lang')}:</span>
-        <span class="font-medium uppercase">{user.language}</span>
+    <!-- Preferences -->
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <!-- Idioma -->
+      <div class="rounded-xl border p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <Icon name="language"/>
+          <h3 class="font-semibold">{$t('profile.favourite-lang')}</h3>
+        </div>
 
-        <!-- “Dropdown” simple con el otro idioma -->
-        <details class="inline-block">
-          <summary class="list-none cursor-pointer inline-flex items-center gap-1">
-            <span class="text-xs uppercase">{otherLang}</span>
-            <span class="material-icons text-base">arrow_drop_down</span>
-          </summary>
-          <form method="post" action="/perfil/cambiar-idioma" class="mt-1">
-            <input type="hidden" name="locale" value={otherLang} />
-            <button type="submit" class="px-3 py-1 rounded-full border text-xs uppercase">
-              {otherLang}
-            </button>
-          </form>
-        </details>
+        <form method="post" 
+        on:submit|preventDefault={editProfile}
+        class="flex items-center gap-3">
+          <select
+            name="locale"
+            class="select select-sm flex-1"
+            value={user.language}
+          >
+            <option value="es">ES</option>
+            <option value="en">EN</option>
+          </select>
+
+          <button type="submit" class="btn btn-sm bg-primary-400 text-surface-100">
+            {$t("service.save-changes")}
+          </button>
+        </form>
       </div>
+
+      
     </div>
 
-    <!-- Logout -->
-    <div class="self-start">
-      <button
-        class="btn  bg-error-400 text-error-contrast-700"
-        on:click={logUserOut}>
-        {$t('profile.logout')}
-      </button>
-    </div>
   </section>
 </div>
-{/if}
+
+
+
