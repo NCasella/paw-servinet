@@ -34,10 +34,8 @@
             loading = false;
 
             if (ok) {
-              getCurrentUser().then( () => history.back())   
+              await goto(`${base}/profile`);
             }
-            
-            await goto(`${base}/profile`);
 
         } catch (error) {
             console.error("Error during registration:", error);
