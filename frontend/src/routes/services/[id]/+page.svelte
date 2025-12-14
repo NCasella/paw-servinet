@@ -156,7 +156,7 @@
                 <p class="flex items-center gap-1 mb-1">
                     <Icon name="money"/>
                     {#if pricingEnum === PricingTypes.TBD}
-                        <span class="text-gray-500 italic">{$t(PricingTypesInfo[pricingEnum].codeMsg)}}</span>
+                        <span class="text-gray-500 italic">{$t(PricingTypesInfo[pricingEnum].codeMsg)}</span>
                     {:else}
                         {service.price} <span class="text-gray-500 italic">{$t(PricingTypesInfo[pricingEnum].codeMsg)}</span>
                     {/if}

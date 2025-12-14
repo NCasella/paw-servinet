@@ -32,3 +32,7 @@ export function getPath(url:string) {
 export function navTo(url:string) {
     goto(base+url)
 }
+
+export function goBack(backupUrl: string) {
+    history.length > 1 ? history.back() : navTo(backupUrl);
+  }

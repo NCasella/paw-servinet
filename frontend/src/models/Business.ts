@@ -34,6 +34,10 @@ export class Business {
         }
         throw new Error("Invalid Business JSON");
       }
+
+    isOwner(userId: number) {
+      return this.userId == userId
+    }
 }
 
 function isBusiness(obj: any): obj is Business {

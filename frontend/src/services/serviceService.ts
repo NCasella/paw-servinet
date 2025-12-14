@@ -15,7 +15,7 @@ export async function getServices(params: {
     orderFilters?: string;
     homeServiceFilter?: boolean;
     page?: number;
-} = {}): Promise<PagedResult<Service>> {
+} = {}, fetchFn?: typeof fetch): Promise<PagedResult<Service>> {
 
     const query = new URLSearchParams();
 
@@ -27,15 +27,19 @@ export async function getServices(params: {
 
     const response = await GET(
         `services?${query.toString()}`,
-        { contentType: "service-list" }
+        { contentType: "service-list",
+          fetchFn: fetchFn
+         }
     );
 
     return parsePagedResponse(response, Service);
 }
 
-export async function getServiceById(serviceId:number) :Promise<Service> {
+export async function getServiceById(serviceId:number, fetchFn?: typeof fetch) :Promise<Service> {
     const response = await GET(`services/${serviceId}`,
-        { contentType: "service-info"}
+        { contentType: "service-info",
+          fetchFn: fetchFn
+        }
     )
     
     return Service.fromJson(response)

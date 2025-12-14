@@ -1,4 +1,4 @@
-import type { TResponse } from "$utils/apiFetch";
+import { API_BASE_URL, type TResponse } from "$utils/apiFetch";
 import { DurationTypes } from "./enums/DurationType";
 import { PricingTypes } from "./enums/PricingType";
 
@@ -15,6 +15,7 @@ export class Service {
     questions: string;
     reviews: string;
     self: string;
+    image?: string, 
   };
   neighbourhoods: string[];
   price: string | null;
@@ -36,10 +37,11 @@ export class Service {
       business: string;
       questions: string;
       reviews: string;
+      image?: string;
       self: string;
     };
     neighbourhoods: string[];
-    price: string | null;
+    price?: string | null;
     pricingType: string;
     rating: number;
     serviceId: number;
@@ -55,7 +57,7 @@ export class Service {
     this.homeService = data.homeService;
     this.links = data.links;
     this.neighbourhoods = data.neighbourhoods;
-    this.price = data.price;
+    this.price = data.price ?? null;
     this.pricingType = data.pricingType;
     this.rating = data.rating;
     this.serviceId = data.serviceId;
@@ -75,7 +77,10 @@ export class Service {
     return this.pricingType == PricingTypes.TBD
   }
 
-
+   getServiceImageUrl(): string {
+    
+    return this.links.image ?? "";
+  }
 }
 
 function isService(obj: any): obj is Service {
@@ -94,7 +99,7 @@ function isService(obj: any): obj is Service {
     typeof obj.links.reviews === "string" &&
     typeof obj.links.self === "string" &&
     Array.isArray(obj.neighbourhoods) &&
-    (typeof obj.price === "string" || obj.price === null) &&
+    (obj.price === undefined || typeof obj.price === "string" || obj.price === null) &&
     typeof obj.pricingType === "string" &&
     typeof obj.rating === "number" &&
     typeof obj.serviceId === "number" &&

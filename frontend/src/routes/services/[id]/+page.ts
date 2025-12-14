@@ -3,7 +3,7 @@ import type { PageLoad } from "./$types";
 
 import { error } from '@sveltejs/kit';
 
-export async function load({ params }) {
+export async function load({ params, fetch }) {
   const serviceId = Number(params.id);
 
   if (Number.isNaN(serviceId)) {
@@ -11,9 +11,10 @@ export async function load({ params }) {
   }
 
   try {
-    const service = await getServiceById(serviceId);
+    const service = await getServiceById(serviceId, fetch);
     return { service: service };
-  } catch {
+  } catch(e) {
+    console.log(e)
     throw error(404)//, { message: 'Service not found' });
   }
 }

@@ -2,7 +2,7 @@ import { getAccessToken } from "$stores/auth";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export interface TResponse {
   headers: Headers,
@@ -57,7 +57,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
         : (genericContentType ? genericContentType : "application/json");
   }
 
-  const response = await fetchFn(BASE_URL + "/" + url, {
+  const response = await fetchFn(API_BASE_URL + "/" + url, {
     method,
     headers: finalHeaders,
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,

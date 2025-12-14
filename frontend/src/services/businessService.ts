@@ -24,9 +24,11 @@ export async function getUserBusinesses(pageNum:number) : Promise<PagedResult<Bu
     return parsePagedResponse(response, Business)
 }
 
-export async function getBusinessById(businessId: number) : Promise<Business> {
+export async function getBusinessById(businessId: number, fetchFn?: typeof fetch) : Promise<Business> {
     const response = await GET(`businesses/${businessId}`,
-        {contentType: "business-info"}
+        {contentType: "business-info",
+          fetchFn: fetchFn
+        }
     )
     console.log( JSON.stringify(response))
     return Business.fromJson(response)
@@ -50,7 +52,7 @@ export async function deleteBusiness(businessId:number) {
 }
 
 export async function updateBusiness(businessId:number, form:BusinessUpdateInfo ) {
-    PATCH(`businesses/${businessId}`, form, {contentType:"business-update"})
+  await PATCH(`businesses/${businessId}`, form, {contentType:"business-update"})
 }
 
 

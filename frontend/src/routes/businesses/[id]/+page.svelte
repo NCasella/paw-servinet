@@ -10,7 +10,7 @@
   import NoResults from '$lib/components/global/pagedResults/NoResults.svelte';
   import ConfirmModal from '$lib/components/global/modal/ConfirmModal.svelte';
 
-  import { getParamIdFromUrl, getPath } from '$lib/navigation/pageInfo';
+  import { getPageNumFromParam, getParamIdFromUrl, getPath, goBack } from '$lib/navigation/pageInfo';
   import type { Business, BusinessUpdateInfo } from '$models/Business';
   import type { PagedResult } from '$models/PagedList';
   import type { Service } from '$models/Service';
@@ -20,69 +20,81 @@
 	import Icon from '$icons';
 	import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
 	import BigButtonWarning from '$lib/components/global/BigButtonWarning.svelte';
+	import { getImage } from '$services/imageService';
+	import { error } from '@sveltejs/kit';
+	import { StatusCodes } from '$models/exceptions/statusCodesEnum';
+	import type { BusinessFormErrors } from '$models/forms/BusinessCreationForm';
+	import PaginationControls from '$lib/components/global/pagedResults/PaginationControls.svelte';
 
-  let business: Business | null = null;
-  let servicesList: PagedResult<Service> | null = null;
-  let loading = true;
-  let pageNum = 1;
+
+  let { data } = $props()
+  let { business, servicesList, isOwner } = data
+
+
+  
+  //let servicesList: PagedResult<Service> | null = null;
+  let loading = $state(false);
+  let pageNum = $state(1);
+
+  
 
   // si el backend ya te trae esto, podés reemplazarlo por business.isOwner
-  let isOwner = true;
 
   // rating promedio (ya lo tenés en Business.rating)
-  $: avgRating = business?.rating ?? 0;
-  $: hasRating = avgRating > 0;
+  let avgRating = business?.rating ?? 0;
+  let hasRating = avgRating > 0;
 
   // edición de datos de contacto
-  let editing = false;
-	let businessEditInfo :BusinessUpdateInfo = {} as BusinessUpdateInfo
+  let editing = $state(false);
+	let businessEditInfo :BusinessUpdateInfo = $state( {} as BusinessUpdateInfo)
 
   // modal borrar negocio
-  let showDeleteModal = false;
-
-  onMount(async () => {
-    try {
-      const businessId = getParamIdFromUrl();
-      business = await getBusinessById(businessId);
-      servicesList = await getServices({ businessId, page: pageNum });
-	 loadBusinessInfoToUpdate()
-      // TODO: setear isOwner real (por ejemplo, comparando ownerId con currentUserId)
-      // isOwner = business?.isOwner ?? false;
-    } finally {
-      loading = false;
-    }
+  let showDeleteModal = $state(false);
+  let formErrors :BusinessFormErrors = $state({businessName:business.businessName}
+)
+  onMount(() => {
+     loadBusinessInfoToUpdate()
   });
 
+  async function loadServices() {
+    loading = true
+    servicesList = await getServices({businessId: business.businessId, page:pageNum})
+    loading = false
+  }
+
   function loadBusinessInfoToUpdate() {
-	if (!business) return
-	businessEditInfo = {
+	businessEditInfo =  {
         businessEmail : business.email,
         businessTelephone : business.telephone,
         businessLocation : business.address,
 	}
-
+  
   }
 
   function toggleEdit() {
     if (!editing && business) {
       // al entrar a modo edición, copiar valores actuales
       loadBusinessInfoToUpdate()
+      console.log(editing)
     }
     editing = !editing;
+    
   }
 
   async function handleSaveBusiness() {
-    if (!business) return;
-
     try {
+      loading = true
       // ajustá el DTO según tu API
       await updateBusiness(business.businessId, businessEditInfo);
       // refrescamos entidad
-      business = await getBusinessById(business.businessId);
-      editing = false;
-    } catch (e) {
-      console.error(e);
+      //business = await getBusinessById(business.businessId);
+      console.log("Done")
+      editing = false
+    } catch {
+      loadBusinessInfoToUpdate()
       // TODO: mostrar toaster de error
+    } finally {
+      loading = false
     }
   }
 
@@ -99,13 +111,7 @@
     }
   }
 
-  function getServiceImageUrl(service: Service): string {
-    return `${base}/images/${service.serviceId}`;
-  }
 
-  function goBack() {
-    history.length > 1 ? history.back() : goto(getPath('/businesses'));
-  }
 </script>
 
 {#if loading}
@@ -119,7 +125,7 @@
       <div class="flex  gap-3">
       <button
           type="button"
-          on:click={goBack}
+          onclick={() => goBack(isOwner? "my-businesses":"/")}
 		  class="btn bg-surface-100"
         >
         <Icon name="leftArrow"/>
@@ -202,7 +208,7 @@
           <button
             type="button"
             class="text-sm px-3 py-1 rounded-full border hover:bg-slate-50"
-            on:click={toggleEdit}
+            onclick={toggleEdit}
           >
             {editing ? $t('service.cancel') : $t('business.edit')}
           </button>
@@ -214,16 +220,17 @@
         <div class="space-y-2 text-sm">
           <p class="flex items-center gap-2">
             <Icon name="mail"/>
-            <span>{business.email}</span>
+            <span>{businessEditInfo.businessEmail}</span>
+            
           </p>
           <p class="flex items-center gap-2">
             <Icon name="phone"/>
-            <span>{business.telephone}</span>
+            <span>{businessEditInfo.businessTelephone}</span>
           </p>
           {#if business.address}
             <p class="flex items-center gap-2">
               <Icon name="location"/>
-              <span>{business.address}</span>
+              <span>{businessEditInfo.businessLocation}</span>
             </p>
           {/if}
         </div>
@@ -262,7 +269,7 @@
             <button
               type="button"
               class="px-5 py-2 rounded-full bg-primary-500 text-white text-sm font-semibold hover:bg-primary-600"
-              on:click={handleSaveBusiness}
+              onclick={handleSaveBusiness}
             >
               {$t('business.save-changes')}
             </button>
@@ -286,7 +293,7 @@
             >
               <div class="rounded-2xl shadow bg-white overflow-hidden hover:shadow-lg transition flex flex-col">
                 <ImageWithFallback
-				src={getServiceImageUrl(service)}
+				src={service.getServiceImageUrl()}
 				fallback={asset("/images/default/service.png")}
 				/>
 
@@ -297,6 +304,11 @@
             </a>
           {/each}
         </div>
+        <PaginationControls 
+          page={pageNum} 
+          pagedList = {servicesList}
+          onPageChange={(newPage) => {pageNum = newPage; loadServices()}  }/>
+  
       {:else}
         <NoResults
           message={$t('business.not-found')}
