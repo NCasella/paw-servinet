@@ -438,6 +438,14 @@ export default {
     "El precio del servicio no puede superar los 255 caracteres",
   "Positive.serviceForm.minimalduration":
     "La duración mínima del servicio debe ser un número positivo",
+  "NotEmpty.serviceForm.neighbourhoods":
+    "Debe indicar el barrio en el que opera el servicio",
+  "NotEmpty.serviceForm.pricingType":
+    "Debe indicar el tipo de precio",
+  "NotEmpty.serviceForm.price":
+    "Debe indicar el precio del servicio según el tipo seleccionado",
+  "NotEmpty.serviceForm.category":
+    "Debe indicar una categoría",
 
   "NotEmpty.appointmentForm.location":
     "Debe ingresar una ubicación",

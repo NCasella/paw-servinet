@@ -53,100 +53,95 @@ export type ServiceFormErrorKey =
   | "NotNull.serviceForm.title"
   | "Size.serviceForm.description"
   | "NotNull.serviceForm.homeserv"
-  | "Size.serviceForm.location"
+  | "Size.appointmentForm.location"
   | "Size.serviceForm.price"
-  | "Positive.serviceForm.minimalduration";
+  | "Positive.serviceForm.minimalduration"
+  | "NotEmpty.serviceForm.neighbourhoods"
+  | "NotEmpty.serviceForm.price"; 
 
-export const ServiceFormSchema = z.object({
-  /** DTO: serviceName
-   *  @Size(max=255) @NotEmpty @NotNull
-   *  Mensajes:
-   *    - Size.serviceForm.title
-   *    - NotEmpty.serviceForm.title
-   *    - NotNull.serviceForm.title
-   */
-  serviceName: z
-    .string()
-    .trim()
-    .min(1, { message: "NotEmpty.serviceForm.title" })
-    .max(MAX_LEN, { message: "Size.serviceForm.title" }),
-  /** DTO: description
-   *  @Size(max=255)
-   *  Mensaje: Size.serviceForm.description
-   */
-  description: z
-    .string()
-    .max(MAX_LEN, { message: "Size.serviceForm.description" })
-    .optional()
-    .or(z.literal("")),
+export const ServiceFormSchema = z
+  .object({
+    serviceName: z
+      .string()
+      .trim()
+      .min(1, { message: "NotEmpty.serviceForm.title" })
+      .max(MAX_LEN, { message: "Size.serviceForm.title" }),
 
-  /** DTO: homeService
-   *  @NotNull
-   *  Mensaje: NotNull.serviceForm.homeserv
-   */
-  homeService: z
-    .boolean()
-    .refine((v) => v === true || v === false, {
+    description: z
+      .string()
+      .max(MAX_LEN, { message: "Size.serviceForm.description" })
+      .optional()
+      .or(z.literal("")),
+
+    homeService: z.boolean().refine((v) => v === true || v === false, {
       message: "NotNull.serviceForm.homeserv",
     }),
-    
-  /** DTO: neighbourhoods (sin constraints de Bean Validation) */
-  neighbourhoods: z.array(z.string()).optional(),
 
-  /** DTO: address
-   *  @Size(max=255)
-   *  Mensaje: Size.serviceForm.location
-   */
-  address: z
-    .string()
-    .max(MAX_LEN, { message: "Size.serviceForm.location" })
-    .optional()
-    .or(z.literal("")),
+    // ✅ neighbourhoods deben ser 1 o +
+    neighbourhoods: z
+      .array(z.string())
+      .min(1, { message: "NotEmpty.serviceForm.neighbourhoods" }),
 
-  /** DTO: price
-   *  @Size(max=10)
-   *  @Pattern(regexp = "[0-9]+(\\.[0-9]{1,2})?$")
-   *  Mensaje: Size.serviceForm.price (lo usamos para longitud/patrón)
-   */
-  price: z
-    .string()
-    .max(MAX_PRICE_LEN, { message: "Size.serviceForm.price" })
-    .regex(PRICE_REGEX, { message: "Size.serviceForm.price" })
-    .optional(),
+    address: z
+      .string()
+      .max(MAX_LEN, { message: "Size.appointmentForm.location" })
+      .optional()
+      .or(z.literal("")),
 
-  /** DTO: additionalCharges (sin constraints) */
-  additionalCharges: z.boolean().optional(),
+    // ⚠️ permitimos null/undefined acá y validamos la condición en superRefine
+    price: z
+      .string()
+      .max(MAX_PRICE_LEN, { message: "Size.serviceForm.price" })
+      .regex(PRICE_REGEX, { message: "Size.serviceForm.price" })
+      .nullable()
+      .optional()
+      .or(z.literal("")), // por si te llega "" desde el input
 
-  /** DTO: pricingType
-   *  @NotNull (no me pasaste key específica, uso mensaje default)
-   */
-  pricingType: z.string().min(1),
+    additionalCharges: z.boolean().optional(),
 
-  /** DTO: category
-   *  @NotNull
-   */
-  category: z.string().min(1),
+    pricingType: z.string().min(1, {message: "NotEmpty.serviceForm.pricingType"}),
 
-  /** DTO: minimalDuration
-   *  @Positive
-   *  Mensaje: Positive.serviceForm.minimalduration
-   */
-  minimalDuration: z
-    .number()
-    .int()
-    .positive({ message: "Positive.serviceForm.minimalduration" }),
+    category: z.string().min(1 , {message: "NotEmpty.serviceForm.category"}),
 
-  /** DTO: imageId
-   *  @Positive
-   *  (no me pasaste key, uso default)
-   */
-  imageId: z.number().int().positive().optional(),
+    minimalDuration: z
+      .number()
+      .int()
+      .positive({ message: "Positive.serviceForm.minimalduration" }),
+  })
+  .superRefine((data, ctx) => {
+    // normalizamos "" -> null para evaluar fácil
+    const priceNormalized =
+      data.price === "" || data.price === undefined ? null : data.price;
 
-  /** DTO: businessId
-   *  @NotNull (lo suele rellenar el front a partir del negocio actual)
-   */
-  businessId: z.number().int().positive().optional(),
-});
+    // ✅ price puede ser null si y solo si pricingType = TBD
+    const isTBD = data.pricingType === "TBD";
+    if (!isTBD && priceNormalized === null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["price"],
+        message: "NotEmpty.serviceForm.price", // o reutilizá Size.serviceForm.price si querés
+      });
+    }
+    if (isTBD && priceNormalized !== null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["price"],
+        message: "Size.serviceForm.price", // “price no debería enviarse si es TBD” (si querés key propia, mejor)
+      });
+    }
+
+    // ✅ address obligatorio si homeService = false
+    if (data.homeService === false) {
+      const addr = (data.address ?? "").trim();
+      if (!addr) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["address"],
+          message: "NotEmpty.appointmentForm.location",
+        });
+      }
+    }
+  });
 
 export type ServiceFormData = z.infer<typeof ServiceFormSchema>;
 export type ServiceFormErrors = {

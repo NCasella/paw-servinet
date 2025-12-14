@@ -29,6 +29,8 @@
 
     async function handleSubmit() {
       formErrors = serviceForm.validateServiceForm();
+      if (Object.keys(formErrors).length > 0) return
+
       /*
       if (Object.keys(formErrors).length > 0) {
           return;
@@ -96,9 +98,6 @@
           class="w-full border rounded-lg px-3 py-2 text-sm"
           on:change={handleImageChange}
         />
-        {#if formErrors.imageId}
-          <FormError errorMessage={formErrors.imageId} />
-        {/if}
       </div>
 
       <!-- Descripción -->
@@ -172,7 +171,6 @@
         {:else}
           <!-- Neighbourhoods / address -->
           <div class="grid gap-3 sm:grid-cols-2">
-            <!-- barrios (multi-select) -->
             <div class="space-y-1">
               <label for="neighbourhoods" class="block text-sm font-medium">
                 {$t('input.service.select-neighbourhood')}
@@ -184,7 +182,7 @@
                 bind:value={serviceForm.neighbourhoods}
               >
                 {#each neighbourhoods as n}
-                  <option value={n}>{n}</option>
+                  <option value={[n]}>{n}</option>
                 {/each}
               </select>
               {#if formErrors.neighbourhoods}
