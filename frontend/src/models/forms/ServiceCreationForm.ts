@@ -77,7 +77,6 @@ export const ServiceFormSchema = z
       message: "NotNull.serviceForm.homeserv",
     }),
 
-    // ✅ neighbourhoods deben ser 1 o +
     neighbourhoods: z
       .array(z.string())
       .min(1, { message: "NotEmpty.serviceForm.neighbourhoods" }),
@@ -88,14 +87,13 @@ export const ServiceFormSchema = z
       .optional()
       .or(z.literal("")),
 
-    // ⚠️ permitimos null/undefined acá y validamos la condición en superRefine
     price: z
       .string()
       .max(MAX_PRICE_LEN, { message: "Size.serviceForm.price" })
       .regex(PRICE_REGEX, { message: "Size.serviceForm.price" })
       .nullable()
       .optional()
-      .or(z.literal("")), // por si te llega "" desde el input
+      .or(z.literal("")),
 
     additionalCharges: z.boolean().optional(),
 
@@ -109,28 +107,25 @@ export const ServiceFormSchema = z
       .positive({ message: "Positive.serviceForm.minimalduration" }),
   })
   .superRefine((data, ctx) => {
-    // normalizamos "" -> null para evaluar fácil
     const priceNormalized =
       data.price === "" || data.price === undefined ? null : data.price;
 
-    // ✅ price puede ser null si y solo si pricingType = TBD
     const isTBD = data.pricingType === "TBD";
     if (!isTBD && priceNormalized === null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["price"],
-        message: "NotEmpty.serviceForm.price", // o reutilizá Size.serviceForm.price si querés
+        message: "NotEmpty.serviceForm.price",
       });
     }
     if (isTBD && priceNormalized !== null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["price"],
-        message: "Size.serviceForm.price", // “price no debería enviarse si es TBD” (si querés key propia, mejor)
+        message: "Size.serviceForm.price",
       });
     }
 
-    // ✅ address obligatorio si homeService = false
     if (data.homeService === false) {
       const addr = (data.address ?? "").trim();
       if (!addr) {

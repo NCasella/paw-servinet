@@ -473,6 +473,12 @@ export default {
     "El precio del servicio no puede superar los 255 caracteres",
   "Positive.editServiceForm.minimalduration":
     "La duración mínima del servicio debe ser un número positivo",
+  "NotEmpty.editServiceForm.pricingType":
+    "Debe indicar el tipo de precio",
+  "NotEmpty.editServiceForm.price":
+    "Debe indicar el precio del servicio según el tipo seleccionado",
+  "Regex.editServiceForm.price":
+    "El precio debe ser un número, sin símbolos ni letras",
 
   "category.cleaning": "Limpieza",
   "category.beauty": "Belleza",

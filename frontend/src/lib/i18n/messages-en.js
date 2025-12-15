@@ -501,6 +501,12 @@ export default {
     "The service price cannot exceed 255 characters",
   "Positive.editServiceForm.minimalduration":
     "The minimum duration of the service must be a positive number",
+  "NotEmpty.editServiceForm.pricingType":
+    "The service must include the pricing type",
+  "NotEmpty.editServiceForm.price":
+    "The service must include the price based on the pricing type selected",
+  "Regex.editServiceForm.price":
+    "The price should be a number without symbols or letters",
 
   "category.cleaning": "Cleaning Services",
   "category.beauty": "Beauty",
