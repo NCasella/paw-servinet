@@ -12,9 +12,10 @@
 	import { getBusinessById } from '$services/businessService';
 	import { base } from '$app/paths';
 	import Spinner from '../global/Spinner.svelte';
-	import { getAppointmentById } from '$services/appointmentService';
+  import {cancelAppointment, getAppointmentById} from '$services/appointmentService';
 	import Icon from '$icons';
 	import BigButtonWarning from '$lib/components/global/BigButtonWarning.svelte';
+  import BigButtonSecondary from "$lib/components/global/BigButtonSecondary.svelte";
 
   let user :User, appointment :Appointment, service :Service, business :Business, status
   let finalLocation :string, loading = true
@@ -30,13 +31,6 @@
 
     loading = false
   })
- 
-  // Ubicación: si es a domicilio uso la del turno, si no la del servicio
-   
-
-  // Precio a determinar (ajustá según cómo guardes el tipo de pricing)
-
-
 
   // Popup cancelar turno
   let showCancelPopup = false;
@@ -50,8 +44,9 @@
   }
 
   async function confirmCancelAppointment() {
-    // TODO: llamar a la API para cancelar el turno
-    // luego cerrar popup / redirigir
+    cancelAppointment(appointment.appointmentId);
+    closeCancelPopup();
+    location.reload();
   }
 
 </script>
@@ -64,7 +59,7 @@
   <!-- Estado general del turno -->
   <div class="rounded-2xl shadow p-5">
     <div class="flex flex-col items-center gap-3 text-center">
-      {#if appointment.isConfirmed()}
+      {#if appointment.status === AppointmentStatus.CONFIRMED}
         <Icon name="accept"/>
         <h2 class="text-lg font-semibold">
           {$t('appointment.ready', [user.fullName])}
@@ -73,8 +68,8 @@
         <p class="text-sm opacity-80">
           {$t('appointment.confirmed')}
         </p>
-      {:else}
-        <span class="material-icons text-3xl text-yellow-500">schedule</span>
+      {:else if appointment.status === AppointmentStatus.PENDING}
+        <Icon name="schedule"/>
         <h2 class="text-lg font-semibold">
           {$t('appointment.waiting-confirmation')}
         </h2>
@@ -82,6 +77,16 @@
           <p>{$t('appointment.successfully-requested')}</p>
           <p>{$t('appointment.mail-send')}</p>
         </div>
+      {:else if appointment.status === AppointmentStatus.CANCELLED}
+        <Icon name="deny"/>
+        <h2 class="text-lg font-semibold">
+          {$t('appointment.cancelled')}
+        </h2>
+      {:else if appointment.status === AppointmentStatus.DENIED}
+        <Icon name="deny"/>
+        <h2 class="text-lg font-semibold">
+          {$t('appointment.rejected')}
+        </h2>
       {/if}
     </div>
   </div>
@@ -172,7 +177,7 @@
   </div>
 
   <!-- Botón cancelar (si no es turno pasado) -->
-  {#if !appointment.hasFinished()}
+  {#if !appointment.hasFinished() && appointment.status !== AppointmentStatus.CANCELLED && appointment.status !== AppointmentStatus.DENIED}
     <div class="flex justify-center">
 
       <BigButtonWarning onclick={openCancelPopup} title={$t("appointment.cancel")} iconName=""/>
@@ -191,21 +196,13 @@
         </p>
 
         <div class="flex justify-end gap-3 pt-2">
-          <button
-            type="button"
-            class="btn variant-ghost"
-            on:click={closeCancelPopup}
-          >
-            {$t('cancel')}
-          </button>
-          <button
-            type="button"
-            class="btn variant-destructive"
-            on:click={confirmCancelAppointment}
-          >
-            {$t('popup.appointment.cancel')}
-          </button>
-        </div>
+          <div onclick={closeCancelPopup}>
+            <BigButtonSecondary title={$t('cancel')}/>
+          </div>
+          <div onclick={confirmCancelAppointment}>
+            <BigButtonWarning title={$t('popup.appointment.cancel')}/>
+          </div>
+          </div>
       </div>
     </div>
   {/if}
