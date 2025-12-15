@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { t } from '$lib/i18n/i18n';
     import { onMount } from "svelte";
+	import { goto } from '$app/navigation';
 	import FormError from "$lib/components/global/forms/FormError.svelte";
 	import { loginWithBasicAuth } from '$services/authenticate';
 	import { getCurrentUser } from '$services/userService';
@@ -32,7 +33,21 @@
 		loading = false;
 
 		if (ok) {
-			await getCurrentUser().then(() => history.back());
+			await getCurrentUser()
+		
+			const canGoBack = window.history.length > 1;
+        	const referrer = document.referrer;
+        	const currentPath = window.location.pathname;
+        	const loginPath = `${base}/login`;
+
+			const isFromLogin = referrer.includes('/login') || referrer === '';
+			if (canGoBack && !isFromLogin) {
+         	   history.back();
+        	} else {
+            	goto(`${base}/`);
+        	}
+
+
 			return; 
 		}
 		errorMessage = 'Invalid username or password';
@@ -48,8 +63,8 @@
 	async function sendPasswordReset() {
 		loadingForgotPassword = true;
 		forgotPasswordMessage = '';
-
-    await requestPasswordRecovery({ email: forgotPasswordEmail });
+t
+    await requestPasswordRecovery({ email: forgoPasswordEmail });
 
 		loadingForgotPassword = false;
 
@@ -119,6 +134,11 @@
                     	</button>
 					</div>
 			</div>
+			{#if errorMessage}
+			<div class="p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm" role="alert">
+        		{errorMessage}
+    		</div>
+			{/if}
 
 			<div>
 				<div class="flex items-center justify-between">
@@ -133,7 +153,6 @@
 					</div>
 				</div>
 			</div>
-
 			<div>
 				<button
 					type="submit"
@@ -152,9 +171,7 @@
 		</p>
 	</div>
 
-	{#if errorMessage}
-		<p class="error">{errorMessage}</p>
-	{/if}
+	
 </div>
 
 {#if showForgotPasswordModal}
