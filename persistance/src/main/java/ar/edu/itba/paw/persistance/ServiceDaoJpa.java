@@ -9,10 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -118,11 +115,25 @@ public class ServiceDaoJpa implements ServiceDao {
                 .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
 
         final TypedQuery<Service> query;
-        query = em.createQuery("from Service as s  where id in :ids "+filterArgument.getOrderFilterQuery() , Service.class);
+
+        query = em.createQuery(
+                "from Service as s where id in :ids",
+                Service.class
+        );
 
         query.setParameter("ids",idList);
 
-        return  query.getResultList();
+        List<Service> services = query.getResultList();
+
+        Map<Long, Integer> orderMap = new HashMap<>();
+        for (int i = 0; i < idList.size(); i++) {
+            orderMap.put(idList.get(i), i);
+        }
+
+        services.sort(Comparator.comparingInt(s -> orderMap.get(s.getId())));
+
+        return services;
+
     }
 
 

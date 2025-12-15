@@ -127,12 +127,13 @@ export default {
 
   "services": "Servicios",
   "services.filter-by": "Filtrar por",
+  "services.order-by": "Ordenar por",
   "services.search-placeholder": "¿Qué estás buscando?",
   "services.filter-rate": "Calificación",
   "services.filter-location": "Ubicación",
   "services.filter-category": "Categoría",
   "services.filter-type": "Tipo de servicio",
-  "services.filter-home": "A domicilio",
+  "services.filter-home": "Servicio a domicilio",
   "services.selected-filters": "Filtros seleccionados:",
   "services.search-results": "Resultados de búsqueda: {0}",
   "services.no-search-results": "No se encontraron resultados de búsqueda, lo sentimos.",
@@ -158,7 +159,7 @@ export default {
     "Se le enviará un mail con la decisión del proveedor del servicio",
   "appointment.appointment": "Turno",
   "appointment.info": "Información del turno",
-  "appointment.canceled": "Su turno ha sido cancelado.",
+  "appointment.cancelled": "Su turno ha sido cancelado.",
   "appointment.new": "Sacar nuevo turno",
   "appointment.back-to-home": "Volver al inicio",
   "appointment.rejected": "El turno ha sido rechazado",
@@ -438,6 +439,14 @@ export default {
     "El precio del servicio no puede superar los 255 caracteres",
   "Positive.serviceForm.minimalduration":
     "La duración mínima del servicio debe ser un número positivo",
+  "NotEmpty.serviceForm.neighbourhoods":
+    "Debe indicar el barrio en el que opera el servicio",
+  "NotEmpty.serviceForm.pricingType":
+    "Debe indicar el tipo de precio",
+  "NotEmpty.serviceForm.price":
+    "Debe indicar el precio del servicio según el tipo seleccionado",
+  "NotEmpty.serviceForm.category":
+    "Debe indicar una categoría",
 
   "NotEmpty.appointmentForm.location":
     "Debe ingresar una ubicación",
@@ -464,6 +473,12 @@ export default {
     "El precio del servicio no puede superar los 255 caracteres",
   "Positive.editServiceForm.minimalduration":
     "La duración mínima del servicio debe ser un número positivo",
+  "NotEmpty.editServiceForm.pricingType":
+    "Debe indicar el tipo de precio",
+  "NotEmpty.editServiceForm.price":
+    "Debe indicar el precio del servicio según el tipo seleccionado",
+  "Regex.editServiceForm.price":
+    "El precio debe ser un número, sin símbolos ni letras",
 
   "category.cleaning": "Limpieza",
   "category.beauty": "Belleza",

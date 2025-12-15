@@ -1,10 +1,11 @@
-import { DELETE, GET, getNewIdFromPostResponse, POST } from "$utils/apiFetch";
+import {DELETE, GET, getNewIdFromPostResponse, PATCH, POST} from "$utils/apiFetch";
 import { Service } from "$models/Service";
 import { ServiceForm } from "$models/forms/ServiceCreationForm";
 import {uploadImage} from "./imageService";
 import type {PagedResult} from "$models/PagedList";
 import {isLastPage, parsePagedResponse} from "$models/PagedList";
 import type { Appointment } from "$models/Appointment";
+import type {ServiceUpdateForm} from "$models/forms/ServiceUpdateForm";
 
 export async function getServices(params: {
     businessId?: number;
@@ -15,7 +16,7 @@ export async function getServices(params: {
     orderFilters?: string;
     homeServiceFilter?: boolean;
     page?: number;
-} = {}): Promise<PagedResult<Service>> {
+} = {}, fetchFn?: typeof fetch): Promise<PagedResult<Service>> {
 
     const query = new URLSearchParams();
 
@@ -27,15 +28,19 @@ export async function getServices(params: {
 
     const response = await GET(
         `services?${query.toString()}`,
-        { contentType: "service-list" }
+        { contentType: "service-list",
+          fetchFn: fetchFn
+         }
     );
 
     return parsePagedResponse(response, Service);
 }
 
-export async function getServiceById(serviceId:number) :Promise<Service> {
+export async function getServiceById(serviceId:number, fetchFn?: typeof fetch) :Promise<Service> {
     const response = await GET(`services/${serviceId}`,
-        { contentType: "service-info"}
+        { contentType: "service-info",
+          fetchFn: fetchFn
+        }
     )
     
     return Service.fromJson(response)
@@ -83,4 +88,8 @@ export async function getAllBusinessServices(businessId: number): Promise<number
   }
 
   return ids;
+}
+
+export async function updateService(serviceId: number, form: ServiceUpdateForm) {
+    await PATCH(`services/${serviceId}`, form, {contentType:"service-update"})
 }

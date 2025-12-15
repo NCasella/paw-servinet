@@ -2,7 +2,7 @@ import { getAccessToken } from "$stores/auth";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export interface TResponse {
   headers: Headers,
@@ -52,12 +52,13 @@ export async function apiFetch<TResponse = any, TBody = any>(
 
   const isFormData = body instanceof FormData;
   if (!isFormData) {
-    finalHeaders["Content-Type"] = contentType
+    const mediaType = method == 'GET' ? 'Accept' : 'Content-Type';
+    finalHeaders[mediaType] = contentType
         ? `application/vnd.servinet.${contentType}.v1+json`
         : (genericContentType ? genericContentType : "application/json");
   }
 
-  const response = await fetchFn(BASE_URL + "/" + url, {
+  const response = await fetchFn(API_BASE_URL + "/" + url, {
     method,
     headers: finalHeaders,
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,

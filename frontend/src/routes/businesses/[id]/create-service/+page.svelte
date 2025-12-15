@@ -29,10 +29,7 @@
 
     async function handleSubmit() {
       formErrors = serviceForm.validateServiceForm();
-      /*
-      if (Object.keys(formErrors).length > 0) {
-          return;
-      }*/
+      if (Object.keys(formErrors).length > 0) return
       const id = await createService(serviceForm, image);
       goto(`${base}/services/${id}`);
     }
@@ -96,9 +93,6 @@
           class="w-full border rounded-lg px-3 py-2 text-sm"
           on:change={handleImageChange}
         />
-        {#if formErrors.imageId}
-          <FormError errorMessage={formErrors.imageId} />
-        {/if}
       </div>
 
       <!-- Descripción -->
@@ -132,6 +126,9 @@
             type="checkbox"
             class="checkbox"
             bind:checked={serviceForm.homeService}
+            on:change={() => {
+                  serviceForm.neighbourhoods = [];
+              }}
           />
           <span>{$t('service.home-service')}</span>
         </label>
@@ -172,7 +169,6 @@
         {:else}
           <!-- Neighbourhoods / address -->
           <div class="grid gap-3 sm:grid-cols-2">
-            <!-- barrios (multi-select) -->
             <div class="space-y-1">
               <label for="neighbourhoods" class="block text-sm font-medium">
                 {$t('input.service.select-neighbourhood')}
@@ -184,7 +180,7 @@
                 bind:value={serviceForm.neighbourhoods}
               >
                 {#each neighbourhoods as n}
-                  <option value={n}>{n}</option>
+                  <option value={[n]}>{n}</option>
                 {/each}
               </select>
               {#if formErrors.neighbourhoods}
@@ -242,6 +238,11 @@
               name="pricingType"
               class="w-full border rounded-lg px-3 py-2 text-sm"
               bind:value={serviceForm.pricingType}
+              on:change={() => {
+                  if (serviceForm.pricingType === PricingTypes.TBD) {
+                      serviceForm.price = null;
+                  }
+              }}
             >
               {#each PricingTypesList as type}
                 <option value={type}>

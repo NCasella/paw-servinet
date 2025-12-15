@@ -131,6 +131,7 @@ export default {
 
   "services": "Services",
   "services.filter-by": "Filter by",
+  "services.order-by": "Order by",
   "services.search-placeholder": "What are you looking for?",
   "services.filter-rate": "Rating",
   "services.filter-location": "Location",
@@ -166,7 +167,7 @@ export default {
     "An email will be sent to you with the service provider's decision",
   "appointment.appointment": "Appointment",
   "appointment.info": "Information about the appointment",
-  "appointment.canceled": "Your appointment has been canceled.",
+  "appointment.cancelled": "Your appointment has been canceled.",
   "appointment.new": "Make new appointment",
   "appointment.back-to-home": "Back to home",
   "appointment.rejected": "The appointment has been rejected",
@@ -467,6 +468,14 @@ export default {
     "The service price cannot exceed 255 characters",
   "Positive.serviceForm.minimalduration":
     "The minimum duration of the service must be a positive number",
+  "NotEmpty.serviceForm.neighbourhoods":
+    "The service must specify a neighbourhood",
+  "NotEmpty.serviceForm.pricingType":
+    "The service must include the pricing type",
+  "NotEmpty.serviceForm.price":
+    "The service must include the price based on the pricing type selected",
+  "NotEmpty.serviceForm.category":
+    "The service must specify a category",
 
   "NotEmpty.appointmentForm.location":
     "You must enter a location",
@@ -492,6 +501,12 @@ export default {
     "The service price cannot exceed 255 characters",
   "Positive.editServiceForm.minimalduration":
     "The minimum duration of the service must be a positive number",
+  "NotEmpty.editServiceForm.pricingType":
+    "The service must include the pricing type",
+  "NotEmpty.editServiceForm.price":
+    "The service must include the price based on the pricing type selected",
+  "Regex.editServiceForm.price":
+    "The price should be a number without symbols or letters",
 
   "category.cleaning": "Cleaning Services",
   "category.beauty": "Beauty",

@@ -64,7 +64,9 @@
 					{/if}
 					
 					<Menu.Item value="create">
+						<a href="{base}/create-business">
 						<Menu.ItemText>{$t("navbar.create-businesses")}</Menu.ItemText>
+						</a>
 					</Menu.Item>
 				</Menu.ItemGroup>
 			</Menu.Content>
