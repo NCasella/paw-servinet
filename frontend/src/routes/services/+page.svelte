@@ -37,6 +37,16 @@
         loading = false;
     }
 
+    function search() {
+        params.category = undefined;
+        params.neighbourhoods = undefined;
+        params.rating = undefined;
+        params.orderFilters = undefined;
+        params.homeServiceFilter = undefined;
+        params.page = 1;
+        loadServices();
+    }
+
     const categoryList = Object.values(Categories);
 
     $: lastPage = pagedList.links.last ?? 1;
@@ -46,9 +56,12 @@
         if(last <= 5) {
             return Array.from({ length: last }, (_, i) => i + 1);
         }
-        else if (page <= 2 || page === last) {
+        else if (page <= 2) {
             return [1, 2, 'ellipsis', last];
-        } else {
+        } else if(page >= last-1) {
+            return [1, 'ellipsis', last-1, last];
+        }
+        else {
             return [1, 'ellipsis', page-1, page, page+1, 'ellipsis', last];
         }
     })();
@@ -57,6 +70,39 @@
 {#if loading}
     <Spinner/>
 {:else}
+    <div class="flex gap-2 mb-4 w-full">
+        <input
+            type="text"
+            placeholder={$t('services.search-placeholder')}
+            bind:value={params.searchQuery}
+            class="flex-1 p-2 pl-5 rounded-3xl border border-gray-300 hover:shadow-md"
+            on:keydown={(e) => {
+                if (e.key === 'Enter') {
+                    search();
+                }
+            }}
+        />
+        <button class="px-4 rounded-3xl bg-primary-500 text-white hover:bg-primary-600 hover:shadow-md"
+            on:click={() => {
+                search();
+            }}
+        >
+            <Icon name="search"/>
+        </button>
+        <select
+            class="w-1/4 p-2 rounded-3xl bg-surface-300 cursor-pointer hover:shadow-md"
+            bind:value={params.orderFilters}
+            on:change={() => {
+                page = 1;
+                loadServices();
+            }}
+        >
+            <option value={undefined}>{$t('services.order-by')}</option>
+            <option value="rate_desc">{$t('reviews.rating-desc')}</option>
+            <option value="rate_asc">{$t('reviews.rating-asc')}</option>
+        </select>
+    </div>
+
     <div class="flex gap-6 w-full">
         {#if pagedList.items.length === 0}
             <div class="flex-1 flex items-center justify-center">
@@ -73,6 +119,23 @@
         {/if}
 
         <div class="p-4 rounded-xl shadow-sm bg-primary-200 w-64 flex-shrink-0">
+            <label class="flex items-center gap-3 mb-4 cursor-pointer">
+                <span class="font-medium">{$t('services.filter-home')}</span>
+                <input
+                    type="checkbox"
+                    class="sr-only"
+                    checked={params.homeServiceFilter === true}
+                    on:change={(e) => {
+                        params.homeServiceFilter = e.currentTarget.checked ? true : undefined;
+                        page = 1;
+                        loadServices();
+                    }}
+                />
+                <div class="w-11 h-6 bg-gray-300 rounded-full relative transition {params.homeServiceFilter ? 'bg-primary-500' : ''}">
+                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition {params.homeServiceFilter ? 'translate-x-5' : ''}"/>
+                </div>
+            </label>
+
             <h4 class="font-semibold mb-2">{$t('services.filter-rate')}</h4>
             {#each Object.values(Ratings) as r}
                 <button class={`flex items-center gap-2 w-full text-left p-2 rounded hover:bg-primary-100
@@ -109,6 +172,7 @@
         </div>
     </div>
 
+    <div class="w-full flex justify-center my-6">
     <Pagination
         count={lastPage}
         pageSize={1}
@@ -117,7 +181,7 @@
             page = event.page;
             loadServices();
         }}
-        class="m-15 flex justify-center items-center space-x-2"
+        class="flex justify-center items-center space-x-2"
     >
         <Pagination.PrevTrigger>
             <Icon name="leftArrow"/>
@@ -141,4 +205,5 @@
             <Icon name="rightArrow"/>
         </Pagination.NextTrigger>
     </Pagination>
+    </div>
 {/if}

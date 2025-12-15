@@ -131,6 +131,7 @@ export default {
 
   "services": "Services",
   "services.filter-by": "Filter by",
+  "services.order-by": "Order by",
   "services.search-placeholder": "What are you looking for?",
   "services.filter-rate": "Rating",
   "services.filter-location": "Location",
