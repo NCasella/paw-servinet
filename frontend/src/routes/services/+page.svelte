@@ -10,6 +10,7 @@
     import {Categories, CategoriesInfo} from "$models/enums/CategoryType";
     import {t} from "$lib/i18n/i18n"
     import {Ratings, RatingsInfo} from "$models/enums/Rating";
+    import { page as pageStore } from '$app/stores';
 
     let loading = true;
     let page = 1;
@@ -27,6 +28,9 @@
     };
 
     onMount(async () => {
+        const urlParams = $pageStore.url.searchParams;
+        params.searchQuery = urlParams.get('search') ?? '';
+        params.category = urlParams.get('category') ?? undefined;
         await loadServices();
     });
 

@@ -159,7 +159,7 @@ export default {
     "Se le enviará un mail con la decisión del proveedor del servicio",
   "appointment.appointment": "Turno",
   "appointment.info": "Información del turno",
-  "appointment.canceled": "Su turno ha sido cancelado.",
+  "appointment.cancelled": "Su turno ha sido cancelado.",
   "appointment.new": "Sacar nuevo turno",
   "appointment.back-to-home": "Volver al inicio",
   "appointment.rejected": "El turno ha sido rechazado",

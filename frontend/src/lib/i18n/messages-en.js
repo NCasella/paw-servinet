@@ -167,7 +167,7 @@ export default {
     "An email will be sent to you with the service provider's decision",
   "appointment.appointment": "Appointment",
   "appointment.info": "Information about the appointment",
-  "appointment.canceled": "Your appointment has been canceled.",
+  "appointment.cancelled": "Your appointment has been canceled.",
   "appointment.new": "Make new appointment",
   "appointment.back-to-home": "Back to home",
   "appointment.rejected": "The appointment has been rejected",
