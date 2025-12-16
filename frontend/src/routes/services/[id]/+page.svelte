@@ -6,13 +6,10 @@
     import {onMount} from "svelte";
     import {getCurrentUser} from "$services/userService";
     import {goto} from "$app/navigation";
-    import type {Service} from "$models/Service";
-    import {deleteService, getServiceById} from "$services/serviceService";
+    import {deleteService} from "$services/serviceService";
     import type {Business} from "$models/Business";
     import {getBusinessById} from "$services/businessService";
     import Icon from "$icons";
-    import {page} from "$app/stores";
-    import {InvalidUrlParamError} from "$models/exceptions/InvalidUrlParamError";
     import {PricingTypes, PricingTypesInfo} from "$models/enums/PricingType";
     import type {User} from "$models/User";
     import {Categories, CategoriesInfo} from "$models/enums/CategoryType";
@@ -24,8 +21,6 @@
     import Spinner from "$lib/components/global/Spinner.svelte";
     import Questions from "$lib/components/services/Questions.svelte";
     import Reviews from "$lib/components/services/Reviews.svelte";
-	import { error } from "@sveltejs/kit";
-	import ErrorPage from "$lib/components/global/errors/ErrorPage.svelte";
 
     let serviceId :number
     let loading = true
@@ -44,16 +39,15 @@
     const { service } = data
     serviceId = service.serviceId
     onMount(async () => {
-    
-        try {
-            user = await getCurrentUser();
-        } catch (e) {
-           
-        }
-        
+
         imageUrl = await getImage(service.imageId);
         business = await getBusinessById(service.businessId);
-        isOwner = user? user.userId === business.userId : false;
+        try {
+            user = await getCurrentUser();
+            isOwner = user? user.userId === business.userId : false;
+        } catch (e) {
+            isOwner = false;
+        }
 
         pricingEnum = PricingTypes[service.pricingType as keyof typeof PricingTypes];
         categoryEnum = Categories[service.category as keyof typeof Categories];
@@ -97,7 +91,7 @@
                     </div>
                     <Dialog role="alertdialog">
                         <Dialog.Trigger>
-                            <BigButtonWarning title={$t("service.delete") } iconName="" onclick={null}/>
+                            <BigButtonWarning title={$t("service.delete") }/>
                         </Dialog.Trigger>
                         <Portal>
                             <Dialog.Backdrop class="fixed inset-0 z-50" />

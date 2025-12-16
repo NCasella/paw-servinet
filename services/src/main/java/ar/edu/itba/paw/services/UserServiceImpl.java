@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.model.AvailableLanguages;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UserVerificationCode;
+import ar.edu.itba.paw.model.exceptions.InvalidOperationException;
 import ar.edu.itba.paw.model.exceptions.InvalidPasswordModificationException;
 import ar.edu.itba.paw.model.exceptions.InvalidUsernameException;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
@@ -119,17 +121,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changeUsername(long userid, String value) {
         userDao.findById(userid).orElseThrow(UserNotFoundException::new);
-        if (userDao.findByUsername(value).isPresent()){
-            throw new InvalidUsernameException();
-        }
+        findByUsername(value).ifPresent(existingUser -> {
+            if(existingUser.getUserId() != userid){
+                throw new InvalidUsernameException();
+            }
+        });
         userDao.changeUsername(userid,value);
     }
 
     @Transactional
     @Override
     public void changeEmail(long userid, String value) {
-        userDao.findById(userid).orElseThrow(UserNotFoundException::new);
-        userDao.changeEmail(userid,value);
+        User user = userDao.findById(userid).orElseThrow(UserNotFoundException::new);
+        findByEmail(value).ifPresent(existingUser -> {
+            if(existingUser.getUserId() != userid){
+                throw new InvalidOperationException("Email already in use");
+            }
+        });
+        if(!user.getEmail().equals(value)){
+            userDao.changeEmail(userid, value);
+        }
     }
 
     @Transactional
@@ -149,10 +160,11 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void changeUserInfo(long userid, String username, String email, String telephone) {
+    public void changeUserInfo(long userid, String username, String email, String telephone, AvailableLanguages locale) {
         changeUsername(userid, username);
         changeEmail(userid, email);
         changeTelephone(userid, telephone);
+        changeLocale(userid, locale);
     }
 
     @Transactional
@@ -171,11 +183,9 @@ public class UserServiceImpl implements UserService {
     // todo: enum de locale
     @Transactional
     @Override
-    public void changeLocale(long userid) {
+    public void changeLocale(long userid, AvailableLanguages locale) {
         userDao.findById(userid).orElseThrow(UserNotFoundException::new);
-        String locale = getUserLocale(userid);
-        locale = locale.equals("es")? "en":"es";
-        userDao.changeLocale(userid,locale);
+        userDao.changeLocale(userid, locale);
     }
 
     @Transactional

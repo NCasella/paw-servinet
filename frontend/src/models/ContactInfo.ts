@@ -10,18 +10,22 @@ export type ContactInfo = {
 
 
 export class UserContactInfo {
+  userId: number;
   username: string;
   fullName: string;
   email: string;
   language: string;
+  telephone: string;
   profilePicture: string | null;
 
 
-  constructor(data: { username: string; fullName: string; email: string, language: string, links?: { profilePic?: string; }; }) {
+  constructor(data: { userId: number, username: string; fullName: string; email: string, language: string, telephone: string, links?: { profilePic?: string; }; }) {
+    this.userId = data.userId;
     this.email = data.email;
     this.fullName = data.fullName;
     this.username = data.username;
     this.language = data.language;
+    this.telephone = data.telephone;
     this.profilePicture = data.links?.profilePic ?? null;
   }
 

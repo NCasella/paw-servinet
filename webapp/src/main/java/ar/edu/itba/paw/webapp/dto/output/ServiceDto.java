@@ -86,6 +86,7 @@ public class ServiceDto {
                 .category(service.getCategory().name())
                 .pricingType(service.getPricing().name())
                 .neighbourhoods(service.getNeighbourhoodAvailable().toArray(String[]::new))
+                .additionalCosts(service.getAdditionalCharges())
                 .imageId(service.getImageId())
                 .additionalCosts(service.getAdditionalCharges())
                 .links(links)

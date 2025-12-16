@@ -110,35 +110,24 @@ public class BusinessDaoJpa implements BusinessDao {
         }
         return false;
     }
-    private void changeField(final String field, long businessId, String value) {
-        final Business business = em.find(Business.class, businessId);
-        if (business != null) {
-            switch (field) {
-                case "businessemail":
-                    business.setEmail(value);
-                    break;
-                case "businesstelephone":
-                    business.setTelephone(value);
-                    break;
-                case "businesslocation":
-                    business.setLocation(value);
-                    break;
-            }
-            em.persist(business);
-        }
-    }
 
     @Override
-    public void changeBusinessEmail(long businessId, String value) {
-        changeField("businessemail", businessId, value);
+    public void changeBusinessEmail(long businessId, String newBusinessEmail) {
+        final Business business = em.find(Business.class, businessId);
+        business.setEmail(newBusinessEmail);
+        em.persist(business);
     }
     @Override
-    public void changeBusinessTelephone(long businessId,String value){
-        changeField("businesstelephone",businessId,value);
+    public void changeBusinessTelephone(long businessId,String newBusinessTelephone){
+        final Business business = em.find(Business.class, businessId);
+        business.setTelephone(newBusinessTelephone);
+        em.persist(business);
     }
     @Override
-    public void changeBusinessLocation(long businessId,String value){
-        changeField("businesslocation", businessId, value);
+    public void changeBusinessLocation(long businessId,String newBusinessLocation){
+        final Business business = em.find(Business.class, businessId);
+        business.setLocation(newBusinessLocation);
+        em.persist(business);
     }
 
     @Override

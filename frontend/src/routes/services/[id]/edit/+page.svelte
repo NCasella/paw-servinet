@@ -40,14 +40,6 @@ import type { PageData } from "./$types";
     serviceForm.price = (service as any).price ?? null;
   });
 
-  function resetForm() {
-    formErrors = {};
-    serviceForm.description = service.description ?? "";
-    serviceForm.pricingType = service.pricingType ?? "";
-    serviceForm.minimalDuration = service.duration ?? 0;
-    serviceForm.additionalCosts = (service as any).additionalCosts ?? false;
-    serviceForm.price = (service as any).price ?? null;
-  }
 
   async function handleSubmit() {
     formErrors = serviceForm.validateServiceUpdateForm();
@@ -71,107 +63,109 @@ import type { PageData } from "./$types";
   }
 </script>
 
+
 {#if serviceForm}
-  <div class="flex justify-center px-4 py-8">
-    <form class="w-full max-w-xl rounded-2xl shadow p-6 space-y-6 bg-white"
-          on:submit|preventDefault={handleSubmit}>
+    <div class="flex justify-center px-4 py-8">
+        <form class="w-full max-w-xl rounded-2xl shadow p-6 space-y-6"
+            on:submit|preventDefault={handleSubmit}
+        >
+            <h2 class="text-xl font-semibold">
+                {$t('service.edit')}
+            </h2>
 
-      <!-- header -->
-      <div class="flex items-start justify-between gap-4">
-        <div class="min-w-0">
-          <h2 class="text-xl font-semibold truncate">{service.serviceName}</h2>
-          <p class="text-sm opacity-70">{$t("service.edit")}</p>
-        </div>
-
-        <button type="button" class="btn rounded bg-surface-100 " on:click={() => goto(`${base}/services/${service.serviceId}`)}>
-          x
-        </button>
-      </div>
-
-      <!-- descripción -->
-      <div class="space-y-1">
-        <label for="description" class="block text-sm font-medium">
-          {$t("service.description")}
-        </label>
-        <textarea id="description" maxlength="255"
-          class="w-full border rounded-lg px-3 py-2 text-sm min-h-[7rem]"
-          bind:value={serviceForm.description}
-        />
-        {#if formErrors.description}
-          <FormError errorMessage={formErrors.description} />
-        {/if}
-      </div>
-
-      <!-- precio -->
-      <div class="space-y-2">
-        <p class="text-sm font-medium">{$t("service.price")}</p>
-
-        <label class="inline-flex items-center gap-2 text-sm">
-          <input type="checkbox" class="checkbox" bind:checked={serviceForm.additionalCosts} />
-          <span>{$t("service.additionalCharges")}</span>
-        </label>
-
-        <div class="grid gap-3 sm:grid-cols-2 items-start">
-          <div class="space-y-1">
-            <label for="pricingType" class="block text-sm font-medium">
-              {$t('service.price')}
-            </label>
-            <select id="pricingType" class="w-full border rounded-lg px-3 py-2 text-sm"
-                    bind:value={serviceForm.pricingType}>
-              {#each PricingTypesList as type}
-                <option value={type}>{$t(PricingTypesInfo[type].codeMsg)}</option>
-              {/each}
-            </select>
-            {#if formErrors.pricingType}
-              <FormError errorMessage={formErrors.pricingType} />
-            {/if}
-          </div>
-
-          {#if serviceForm.pricingType !== PricingTypes.TBD}
             <div class="space-y-1">
-              <label for="price" class="block text-sm font-medium">
-                {$t("input.service.price")}
-              </label>
-              <!-- si querés evitar getter/setter, cambiá a bind:value={serviceForm.price} -->
-              <input id="price" type="text"
-                class="w-full border rounded-lg px-3 py-2 text-sm"
-                bind:value={serviceForm.priceValue}
-              />
-              {#if formErrors.price}
-                <FormError errorMessage={formErrors.price} />
-              {/if}
+                <label class="block text-sm font-medium">
+                    {$t('service.description')}
+                </label>
+                <textarea
+                    maxlength="255"
+                    class="w-full border rounded-lg px-3 py-2 text-sm min-h-[6rem]"
+                    bind:value={serviceForm.description}
+                />
+                {#if formErrors.description}
+                    <FormError errorMessage={formErrors.description} />
+                {/if}
             </div>
-          {/if}
-        </div>
-      </div>
 
-      <!-- duración -->
-      <div class="space-y-2">
-        <p class="text-sm font-medium">{$t("service.duration")}</p>
+            <div class="space-y-2">
+                <label class="inline-flex items-center gap-2 text-sm">
+                    <input
+                        type="checkbox"
+                        class="checkbox"
+                        bind:checked={serviceForm.additionalCosts}
+                    />
+                    <span>{$t('service.additionalCharges')}</span>
+                </label>
 
-        <div class="flex flex-wrap gap-2">
-          {#each durationTypes as d}
-            <button type="button"
-              on:click={() => (serviceForm.minimalDuration = d.value)}
-              class="px-3 py-1 rounded-full border text-xs transition"
-              class:bg-primary-500={serviceForm.minimalDuration === d.value}
-              class:text-white={serviceForm.minimalDuration === d.value}
-              class:border-primary-600={serviceForm.minimalDuration === d.value}
-            >
-              {$t(d.codeMsg)}
-            </button>
-          {/each}
-        </div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium">
+                            {$t('service.price')}
+                        </label>
+                        <select class="w-full border rounded-lg px-3 py-2 text-sm"
+                            bind:value={serviceForm.pricingType}
+                            on:change={() => {
+                                if (serviceForm.pricingType === PricingTypes.TBD) {
+                                    serviceForm.price = null;
+                                }
+                            }}
+                        >
+                            {#each PricingTypesList as type}
+                                <option value={type}>
+                                    {$t(PricingTypesInfo[type].codeMsg)}
+                                </option>
+                            {/each}
+                        </select>
+                        {#if formErrors.pricingType}
+                            <FormError errorMessage={formErrors.pricingType} />
+                        {/if}
+                    </div>
 
-        {#if formErrors.minimalDuration}
-          <FormError errorMessage={formErrors.minimalDuration} />
-        {/if}
-      </div>
+                    {#if serviceForm.pricingType !== PricingTypes.TBD}
+                        <div class="space-y-1">
+                            <label class="block text-sm font-medium">
+                                {$t('input.service.price')}
+                            </label>
+                            <input
+                                type="text"
+                                class="w-full border rounded-lg px-3 py-2 text-sm"
+                                bind:value={serviceForm.priceValue}
+                            />
+                            {#if formErrors.price}
+                                <FormError errorMessage={formErrors.price} />
+                            {/if}
+                        </div>
+                    {/if}
+                </div>
+            </div>
 
-      <!-- acciones -->
-      <div class="flex justify-end gap-2 pt-2">
-        <BigButton title={$t('business.save-changes')} iconName="" />
-      </div>
-    </form>
-  </div>
-{/if}
+            <div class="space-y-2">
+                <p class="text-sm font-medium">
+                    {$t('service.duration')}
+                </p>
+
+                <div class="flex flex-wrap gap-2">
+                    {#each DurationTypesList as d}
+                        <button
+                            type="button"
+                            on:click={() => serviceForm.minimalDuration = d.value}
+                            class="px-3 py-1 rounded-full border text-xs"
+                            class:bg-primary-500={serviceForm.minimalDuration === d.value}
+                            class:text-white={serviceForm.minimalDuration === d.value}
+                        >
+                            {$t(d.codeMsg)}
+                        </button>
+                    {/each}
+                </div>
+
+                {#if formErrors.minimalDuration}
+                    <FormError errorMessage={formErrors.minimalDuration} />
+                {/if}
+            </div>
+
+            <div class="flex justify-center pt-2">
+                <BigButton title={$t('service.save-changes')} iconName="" />
+            </div>
+        </form>
+    </div>
+    {/if}

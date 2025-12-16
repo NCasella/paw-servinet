@@ -10,7 +10,6 @@ public class EmailNotUsedValidator implements ConstraintValidator<EmailNotUsed, 
     @Autowired
     private UserService userService;
 
-
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         return userService.findByEmail(value).isEmpty();

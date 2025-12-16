@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.model.AvailableLanguages;
 import ar.edu.itba.paw.model.User;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface UserDao {
     void changeUsername(long userid,String value);
     void changePassword(long userid,String value);
     void changeUserType(long userid);
-    void changeLocale(long userid, String locale);
+    void changeLocale(long userid, AvailableLanguages locale);
     void verifyUser(long userid);
     boolean isUserProvidee(long providerUserId, long requestUserId);
 }

@@ -127,12 +127,13 @@ export default {
 
   "services": "Servicios",
   "services.filter-by": "Filtrar por",
+  "services.order-by": "Ordenar por",
   "services.search-placeholder": "¿Qué estás buscando?",
   "services.filter-rate": "Calificación",
   "services.filter-location": "Ubicación",
   "services.filter-category": "Categoría",
   "services.filter-type": "Tipo de servicio",
-  "services.filter-home": "A domicilio",
+  "services.filter-home": "Servicio a domicilio",
   "services.selected-filters": "Filtros seleccionados:",
   "services.search-results": "Resultados de búsqueda: {0}",
   "services.no-search-results": "No se encontraron resultados de búsqueda, lo sentimos.",
@@ -158,7 +159,7 @@ export default {
     "Se le enviará un mail con la decisión del proveedor del servicio",
   "appointment.appointment": "Turno",
   "appointment.info": "Información del turno",
-  "appointment.canceled": "Su turno ha sido cancelado.",
+  "appointment.cancelled": "Su turno ha sido cancelado.",
   "appointment.new": "Sacar nuevo turno",
   "appointment.back-to-home": "Volver al inicio",
   "appointment.rejected": "El turno ha sido rechazado",
@@ -202,6 +203,7 @@ export default {
   "verification.error.no-user": "No hay ningún usuario conectado actualmente.",
   "verification.error.failed": "La verificación del correo electrónico falló. Por favor, inténtelo de nuevo.",
   "verification.success": "¡Su correo electrónico ha sido verificado con éxito!",
+  "verification.success.title": "Correo Electrónico Verificado",
   "verification.resend": "Reenviar correo de verificación",
   "verification.email-sent": "Se ha enviado un nuevo correo de verificación a su dirección de correo electrónico.",
   "verification.verifying": "Verificando su correo electrónico...",
@@ -263,6 +265,9 @@ export default {
   "profile.businesses": "Mis negocios",
   "profile.no-services": "No se han encontrado servicios en este negocio",
   "profile.favourite-lang": "Idioma preferido:",
+  "profile.edit": "Editar perfil",
+  "profile.save-changes": "Guardar cambios",
+  "profile.repeated-email-or-username": "El mail o nombre de usuario ya están en uso por otra cuenta.",
 
   "pagination.first": "<< Primera página",
   "pagination.last": "Última página >>",
@@ -472,6 +477,12 @@ export default {
     "El precio del servicio no puede superar los 255 caracteres",
   "Positive.editServiceForm.minimalduration":
     "La duración mínima del servicio debe ser un número positivo",
+  "NotEmpty.editServiceForm.pricingType":
+    "Debe indicar el tipo de precio",
+  "NotEmpty.editServiceForm.price":
+    "Debe indicar el precio del servicio según el tipo seleccionado",
+  "Regex.editServiceForm.price":
+    "El precio debe ser un número, sin símbolos ni letras",
 
   "category.cleaning": "Limpieza",
   "category.beauty": "Belleza",

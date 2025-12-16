@@ -4,15 +4,11 @@ import ar.edu.itba.paw.model.exceptions.ForbiddenOperationException;
 import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.InvalidOperationException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.util.InvalidMimeTypeException;
 
 import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class ExceptionToStatusMapper {
     private static final Map<Class<? extends Exception>, Response.Status> exceptionStatusMap = Map.of(

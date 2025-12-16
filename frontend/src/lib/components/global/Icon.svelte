@@ -38,6 +38,7 @@ import Info from 'virtual:icons/material-symbols/info';
 import ResponseArrow from 'virtual:icons/material-symbols/subdirectory-arrow-right-rounded';
 import Send from 'virtual:icons/material-symbols/send-rounded';
 import Edit from 'virtual:icons/material-symbols/edit';
+import Search from 'virtual:icons/material-symbols/search-rounded';
 
 
 // Diccionario: clave → componente
@@ -81,6 +82,7 @@ export const icons: Record<string, any> = {
   responseArrow: ResponseArrow,
   send: Send,
   cross: Deny,
+  search: Search,
 };
 
 function iconFor(name: string) {

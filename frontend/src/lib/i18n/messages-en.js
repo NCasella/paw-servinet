@@ -131,6 +131,7 @@ export default {
 
   "services": "Services",
   "services.filter-by": "Filter by",
+  "services.order-by": "Order by",
   "services.search-placeholder": "What are you looking for?",
   "services.filter-rate": "Rating",
   "services.filter-location": "Location",
@@ -166,7 +167,7 @@ export default {
     "An email will be sent to you with the service provider's decision",
   "appointment.appointment": "Appointment",
   "appointment.info": "Information about the appointment",
-  "appointment.canceled": "Your appointment has been canceled.",
+  "appointment.cancelled": "Your appointment has been canceled.",
   "appointment.new": "Make new appointment",
   "appointment.back-to-home": "Back to home",
   "appointment.rejected": "The appointment has been rejected",
@@ -213,6 +214,7 @@ export default {
   "verification.error.no-user": "No user is currently logged in.",
   "verification.error.failed": "Email verification failed. Please try again.",
   "verification.success": "Your email has been successfully verified!",
+  "verification.success.title": "Email Verified",
   "verification.resend": "Resend verification email",
   "verification.email-sent": "A new verification email has been sent to your email address.",
   "verification.verifying": "Verifying your email...",
@@ -276,8 +278,11 @@ export default {
   "profile.logout": "Log Out",
   "profile.businesses": "My Businesses",
   "profile.no-services":
-    "No services found in this business",
+  "No services found in this business",
   "profile.favourite-lang": "Preferred language:",
+  "profile.edit": "Edit profile",
+  "profile.save-changes": "Save changes",
+  "profile.repeated-email-or-username": "The entered email or username is already in use by another account",
 
   "pagination.first": "<< First page",
   "pagination.last": "Last page >>",
@@ -500,6 +505,12 @@ export default {
     "The service price cannot exceed 255 characters",
   "Positive.editServiceForm.minimalduration":
     "The minimum duration of the service must be a positive number",
+  "NotEmpty.editServiceForm.pricingType":
+    "The service must include the pricing type",
+  "NotEmpty.editServiceForm.price":
+    "The service must include the price based on the pricing type selected",
+  "Regex.editServiceForm.price":
+    "The price should be a number without symbols or letters",
 
   "category.cleaning": "Cleaning Services",
   "category.beauty": "Beauty",

@@ -4,19 +4,19 @@
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
     import { goto } from '$app/navigation';
-    import { getCurrentUser } from '$services/userService';
 	import { loginWithBasicAuth } from '$services/authenticate';
-    import { User } from '$models/User';
+	import Spinner from "$lib/components/global/Spinner.svelte";
+    import type { PageData } from './$types';
 
+    export let data :PageData
+    let { user, otherLang } = data
     let id = '';
-    let user : User | null = null;
     let verifying = true;
     let verificationSuccess = false;
     let errorMessage = '';
 
 onMount(async () => {
     id = $page.params.id;
-    user = await getCurrentUser();
     
     if (user === null) {
         verifying = false;
@@ -40,10 +40,7 @@ onMount(async () => {
 
 <div class="flex min-h-full flex-col justify-center items-center px-6 py-12">
     {#if verifying}
-        <div class="text-center">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            <p class="mt-4 text-lg text-gray-600">{$t('verification.verifying')}</p>
-        </div>
+        <Spinner/>
     {:else if verificationSuccess}
         <div class="text-center">
             <svg class="mx-auto h-16 w-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

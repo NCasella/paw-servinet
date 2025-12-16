@@ -30,11 +30,6 @@
     async function handleSubmit() {
       formErrors = serviceForm.validateServiceCreateForm();
       if (Object.keys(formErrors).length > 0) return
-
-      /*
-      if (Object.keys(formErrors).length > 0) {
-          return;
-      }*/
       const id = await createService(serviceForm, image);
       goto(`${base}/services/${id}`);
     }
@@ -131,6 +126,9 @@
             type="checkbox"
             class="checkbox"
             bind:checked={serviceForm.homeService}
+            on:change={() => {
+                  serviceForm.neighbourhoods = [];
+              }}
           />
           <span>{$t('service.home-service')}</span>
         </label>
@@ -240,6 +238,11 @@
               name="pricingType"
               class="w-full border rounded-lg px-3 py-2 text-sm"
               bind:value={serviceForm.pricingType}
+              on:change={() => {
+                  if (serviceForm.pricingType === PricingTypes.TBD) {
+                      serviceForm.price = null;
+                  }
+              }}
             >
               {#each PricingTypesList as type}
                 <option value={type}>

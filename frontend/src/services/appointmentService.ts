@@ -2,9 +2,7 @@ import { Appointment } from "$models/Appointment";
 import {  AppointmentStatus, AppointmentView } from "$models/enums/AppointmentStatus";
 import type { AppointmentForm } from "$models/forms/AppointmentCreationForm";
 import { parsePagedResponse, type PagedResult } from "$models/PagedList";
-import type { Service } from "$models/Service";
 import { GET, getNewIdFromPostResponse, PATCH, POST, type TResponse } from "$utils/apiFetch";
-import { number } from "zod";
 import { getCurrentUser } from "./userService";
 
 export async function createAppointment(form: AppointmentForm) :Promise<number> {
