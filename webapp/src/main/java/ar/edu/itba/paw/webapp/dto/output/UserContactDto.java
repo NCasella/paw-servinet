@@ -22,6 +22,7 @@ public class UserContactDto {
     private String username;
     private String language;
     private String email;
+    private String telephone;
     private UserLinks links;
 
     public static UserContactDto fromUser(User user, UriInfo uriInfo){
@@ -56,7 +57,8 @@ public class UserContactDto {
                 .fullName(user.getFullName())
                 .username(user.getUsername())
                 .language(user.getLocale())
-                .email(user.getEmail());
+                .email(user.getEmail())
+                .telephone(user.getTelephone());
 
         UserLinks.UserLinksBuilder linksBuilder = UserLinks.builder()
             .businessesOwned(businessesOwnedUri)

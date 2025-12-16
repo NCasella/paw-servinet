@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.jersey;
 
 
+import ar.edu.itba.paw.model.AvailableLanguages;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.PasswordRecoveryCodeService;
@@ -76,7 +77,7 @@ public class UsersJerseyController {
                 .header("Accept", String.join(", ",CustomMediaTypes.USER_INFO,CustomMediaTypes.USER_CONTACT_INFO))
                 .header("Accept-Patch",
                         String.join(", ",
-                                CustomMediaTypes.USER_PATCH,
+                                CustomMediaTypes.USER_UPDATE,
                                 CustomMediaTypes.PASSWORD_MODIFICATION))
                 .header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS")
                 .build();
@@ -100,9 +101,10 @@ public class UsersJerseyController {
     //patches durante la sesion (TODO: agregar desde security)
     @PATCH
     @Path("/{userid}")
-    @Consumes(value = CustomMediaTypes.USER_PATCH)
+    @Consumes(value = CustomMediaTypes.USER_UPDATE)
     public Response changeUserInfo(@PathParam("userid") @NotNull final long userid, @NotNull @Valid UserPatchDTO profilePatch){
-        us.changeUserInfo(userid, profilePatch.getUsername(), profilePatch.getEmail(), profilePatch.getTelephone());
+        AvailableLanguages localeParsed = AvailableLanguages.fromLanguageCode(profilePatch.getLocale());
+        us.changeUserInfo(userid, profilePatch.getUsername(), profilePatch.getEmail(), profilePatch.getTelephone(), localeParsed);
         User modifiedUser = us.findById(userid).orElseThrow(UserNotFoundException::new);
         return Response.ok(UserDto.fromUser(modifiedUser, uriInfo)).build();
     }
@@ -114,6 +116,4 @@ public class UsersJerseyController {
         us.changePassword(userid, passwordModification.getOldPassword(), passwordModification.getNewPassword());
         return Response.ok().build();
     }
-
-    //todo: add profilepic
 }

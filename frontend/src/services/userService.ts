@@ -1,16 +1,16 @@
 import { resetLanguage, setLanguage } from "$lib/i18n/i18n";
 import { Appointment } from "$models/Appointment";
 import { UserContactInfo, type ContactInfo } from "$models/ContactInfo";
-import { parsePagedResponse, type PagedResult } from "$models/PagedList";
 import { User } from "$models/User"
 import { getUser, login, logout } from "$stores/userStore"
-import { GET, POST } from "$utils/apiFetch"
+import {GET, PATCH, POST} from "$utils/apiFetch"
 import { RegisterUserForm } from "$models/forms/UserCreationForm";
 import { getNewIdFromPostResponse } from "$utils/apiFetch";
 import { extractUserIdFromToken, extractUserRolesFromToken, loginWithBasicAuth, removeTokens } from "./authenticate";
 import type { RequestPasswordRecoveryForm } from "$models/forms/RequestPasswordRecoveryForm";
 import type { TResponse } from "$utils/apiFetch";
 import type { ResetPasswordForm } from "$models/forms/ResetPasswordForm";
+import type {UserUpdateForm} from "$models/forms/UserUpdateForm";
 
 export async function getUserInfo(id: number,fetchFn?: typeof fetch ) :Promise<User> {
     const data = await GET(`users/${id}`,{contentType:"user-info", fetchFn: fetchFn });  
@@ -101,5 +101,8 @@ export async function getAppointmentClients(  appointmentList: Appointment[] ): 
   return new Map(
     users.map((u, i) => [userIds[i], u.toContactInfo()])
   );
+}
 
+export async function updateUser(userId: number, form: UserUpdateForm) {
+    await PATCH(`users/${userId}`, form, {contentType:"user-update"})
 }

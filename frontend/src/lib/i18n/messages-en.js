@@ -277,8 +277,11 @@ export default {
   "profile.logout": "Log Out",
   "profile.businesses": "My Businesses",
   "profile.no-services":
-    "No services found in this business",
+  "No services found in this business",
   "profile.favourite-lang": "Preferred language:",
+  "profile.edit": "Edit profile",
+  "profile.save-changes": "Save changes",
+  "profile.repeated-email-or-username": "The entered email or username is already in use by another account",
 
   "pagination.first": "<< First page",
   "pagination.last": "Last page >>",

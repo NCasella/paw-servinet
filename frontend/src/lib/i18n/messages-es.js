@@ -264,6 +264,9 @@ export default {
   "profile.businesses": "Mis negocios",
   "profile.no-services": "No se han encontrado servicios en este negocio",
   "profile.favourite-lang": "Idioma preferido:",
+  "profile.edit": "Editar perfil",
+  "profile.save-changes": "Guardar cambios",
+  "profile.repeated-email-or-username": "El mail o nombre de usuario ya están en uso por otra cuenta.",
 
   "pagination.first": "<< Primera página",
   "pagination.last": "Última página >>",

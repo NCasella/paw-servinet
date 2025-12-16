@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.persistance;
 
+import ar.edu.itba.paw.model.AvailableLanguages;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.exceptions.InvalidUsernameException;
 import ar.edu.itba.paw.services.UserDao;
 import org.springframework.stereotype.Repository;
 
@@ -108,11 +108,11 @@ public class UserDaoJpa implements UserDao {
     }
 
     @Override
-    public void changeLocale(long userid,String locale){
+    public void changeLocale(long userid, AvailableLanguages locale){
         Optional<User> optUser=findById(userid);
         if(optUser.isPresent()){
             final User user=optUser.get();
-            user.setLocale(locale);
+            user.setLocale(locale.getCode());
             em.persist(user);
         }
     }
