@@ -1,6 +1,5 @@
-import { navTo } from "$lib/navigation/pageInfo"
 import { StatusCodes } from "$models/exceptions/statusCodesEnum.js"
-import { getCurrentUser, getCurrentUserContactInfo } from "$services/userService"
+import { getCurrentUserContactInfo } from "$services/userService"
 import { error } from "@sveltejs/kit"
 
 export async function load({ fetch }) {

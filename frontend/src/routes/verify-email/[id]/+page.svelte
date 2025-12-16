@@ -4,9 +4,7 @@
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
     import { goto } from '$app/navigation';
-    import { getCurrentUser } from '$services/userService';
 	import { loginWithBasicAuth } from '$services/authenticate';
-    import { UserContactInfo } from '$models/ContactInfo';
 	import Spinner from "$lib/components/global/Spinner.svelte";
     import type { PageData } from './$types';
 
