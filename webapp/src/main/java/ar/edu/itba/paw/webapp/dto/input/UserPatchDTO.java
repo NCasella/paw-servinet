@@ -27,6 +27,8 @@ public class UserPatchDTO {
     @NotEmpty
     @Pattern(regexp = "en|es")
     private String locale;
+    @Size(max=255, min = 8,message = "Size.registerUserForm.password")
+    private String password;
 
     @Override
     public int hashCode(){

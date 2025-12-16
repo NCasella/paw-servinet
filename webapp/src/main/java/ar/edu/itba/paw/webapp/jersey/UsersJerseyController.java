@@ -77,8 +77,8 @@ public class UsersJerseyController {
                 .header("Accept", String.join(", ",CustomMediaTypes.USER_INFO,CustomMediaTypes.USER_CONTACT_INFO))
                 .header("Accept-Patch",
                         String.join(", ",
-                                CustomMediaTypes.USER_UPDATE,
-                                CustomMediaTypes.PASSWORD_MODIFICATION))
+                                CustomMediaTypes.USER_UPDATE
+                        ))
                 .header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS")
                 .build();
     }
@@ -98,22 +98,17 @@ public class UsersJerseyController {
         return ConditionalCache.cacheResponse(request,UserDto.fromUser(user, uriInfo)).build();
     }
 
-    //patches durante la sesion (TODO: agregar desde security)
     @PATCH
     @Path("/{userid}")
     @Consumes(value = CustomMediaTypes.USER_UPDATE)
     public Response changeUserInfo(@PathParam("userid") @NotNull final long userid, @NotNull @Valid UserPatchDTO profilePatch){
         AvailableLanguages localeParsed = AvailableLanguages.fromLanguageCode(profilePatch.getLocale());
         us.changeUserInfo(userid, profilePatch.getUsername(), profilePatch.getEmail(), profilePatch.getTelephone(), localeParsed);
+        if (!profilePatch.getPassword().isEmpty()) {
+            us.changePassword(userid, profilePatch.getPassword());
+        }
         User modifiedUser = us.findById(userid).orElseThrow(UserNotFoundException::new);
         return Response.ok(UserDto.fromUser(modifiedUser, uriInfo)).build();
     }
 
-    @PATCH
-    @Path("/{userid}")
-    @Consumes(value = CustomMediaTypes.PASSWORD_MODIFICATION)
-    public Response changePassword(@PathParam("userid") @NotNull final long userid, @NotNull @Valid UserPasswordModificationDTO passwordModification){
-        us.changePassword(userid, passwordModification.getOldPassword(), passwordModification.getNewPassword());
-        return Response.ok().build();
-    }
 }

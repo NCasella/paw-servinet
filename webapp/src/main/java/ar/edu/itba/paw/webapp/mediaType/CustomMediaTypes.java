@@ -9,7 +9,6 @@ public class CustomMediaTypes {
     public static final String USER_UPDATE = "application/vnd.servinet.user-update.v1+json";
     public static final String PASSWORD_RECOVERY = "application/vnd.servinet.user-password-recovery-request.v1+json";
     public static final String PASSWORD_RESET = "application/vnd.servinet.user-password-reset.v1+json";
-    public static final String PASSWORD_MODIFICATION = "application/vnd.servinet.user-password-modification.v1+json";
 
     public static final String BUSINESS_INFO = "application/vnd.servinet.business-info.v1+json";
     public static final String BUSINESS_LIST = "application/vnd.servinet.business-list.v1+json";
