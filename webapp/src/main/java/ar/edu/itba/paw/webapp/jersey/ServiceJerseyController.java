@@ -78,10 +78,18 @@ public class ServiceJerseyController {
                     homeServiceFilter,
                     businessId
             );
+        Map<String, Object> queryParams=new HashMap<>();
+        queryParams.put("category",category);
+        queryParams.put("neighbourhoods",neighbourhoods);
+        queryParams.put("rating",rating);
+        queryParams.put("searchQuery",searchQuery);
+        queryParams.put("orderFilters",orderFilters);
+        queryParams.put("homeServiceFilter", homeServiceFilter);
 
             List<ServiceDto> dtoList = pagedList.getList().stream()
                     .map(s -> ServiceDto.fromService(s, uriInfo))
                     .toList();
+
 
             return PagedListResponse.generate(
                     dtoList,
@@ -89,8 +97,8 @@ public class ServiceJerseyController {
                     pagedList.getTotalElements(),
                     uriInfo,
                     ServiceDto.class,
-                    request
-            );
+                    request,
+                    queryParams);
     }
 
 

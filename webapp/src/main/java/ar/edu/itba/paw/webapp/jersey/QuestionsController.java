@@ -21,7 +21,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/questions")
 @Component
@@ -75,6 +77,9 @@ public class QuestionsController {
         List<QuestionDto> dtoList = pagedList.getList().stream()
                 .map(q -> QuestionDto.fromQuestion(q, uriInfo))
                 .toList();
+        Map<String,Object> queryParamsForLink=new HashMap<>();
+        queryParamsForLink.put("serviceId",serviceId);
+        queryParamsForLink.put("respondentId",respondentId);
 
         return PagedListResponse.generate(
                 dtoList,
@@ -82,7 +87,8 @@ public class QuestionsController {
                 pagedList.getTotalElements(),
                 uriInfo,
                 QuestionDto.class,
-                request
+                request,
+                queryParamsForLink
         );
     }
 

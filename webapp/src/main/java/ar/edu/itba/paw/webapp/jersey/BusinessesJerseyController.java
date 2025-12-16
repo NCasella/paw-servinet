@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/businesses")
 @Component
@@ -63,14 +65,16 @@ public class BusinessesJerseyController {
         List<BusinessDto> dtoList = pagedList.getList().stream()
                 .map(b -> BusinessDto.fromBusiness(b, uriInfo))
                 .toList();
-
+        Map<String,Object> queryParamsForLink=new HashMap<>();
+            queryParamsForLink.put("ownerId",ownerId);
         return PagedListResponse.generate(
                 dtoList,
                 page,
                 pagedList.getTotalElements(),
                 uriInfo,
                 BusinessDto.class,
-                request
+                request,
+                queryParamsForLink
         );
     }
 

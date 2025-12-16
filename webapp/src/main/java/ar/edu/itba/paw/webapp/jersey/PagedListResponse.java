@@ -1,28 +1,44 @@
 package ar.edu.itba.paw.webapp.jersey;
 
-import ar.edu.itba.paw.model.PagedList;
-
 import javax.ws.rs.core.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PagedListResponse {
 
-    public static <T> Response generate(List<T> list, int page, int total, UriInfo uriInfo, Class<T> objClass, Request request) {
+    public static <T> Response generate(List<T> list, int page, int total, UriInfo uriInfo, Class<T> objClass, Request request, Map<String, Object> queryParamsForLink) {
 
         int prev = page-1 > 0 ? page-1 : page;
         int max =  total % 10 == 0 ? total / 10 : (total / 10) + 1;
         int next = page + 1 <= max ? page + 1 : page;
-        Response.ResponseBuilder cachedResponse=ConditionalCache.cacheResponseFromHashCode(request, getListGenericEntity(list, objClass),list.hashCode());
+        Map<String,Integer>pageLinks=new HashMap<>();
+        if(max>0){
+            pageLinks.put("first",1);
+            if(page>1){
+                pageLinks.put("prev",prev);
+            }
+            if(page<max){
+                pageLinks.put("next",next);
+            }
+            pageLinks.put("last",max);
+        }
 
-        return cachedResponse
-                 .link(String.valueOf(total), "total")
-                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", prev).build(),"prev")
-                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", next).build(),"next")
-                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(),"first")
-                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", max).build(),"last")
-                 .build();
+        Response.ResponseBuilder cachedResponse=ConditionalCache.cacheResponseFromHashCode(request, getListGenericEntity(list, objClass),list.hashCode())
+                 .link(String.valueOf(total), "total");
+
+        for(Map.Entry<String,Integer> pageLinksEntry:pageLinks.entrySet()) {
+            UriBuilder pageLink=uriInfo.getAbsolutePathBuilder().queryParam("page",pageLinksEntry.getValue());
+            for (Map.Entry<String, Object> queryParamEntry : queryParamsForLink.entrySet()) {
+                if (queryParamEntry.getValue() != null) {
+                    pageLink.queryParam(queryParamEntry.getKey(),queryParamEntry.getValue());
+                }
+            }
+            cachedResponse.link(pageLink.build(),pageLinksEntry.getKey());
+        }
+        return cachedResponse.build();
      }
 
     private static <T> GenericEntity<List<T>> getListGenericEntity(List<T> list, Class<T> objClass) {
@@ -46,7 +62,5 @@ public class PagedListResponse {
         return new GenericEntity<>(list, type);
     }
 
-    public static <T> Response generate(PagedList<T> pagedList,  int page, UriInfo uriInfo, Class<T> objClass,Request request) {
-         return generate(pagedList.getList(), page, pagedList.getTotalElements(), uriInfo, objClass,request);
-     }
+
 }
