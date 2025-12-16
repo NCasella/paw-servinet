@@ -9,18 +9,12 @@ export async function load({fetch, params}) {
   
   const serviceId = parseInt(params.id)
   const user: User = await getCurrentUser(fetch).catch(() => error(StatusCodes.UNAUTHORIZED));
-  try {
+  const service = await getServiceById(serviceId, fetch).catch(() => error(StatusCodes.NOT_FOUND));
+  const business = await getBusinessById(service.businessId, fetch).catch(() => error(StatusCodes.NOT_FOUND));
+  
+  if ( !business.isOwner(user.userId) )
+      error(StatusCodes.FORBIDDEN)
     
-    
-    
-    const service = await getServiceById(serviceId, fetch);
-    const business = await getBusinessById(service.businessId, fetch);
-    if ( !business.isOwner(user.userId) )
-        error(StatusCodes.FORBIDDEN)
-    
-    return { service: service };
-  } catch(e) {
-    console.log(e)
-    error(404)//, { message: 'Service not found' });
-  }
+  return { service: service };
+  
 }
