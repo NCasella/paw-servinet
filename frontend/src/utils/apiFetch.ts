@@ -50,8 +50,8 @@ export async function apiFetch<TResponse = any, TBody = any>(
     finalHeaders["Authorization"] = `Bearer ${token}`;
   }
 
-  const isImageData = body instanceof File;
-  if (!isImageData) {
+  const isFormData = body instanceof FormData;
+  if (!isFormData) {
     const mediaType = method == 'GET' ? 'Accept' : 'Content-Type';
     finalHeaders[mediaType] = contentType
         ? `application/vnd.servinet.${contentType}.v1+json`
@@ -61,7 +61,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
   const response = await fetchFn(API_BASE_URL + "/" + url, {
     method,
     headers: finalHeaders,
-    body: isImageData ? body : body ? JSON.stringify(body) : undefined,
+    body: isFormData ? body : body ? JSON.stringify(body) : undefined,
   });
 
   if (!response.ok) {
