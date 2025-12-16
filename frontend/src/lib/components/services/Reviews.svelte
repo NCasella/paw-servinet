@@ -10,10 +10,11 @@
     import { base } from "$app/paths";
     import { t } from "$lib/i18n/i18n";
     import {ReviewForm} from "$models/forms/ReviewCreationForm";
-    import {createReview, getServiceReviews} from "$services/reviewsService";
+    import {createReview, getServiceReviews, updateReview} from "$services/reviewsService";
     import {ReviewFilters, ReviewFiltersInfo} from "$models/enums/ReviewFilters";
     import ReviewsBars from "$lib/components/services/ReviewsBars.svelte";
     import FormError from "$lib/components/global/forms/FormError.svelte";
+    import BigButtonSecondary from "$lib/components/global/BigButtonSecondary.svelte";
 
     export let serviceId: number;
     export let isOwner: boolean = false;
@@ -21,6 +22,10 @@
 
     let reviews: Review[] = [];
     let loading = true;
+
+    let showEdit = false;
+    let editRating = 0;
+    let editComment = "";
 
     let page = 1;
     let lastPage = 1;
@@ -43,7 +48,10 @@
         page = pageNum;
 
         hasRated = reviews.find(r => r.user?.id === user?.id) ?? null;
-
+        if(hasRated) {
+            editRating = hasRated.rating;
+            editComment = hasRated.comment;
+        }
         loading = false;
     }
 
@@ -73,6 +81,19 @@
     onMount(async () => {
         await loadReviews(page);
     });
+
+    function toggleEdit() {
+        showEdit = !showEdit;
+    }
+
+    async function submitEdit() {
+        toggleEdit();
+        await updateReview(hasRated.ratingId, {
+            comment: editComment,
+            rating: editRating
+        });
+        await loadReviews(page);
+    }
 </script>
 
 {#if loading}
@@ -85,6 +106,37 @@
         {#if hasRated && !isOwner}
             <p class="font-bold text-lg mb-2">{$t("service.yourreview")}</p>
 
+            {#if showEdit}
+                <div class="flex items-center mb-2">
+                    <!-- Stars -->
+                    <div class="flex mr-4">
+                        {#each Array(5) as _, i}
+                            <button
+                                    type="button"
+                                    on:click={() => editRating = i + 1}
+                                    class={i < editRating ? "text-yellow-400" : "text-surface-400"}
+                            >
+                                <Icon name="star"/>
+                            </button>
+                        {/each}
+                    </div>
+                </div>
+
+                <textarea
+                        class="w-full border rounded-xl p-3 text-sm"
+                        rows="3"
+                        bind:value={editComment}
+                />
+
+                <div class="flex justify-end gap-2 mt-3">
+                    <div on:click={toggleEdit}>
+                        <BigButtonSecondary title={$t("review.cancel")}/>
+                    </div>
+                    <div on:click={submitEdit}>
+                        <BigButtonSecondary title={$t("review.save")}/>
+                    </div>
+                </div>
+            {:else }
             <div class="mb-4 bg-surface-100 p-4 rounded-2xl">
                 <div class="flex items-center">
                     <div class="flex mr-4">
@@ -100,11 +152,14 @@
                         {/each}
                     </div>
 
-                    <p class="text-surface-500 ml-2">{hasRated.date}</p>
+                    <p class="text-surface-500 ml-2 w-40">{hasRated.date}</p>
+                    <div class="flex w-full justify-end" on:click={toggleEdit}>
+                        <BigButtonSecondary title={$t('review.edit')}/>
+                    </div>
                 </div>
-
                 <p class="mt-2">{hasRated.comment}</p>
             </div>
+            {/if}
         {/if}
 
         {#if !isOwner && !hasRated}

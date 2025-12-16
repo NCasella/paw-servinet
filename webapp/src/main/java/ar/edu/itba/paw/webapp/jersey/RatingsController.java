@@ -9,6 +9,7 @@ import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.ServinetAuthControl;
 import ar.edu.itba.paw.webapp.dto.input.ReviewCreationDTO;
+import ar.edu.itba.paw.webapp.dto.input.ReviewUpdateDTO;
 import ar.edu.itba.paw.webapp.dto.output.ReviewDto;
 import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,9 +110,10 @@ public class RatingsController {
     @OPTIONS
     public Response getSupportedMimeTypesForReview() {
         return Response.ok()
-                .header("Allow", "GET, OPTIONS")
+                .header("Allow", "GET, PATCH, OPTIONS")
                 .header("Accept", CustomMediaTypes.REVIEW_INFO)
-                .header("Access-Control-Allow-Methods", "GET, OPTIONS")
+                .header("Accept-Patch", CustomMediaTypes.REVIEW_UPDATE)
+                .header("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS")
                 .build();
     }
 
@@ -124,5 +126,21 @@ public class RatingsController {
     ){
         Rating rating = ratingService.findById(reviewId).orElseThrow(RatingNotFoundException::new);
         return ConditionalCache.cacheResponse(request, ReviewDto.fromRating(rating, uriInfo)).build();
+    }
+
+    @PATCH
+    @Path("/{reviewId}")
+    @Consumes(value = CustomMediaTypes.REVIEW_UPDATE)
+    public Response updateReview(
+            @PathParam("reviewId") final long reviewId,
+            @Valid final ReviewUpdateDTO reviewUpdateDTO
+    ){
+        ratingService.findById(reviewId).orElseThrow(RatingNotFoundException::new);
+        ratingService.edit(
+                reviewId,
+                reviewUpdateDTO.getRating(),
+                reviewUpdateDTO.getComment()
+        );
+        return Response.noContent().build();
     }
 }

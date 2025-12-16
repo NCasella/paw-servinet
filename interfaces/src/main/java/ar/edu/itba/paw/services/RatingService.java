@@ -12,12 +12,12 @@ public interface RatingService {
     int getAllRatingsCount(RatingsFilters filter);
     int getRatingsCountByService(long serviceId, RatingsFilters filter);
     List<Rating> getAllBusinessRatings(long businessId, int page);
-    List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, RatingsFilters filter);
+    List<Rating> getAllBusinessRatingsFiltered(long businessId, int page, RatingsFilters filter);
     Optional<Rating> findById(long id);
-    Rating create(long serviceid, long userid, int rating, String comment);
-    double getRatingsAvg(Service serviceid);
-    Rating hasAlreadyRated(long userid, long serviceid);
-    void edit(long ratingid, int rating, String comment);
+    Rating create(long serviceId, long userid, int rating, String comment);
+    double getRatingsAvg(Service serviceId);
+    Rating hasAlreadyRated(long userid, long serviceId);
+    void edit(long ratingId, int rating, String comment);
     Map<Integer, Double> getRatingsAvgByRate(long serviceId);
     Map<Integer, Double> getBusinessRatingsAvgByRate(long businessId);
     int getBusinessRatingsPageCount(Business business);
