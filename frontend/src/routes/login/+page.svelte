@@ -63,8 +63,8 @@
 	async function sendPasswordReset() {
 		loadingForgotPassword = true;
 		forgotPasswordMessage = '';
-t
-    await requestPasswordRecovery({ email: forgoPasswordEmail });
+
+    await requestPasswordRecovery({ email: forgotPasswordEmail });
 
 		loadingForgotPassword = false;
 
