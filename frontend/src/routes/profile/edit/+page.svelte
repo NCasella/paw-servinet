@@ -12,6 +12,7 @@
         from "$models/forms/UserUpdateForm";
     import {getCurrentUserContactInfo, updateUser} from "$services/userService";
     import type {UserContactInfo} from "$models/ContactInfo";
+	import BigButtonSecondaryWithOnClick from "$lib/components/global/BigButtonSecondaryWithOnClick.svelte";
 
     let userForm: UserUpdateForm;
     let formErrors: UserUpdateFormErrors = {};
@@ -26,6 +27,7 @@
             email: user.email,
             telephone: user.telephone,
             locale: user.language,
+            password: ""
         });
     });
 
@@ -119,7 +121,8 @@
                 {/if}
             </div>
 
-            <div class="flex justify-center pt-2">
+            <div class="flex justify-end gap-3 pt-2">
+                <BigButtonSecondaryWithOnClick title={$t('profile.cancel')} onclick={goto(`${base}/profile`)} />
                 <BigButton title={$t('service.save-changes')} iconName="" />
             </div>
         </form>

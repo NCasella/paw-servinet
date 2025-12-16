@@ -2,15 +2,10 @@ import { base } from "$app/paths";
 import { getNewIdFromPostResponse, POST, GET } from "$utils/apiFetch";
 
 export async function uploadImage(file: File): Promise<number> {
-    const formData = new FormData();
-    formData.append("image", file);
 
     const response = await POST<{ headers: Headers; body: any }, FormData>(
         "images",
-        formData,
-        {
-            genericContentType: "multipart/form-data",
-        }
+        file
     );
 
     return getNewIdFromPostResponse(response);
@@ -32,7 +27,7 @@ export async function getImage(imageId: number): Promise<string> {
     try {
         const blob = await GET(`images/${imageId}`, {
             binary: true,
-            genericContentType: "multipart/form-data"
+            genericContentType: "image/jpeg"
         });
         return URL.createObjectURL(blob);
 
@@ -47,7 +42,7 @@ export async function getProfileImage(imageId: number): Promise<string> {
     try {
         const blob = await GET(`images/${imageId}`, {
             binary: true,
-            genericContentType: "multipart/form-data"
+            genericContentType: "image/jpeg"
         });
         return URL.createObjectURL(blob);
 
