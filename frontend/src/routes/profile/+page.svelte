@@ -1,17 +1,18 @@
 <script lang="ts">
-    import { t } from "$lib/i18n/i18n";
+  import { t } from "$lib/i18n/i18n";
 	import { closeSession, getCurrentUserContactInfo } from "$services/userService";
 	import { getCurrentUser } from "$services/userService";
-    import {type User } from "$models/User"
-    import { onMount } from "svelte";
+  import {type User } from "$models/User"
+  import { onMount } from "svelte";
 	import { goto, invalidateAll } from "$app/navigation";
-    import { Avatar } from "@skeletonlabs/skeleton-svelte";
+  import { Avatar } from "@skeletonlabs/skeleton-svelte";
 	import { UserContactInfo } from "$models/ContactInfo";
 	import Spinner from "$lib/components/global/Spinner.svelte";
 	import Icon from "$icons";
 	import type { PageData } from "./$types";
-    import BigButtonSecondary from "$lib/components/global/BigButtonSecondary.svelte";
-    import {base} from "$app/paths";
+  import {base} from "$app/paths";
+	import BigButtonWithOnClick from "$lib/components/global/BigButtonWithOnClick.svelte";
+	import BigButtonSecondaryWithOnClick from "$lib/components/global/BigButtonSecondaryWithOnClick.svelte";
     
     export let data :PageData
     let { user } = data
@@ -54,8 +55,9 @@
       </div>
     </div>
 
-    <div class="flex w-full justify-end mt-10" on:click={goto(`${base}/profile/edit`)}>
-      <BigButtonSecondary title={$t("profile.edit")} />
+    <div class="flex justify-end gap-3 pt-2">
+      <BigButtonSecondaryWithOnClick title={$t("profile.change-password")} onclick={goto(`${base}/profile/change-password`)} />
+      <BigButtonWithOnClick title={$t("profile.edit")} onclick={goto(`${base}/profile/edit`)}/>
     </div>
   </section>
 </div>

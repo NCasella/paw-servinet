@@ -268,6 +268,13 @@ export default {
   "profile.edit": "Editar perfil",
   "profile.save-changes": "Guardar cambios",
   "profile.repeated-email-or-username": "El mail o nombre de usuario ya están en uso por otra cuenta.",
+  "profile.change-password": "Cambiar mi contraseña",
+  "profile.change-password.title": "Cambiar contraseña",
+  "profile.new-password": "Nueva contraseña",
+  "profile.repeat-new-password": "Repetir nueva contraseña",
+  "profile.update-password": "Actualizar contraseña",
+  "profile.password-updated": "¡Su contraseña ha sido actualizada con éxito!",
+  "profile.cancel": "Cancelar",
 
   "pagination.first": "<< Primera página",
   "pagination.last": "Última página >>",
