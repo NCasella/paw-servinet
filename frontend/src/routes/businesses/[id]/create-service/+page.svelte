@@ -28,7 +28,7 @@
     })
 
     async function handleSubmit() {
-      formErrors = serviceForm.validateServiceForm();
+      formErrors = serviceForm.validateServiceCreateForm();
       if (Object.keys(formErrors).length > 0) return
 
       /*
@@ -224,7 +224,7 @@
             name="additionalCharges"
             type="checkbox"
             class="checkbox"
-            bind:checked={serviceForm.additionalCharges}
+            bind:checked={serviceForm.additionalCosts}
           />
           <span>{$t('service.additionalCharges')}</span>
         </label>

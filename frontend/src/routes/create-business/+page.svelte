@@ -10,6 +10,7 @@
 	import { createToaster } from "@skeletonlabs/skeleton-svelte";
   import { base } from '$app/paths';
   import { goto } from '$app/navigation';
+	import { navTo } from "$lib/navigation/pageInfo";
 
 let postUrl, businessForm :BusinessForm, email =""
 const toaster = createToaster()
@@ -28,7 +29,7 @@ onMount(() =>{
     getCurrentUser().then( (u)=> {
         email = u.email;
         businessForm = new BusinessForm( email, "", "", "")
-    } )
+    } ).catch( () => navTo("/login"))
 })
 
 

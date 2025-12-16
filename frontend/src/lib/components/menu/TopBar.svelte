@@ -13,6 +13,7 @@
 
 	import type { LayoutData } from '../../../routes/$types';
 	import { user } from '$stores/userStore';
+	import { navTo } from '$lib/navigation/pageInfo';
     export let data :LayoutData
     let currentUser :User | null;
 	user.subscribe((u) => currentUser=u.user)
@@ -21,10 +22,6 @@
 	function isRouteActive(path: string): boolean {
 	  return page.url.pathname === path;
 	}
-  
-	async function handleLogin(event: Event): Promise<void> {
-		goto('login');
-    }
 	
     
     async function handleLogout(event: Event): Promise<void> {
@@ -59,7 +56,7 @@
 	  {#if currentUser }
 		<UserMenu currentUser={currentUser}/>  	
 	  {:else}
-	  <button type="button" class="btn preset-filled-primary-500" on:click={handleLogin}>{$t("login")}</button>
+	  <button type="button" class="btn preset-filled-primary-500" on:click={()=> navTo("/login") }>{$t("login")}</button>
 		{/if}
 	</div>
 	

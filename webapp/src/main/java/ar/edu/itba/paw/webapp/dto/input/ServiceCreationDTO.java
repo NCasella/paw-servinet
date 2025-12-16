@@ -38,7 +38,7 @@ public class ServiceCreationDTO {
     @Pattern(regexp = "[0-9]+(\\.[0-9]{1,2})?$",message = "Pattern.serviceForm.price")
     private String price;
 
-    private boolean additionalCharges;
+    private boolean additionalCosts;
 
     @NotNull
     private String pricingType;

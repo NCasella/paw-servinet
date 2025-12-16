@@ -90,6 +90,11 @@
         <div class="flex justify-end items-center mt-4">
             {#if isOwner}
                 <div class="flex gap-2">
+                     <div class="flex gap-2">
+                    <a href="{base}/services/{serviceId}/edit">
+                        <BigButtonSecondary title={$t("service.edit")} iconName=""/>
+                    </a>
+                    </div>
                     <Dialog role="alertdialog">
                         <Dialog.Trigger>
                             <BigButtonWarning title={$t("service.delete") } iconName="" onclick={null}/>

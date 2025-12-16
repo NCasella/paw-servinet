@@ -1,46 +1,3 @@
-export class ServiceForm implements ServiceFormData {
-  serviceName = "";
-  description = "";
-  homeService = false;
-  neighbourhoods: string[] = [];
-  address = "";
-  price: string | null = null;
-  additionalCharges = false;
-  pricingType = "";
-  category = "";
-  minimalDuration = 0;
-  imageId?: number;
-  businessId?: number;
-
-  constructor(init?: Partial<ServiceFormData>) {
-    Object.assign(this, init);
-  }
-
-  get priceValue(): string | null {
-    return this.price;
-  }
-  set priceValue(val: string) {
-    this.price = val === "" ? null : val;
-  }
-
-  validateServiceForm(): ServiceFormErrors {
-    const result = ServiceFormSchema.safeParse(this);
-    const errors: ServiceFormErrors = {};
-
-    if (!result.success) {
-      for (const issue of result.error.issues) {
-        const field = issue.path[0] as keyof ServiceFormData;
-
-        if (!errors[field]) {
-          errors[field] = issue.message as ServiceFormErrorKey;
-        }
-      }
-    }
-
-    return errors;
-  }
-}
-
 import { z } from "zod";
 
 const MAX_LEN = 255;
@@ -57,9 +14,11 @@ export type ServiceFormErrorKey =
   | "Size.serviceForm.price"
   | "Positive.serviceForm.minimalduration"
   | "NotEmpty.serviceForm.neighbourhoods"
-  | "NotEmpty.serviceForm.price"; 
+  | "NotEmpty.serviceForm.price"
+  | "NotEmpty.serviceForm.pricingType"
+  | "NotEmpty.serviceForm.category";
 
-export const ServiceFormSchema = z
+export const ServiceCreateSchema = z
   .object({
     serviceName: z
       .string()
@@ -77,7 +36,6 @@ export const ServiceFormSchema = z
       message: "NotNull.serviceForm.homeserv",
     }),
 
-    // ✅ neighbourhoods deben ser 1 o +
     neighbourhoods: z
       .array(z.string())
       .min(1, { message: "NotEmpty.serviceForm.neighbourhoods" }),
@@ -88,49 +46,48 @@ export const ServiceFormSchema = z
       .optional()
       .or(z.literal("")),
 
-    // ⚠️ permitimos null/undefined acá y validamos la condición en superRefine
     price: z
       .string()
       .max(MAX_PRICE_LEN, { message: "Size.serviceForm.price" })
       .regex(PRICE_REGEX, { message: "Size.serviceForm.price" })
       .nullable()
       .optional()
-      .or(z.literal("")), // por si te llega "" desde el input
+      .or(z.literal("")),
 
-    additionalCharges: z.boolean().optional(),
+    additionalCosts: z.boolean().optional(),
 
-    pricingType: z.string().min(1, {message: "NotEmpty.serviceForm.pricingType"}),
+    pricingType: z.string().min(1, { message: "NotEmpty.serviceForm.pricingType" }),
 
-    category: z.string().min(1 , {message: "NotEmpty.serviceForm.category"}),
+    category: z.string().min(1, { message: "NotEmpty.serviceForm.category" }),
 
     minimalDuration: z
       .number()
       .int()
       .positive({ message: "Positive.serviceForm.minimalduration" }),
+
+    imageId: z.number().optional(),
+    businessId: z.number().optional(),
   })
   .superRefine((data, ctx) => {
-    // normalizamos "" -> null para evaluar fácil
     const priceNormalized =
       data.price === "" || data.price === undefined ? null : data.price;
 
-    // ✅ price puede ser null si y solo si pricingType = TBD
     const isTBD = data.pricingType === "TBD";
     if (!isTBD && priceNormalized === null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["price"],
-        message: "NotEmpty.serviceForm.price", // o reutilizá Size.serviceForm.price si querés
+        message: "NotEmpty.serviceForm.price",
       });
     }
     if (isTBD && priceNormalized !== null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["price"],
-        message: "Size.serviceForm.price", // “price no debería enviarse si es TBD” (si querés key propia, mejor)
+        message: "Size.serviceForm.price",
       });
     }
 
-    // ✅ address obligatorio si homeService = false
     if (data.homeService === false) {
       const addr = (data.address ?? "").trim();
       if (!addr) {
@@ -143,7 +100,116 @@ export const ServiceFormSchema = z
     }
   });
 
-export type ServiceFormData = z.infer<typeof ServiceFormSchema>;
-export type ServiceFormErrors = {
-  [K in keyof ServiceFormData]?: ServiceFormErrorKey | string;
+export const ServiceUpdateSchema = z
+  .object({
+    description: z
+      .string()
+      .max(MAX_LEN, { message: "Size.serviceForm.description" })
+      .optional()
+      .or(z.literal("")),
+
+    pricingType: z.string().min(1, { message: "NotEmpty.serviceForm.pricingType" }),
+
+    price: z
+      .string()
+      .max(MAX_PRICE_LEN, { message: "Size.serviceForm.price" })
+      .regex(PRICE_REGEX, { message: "Size.serviceForm.price" })
+      .nullable()
+      .optional()
+      .or(z.literal("")),
+
+    additionalCosts: z.boolean(),
+
+    minimalDuration: z
+      .number()
+      .int()
+      .positive({ message: "Positive.serviceForm.minimalduration" }),
+  })
+  .superRefine((data, ctx) => {
+    const priceNormalized =
+      data.price === "" || data.price === undefined ? null : data.price;
+
+    const isTBD = data.pricingType === "TBD";
+
+    if (!isTBD && priceNormalized === null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["price"],
+        message: "NotEmpty.serviceForm.price",
+      });
+    }
+
+    if (isTBD && priceNormalized !== null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["price"],
+        message: "Size.serviceForm.price",
+      });
+    }
+  });
+
+export type ServiceFormCreateData = z.infer<typeof ServiceCreateSchema>;
+export type ServiceFormUpdateData = z.infer<typeof ServiceUpdateSchema>;
+
+// ✅ Keys válidas para errores (create ∪ update)
+type ServiceFormField = keyof ServiceFormCreateData | keyof ServiceFormUpdateData;
+
+export type ServiceFormErrors = Partial<Record<ServiceFormField, ServiceFormErrorKey | string>>;
+
+function validateWithSchema<T extends z.ZodTypeAny>(schema: T, data: unknown): ServiceFormErrors {
+  const result = schema.safeParse(data);
+  const errors: ServiceFormErrors = {};
+
+  if (!result.success) {
+    for (const issue of result.error.issues) {
+      const field = issue.path[0] as ServiceFormField;
+      if (!errors[field]) {
+        errors[field] = issue.message;
+      }
+    }
+  }
+
+  return errors;
+}
+
+export class ServiceForm {
+  serviceName = "";
+  description = "";
+  homeService = false;
+  neighbourhoods: string[] = [];
+  address = "";
+  price: string | null = null;
+  additionalCosts = false;
+  pricingType = "";
+  category = "";
+  minimalDuration = 0;
+  imageId?: number;
+  businessId?: number;
+
+  constructor(init?: Partial<ServiceFormCreateData & ServiceFormUpdateData>) {
+    Object.assign(this, init);
+  }
+
+  get priceValue(): string | null {
+    return this.price;
+  }
+  set priceValue(val: string) {
+    this.price = val === "" ? null : val;
+  }
+
+  validateServiceUpdateForm(): ServiceFormErrors {
+    return validateWithSchema(ServiceUpdateSchema, this);
+  }
+
+  validateServiceCreateForm(): ServiceFormErrors {
+    return validateWithSchema(ServiceCreateSchema, this);
+  }
+}
+
+export type ServiceUpdateForm = {
+  description?: string;
+  minimalDuration: number;
+  pricingType: string;
+  price: string | null;
+  additionalCosts: boolean;
 };

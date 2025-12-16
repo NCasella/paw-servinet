@@ -39,6 +39,7 @@ import ResponseArrow from 'virtual:icons/material-symbols/subdirectory-arrow-rig
 import Send from 'virtual:icons/material-symbols/send-rounded';
 import Edit from 'virtual:icons/material-symbols/edit';
 
+
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
   language: Language,
@@ -79,6 +80,7 @@ export const icons: Record<string, any> = {
   health: Health,
   responseArrow: ResponseArrow,
   send: Send,
+  cross: Deny,
 };
 
 function iconFor(name: string) {
