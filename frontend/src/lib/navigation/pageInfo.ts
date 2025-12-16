@@ -29,8 +29,8 @@ export function getPath(url:string) {
     return base+url
 }
 
-export function navTo(url:string) {
-    goto(base+url)
+export async function navTo(url:string) {
+    await goto(base+url)
 }
 
 export function goBack(backupUrl: string) {

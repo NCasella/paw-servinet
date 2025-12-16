@@ -21,7 +21,8 @@
     export let view :AppointmentView 
     export let business: Business
 
-    let pageNum = 1//  getPageNumFromParam()
+    export let pageNum :number
+    
     let appoinmentList :PagedResult<Appointment>
     let user :User
     $: loading = true
@@ -58,6 +59,20 @@
                 await loadUserAppointments()
             else 
                 await loadBusinessAppointments()
+            
+                if ( appoinmentList.items.length == 0 && pageNum!=1){
+                  pageNum=1
+                  setPage(pageNum)
+                  loadData()
+                  //const redirectUrl =`/appointments?status=${status}`
+                  //if (view == AppointmentView.BUSINESS) await navTo(`/businesses/${business.businessId}${ redirectUrl}`)
+                  //else await setPage(1) //navTo(redirectUrl)
+                  //pageNum=1
+                  // loadData()
+                  ////window.location.reload
+                  //console.log(pageNum)
+                }
+                  
         }  finally {
             loading = false
         }
@@ -96,13 +111,14 @@
 
   import ConfirmModal from '$lib/components/global/modal/ConfirmModal.svelte';
 	import { boolean, email, type number } from "zod";
-	import { getPageNumFromParam, getPath } from "$lib/navigation/pageInfo";
+	import { getPageNumFromParam, getPath, navTo } from "$lib/navigation/pageInfo";
 	import Title from "$lib/components/global/Title.svelte";
 	import Icon from "$icons";
 	import NoResults from "$lib/components/global/pagedResults/NoResults.svelte";
 	import PaginationControls from "$lib/components/global/pagedResults/PaginationControls.svelte";
 	import type { ContactInfo } from "$models/ContactInfo";
 	import { text } from "@sveltejs/kit";
+	import { setPage } from "$lib/navigation/changePage";
 
   let showCancelModal = false;
   let selectedAppointment: Appointment | null = null;
@@ -155,6 +171,7 @@ notConfirmed = !confirmed;
   async function changeStatusParam(newStatus:AppointmentStatus) {
     const url = new URL($page.url); // copiamos la URL actual
     url.searchParams.set('status', newStatus);
+    url.searchParams.set('page', '1');
 
     goto(url.toString(), {
         replaceState: false // evita agregar historial en el navegador
@@ -241,6 +258,7 @@ notConfirmed = !confirmed;
     onPageChange={(newPage) => {
         pageNum = newPage;
         loadData();
+        setPage(newPage)
     }}
     />
 

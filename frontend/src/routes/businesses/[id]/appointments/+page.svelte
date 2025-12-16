@@ -4,9 +4,9 @@
 	import type { PageData } from "./$types";
 
     export let data :PageData
-    let { business } = data
+    let { business, pageNum } = data
 
 </script>
 {#if business}
-<AppoinmentList view={AppointmentView.BUSINESS} business={business} />
+<AppoinmentList view={AppointmentView.BUSINESS} business={business} pageNum={pageNum} />
 {/if}
