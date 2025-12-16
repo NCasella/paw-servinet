@@ -48,3 +48,9 @@ export async function getAllServiceReviews(serviceId: number): Promise<Review[]>
 
   return all;
 }
+
+export async function updateReview(reviewId: number, form: Partial<ReviewForm>): Promise<void> {
+    await PATCH(`reviews/${reviewId}`, form, {
+        contentType: "review-update"
+    });
+}

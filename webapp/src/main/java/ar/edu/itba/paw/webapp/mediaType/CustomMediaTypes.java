@@ -33,6 +33,6 @@ public class CustomMediaTypes {
     public static final String REVIEW_INFO = "application/vnd.servinet.review-info.v1+json";
     public static final String REVIEW_LIST = "application/vnd.servinet.review-list.v1+json";
     public static final String REVIEW_CREATION = "application/vnd.servinet.review-creation.v1+json";
-
+    public static final String REVIEW_UPDATE = "application/vnd.servinet.review-update.v1+json";
 
 }

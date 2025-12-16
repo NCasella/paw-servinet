@@ -39,7 +39,11 @@ public class PasswordRecoveryCodeServiceImpl implements PasswordRecoveryCodeServ
     @Transactional
     @Override
     public void sendCode(String email) {
-        User user = userService.findByEmail(email).orElseThrow(InvalidEmailException::new);
+        Optional<User> maybeUser = userService.findByEmail(email);
+        if (maybeUser.isEmpty()){
+            return;
+        }
+        User user = maybeUser.get();
         Optional<PasswordRecoveryCode> code = passwordRecoveryCodeDao.getCodeByUserId(user.getUserId());
 
         if (code.isEmpty() || code.get().isExpired()) {
