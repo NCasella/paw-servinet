@@ -15,7 +15,15 @@ export async function createBusiness(form:BusinessForm) :Promise<number> {
     return getNewIdFromPostResponse(response)
 }
 
-export async function getUserBusinesses(pageNum:number) : Promise<PagedResult<Business>> {
+export async function getUserBusinesses(userId:number, pageNum:number) : Promise<PagedResult<Business>> {
+    const response = await GET(`businesses?ownerId=${userId}&page=${pageNum}`, 
+        {contentType: "business-list"} ) 
+    
+    return parsePagedResponse(response, Business)
+}
+
+
+export async function getCurrentUserBusinesses(pageNum:number) : Promise<PagedResult<Business>> {
     const user = await getCurrentUser().catch( (e) => e)
         
     const response = await GET(`businesses?ownerId=${user.userId}&page=${pageNum}`, 
@@ -23,7 +31,6 @@ export async function getUserBusinesses(pageNum:number) : Promise<PagedResult<Bu
     
     return parsePagedResponse(response, Business)
 }
-
 export async function getBusinessById(businessId: number, fetchFn?: typeof fetch) : Promise<Business> {
     const response = await GET(`businesses/${businessId}`,
         {contentType: "business-info",

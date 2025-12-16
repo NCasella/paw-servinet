@@ -10,7 +10,7 @@
   import NoResults from '$lib/components/global/pagedResults/NoResults.svelte';
   import ConfirmModal from '$lib/components/global/modal/ConfirmModal.svelte';
 
-  import { getPageNumFromParam, getParamIdFromUrl, getPath, goBack } from '$lib/navigation/pageInfo';
+  import { getPageNumFromParam, getParamIdFromUrl, getPath, goBack, navTo } from '$lib/navigation/pageInfo';
   import type { Business, BusinessUpdateInfo } from '$models/Business';
   import type { PagedResult } from '$models/PagedList';
   import type { Service } from '$models/Service';
@@ -25,17 +25,16 @@
 	import { StatusCodes } from '$models/exceptions/statusCodesEnum';
 	import type { BusinessFormErrors } from '$models/forms/BusinessCreationForm';
 	import PaginationControls from '$lib/components/global/pagedResults/PaginationControls.svelte';
+	import { setPage } from '$lib/navigation/changePage.js';
 
 
   let { data } = $props()
-  let { business, servicesList, isOwner } = data
-
+  let { business, servicesList, isOwner, pageNum } = data
+  let pageNumD = $state(pageNum)
 
   
   //let servicesList: PagedResult<Service> | null = null;
   let loading = $state(false);
-  let pageNum = $state(1);
-
   
 
   // si el backend ya te trae esto, podés reemplazarlo por business.isOwner
@@ -58,7 +57,7 @@
 
   async function loadServices() {
     loading = true
-    servicesList = await getServices({businessId: business.businessId, page:pageNum})
+    servicesList = await getServices({businessId: business.businessId, page:pageNumD})
     loading = false
   }
 
@@ -111,7 +110,14 @@
     }
   }
 
-
+  async function moveToPage(newPage:number) {
+    
+    pageNumD = newPage
+   
+    loadServices()
+    await setPage(newPage)
+   
+  }
 </script>
 
 {#if loading}
@@ -305,11 +311,11 @@
           {/each}
         </div>
         <PaginationControls 
-          page={pageNum} 
+          page={pageNumD} 
           pagedList = {servicesList}
-          onPageChange={(newPage) => {pageNum = newPage; loadServices()}  }/>
+          onPageChange={(newPage) => moveToPage(newPage)  }/>
   
-      {:else}
+      {:else} 
         <NoResults
           message={$t('business.not-found')}
           actionUrl={getPath(`/businesses/${business.businessId}/create-service`)}

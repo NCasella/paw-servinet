@@ -103,13 +103,13 @@ export const RegisterUserFormSchema = z.object({
   password: z
     .string()
     .trim()
-    .min(8, { message: "NotEmpty.registerUserForm.password" })
+    .min(8, { message: "Size.registerUserForm.password" })
     .max(MAX_LEN, { message: "Size.registerUserForm.password" }),
 
   confirmPassword: z
     .string()
     .trim()
-    .min(1, { message: "NotEmpty.registerUserForm.confirmPassword" })
+    .min(8, { message: "Size.registerUserForm.confirmPassword" })
     .max(MAX_LEN, { message: "Size.registerUserForm.confirmPassword" })
 }).refine((data) => data.password === data.confirmPassword, {
   message: "FieldsValueMatch.registerUserForm.password",

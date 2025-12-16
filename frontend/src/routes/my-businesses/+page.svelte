@@ -10,17 +10,17 @@
 	import Icon from "$icons";
 	import NoResults from "$lib/components/global/pagedResults/NoResults.svelte";
 	import PaginationControls from "$lib/components/global/pagedResults/PaginationControls.svelte";
+	import { navTo } from "$lib/navigation/pageInfo";
+	import type { PageData } from "./$types";
+	import { setPage } from "$lib/navigation/changePage";
 
-    let loading = true
-    let pagedList :PagedResult<Business> = {items: [], links: {}}
-    let pageNum = 1
-    onMount(loadData)
+    let loading =false
+    
+    export let data :PageData
+  $: ({ pagedList, pageNum } = data)
 
-    async function loadData() {
-        pagedList = await getUserBusinesses(pageNum)
-            .then(r => r)
-            .finally(() => loading = false);
-    }
+      
+
 </script>
 <header class="mx-8 flex place-content-between items-baseline">
     <Title text={$t("businesses.my-businesses")}/>
@@ -75,7 +75,7 @@
     <PaginationControls 
     page={pageNum}
     pagedList={pagedList}
-    onPageChange={(newPage) => {pageNum = newPage; loadData()}  }/>
+    onPageChange={(newPage) => { setPage(newPage)}  }/>
   {/if} 
 
 {/if}

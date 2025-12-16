@@ -14,6 +14,7 @@ export class UserUpdateForm implements UserUpdateFormData {
     email = "";
     telephone = "";
     locale = "es";
+    password = "";
 
     constructor(init?: Partial<UserUpdateFormData>) {
         Object.assign(this, init);
@@ -58,6 +59,9 @@ export const UserUpdateFormSchema = z.object({
     locale: z
         .string()
         .regex(/^(en|es)$/, { message: "Pattern.registerUserForm.locale" }),
+
+    password: z
+        .string()
 });
 
 

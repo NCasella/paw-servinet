@@ -32,7 +32,7 @@ export async function getImage(imageId: number): Promise<string> {
     try {
         const blob = await GET(`images/${imageId}`, {
             binary: true,
-            genericContentType: "multipart/form-data"
+            genericContentType: "image/jpeg"
         });
         return URL.createObjectURL(blob);
 
@@ -47,7 +47,7 @@ export async function getProfileImage(imageId: number): Promise<string> {
     try {
         const blob = await GET(`images/${imageId}`, {
             binary: true,
-            genericContentType: "multipart/form-data"
+            genericContentType: "image/jpeg"
         });
         return URL.createObjectURL(blob);
 
