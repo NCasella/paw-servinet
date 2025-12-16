@@ -122,7 +122,7 @@ public class ServiceJerseyController {
                 serviceCreationDto.getMinimalDuration(),
                 pricingTypeParsed,
                 serviceCreationDto.getPrice(),
-                serviceCreationDto.isAdditionalCharges(),
+                serviceCreationDto.isAdditionalCosts(),
                 serviceCreationDto.getImageId()
         );
 
@@ -166,7 +166,7 @@ public class ServiceJerseyController {
                 serviceUpdateDTO.getMinimalDuration(),
                 pricingTypeParsed,
                 serviceUpdateDTO.getPrice(),
-                serviceUpdateDTO.getAdditionalCharges()
+                serviceUpdateDTO.getAdditionalCosts()
         );
         return Response.noContent().build();
     }

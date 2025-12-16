@@ -23,7 +23,7 @@ public class ServiceUpdateDTO {
     @Pattern(regexp = "[0-9]+(\\.[0-9]{1,2})?$")
     private String price;
 
-    private Boolean additionalCharges;
+    private Boolean additionalCosts;
 
     @Positive(message = "Positive.editServiceForm.minimalduration")
     private int minimalDuration;

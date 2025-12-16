@@ -1,11 +1,10 @@
-import {DELETE, GET, getNewIdFromPostResponse, PATCH, POST} from "$utils/apiFetch";
+import { DELETE, GET, getNewIdFromPostResponse, PATCH, POST } from "$utils/apiFetch";
 import { Service } from "$models/Service";
-import { ServiceForm } from "$models/forms/ServiceCreationForm";
+import { ServiceForm, type ServiceUpdateForm } from "$models/forms/ServiceCreationForm";
 import {uploadImage} from "./imageService";
 import type {PagedResult} from "$models/PagedList";
 import {isLastPage, parsePagedResponse} from "$models/PagedList";
 import type { Appointment } from "$models/Appointment";
-import type {ServiceUpdateForm} from "$models/forms/ServiceUpdateForm";
 
 export async function getServices(params: {
     businessId?: number;
@@ -90,6 +89,11 @@ export async function getAllBusinessServices(businessId: number): Promise<number
   return ids;
 }
 
-export async function updateService(serviceId: number, form: ServiceUpdateForm) {
-    await PATCH(`services/${serviceId}`, form, {contentType:"service-update"})
+export async function updateService(
+  serviceId: number,
+  form: ServiceUpdateForm
+) {
+  return await PATCH(`services/${serviceId}`, form, {
+    contentType: "service-update",
+  });
 }

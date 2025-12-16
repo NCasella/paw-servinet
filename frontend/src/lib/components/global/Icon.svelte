@@ -40,6 +40,7 @@ import Send from 'virtual:icons/material-symbols/send-rounded';
 import Edit from 'virtual:icons/material-symbols/edit';
 import Search from 'virtual:icons/material-symbols/search-rounded';
 
+
 // Diccionario: clave → componente
 export const icons: Record<string, any> = {
   language: Language,
@@ -80,6 +81,7 @@ export const icons: Record<string, any> = {
   health: Health,
   responseArrow: ResponseArrow,
   send: Send,
+  cross: Deny,
   search: Search,
 };
 

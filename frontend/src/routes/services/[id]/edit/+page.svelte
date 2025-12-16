@@ -1,44 +1,68 @@
+
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { t } from "$i18";
-    import FormError from "$lib/components/global/forms/FormError.svelte";
-    import BigButton from "$lib/components/global/BigButton.svelte";
-    import { PricingTypes, PricingTypesInfo, PricingTypesList } from "$models/enums/PricingType";
-    import { DurationTypesList } from "$models/enums/DurationType";
-    import {getServiceById, updateService} from "$services/serviceService";
-    import { getParamIdFromUrl } from "$lib/navigation/pageInfo";
-    import { goto } from "$app/navigation";
-    import { base } from "$app/paths";
-    import { ServiceUpdateForm }
-        from "$models/forms/ServiceUpdateForm";
-    import type { ServiceUpdateFormErrors }
-        from "$models/forms/ServiceUpdateForm";
+  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+  import { base } from "$app/paths";
+  import { t } from "$i18";
 
-    let serviceForm: ServiceUpdateForm;
-    let formErrors: ServiceUpdateFormErrors = {};
-    let serviceId: number;
+  import FormError from "$lib/components/global/forms/FormError.svelte";
+  import BigButton from "$lib/components/global/BigButton.svelte";
 
-    onMount(async () => {
-        serviceId = getParamIdFromUrl();
-        const service = await getServiceById(serviceId);
+  import { ServiceForm, type ServiceFormErrors } from "$models/forms/ServiceCreationForm";
+  import type { Service } from "$models/Service";
 
-        serviceForm = new ServiceUpdateForm({
-            description: service.description ?? "",
-            pricingType: service.pricingType,
-            price: service.price,
-            additionalCharges: service.additionalCosts ?? false,
-            minimalDuration: service.duration,
-        });
+  import { PricingTypes, PricingTypesInfo, PricingTypesList } from "$models/enums/PricingType";
+  import { DurationTypesList } from "$models/enums/DurationType";
+
+  import { updateService } from "$services/serviceService";
+import type { PageData } from "./$types";
+	import Icon from "$icons";
+
+  export let data :PageData
+    let { service } = data
+
+  let serviceForm: ServiceForm;
+  let formErrors: ServiceFormErrors = {};
+  let saving = false;
+
+  const durationTypes = DurationTypesList;
+
+  onMount(() => {
+    // precarga solo lo editable
+    serviceForm = new ServiceForm({
+      description: service.description ?? "",
+      pricingType: service.pricingType ?? "",
+      minimalDuration: service.duration ?? 0,
+      additionalCosts: (service as any).additionalCosts ?? false
     });
 
-    async function handleSubmit() {
-        formErrors = serviceForm.validate();
-        if (Object.keys(formErrors).length > 0) return;
+    // si tu Service trae price (si no, queda null)
+    serviceForm.price = (service as any).price ?? null;
+  });
 
-        await updateService(serviceId, serviceForm);
-        goto(`${base}/services/${serviceId}`);
+
+  async function handleSubmit() {
+    formErrors = serviceForm.validateServiceUpdateForm();
+    if (Object.keys(formErrors).length > 0) return;
+
+    saving = true;
+    try {
+      console.log(serviceForm.additionalCosts)
+      await updateService(service.serviceId, {
+        description: serviceForm.description,
+        minimalDuration: serviceForm.minimalDuration,
+        pricingType: serviceForm.pricingType,
+        price: serviceForm.pricingType === PricingTypes.TBD ? null : serviceForm.price,
+        additionalCosts: serviceForm.additionalCosts
+      });
+
+      await goto(`${base}/services/${service.serviceId}`);
+    } finally {
+      saving = false;
     }
+  }
 </script>
+
 
 {#if serviceForm}
     <div class="flex justify-center px-4 py-8">
@@ -68,7 +92,7 @@
                     <input
                         type="checkbox"
                         class="checkbox"
-                        bind:checked={serviceForm.additionalCharges}
+                        bind:checked={serviceForm.additionalCosts}
                     />
                     <span>{$t('service.additionalCharges')}</span>
                 </label>
@@ -144,4 +168,4 @@
             </div>
         </form>
     </div>
-{/if}
+    {/if}
