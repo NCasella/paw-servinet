@@ -1,4 +1,5 @@
 import { readPageFromUrl } from "$lib/navigation/changePage";
+import { AppointmentStatus, getAppointmentStatus } from "$models/enums/AppointmentStatus";
 import { StatusCodes } from "$models/exceptions/statusCodesEnum";
 import { getBusinessById } from "$services/businessService";
 import { getCurrentUser } from "$services/userService";
@@ -8,7 +9,9 @@ export async function load({url, params, fetch}) {
     const businessId = Number(params.id);
     const pageNum = readPageFromUrl(url)
 
-  if (Number.isNaN(businessId) || Number.isNaN(pageNum) ) {
+    // finished como def asi cae en 400
+   const status = getAppointmentStatus( url.searchParams.get('status'), AppointmentStatus.FINISHED) 
+  if (Number.isNaN(businessId) || Number.isNaN(pageNum) || status == AppointmentStatus.FINISHED) {
     throw error(400)//, { message: 'id must be a number' });
   }
 
