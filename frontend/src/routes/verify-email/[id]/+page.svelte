@@ -6,18 +6,19 @@
     import { goto } from '$app/navigation';
     import { getCurrentUser } from '$services/userService';
 	import { loginWithBasicAuth } from '$services/authenticate';
-    import { User } from '$models/User';
+    import { UserContactInfo } from '$models/ContactInfo';
 	import Spinner from "$lib/components/global/Spinner.svelte";
+    import type { PageData } from './$types';
 
+    export let data :PageData
+    let { user, otherLang } = data
     let id = '';
-    let user : User | null = null;
     let verifying = true;
     let verificationSuccess = false;
     let errorMessage = '';
 
 onMount(async () => {
     id = $page.params.id;
-    user = await getCurrentUser();
     
     if (user === null) {
         verifying = false;
