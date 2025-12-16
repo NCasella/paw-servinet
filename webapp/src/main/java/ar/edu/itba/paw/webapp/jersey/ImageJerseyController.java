@@ -4,9 +4,8 @@ import ar.edu.itba.paw.model.ImageModel;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.webapp.validation.ValidImageFile;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 
@@ -15,7 +14,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 
 @Path("/images")
@@ -45,7 +43,7 @@ public class ImageJerseyController {
 
     @GET
     @Path("/{imageId}")
-    @Produces(value={MediaType.MULTIPART_FORM_DATA})
+    @Produces(value={MediaType.IMAGE_PNG_VALUE,MediaType.IMAGE_JPEG_VALUE})
     public Response getImage(@PathParam("imageId") long imageId){
         ImageModel image=imageService.getImageById(imageId).orElseThrow(NotFoundException::new);
         byte[] imageContent=image.getImageBytes();
@@ -53,9 +51,9 @@ public class ImageJerseyController {
     }
 
     @POST
-    @Consumes(value = MediaType.MULTIPART_FORM_DATA)
-    public Response createImage(@ValidImageFile @FormDataParam("image") FormDataBodyPart image){
-        ImageModel createdImage=imageService.addImage(image.getEntityAs(byte[].class));
+    @Consumes(value={MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE})
+    public Response createImage(@ValidImageFile byte[] imageBytes){
+        ImageModel createdImage=imageService.addImage(imageBytes);
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(createdImage.getImageId())).build()).build();
     }
 }
