@@ -26,16 +26,18 @@ public class ServinetAuthControl {
     private final BusinessService businessService;
     private final ServiceService ss;
     private final RatingService ratingService;
+    private final QuestionService questionService;
     @Autowired
     public ServinetAuthControl(@Qualifier("userServiceImpl") final UserService userService,
                                @Qualifier("appointmentServiceImpl") final AppointmentService appointmentService,
                                @Qualifier("BusinessServiceImpl") final BusinessService businessService,
-                               @Qualifier("serviceServiceImpl") final ServiceService ss,@Qualifier("RatingServiceImpl") RatingService ratingService){
+                               @Qualifier("serviceServiceImpl") final ServiceService ss,@Qualifier("RatingServiceImpl") RatingService ratingService,@Qualifier("QuestionServiceImpl")QuestionService questionService){
         this.userService = userService;
         this.appointmentService = appointmentService;
         this.businessService = businessService;
         this.ss=ss;
         this.ratingService=ratingService;
+        this.questionService=questionService;
     }
 
     @Transactional
@@ -49,13 +51,16 @@ public class ServinetAuthControl {
     }
     @Transactional(readOnly = true)
     public boolean isServiceOwner(long serviceId){
-        User user=getCurrentUser().orElseThrow(UserNotFoundException::new);
+        Optional<User> user=getCurrentUser();
+        if(user.isEmpty()){
+            return false;
+        }
         Optional<Service> service =ss.findById(serviceId);
         if(service.isEmpty()){
             return false;
         }
         Business business = service.get().getBusiness();
-        return business.getUserId() == user.getUserId();
+        return business.getUserId() == user.get().getUserId();
     }
 
     @Transactional(readOnly = true)
@@ -66,9 +71,12 @@ public class ServinetAuthControl {
 
     @Transactional(readOnly = true)
     public boolean isUserAppointment(long appointmentId){
-        User user =getCurrentUser().orElseThrow(UserNotFoundException::new);
+        Optional<User> user =getCurrentUser();
+        if(user.isEmpty()){
+            return false;
+        }
         Optional<Appointment> appointment = appointmentService.findById(appointmentId);
-        return appointment.filter(value -> user.getUserId() == value.getUserid()).isPresent();
+        return appointment.filter(value -> user.get().getUserId() == value.getUserid()).isPresent();
     }
 
     @Transactional(readOnly = true)
@@ -120,6 +128,11 @@ public class ServinetAuthControl {
     @Transactional
     public boolean isUserProvidee(long providerUserId,long requestUserId){
         return userService.isUserProvidee(providerUserId, requestUserId);
+    }
+    @Transactional(readOnly = true)
+    public boolean isQuestionResponseServiceOwner(long questionId){
+        Optional<Question> mayQuestion=questionService.findById(questionId);
+        return mayQuestion.filter(question -> this.isServiceOwner(question.getServiceid())).isPresent();
     }
 
 }

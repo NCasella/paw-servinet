@@ -1,8 +1,8 @@
 <script lang="ts">
     import { t } from "$lib/i18n/i18n";
     import { onMount } from "svelte";
-    import { RegisterUserForm, type RegisterUserFormErrors, type RegisterUserFormData } from "$models/forms/UserCreationForm";
-    import { createUser, getCurrentUser } from "$services/userService";
+    import { RegisterUserForm, type RegisterUserFormErrors} from "$models/forms/UserCreationForm";
+    import { createUser} from "$services/userService";
     import FormError from "$lib/components/global/forms/FormError.svelte";
     import { base } from '$app/paths';
     import { goto } from '$app/navigation';
@@ -34,10 +34,8 @@
             loading = false;
 
             if (ok) {
-              getCurrentUser().then( () => history.back())   
+              await goto(`${base}/profile`);
             }
-            
-            await goto(`${base}/profile`);
 
         } catch (error) {
             console.error("Error during registration:", error);

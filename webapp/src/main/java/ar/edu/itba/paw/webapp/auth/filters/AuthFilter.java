@@ -74,9 +74,14 @@ public class AuthFilter extends OncePerRequestFilter {
                 } catch (AuthenticationException standardAuthException) {
 
                     try {
-                        Optional<User> maybeUser = us.findByEmail(identity).or(() -> passRecoveryService.getUserFromRecoveryCode(UUID.fromString(identity)));
-                        boolean isEmail = identity.contains("@");
-
+                        Optional<User> maybeUser = us.findByEmail(identity);
+                        if (maybeUser.isEmpty()) {
+                            try {
+                                UUID recoveryCode = UUID.fromString(identity);
+                                maybeUser = passRecoveryService.getUserFromRecoveryCode(recoveryCode);
+                            } catch (IllegalArgumentException e) {
+                            }
+                        }
                         if (maybeUser.isPresent()) {
                             final User user = maybeUser.get();
                             boolean verificationSuccess = false;
@@ -84,7 +89,7 @@ public class AuthFilter extends OncePerRequestFilter {
                             if (us.verifyUser(user.getUserId(), credential)){
                                 verificationSuccess = true;
                             }
-                            else if (!isEmail && passRecoveryService.validateCode(UUID.fromString(identity))) {
+                            else if (passRecoveryService.validateCode(UUID.fromString(identity))) {
                                 passRecoveryService.changePassword(UUID.fromString(identity), credential);
                                 verificationSuccess = true;
                             }

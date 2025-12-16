@@ -203,6 +203,7 @@ export default {
   "verification.error.no-user": "No hay ningún usuario conectado actualmente.",
   "verification.error.failed": "La verificación del correo electrónico falló. Por favor, inténtelo de nuevo.",
   "verification.success": "¡Su correo electrónico ha sido verificado con éxito!",
+  "verification.success.title": "Correo Electrónico Verificado",
   "verification.resend": "Reenviar correo de verificación",
   "verification.email-sent": "Se ha enviado un nuevo correo de verificación a su dirección de correo electrónico.",
   "verification.verifying": "Verificando su correo electrónico...",

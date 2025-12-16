@@ -214,6 +214,7 @@ export default {
   "verification.error.no-user": "No user is currently logged in.",
   "verification.error.failed": "Email verification failed. Please try again.",
   "verification.success": "Your email has been successfully verified!",
+  "verification.success.title": "Email Verified",
   "verification.resend": "Resend verification email",
   "verification.email-sent": "A new verification email has been sent to your email address.",
   "verification.verifying": "Verifying your email...",
