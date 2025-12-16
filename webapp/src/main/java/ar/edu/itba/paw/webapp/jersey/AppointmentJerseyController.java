@@ -22,9 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -53,12 +51,7 @@ public class AppointmentJerseyController {
         this.businessService=businessService;
     }
 
-    /*
-    * FIXME: ver como pasar id del servicio.
-    *
-    * @POST
-    *
-    */
+
 
     @OPTIONS
     public Response getSupportedAppointmentsMimeTypes() {
@@ -93,10 +86,14 @@ public class AppointmentJerseyController {
             businessService.findById(businessId).orElseThrow(BusinessNotFoundException::new);
             pagedList = appointmentService.getBusinessAppointments(businessId, statusEnum, page);
         }
+        Map<String,Object> queryParamsForLink=new HashMap<>();
+        queryParamsForLink.put("userId",userId);
+        queryParamsForLink.put("businessId",businessId);
+        queryParamsForLink.put("status",status);
         final List<AppointmentDto> allAppointments = pagedList.getList().stream()
                 .map(a -> AppointmentDto.fromAppointment(a,uriInfo) ).collect(Collectors.toList());
 
-        return PagedListResponse.generate(allAppointments,page,pagedList.getTotalElements(),uriInfo, AppointmentDto.class,request);
+        return PagedListResponse.generate(allAppointments,page,pagedList.getTotalElements(),uriInfo, AppointmentDto.class,request,queryParamsForLink);
     }
 
     @POST

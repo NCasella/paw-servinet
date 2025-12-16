@@ -20,7 +20,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/reviews")
 @Component
@@ -72,13 +74,17 @@ public class RatingsController {
                 .map(r -> ReviewDto.fromRating(r, uriInfo))
                 .toList();
 
+        Map<String,Object> queryParamsForLinks=new HashMap<>();
+        queryParamsForLinks.put("serviceId",serviceId);
+        queryParamsForLinks.put("filter",filter);
         return PagedListResponse.generate(
                 dtoList,
                 page,
                 pagedList.getTotalElements(),
                 uriInfo,
                 ReviewDto.class,
-                request
+                request,
+                queryParamsForLinks
         );
     }
 
