@@ -2,10 +2,15 @@ import { base } from "$app/paths";
 import { getNewIdFromPostResponse, POST, GET } from "$utils/apiFetch";
 
 export async function uploadImage(file: File): Promise<number> {
+    const formData = new FormData();
+    formData.append("image", file);
 
     const response = await POST<{ headers: Headers; body: any }, FormData>(
         "images",
-        file
+        formData,
+        {
+            genericContentType: "multipart/form-data",
+        }
     );
 
     return getNewIdFromPostResponse(response);
