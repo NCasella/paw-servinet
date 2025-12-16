@@ -71,4 +71,13 @@ public class AuthorizationDecider {
         return new AuthorizationDecision(allow);
 
     }
+    public AuthorizationDecision canRespondQuestion(Supplier<Authentication> auth, RequestAuthorizationContext context) {
+        long questionId = Long.parseLong(context.getVariables().getOrDefault("questionId", "-1"));
+        if(questionId==-1){
+            return new AuthorizationDecision(false);
+        }
+
+        return new AuthorizationDecision(authControl.isQuestionResponseServiceOwner(questionId));
+    }
+
 }
