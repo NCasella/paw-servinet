@@ -74,23 +74,32 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtRefreshFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
+
+                .requestMatchers("/api").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/images/{imageId:\\d+}").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/images").hasRole("USER")
+                .requestMatchers("/api/users").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/businesses/{businessId:\\d+}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/questions").permitAll()
+
                 .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authDecider::canViewUserContactInfo)
                 .requestMatchers("/api/users/{userId:\\d+}").access(authDecider::isCurrentUser)
-                .requestMatchers(HttpMethod.GET,"/api/businesses/{businessId:\\d+}").permitAll()
-                .requestMatchers("/api/businesses/{businessId:\\d+}").access(authDecider::isCurrentUserBusinessOwner)
+
+                .requestMatchers(HttpMethod.POST, "/api/businesses").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/services").access(authDecider::isCurrentUserBusinessOwner)
                 .requestMatchers(HttpMethod.POST,"/api/questions","/api/reviews").hasRole("USER")
+
                 .requestMatchers(HttpMethod.PATCH,"/api/questions/{questionId:\\d+}").access(authDecider::canRespondQuestion)
-                .requestMatchers(HttpMethod.GET,"/api/services/**").permitAll()
                 .requestMatchers("/api/services/{serviceId:\\d++}").access(authDecider::canChangeService)
+
                 .requestMatchers(HttpMethod.GET,"/api/appointments").access(authDecider::canViewAppointmentList)
                 .requestMatchers(HttpMethod.POST,"/api/appointmnets").hasRole("USER")
                 .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
                 .requestMatchers(HttpMethod.PATCH,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
-                .requestMatchers(HttpMethod.GET, "/api/images/{imageId:\\d+}").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/questions").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
-                .requestMatchers("/api").permitAll()
-                .requestMatchers("/**").permitAll();
+
+                .requestMatchers("/**").authenticated();
     }
 
     @Override
