@@ -8,18 +8,14 @@
 	import { closeSession, currentUserIsProvider } from '$services/userService';
 	import { invalidateAll } from '$app/navigation';
 	import { navTo } from '$lib/navigation/pageInfo';
-
 	
 	let {currentUser} = $props()
-
 
 	async function logUserOut () {
         closeSession()
         await invalidateAll(); 
         navTo("/login") 
     }
-
-
 </script>
 
 <Menu>
@@ -46,9 +42,8 @@
 					</Menu.Item>
 					<Menu.Item value="close session" class="btn  bg-error-400 text-error-700">
 						 <!-- Logout -->
-						  <Menu.ItemText 
-        onclick={logUserOut}>
-        {$t('profile.logout')}    
+						  <Menu.ItemText onclick={logUserOut}>
+							{$t('profile.logout')}
 						  </Menu.ItemText>
 					</Menu.Item>
 				</Menu.ItemGroup>

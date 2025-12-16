@@ -10,15 +10,11 @@
 	import Spinner from "$lib/components/global/Spinner.svelte";
 	import Icon from "$icons";
 	import type { PageData } from "./$types";
-
-    
     
     export let data :PageData
     let { user, otherLang } = data
 
-
   function editProfile() {}
-  
 </script>
 
   <div class="max-w-xl mx-auto ">
@@ -27,21 +23,17 @@
 
     <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
          <!-- Top: avatar + identity + actions -->
-       <Avatar class="size-30">
-        <!--<Avatar.Image src="{user.getProfilePictureSrc()}" alt="base" />-->
-        <Avatar.Fallback>
-          <img class="rounded-2xl" src={UserContactInfo.getFallbackImage()} alt="profile" />
-        </Avatar.Fallback>
-      </Avatar>
+        <Avatar class="h-30 w-30">
+            <Avatar.Image src={user.profilePicture} alt="pic" />
+            <Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()} alt="pic"/></Avatar.Fallback>
+        </Avatar>
       <div class="flex-1 min-w-0">
         <div class="">
-          
             <h2 class="text-2xl font-semibold leading-tight truncate">{user.fullName}</h2>
-           <div class="text-sm opacity-80 truncate text-primary-500 flex items-center gap-1">
-              <Icon name="person"  />
+           <div class="flex text-lg text-primary-600 items-center align-middle gap-1 mt-3">
+              <Icon name="person" />
               <span>{user.username}</span>
             </div>
-
         </div>
 
         <!-- Datos -->
@@ -86,6 +78,5 @@
 
   </section>
 </div>
-
 
 
