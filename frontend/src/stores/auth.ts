@@ -28,3 +28,7 @@ export function clearTokens() {
 export function getAccessToken(): string | null {
   return get(auth).accessToken;
 }
+
+export function getRefreshToken(): string | null {
+  return get(auth).refreshToken;
+}

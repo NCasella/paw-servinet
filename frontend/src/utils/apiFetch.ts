@@ -1,4 +1,6 @@
-import { getAccessToken } from "$stores/auth"; 
+import { removeTokens } from "$services/authenticate";
+import { getAccessToken, getRefreshToken, setTokens } from "$stores/auth"; 
+import { base } from "$app/paths"; 
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -46,8 +48,13 @@ export async function apiFetch<TResponse = any, TBody = any>(
 
   const finalHeaders: Record<string, string> = { ...headers };
   const token = withAuth ? getAccessToken() : null;
+  const refreshToken = withAuth ? getRefreshToken() : null;
+  let usingRefresh = false;
   if (token) {
     finalHeaders["Authorization"] = `Bearer ${token}`;
+  }else if (refreshToken){
+    finalHeaders["Authorization-Refresh-Token"] = `Bearer ${refreshToken}`;
+    usingRefresh = true;
   }
 
   const isFormData = body instanceof FormData;
@@ -58,17 +65,51 @@ export async function apiFetch<TResponse = any, TBody = any>(
         : (genericContentType ? genericContentType : "application/json");
   }
 
-  const response = await fetchFn(API_BASE_URL + "/" + url, {
+  let response = await fetchFn(API_BASE_URL + url, {
     method,
     headers: finalHeaders,
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,
   });
 
-  if (!response.ok) {
-    const err: FetchError = new Error(`Request failed: ${response.status}`);
-    err.status = response.status;
-    throw err;
+  const newAccessToken = response.headers.get("Authorization");
+
+  if (newAccessToken && newAccessToken.startsWith("Bearer ")) {
+      const token = newAccessToken.substring(7);
+      setTokens({ accessToken: token }); 
   }
+
+  if(response.status === 401 && withAuth) {
+    if (!usingRefresh && refreshToken) {
+      setTokens({ accessToken: null}); 
+      delete finalHeaders["Authorization"]; 
+      finalHeaders["Authorization-Refresh-Token"] = `Bearer ${refreshToken}`;
+      response = await fetchFn(API_BASE_URL + url, {
+        method,
+        headers: finalHeaders,
+        body: isFormData ? body : body ? JSON.stringify(body) : undefined,
+      });
+
+      const newAccessToken = response.headers.get("Authorization");
+
+      if (newAccessToken && newAccessToken.startsWith("Bearer ")) {
+        const token = newAccessToken.substring(7);
+        setTokens({ accessToken: token }); 
+      }
+      
+      if(response.status === 401) {
+        removeTokens();
+        window.location.href = `${base}/login`;
+        const err: FetchError = new Error(`Request failed: ${response.status}`);
+        err.status = response.status;
+        throw err;
+      }
+    } else {
+      removeTokens();
+      window.location.href = `${base}/login`;
+      throw new Error("Unauthorized");
+    }
+  }
+  
 
   if (binary) return response.blob() as any;
 
