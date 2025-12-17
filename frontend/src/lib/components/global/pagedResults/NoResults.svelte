@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { asset, assets } from "$app/paths";
 	import { text } from "@sveltejs/kit";
 	import BigButton from "../BigButton.svelte";
-
+  import NoResultsImg from "$lib/images/noResults.png"
 
   export let message: string = "";            // mensaje opcional
   export let actionUrl: string | null = null; // URL del call to action
@@ -14,7 +13,7 @@
   <!-- Imagen -->
   <div class="w-40 h-40">
     <img 
-      src={asset("/images/noResults.svg")}
+      src={NoResultsImg}
       alt="No results"
       class="w-full h-full object-contain opacity-80"
     />

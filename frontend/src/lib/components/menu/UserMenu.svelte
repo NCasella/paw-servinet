@@ -2,13 +2,15 @@
 	import { Menu, Portal } from '@skeletonlabs/skeleton-svelte';
     import { t } from "$lib/i18n/i18n";
 	import { Avatar } from '@skeletonlabs/skeleton-svelte';
-	import { asset, base } from '$app/paths';
+	import { base } from '$app/paths';
 	import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
 	import { UserContactInfo } from '$models/ContactInfo';
 	import { closeSession, currentUserIsProvider } from '$services/userService';
 	import { invalidateAll } from '$app/navigation';
 	import { navTo } from '$lib/navigation/pageInfo';
-	
+	import { User } from '$models/User';
+	import UserDefaultImg from "$lib/images/profile_default.png"
+
 	let {currentUser} = $props()
 
 	async function logUserOut () {
@@ -22,7 +24,7 @@
 	<Menu.Trigger class="btn" >
 		<Avatar class="h-12 w-12">
 				<Avatar.Image src={currentUser.getProfilePictureSrc()} alt="base" />
-				<Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()} alt="pic"/></Avatar.Fallback>
+				<Avatar.Fallback><img class="rounded-2xl" src={UserDefaultImg} alt="pic"/></Avatar.Fallback>
 		</Avatar>
 	</Menu.Trigger>
 	<Portal>

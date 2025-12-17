@@ -1,5 +1,7 @@
 import { base } from "$app/paths";
 import { getNewIdFromPostResponse, POST, GET } from "$utils/apiFetch";
+import ServiceDefaultImg from "$lib/images/default.jpeg"
+import UserDefaultImg from "$lib/images/profile_default.png"
 
 export async function uploadImage(file: File): Promise<number> {
     const formData = new FormData();
@@ -23,8 +25,8 @@ async function getDefaultAsFile(defaultImageUrl:string): Promise<File> {
     return new File([blob], "default.png", { type: blob.type });
 }
 
-const FALLBACK = `${base}/images/default.jpeg`;
-const USER_FALLBACK = `${base}/images/profile_default.png`;
+const FALLBACK = ServiceDefaultImg;
+const USER_FALLBACK = UserDefaultImg;
 
 export async function getImage(imageId: number): Promise<string> {
     if (!imageId || imageId <= 0) return FALLBACK;

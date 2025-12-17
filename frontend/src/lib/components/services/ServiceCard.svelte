@@ -1,19 +1,13 @@
 <script lang="ts">
-    import type {Service} from "$models/Service";
+    import {Service} from "$models/Service";
     import {t} from "$lib/i18n/i18n"
     import {PricingTypes, PricingTypesInfo} from "$models/enums/PricingType";
     import {Categories, CategoriesInfo} from "$models/enums/CategoryType";
-    import {getImage} from "$services/imageService";
     import {onMount} from "svelte";
     import {base} from "$app/paths";
     import Icon from "$icons";
 
     export let service: Service;
-    let imageUrl: string = "";
-
-    onMount(async () => {
-        imageUrl = await getImage(service.imageId)
-    });
 
     let pricingEnum: PricingTypes = PricingTypes[service.pricingType as keyof typeof PricingTypes];
     let categoryEnum: Categories = Categories[service.category as keyof typeof Categories];
@@ -26,7 +20,7 @@
 
         <div class="w-50 h-32 rounded-xl overflow-hidden flex-shrink-0">
             <div class="w-50 rounded-lg overflow-hidden">
-                <img src={imageUrl} alt="Service image" />
+                <img src={service.getServiceImageUrl()} alt="Service image" />
             </div>
         </div>
 

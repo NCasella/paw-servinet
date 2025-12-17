@@ -2,7 +2,7 @@
   import { t } from "$lib/i18n/i18n";
 	import { closeSession, getCurrentUserContactInfo } from "$services/userService";
 	import { getCurrentUser } from "$services/userService";
-  import {type User } from "$models/User"
+  import {User } from "$models/User"
   import { onMount } from "svelte";
 	import { goto, invalidateAll } from "$app/navigation";
   import { Avatar } from "@skeletonlabs/skeleton-svelte";
@@ -26,7 +26,7 @@
     <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
         <Avatar class="h-40 w-40">
             <Avatar.Image src={user.profilePicture} alt="pic" />
-            <Avatar.Fallback><img class="rounded-2xl" src={UserContactInfo.getFallbackImage()} alt="pic"/></Avatar.Fallback>
+            <Avatar.Fallback><img class="rounded-2xl" src={User.getFallbackImage()} alt="pic"/></Avatar.Fallback>
         </Avatar>
       <div class="flex-1 min-w-0">
         <div>
