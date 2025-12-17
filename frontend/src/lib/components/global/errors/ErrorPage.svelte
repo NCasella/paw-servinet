@@ -1,19 +1,27 @@
 <script lang="ts">
-	import { asset } from "$app/paths";
 	import { navTo } from "$lib/navigation/pageInfo";
 	import {t} from '$i18'
 	import BigButtonWithOnClick from "$lib/components/global/BigButtonWithOnClick.svelte";
     import { StatusCodes} from "$models/exceptions/statusCodesEnum"
-	import { onMount } from "svelte";
+	import Img404 from "$lib/images/404.svg"
+  import Img403 from "$lib/images/403.svg"
+  import Img400 from "$lib/images/400.svg"
+  import Img500 from "$lib/images/500.svg"
   export let status: number;
   export let error: App.Error;
 
   function getImageForStatus(){
-    /* Unauthorized */
-    if(status==StatusCodes.UNAUTHORIZED) 
-      navTo('/login') 
-    else 
-      return asset(`/images/${status}.svg`);
+    switch(status){
+      case StatusCodes.UNAUTHORIZED:
+        navTo('/login'); return;
+      case StatusCodes.BAD_REQUEST:
+        return Img400
+      case StatusCodes.FORBIDDEN:
+        return Img403
+      case StatusCodes.NOT_FOUND:
+        return Img404
+      default: return Img500
+    }
   }
 
   

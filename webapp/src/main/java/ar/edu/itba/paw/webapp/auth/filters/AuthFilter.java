@@ -8,6 +8,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,9 +23,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 @Component
@@ -61,11 +61,12 @@ public class AuthFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                final String identity = parts[0]; // username o email
+                final String identity = parts[0]; // email
                 final String credential = parts[1]; // password o token
 
                 Authentication auth = null;
-                boolean specialFlow = false;
+                boolean isPasswordRecovery = true;
+                UUID recoveryCode = UUID.randomUUID();
 
                 try {
                     UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(identity, credential);
@@ -75,29 +76,33 @@ public class AuthFilter extends OncePerRequestFilter {
 
                     try {
                         Optional<User> maybeUser = us.findByEmail(identity);
-                        if (maybeUser.isEmpty()) {
-                            try {
-                                UUID recoveryCode = UUID.fromString(identity);
-                                maybeUser = passRecoveryService.getUserFromRecoveryCode(recoveryCode);
-                            } catch (IllegalArgumentException e) {
-                            }
-                        }
                         if (maybeUser.isPresent()) {
                             final User user = maybeUser.get();
                             boolean verificationSuccess = false;
+                            try {
+                                recoveryCode = UUID.fromString(credential);
+                            } catch (IllegalArgumentException e){
+                                isPasswordRecovery= false;
+                            }
 
-                            if (us.verifyUser(user.getUserId(), credential)){
+                            if (!isPasswordRecovery && us.verifyUser(user.getUserId(), credential)){
                                 verificationSuccess = true;
                             }
-                            else if (passRecoveryService.validateCode(UUID.fromString(identity))) {
-                                passRecoveryService.changePassword(UUID.fromString(identity), credential);
+
+                            else if ( isPasswordRecovery && passRecoveryService.validateCode(identity, recoveryCode)) {
                                 verificationSuccess = true;
                             }
 
                             if (verificationSuccess) {
-                                specialFlow = true;
                                 final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-                                auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                                Collection<GrantedAuthority> authorities;
+                                if (isPasswordRecovery){
+                                    authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_PASSWORD_RESET"));
+                                    passRecoveryService.deleteCode(user.getUserId());
+                                }else{
+                                    authorities = new HashSet<>(userDetails.getAuthorities());
+                                }
+                                auth = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                             } else {
                                 // Si falla la autenticación estándar y los flujos especiales
                                 throw standardAuthException;

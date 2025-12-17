@@ -110,6 +110,10 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     </filter-mapping>
     <filter-mapping>
         <filter-name>unconditionalCacheFilter</filter-name>
+        <url-pattern>/_app/immutable/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>unconditionalCacheFilter</filter-name>
         <url-pattern>/assets/*</url-pattern>
     </filter-mapping>
     <filter-mapping>

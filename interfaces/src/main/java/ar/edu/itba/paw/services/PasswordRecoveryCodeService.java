@@ -14,5 +14,5 @@ public interface PasswordRecoveryCodeService {
     PasswordRecoveryCode generateCode(long userid);
     void changePassword(UUID code, String newPassword);
     void deleteCode(long userid);
-    boolean validateCode(UUID code);
+    boolean validateCode(String email, UUID code);
 }

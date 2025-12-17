@@ -10,7 +10,7 @@
         from "$models/forms/UserUpdateForm";
     import type { UserUpdateFormErrors }
         from "$models/forms/UserUpdateForm";
-    import {getCurrentUserContactInfo, updateUser} from "$services/userService";
+    import {getCurrentUserContactInfo, getPatchFormWithModifiedFields, updateUser} from "$services/userService";
     import type {UserContactInfo} from "$models/ContactInfo";
 	import BigButtonSecondaryWithOnClick from "$lib/components/global/BigButtonSecondaryWithOnClick.svelte";
 
@@ -36,7 +36,8 @@
         if (Object.keys(formErrors).length > 0) return;
 
         try {
-            await updateUser(user.userId, userForm);
+            let cleanedForm = getPatchFormWithModifiedFields(user, userForm);
+            await updateUser(user.userId, cleanedForm);
             if(userForm.locale !== user.language) {
                 setLanguage(userForm.locale);
             }

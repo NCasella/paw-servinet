@@ -10,7 +10,7 @@ export async function load({url, params, fetch}) {
     const pageNum = readPageFromUrl(url)
 
     // finished como def asi cae en 400
-   const status = getAppointmentStatus( url.searchParams.get('status'), AppointmentStatus.FINISHED) 
+   const status = getAppointmentStatus( url.searchParams.get('status'), AppointmentStatus.PENDING) 
   if (Number.isNaN(businessId) || Number.isNaN(pageNum) || status == AppointmentStatus.FINISHED) {
     throw error(400)//, { message: 'id must be a number' });
   }

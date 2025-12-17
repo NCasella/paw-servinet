@@ -17,7 +17,6 @@
     import BigButtonWarning from "$lib/components/global/BigButtonWarning.svelte";
     import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
     import {get} from "svelte/store";
-    import {getImage} from "$services/imageService";
     import Spinner from "$lib/components/global/Spinner.svelte";
     import Questions from "$lib/components/services/Questions.svelte";
     import Reviews from "$lib/components/services/Reviews.svelte";
@@ -26,7 +25,6 @@
     let loading = true
     let isOwner :boolean
     let isQuestions = true;
-    let imageUrl: string = "";
     
     let user :User
     let business :Business
@@ -40,7 +38,6 @@
     serviceId = service.serviceId
     onMount(async () => {
 
-        imageUrl = await getImage(service.imageId);
         business = await getBusinessById(service.businessId);
         try {
             user = await getCurrentUser();
@@ -115,7 +112,7 @@
 
         <div class="flex gap-8 mt-6">
             <div class="w-120 rounded-lg overflow-hidden">
-                <img src={imageUrl} alt="Service image" />
+                <img src={service.getServiceImageUrl()} alt="Service image" />
             </div>
 
             <div class="flex-1">

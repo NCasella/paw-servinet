@@ -1,5 +1,5 @@
-import { asset } from "$app/paths";
 import { type TResponse } from "$utils/apiFetch";
+import UserDefaultImg from "$lib/images/profile_default.png"
 
 export class User {
   userId: number;
@@ -48,11 +48,10 @@ export class User {
 
   getProfilePictureSrc() {
       if ( this.profilePicture) return this.profilePicture
-      return asset("/images/profile_default.png")
    }
   
    static getFallbackImage() {
-      return asset("/images/profile_default.png")
+      return UserDefaultImg
   }
 }
 

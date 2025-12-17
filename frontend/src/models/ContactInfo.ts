@@ -1,4 +1,3 @@
-import { asset } from "$app/paths";
 import { getPath } from "$lib/navigation/pageInfo";
 import type { TResponse } from "$utils/apiFetch";
 
@@ -44,11 +43,6 @@ export class UserContactInfo {
     } as ContactInfo;
  }
   
- 
-
- static getFallbackImage() {
-    return asset("/images/profile_default.png")
-}
 
 }
 

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import {  t } from '$i18';
-  import { asset, base } from '$app/paths';
+  import { base } from '$app/paths';
 
   import Spinner from '$lib/components/global/Spinner.svelte';
   import Title from '$lib/components/global/Title.svelte';
@@ -13,14 +13,13 @@
   import { getPageNumFromParam, getParamIdFromUrl, getPath, goBack, navTo } from '$lib/navigation/pageInfo';
   import type { Business, BusinessUpdateInfo } from '$models/Business';
   import type { PagedResult } from '$models/PagedList';
-  import type { Service } from '$models/Service';
+  import { Service } from '$models/Service';
 
   import { getBusinessById, deleteBusiness, updateBusiness } from '$services/businessService';
   import { getServices } from '$services/serviceService';
 	import Icon from '$icons';
 	import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
 	import BigButtonWarning from '$lib/components/global/BigButtonWarning.svelte';
-	import { getImage } from '$services/imageService';
 	import { error } from '@sveltejs/kit';
 	import { StatusCodes } from '$models/exceptions/statusCodesEnum';
 	import type { BusinessFormErrors } from '$models/forms/BusinessCreationForm';
@@ -300,7 +299,7 @@
               <div class="rounded-2xl shadow bg-white overflow-hidden hover:shadow-lg transition flex flex-col">
                 <ImageWithFallback
 				src={service.getServiceImageUrl()}
-				fallback={asset("/images/default/service.png")}
+				fallback={Service.getFallbackImage()}
 				/>
 
                 <p class="px-4 py-3 text-sm font-medium truncate">

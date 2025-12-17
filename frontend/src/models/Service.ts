@@ -1,6 +1,7 @@
 import { API_BASE_URL, type TResponse } from "$utils/apiFetch";
 import { DurationTypes } from "./enums/DurationType";
 import { PricingTypes } from "./enums/PricingType";
+import ServiceDefaultImage from "$lib/images/service_default.png"
 
 export class Service {
   additionalCosts: boolean;
@@ -77,9 +78,12 @@ export class Service {
     return this.pricingType == PricingTypes.TBD
   }
 
-   getServiceImageUrl(): string {
-    
-    return this.links.image ?? "";
+   getServiceImageUrl(): string { 
+    return this.links.image ?? ServiceDefaultImage;
+  }
+
+  static getFallbackImage() {
+    return ServiceDefaultImage;
   }
 }
 

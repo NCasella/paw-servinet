@@ -15,7 +15,7 @@ export async function load({ params, fetch }) {
     return { service: service };
   } catch(e) {
     console.log(e)
-    throw error(404)//, { message: 'Service not found' });
+    error(404, { message: 'Service not found' });
   }
 }
 

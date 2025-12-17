@@ -15,6 +15,8 @@ export default {
   "login.passwordrecovery.title": "Restablecer Contraseña",
   "login.passwordrecovery.success":
     "Se ha enviado un correo electrónico con las instrucciones para restablecer su contraseña",
+  "login.passwordrecovery.invalid-email": "Correo electrónico inválido para realizar esta operación. Asegúrese de usar el mismo correo con el que se registró.",
+  "login.passwordrecovery.error-occured": "Ocurrió un error al restablecer su contraseña",
 
   "email": "Correo electrónico",
   "login": "Iniciar sesión",
