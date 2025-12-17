@@ -1,9 +1,8 @@
 package ar.edu.itba.paw.webapp.auth.filters;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,15 +24,25 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
         String refreshToken=request.getHeader("Authorization-Refresh-Token");
         String authHeader=request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(refreshToken==null || (authHeader != null && authHeader.startsWith("Bearer "))){
+        if(refreshToken==null || (authHeader != null && (authHeader.startsWith("Bearer ") || authHeader.startsWith("Basic ")) ) ){
             filterChain.doFilter(request,response);
             return;
         }
-        UserDetails us=jwtUtil.loginUser(refreshToken);
-        if(us!=null){
+        if(refreshToken.length() <"Bearer ".length()){
+            filterChain.doFilter(request,response);
+            return;
+        }
+        refreshToken=refreshToken.substring("Bearer ".length());
+        try{
+            UserDetails us=jwtUtil.loginUser(refreshToken);
+            if(us!=null){
             String newToken=jwtUtil.generateToken(us);
             response.setHeader(HttpHeaders.AUTHORIZATION,"Bearer "+newToken);
+            }
+        }catch (JwtException | IllegalArgumentException e){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
+
         filterChain.doFilter(request,response);
 
     }

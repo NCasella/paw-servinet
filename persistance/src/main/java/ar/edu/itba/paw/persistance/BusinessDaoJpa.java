@@ -115,19 +115,19 @@ public class BusinessDaoJpa implements BusinessDao {
     public void changeBusinessEmail(long businessId, String newBusinessEmail) {
         final Business business = em.find(Business.class, businessId);
         business.setEmail(newBusinessEmail);
-        em.persist(business);
+        em.merge(business);
     }
     @Override
     public void changeBusinessTelephone(long businessId,String newBusinessTelephone){
         final Business business = em.find(Business.class, businessId);
         business.setTelephone(newBusinessTelephone);
-        em.persist(business);
+        em.merge(business);
     }
     @Override
     public void changeBusinessLocation(long businessId,String newBusinessLocation){
         final Business business = em.find(Business.class, businessId);
         business.setLocation(newBusinessLocation);
-        em.persist(business);
+        em.merge(business);
     }
 
     @Override

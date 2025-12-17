@@ -17,23 +17,16 @@
 	import BigButtonWarning from '$lib/components/global/BigButtonWarning.svelte';
   import BigButtonSecondary from "$lib/components/global/BigButtonSecondary.svelte";
 
-  let user :User, appointment :Appointment, service :Service, business :Business, status
-  let finalLocation :string, loading = true
-  onMount( async () => {
-    user = await getCurrentUser()
-    const appId = getParamIdFromUrl()
-    appointment = await getAppointmentById(appId)
-    service = await getServiceById(appointment.serviceId)
-    business = await getBusinessById(service.businessId)
-    finalLocation = service.homeService
+  
+  let {business, service, user, appointment } = $props()
+  
+  let  finalLocation = service.homeService
     ? appointment.address 
     : $t("service.location");
 
-    loading = false
-  })
-
+  let loading = false
   // Popup cancelar turno
-  let showCancelPopup = false;
+  let showCancelPopup = $state(false);
 
   function openCancelPopup() {
     showCancelPopup = true;

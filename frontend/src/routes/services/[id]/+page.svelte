@@ -80,7 +80,7 @@
     <header>
         <Title text={service.serviceName}/>
     </header>
-    <div>
+    <div class="mb-20">
         <div class="flex justify-end items-center mt-4">
             {#if isOwner}
                 <div class="flex gap-2">
