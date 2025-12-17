@@ -8,7 +8,7 @@ export async function load({params, url, fetch}) {
     const serviceId = Number(params.id);
 
   if (Number.isNaN(serviceId)) {
-    throw error(StatusCodes.BAD_REQUEST)//, { message: 'id must be a number' });
+    throw error(StatusCodes.NOT_FOUND)//, { message: 'id must be a number' });
   }
     
     const user = await getCurrentUser().catch(()=> error(StatusCodes.UNAUTHORIZED));

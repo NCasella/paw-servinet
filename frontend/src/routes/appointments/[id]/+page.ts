@@ -7,7 +7,7 @@ import { error } from '@sveltejs/kit'
 
 export async function load({url, params, fetch}) {
     const appId = Number(params.id )
-    if ( !appId) error(StatusCodes.BAD_REQUEST)
+    if ( !appId) error(StatusCodes.NOT_FOUND)
     const user = await getCurrentUser(fetch).catch( ()=> error(StatusCodes.UNAUTHORIZED))
     
     const appointment = await getAppointmentById(appId).catch((e)=> error(e.status))
@@ -24,7 +24,7 @@ export async function load({url, params, fetch}) {
             business
         }
     } catch {
-        error(StatusCodes.BAD_REQUEST)
+        error(StatusCodes.NOT_FOUND)
     }
 
 }
