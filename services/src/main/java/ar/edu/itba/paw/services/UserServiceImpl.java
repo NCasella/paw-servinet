@@ -133,6 +133,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
+    public void changeProfilePic(long userid, long profilePicId) {
+        userDao.findById(userid).orElseThrow(UserNotFoundException::new);
+        userDao.changeProfilePicId(userid,profilePicId);
+    }
+
+    @Transactional
     @Override
     public void changeEmail(long userid, String value) {
         User user = userDao.findById(userid).orElseThrow(UserNotFoundException::new);
@@ -163,7 +169,11 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void changeUserInfo(long userid, String username, String email, String telephone, AvailableLanguages locale) {
+    public void changeUserInfo(long userid, String username, String email, String telephone, AvailableLanguages locale, Long profilePicId) {
+        if ( profilePicId != null ) {
+            changeProfilePic(userid, profilePicId);
+            return;
+        }
         if (!username.isEmpty() && username.length() < MAX_SIZE){
             changeUsername(userid, username);
         }

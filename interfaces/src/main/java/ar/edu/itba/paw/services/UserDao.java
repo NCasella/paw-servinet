@@ -17,6 +17,7 @@ public interface UserDao {
     void changeEmail(long userid,String value);
     void changeTelephone(long userid,String value);
     void changeUsername(long userid,String value);
+    void changeProfilePicId(long userid,long profilePicId);
     void changePassword(long userid,String value);
     void changeUserType(long userid);
     void changeLocale(long userid, AvailableLanguages locale);

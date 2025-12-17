@@ -2,7 +2,7 @@ import { resetLanguage, setLanguage } from "$lib/i18n/i18n";
 import { Appointment } from "$models/Appointment";
 import { UserContactInfo, type ContactInfo } from "$models/ContactInfo";
 import { User } from "$models/User"
-import { getUser, login, logout } from "$stores/userStore"
+import { getUser, login, logout, user } from "$stores/userStore"
 import {GET, PATCH, POST} from "$utils/apiFetch"
 import { RegisterUserForm } from "$models/forms/UserCreationForm";
 import { getNewIdFromPostResponse } from "$utils/apiFetch";
@@ -11,6 +11,7 @@ import type { RequestPasswordRecoveryForm } from "$models/forms/RequestPasswordR
 import type { TResponse } from "$utils/apiFetch";
 import type { ResetPasswordForm } from "$models/forms/ResetPasswordForm";
 import {UserUpdateForm} from "$models/forms/UserUpdateForm";
+import { uploadImage } from "./imageService";
 
 export async function getUserInfo(id: number,fetchFn?: typeof fetch ) :Promise<User> {
     const data = await GET(`users/${id}`,{contentType:"user-info", fetchFn: fetchFn });  
@@ -147,3 +148,9 @@ export async function getAppointmentClients(  appointmentList: Appointment[] ): 
 export async function updateUser(userId: number, form: UserUpdateForm) {
     await PATCH(`users/${userId}`, form, {contentType:"user-update"})
 }
+
+export async function editUserProfilePic(userId: number, image: File) {
+    const profilePicId = await uploadImage(image);
+    console.log(profilePicId)
+    await PATCH(`users/${userId}`, {profilePicId}, {contentType: "user-update"})
+} 

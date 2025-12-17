@@ -294,6 +294,19 @@ export default {
   "profile.password-updated": "Your password has been successfully updated!",
   "profile.cancel": "Cancel",
 
+ "profile.pic.edit": "Edit profile picture",
+  "profile.pic.hint": "Upload a new image and save your changes.",
+  "profile.pic.choose": "Choose image",
+  "profile.pic.required": "Please select an image first.",
+  "profile.pic.invalidType": "Invalid format. Please use PNG, JPG, or WEBP.",
+  "profile.pic.tooLarge": "The image is too large.",
+  "profile.pic.uploadError": "Failed to update profile picture. Please try again.",
+
+  "common.save": "Save",
+  "common.saving": "Saving...",
+  "common.cancel": "Cancel",
+  "common.close": "Close",
+
   "pagination.first": "<< First page",
   "pagination.last": "Last page >>",
   "pagination.previous": "< Previous",

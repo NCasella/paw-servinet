@@ -103,13 +103,13 @@ public class UsersJerseyController {
     @Consumes(value = CustomMediaTypes.USER_UPDATE)
     public Response changeUserInfo(@PathParam("userid") @NotNull final long userid, @NotNull UserPatchDTO profilePatch){
         AvailableLanguages localeParsed;
-        if (!profilePatch.getLocale().isEmpty()) {
+        if ( profilePatch.getLocale()!=null && !profilePatch.getLocale().isEmpty()) {
             localeParsed = AvailableLanguages.fromLanguageCode(profilePatch.getLocale());
         }else{
             localeParsed = null;
         }
-        us.changeUserInfo(userid, profilePatch.getUsername(), profilePatch.getEmail(), profilePatch.getTelephone(), localeParsed);
-        if (!profilePatch.getPassword().isEmpty()) {
+        us.changeUserInfo(userid, profilePatch.getUsername(), profilePatch.getEmail(), profilePatch.getTelephone(), localeParsed, profilePatch.getProfilePicId());
+        if (profilePatch.getPassword()!=null && !profilePatch.getPassword().isEmpty()) {
             us.changePassword(userid, profilePatch.getPassword());
         }
         User modifiedUser = us.findById(userid).orElseThrow(UserNotFoundException::new);
