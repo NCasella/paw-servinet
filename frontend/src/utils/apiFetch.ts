@@ -70,7 +70,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
         : (genericContentType ? genericContentType : "application/json");
   }
 
-  let response = await fetchFn(API_BASE_URL + url, {
+  let response = await fetchFn(API_BASE_URL + "/" + url, {
     method,
     headers: finalHeaders,
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,
@@ -88,7 +88,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
       setTokens({ accessToken: null}); 
       delete finalHeaders["Authorization"]; 
       finalHeaders["Authorization-Refresh-Token"] = `Bearer ${refreshToken}`;
-      response = await fetchFn(API_BASE_URL + url, {
+      response = await fetchFn(API_BASE_URL + "/" + url, {
         method,
         headers: finalHeaders,
         body: isFormData ? body : body ? JSON.stringify(body) : undefined,
