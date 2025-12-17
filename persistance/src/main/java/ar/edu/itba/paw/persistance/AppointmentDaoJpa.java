@@ -8,10 +8,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.services.AppointmentDao;
 import org.springframework.stereotype.Repository;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -40,14 +37,15 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public List<Appointment> getAllUpcomingServicesAppointments(Collection<Long> servicesIds, boolean confirmed, int page, int pageSize) {
-        TypedQuery<Long> query = em.createQuery("SELECT id from Appointment where serviceAppointed.id in :serviceids and confirmed = :confirmed and cancelled = FALSE and startDate > :currentDate order by startDate, id", Long.class);
+        Query query = em.createNativeQuery("SELECT appointmentid from appointments where serviceid in :serviceids and confirmed = :confirmed and cancelled = FALSE and startDate > :currentDate order by startDate, appointmentid");
         query.setParameter("serviceids",List.copyOf(servicesIds));
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("confirmed", confirmed);
         query.setFirstResult((page - 1) * pageSize);
         query.setMaxResults(pageSize);
 
-        final List<Long> idList = query.getResultList();
+        final List<Long> idList = (List<Long>) query.getResultList()
+                .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
         TypedQuery<Appointment> queryPage = em.createQuery("from Appointment where id in :idList order by startDate, id", Appointment.class);
         queryPage.setParameter("idList", idList);
 
@@ -89,14 +87,15 @@ public class AppointmentDaoJpa implements AppointmentDao {
 
     @Override
     public List<Appointment> getAllUpcomingUserAppointments(long userid, boolean confirmed, int page, int pageSize) {
-        TypedQuery<Long> query = em.createQuery("SELECT id FROM Appointment as a where appointedBy.userId = :userid and confirmed = :confirmed and cancelled = FALSE and startDate > :currentDate order by startDate,id", Long.class);
+        Query query = em.createNativeQuery("SELECT appointmentid FROM appointments as a where a.userId = :userid and confirmed = :confirmed and cancelled = FALSE and startDate > :currentDate order by startDate,appointmentid");
         query.setFirstResult((page - 1) * pageSize);
         query.setMaxResults(pageSize);
         query.setParameter("currentDate", LocalDateTime.now());
         query.setParameter("userid", userid);
         query.setParameter("confirmed", confirmed);
 
-        final List<Long> idList = query.getResultList();
+        final List<Long> idList = (List<Long>) query.getResultList()
+                .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
         TypedQuery<Appointment> queryPage = em.createQuery("from Appointment where id in :idList order by startDate,id", Appointment.class);
         queryPage.setParameter("idList",idList);
 
@@ -115,13 +114,14 @@ public class AppointmentDaoJpa implements AppointmentDao {
     @Override
     public List<Appointment> getPreviousUserAppointments(long userid, int page, int pageSize) {
 
-        TypedQuery<Long> nativeQuery = em.createQuery("SELECT id FROM Appointment as a where appointedBy.userId = :userid and confirmed = TRUE and cancelled = FALSE and startDate < :currentDate order by startDate desc, id desc", Long.class);
+        Query nativeQuery = em.createNativeQuery("SELECT appointmentid FROM appointments as a where a.userid = :userid and confirmed = TRUE and cancelled = FALSE and startDate < :currentDate order by startDate desc, appointmentid desc");
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
         nativeQuery.setParameter("currentDate", LocalDateTime.now());
         nativeQuery.setParameter("userid", userid);
 
-        final List<Long> idList = nativeQuery.getResultList();
+        final List<Long> idList = (List<Long>) nativeQuery.getResultList()
+                .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
 
         TypedQuery<Appointment> query = em.createQuery("from Appointment where id in :idList order by startDate desc, id desc", Appointment.class);
         query.setParameter("idList",idList);
