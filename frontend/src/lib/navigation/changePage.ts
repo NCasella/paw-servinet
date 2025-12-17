@@ -1,5 +1,6 @@
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { StatusCodes } from '$models/exceptions/statusCodesEnum';
 import { error } from '@sveltejs/kit';
 import { get } from 'svelte/store';
 
@@ -16,9 +17,10 @@ export async function setPage(newPage: number) {
 
 export function readPageFromUrl(url: URL) :number {
     const page = url.searchParams.get('page') ?? "1";
-    
-      if (Number.isNaN(page)) {
-        throw error(400)//, { message: 'page must be a number' });
+    const pageNum = parseInt(page)
+
+      if (Number.isNaN(pageNum)) {
+        throw error(StatusCodes.BAD_REQUEST, { message: 'page must be a number' });
       }
-    return parseInt(page)
+    return pageNum
 }

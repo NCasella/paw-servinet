@@ -17,28 +17,18 @@
   import {getCurrentUser} from "$services/userService";
   import {User} from "$models/User";
 	import { toNeighbourhoodEnum } from '$models/enums/Neighbourhoods';
+	import type { PageData } from './$types';
 
-  let serviceId :number
-  let appointmentForm: AppointmentForm;
+  
+  export let data:PageData
+  let { user, service, business, serviceId} = data
+
+  let appointmentForm: AppointmentForm  = new AppointmentForm({serviceId});
   let formErrors: AppointmentFormErrors = {};
-  let service :Service;
-  let user :User
-
-  onMount(async ()  => {
-     try {
-       user = await getCurrentUser();
-     } catch (e) {
-       goto(`${base}/login`);
-     }
-
-    serviceId = getParamIdFromUrl()
-        
-    appointmentForm  = new AppointmentForm({serviceId});
-    service = await getServiceById( serviceId )
-   });
+  
    async function handleSubmit() { 
         formErrors  = appointmentForm.validateAppointmentForm()
-        if (formErrors == null) return
+        if (Object.keys(formErrors).length > 0) return
 
         const appointmentId = await createAppointment(appointmentForm)
         goto(`${base}/appointments/${appointmentId}`)

@@ -1,3 +1,4 @@
+import { StatusCodes } from "$models/exceptions/statusCodesEnum";
 import { getServiceById } from "$services/serviceService";
 import type { PageLoad } from "./$types";
 
@@ -7,7 +8,7 @@ export async function load({ params, fetch }) {
   const serviceId = Number(params.id);
 
   if (Number.isNaN(serviceId)) {
-    throw error(400)//, { message: 'id must be a number' });
+    throw error(StatusCodes.NOT_FOUND)//, { message: 'id must be a number' });
   }
 
   try {
