@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final UserVerificationService userVerificationService;
+    private final static String EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$" ;
+    private final static String TELEPHONE_REGEX = "^\\+(\\d{1,3})?\\s?9?\\s?(\\d{1,4})?\\s?(\\d{6,8})$";
+    private final static int MAX_SIZE = 256;
 
     @Autowired
     public UserServiceImpl(final UserDao userDao, final PasswordEncoder passwordEncoder, final UserVerificationService userVerificationService){
@@ -161,10 +164,18 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void changeUserInfo(long userid, String username, String email, String telephone, AvailableLanguages locale) {
-        changeUsername(userid, username);
-        changeEmail(userid, email);
-        changeTelephone(userid, telephone);
-        changeLocale(userid, locale);
+        if (!username.isEmpty() && username.length() < MAX_SIZE){
+            changeUsername(userid, username);
+        }
+        if (!email.isEmpty() && email.length() < MAX_SIZE && email.matches(EMAIL_REGEX) && findByEmail(email).isEmpty()){
+            changeEmail(userid, email);
+        }
+        if (!telephone.isEmpty() && telephone.length() < MAX_SIZE && telephone.matches(TELEPHONE_REGEX)){
+            changeTelephone(userid, telephone);
+        }
+        if (locale != null) {
+            changeLocale(userid, locale);
+        }
     }
 
     @Transactional
