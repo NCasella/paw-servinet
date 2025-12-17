@@ -84,7 +84,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/questions").permitAll()
 
+
                 .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authDecider::canViewUserContactInfo)
+                .requestMatchers(HttpMethod.PATCH,"/api/users/{userId:\\d+}").access(authDecider::canChangePassword)
                 .requestMatchers("/api/users/{userId:\\d+}").access(authDecider::isCurrentUser)
 
                 .requestMatchers(HttpMethod.POST, "/api/businesses").hasRole("USER")
@@ -98,7 +100,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
                 .requestMatchers(HttpMethod.PATCH,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
 
-                .requestMatchers("/**").authenticated();
+                .requestMatchers("/**").permitAll();
     }
 
     @Override
