@@ -24,7 +24,7 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
         String refreshToken=request.getHeader("Authorization-Refresh-Token");
         String authHeader=request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(refreshToken==null || (authHeader != null && authHeader.startsWith("Bearer "))){
+        if(refreshToken==null || (authHeader != null && (authHeader.startsWith("Bearer ") || authHeader.startsWith("Basic ")) ) ){
             filterChain.doFilter(request,response);
             return;
         }
