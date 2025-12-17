@@ -279,6 +279,19 @@ export default {
   "profile.password-updated": "¡Su contraseña ha sido actualizada con éxito!",
   "profile.cancel": "Cancelar",
 
+  "profile.pic.edit": "Editar foto de perfil",
+  "profile.pic.hint": "Subí una imagen nueva y guardá los cambios.",
+  "profile.pic.choose": "Elegir imagen",
+  "profile.pic.required": "Elegí una imagen primero.",
+  "profile.pic.invalidType": "Formato inválido. Usá PNG, JPG o WEBP.",
+  "profile.pic.tooLarge": "La imagen es demasiado grande.",
+  "profile.pic.uploadError": "No se pudo actualizar la foto de perfil. Intentá nuevamente.",
+
+  "common.save": "Guardar",
+  "common.saving": "Guardando...",
+  "common.cancel": "Cancelar",
+  "common.close": "Cerrar",
+
   "pagination.first": "<< Primera página",
   "pagination.last": "Última página >>",
   "pagination.previous": "< Anterior",

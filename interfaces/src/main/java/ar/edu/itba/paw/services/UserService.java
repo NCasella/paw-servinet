@@ -16,7 +16,7 @@ public interface UserService {
     void makeProvider(User user);
     void revokeProviderRole(User user);
     User create(String username, String name,String surname, String password, String email, String telephone);
-    void changeUserInfo(long userid,String username, String email, String telephone, AvailableLanguages locale);
+    void changeUserInfo(long userid, String username, String email, String telephone, AvailableLanguages locale, Long profilePicId);
 
     void changeUsername(long userid,String value);
     boolean isProvider(long userid);

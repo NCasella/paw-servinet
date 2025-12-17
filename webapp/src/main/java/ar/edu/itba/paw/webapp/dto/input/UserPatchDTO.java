@@ -14,7 +14,7 @@ public class UserPatchDTO {
     private String telephone;
     private String locale;
     private String password;
-
+    private Long profilePicId;
     @Override
     public int hashCode(){
         return Objects.hash(email, telephone, username);

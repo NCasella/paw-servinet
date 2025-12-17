@@ -97,6 +97,17 @@ public class UserDaoJpa implements UserDao {
             em.persist(user);
         }
     }
+
+    @Override
+    public void changeProfilePicId(long userid,long profilePicId) {
+        Optional<User> optUser=findById(userid);
+        if(optUser.isPresent()){
+            final User user=optUser.get();
+            user.setProfilePicId(profilePicId);
+            em.persist(user);
+        }
+    }
+
     @Override
     public void changeUserType(long userid){
         Optional<User> optUser=findById(userid);
