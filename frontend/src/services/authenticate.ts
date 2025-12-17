@@ -23,24 +23,20 @@ export async function loginWithBasicAuth(
   }
   
   const tokensData = getTokensFromResponse( response);
-
-  console.log("Response:"+ tokensData.accessToken)
+  
   setTokens(tokensData);
 
   return true;
 }
 
 function getTokensFromResponse(response: Response): AuthState {
-  let access = response.headers.get('Authorization-access-token');
-
-    if (access?.startsWith('Bearer ')) {
-      access = access.substring('Bearer '.length); // saca el "Bearer "
-    }
+  let access = response.headers.get('Authorization-Access-Token');
+  let refresh = response.headers.get('authorization-refresh-token');
 
   return {
-    accessToken: access,               
-    refreshToken: null // response.headers.get('X-Refresh-Token')
-  };
+    accessToken: access?.replace('Bearer ', '') || null,
+    refreshToken: refresh?.replace('Bearer ', '') || null
+  }
 }
 
 
@@ -83,4 +79,9 @@ export function extractUserRolesFromToken(): string[] {
     Error("Invalid Token");
   }
   return [];
+}
+
+export function isResettingPassword(): boolean {
+    const roles = extractUserRolesFromToken();
+    return roles.includes('ROLE_PASSWORD_RESET');
 }
