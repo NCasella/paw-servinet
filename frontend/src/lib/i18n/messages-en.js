@@ -15,6 +15,8 @@ export default {
   "login.passwordrecovery.instruction": "Enter the email with which you registered your account to recover your password",
   "login.passwordrecovery.title": "Reset Password",
   "login.passwordrecovery.success": "An email has been sent with instructions to reset your password",
+  "login.passwordrecovery.invalid-email": "Invalid email for this operation",
+  "login.passwordrecovery.error-occured": "An error occurred while resetting your password",
 
   "email": "Email",
   "login": "Log in",

@@ -47,7 +47,7 @@
             goto(`${base}/profile`);
 			return; 
 		}
-        errorMessage = ''
+        errorMessage = $t('login.passwordrecovery.invalid-email');
 	}
 
     onMount(() => {
@@ -62,25 +62,25 @@
 	</div>
 
 	<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        {#if errorMessage}
-            <p class="mb-4 p-3 text-sm text-red-800 rounded-lg bg-red-50">{errorMessage}</p>
-        {/if}
-
-		<form on:submit|preventDefault={handleSubmit} class="space-y-6">
+        
+        <form on:submit|preventDefault={handleSubmit} class="space-y-6">
             <div class="flex items-center justify-between">
 				<label for="email" class="block text-sm/6 font-medium">{$t('email')}</label>
 			</div>
             <div class="mt-2 relative">
                 <input
-                    id="email"
-                    bind:value={email}
+                id="email"
+                bind:value={email}
                     type="email"
                     placeholder={$t('input.email')}
                     name="email"
                     required
                     class="block w-full rounded-md bg-white px-3 py-1.5 pr-10 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-            </div>
+                    />
+                </div>
+                {#if errorMessage}
+                    <p class="mb-4 p-3 text-sm text-red-800 rounded-lg bg-red-50">{errorMessage}</p>
+                {/if}
 
             <div>
 				<div class="flex items-center justify-between">
