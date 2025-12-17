@@ -142,6 +142,8 @@
             {/each}
         {/if}
 
+        {#if lastPage > 1}
+        <div class="w-full flex justify-center my-6">
         <Pagination
             count={lastPage}
             pageSize={1}
@@ -174,5 +176,7 @@
             <Icon name="rightArrow"/>
         </Pagination.NextTrigger>
         </Pagination>
+        </div>
+        {/if}
     </div>
 {/if}

@@ -194,7 +194,7 @@
             {/if}
         {/if}
 
-        {#if reviews.length > 0}
+        {#if reviews.length > 0 && (reviews.length > (hasRated ? 1 : 0))}
             <div class="flex items-center mb-4 mt-10">
                 <h4 class="mr-auto text-lg font-bold">
                     {#if currentFilter}
@@ -217,6 +217,16 @@
                     {/each}
 
                 </select>
+            </div>
+        {:else}
+            <div class="flex justify-center mt-10 text-surface-600">
+                {#if isOwner}
+                    <p>{$t("service.no-rates")}</p>
+                {:else if (hasRated)}
+                    <p>{$t("service.no-other-rates")}</p>
+                {:else}
+                    <p>{$t("service.first-to-rate")}</p>
+                {/if}
             </div>
         {/if}
 
@@ -245,6 +255,8 @@
             {/if}
         {/each}
 
+        {#if lastPage > 1}
+        <div class="w-full flex justify-center my-6">
         <Pagination
             count={lastPage}
             pageSize={1}
@@ -277,6 +289,7 @@
                 <Icon name="rightArrow"/>
             </Pagination.NextTrigger>
         </Pagination>
-
+        </div>
+        {/if}
     </div>
 {/if}

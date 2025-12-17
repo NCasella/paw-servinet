@@ -59,7 +59,7 @@
         </div>
 
         <p class="text-surface-500 mt-1">
-            {allRatingCount}{' '}{$t("reviews.opinions-amount")}
+            {allRatingCount}{' '}{allRatingCount > 1? $t("reviews.opinions-amount") : $t('reviews.one-opinion' )}
         </p>
     </div>
 </div>

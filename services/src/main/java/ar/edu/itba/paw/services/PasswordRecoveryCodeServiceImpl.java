@@ -64,15 +64,16 @@ public class PasswordRecoveryCodeServiceImpl implements PasswordRecoveryCodeServ
 
     @Transactional
     @Override
-    public boolean validateCode(UUID code) {
+    public boolean validateCode(String email, UUID code) {
         Optional<PasswordRecoveryCode> possiblepasswordRecoveryCode = passwordRecoveryCodeDao.getCodeByUUID(code);
         if (possiblepasswordRecoveryCode.isEmpty()){
             LOGGER.warn("The code provided is not valid, it has expired or it has been used already");
             return false;
         }
         PasswordRecoveryCode passwordRecoveryCode = possiblepasswordRecoveryCode.get();
-        return passwordRecoveryCode.getCode().equals(code);
+        return passwordRecoveryCode.getRequestedBy().getEmail().equals(email);
     }
+
 
     @Transactional
     public void changePassword(UUID code, String newPassword) {

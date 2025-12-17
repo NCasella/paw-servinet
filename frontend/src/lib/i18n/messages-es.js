@@ -15,6 +15,8 @@ export default {
   "login.passwordrecovery.title": "Restablecer Contraseña",
   "login.passwordrecovery.success":
     "Se ha enviado un correo electrónico con las instrucciones para restablecer su contraseña",
+  "login.passwordrecovery.invalid-email": "Correo electrónico inválido para realizar esta operación. Asegúrese de usar el mismo correo con el que se registró.",
+  "login.passwordrecovery.error-occured": "Ocurrió un error al restablecer su contraseña",
 
   "email": "Correo electrónico",
   "login": "Iniciar sesión",
@@ -113,6 +115,7 @@ export default {
   "service.edit-service": "Editar {0}",
   "service.back": "Volver a {0}",
   "service.no-rates": "No tienes opiniones",
+  "service.no-other-rates": "No hay otras opiniones",
   "service.no-questions": "No tienes preguntas",
   "service.details": "Detalles del servicio",
   "service.unrated": "Sin calificar",
@@ -519,8 +522,9 @@ export default {
   "review.edit": "Editar opinión",
   "review.save": "Guardar",
   "review.cancel": "Cancelar",
-  "reviews.not-found": "No se han encontrado opiniones en {0}",
+  "reviews.not-found": "No se han encontrado opiniones",
   "reviews.opinions-amount": "opiniones",
+  'reviews.one-opinion': 'opinión',
   "reviews.recent": "Últimas realizadas",
   "reviews.date-asc": "Menos recientes",
   "reviews.date-desc": "Más recientes",

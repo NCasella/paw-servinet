@@ -10,7 +10,7 @@ import { extractUserIdFromToken, extractUserRolesFromToken, loginWithBasicAuth, 
 import type { RequestPasswordRecoveryForm } from "$models/forms/RequestPasswordRecoveryForm";
 import type { TResponse } from "$utils/apiFetch";
 import type { ResetPasswordForm } from "$models/forms/ResetPasswordForm";
-import type {UserUpdateForm} from "$models/forms/UserUpdateForm";
+import {UserUpdateForm} from "$models/forms/UserUpdateForm";
 
 export async function getUserInfo(id: number,fetchFn?: typeof fetch ) :Promise<User> {
     const data = await GET(`users/${id}`,{contentType:"user-info", fetchFn: fetchFn });  
@@ -34,10 +34,51 @@ export async function requestPasswordRecovery(form:RequestPasswordRecoveryForm) 
 }
 
 export async function resetPassword(form:ResetPasswordForm) : Promise<Boolean> {
-    const response = await loginWithBasicAuth(form.code, form.password); 
+    const response = await loginWithBasicAuth(form.email, form.code); 
+    if (response){
+        let userId = extractUserIdFromToken()
+
+        let updateForm:UserUpdateForm = new UserUpdateForm({
+            username: "",
+            email: "", 
+            telephone: "",
+            locale: "",
+            password: form.password});
+
+        let newresponse = await PATCH(`users/${userId}`, updateForm, {
+            contentType: "user-update"
+        });
+        return newresponse;
+    }
+
+
     return response
 }
 
+export function getPatchFormWithModifiedFields(UserContactInfo: UserContactInfo, form: UserUpdateForm): UserUpdateForm {
+
+    const patchForm: UserUpdateForm = new UserUpdateForm({
+        username: "",
+        email: "",
+        telephone: "",
+        locale: "",
+        password: ""
+    });
+
+    if (form.username !== UserContactInfo.username) {
+        patchForm.username = form.username;
+    }
+    if (form.email !== UserContactInfo.email) {
+        patchForm.email = form.email;
+    }
+    if (form.telephone !== UserContactInfo.telephone) {
+        patchForm.telephone = form.telephone;
+    }
+    if (form.locale !== UserContactInfo.language) {
+        patchForm.locale = form.locale;
+    }
+    return patchForm;
+}
 /* Retrieves user login data */
 export async function getCurrentUser(fetchFn?: typeof fetch) :Promise<User> {
     let currentUser = getUser()

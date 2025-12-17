@@ -84,10 +84,13 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/questions").permitAll()
 
+
                 .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authDecider::canViewUserContactInfo)
+                .requestMatchers(HttpMethod.PATCH,"/api/users/{userId:\\d+}").access(authDecider::canChangePassword)
                 .requestMatchers("/api/users/{userId:\\d+}").access(authDecider::isCurrentUser)
 
                 .requestMatchers(HttpMethod.POST, "/api/businesses").hasRole("USER")
+                .requestMatchers("/api/businesses/{businessId:\\d+}").access(authDecider::isCurrentUserBusinessOwner)
                 .requestMatchers(HttpMethod.POST,"/api/questions","/api/reviews").hasRole("USER")
 
                 .requestMatchers(HttpMethod.PATCH,"/api/questions/{questionId:\\d+}").access(authDecider::canRespondQuestion)
@@ -96,8 +99,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(HttpMethod.GET,"/api/appointments").access(authDecider::canViewAppointmentList)
                 .requestMatchers(HttpMethod.POST,"/api/appointmnets").hasRole("USER")
                 .requestMatchers(HttpMethod.GET,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
-                .requestMatchers(HttpMethod.PATCH,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment);
-                //.requestMatchers("/**").authenticated();
+                .requestMatchers(HttpMethod.PATCH,"/api/appointments/{appointmentId:\\d+}").access(authDecider::canViewAppointment)
+
+                .requestMatchers("/**").permitAll();
     }
 
     @Override
@@ -119,7 +123,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(List.of(SPA_ORIGIN));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.addAllowedHeader("*");
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization-access-token", "Link", "Location", "ETag", "X-Total-Count", "X-Refresh-Token", "Cache-Control"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization-access-token", "Link", "Location", "ETag", "X-Total-Count", "X-Refresh-Token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

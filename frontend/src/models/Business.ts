@@ -26,9 +26,7 @@ export class Business {
     }
 
     static fromJson(response: TResponse): Business {
-        console.log( JSON.stringify(response))
         const obj = response.body
-        console.log( obj)
         if (isBusiness(obj)) {
           return new Business(obj);
         }
