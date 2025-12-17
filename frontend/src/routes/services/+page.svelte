@@ -12,7 +12,6 @@
 
     import { page as pageStore } from '$app/stores';
     import { goto } from '$app/navigation';
-    import {error} from "@sveltejs/kit";
     import {StatusCodes} from "$models/exceptions/statusCodesEnum";
 
     let loading = true;
