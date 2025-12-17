@@ -2,29 +2,22 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import {  t } from '$i18';
-  import { base } from '$app/paths';
-
   import Spinner from '$lib/components/global/Spinner.svelte';
   import Title from '$lib/components/global/Title.svelte';
   import BigButton from '$lib/components/global/BigButton.svelte';
   import NoResults from '$lib/components/global/pagedResults/NoResults.svelte';
   import ConfirmModal from '$lib/components/global/modal/ConfirmModal.svelte';
-
-  import { getPageNumFromParam, getParamIdFromUrl, getPath, goBack, navTo } from '$lib/navigation/pageInfo';
-  import type { Business, BusinessUpdateInfo } from '$models/Business';
-  import type { PagedResult } from '$models/PagedList';
+  import { getPath, goBack } from '$lib/navigation/pageInfo';
   import { Service } from '$models/Service';
-
-  import { getBusinessById, deleteBusiness, updateBusiness } from '$services/businessService';
+  import { deleteBusiness, updateBusiness } from '$services/businessService';
   import { getServices } from '$services/serviceService';
-	import Icon from '$icons';
-	import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
-	import BigButtonWarning from '$lib/components/global/BigButtonWarning.svelte';
-	import { error } from '@sveltejs/kit';
-	import { StatusCodes } from '$models/exceptions/statusCodesEnum';
-	import type { BusinessFormErrors } from '$models/forms/BusinessCreationForm';
-	import PaginationControls from '$lib/components/global/pagedResults/PaginationControls.svelte';
-	import { setPage } from '$lib/navigation/changePage.js';
+  import Icon from '$icons';
+  import ImageWithFallback from '$lib/components/global/ImageWithFallback.svelte';
+  import BigButtonWarning from '$lib/components/global/BigButtonWarning.svelte';
+  import type { BusinessFormErrors } from '$models/forms/BusinessCreationForm';
+  import PaginationControls from '$lib/components/global/pagedResults/PaginationControls.svelte';
+  import { setPage } from '$lib/navigation/changePage.js';
+  import {BusinessUpdateForm, type BusinessUpdateFormErrors} from "$models/forms/BusinessUpdateForm";
 
 
   let { data } = $props()
@@ -34,7 +27,7 @@
   
   //let servicesList: PagedResult<Service> | null = null;
   let loading = $state(false);
-  
+  let editing = $state(false);
 
   // si el backend ya te trae esto, podés reemplazarlo por business.isOwner
 
@@ -42,9 +35,14 @@
   let avgRating = business?.rating ?? 0;
   let hasRating = avgRating > 0;
 
-  // edición de datos de contacto
-  let editing = $state(false);
-	let businessEditInfo :BusinessUpdateInfo = $state( {} as BusinessUpdateInfo)
+  let businessEditInfo = $state({
+    businessEmail: '',
+    businessTelephone: '',
+    businessLocation: ''
+  });
+
+  let updateFormErrors: BusinessUpdateFormErrors = $state({});
+
 
   // modal borrar negocio
   let showDeleteModal = $state(false);
@@ -61,40 +59,44 @@
   }
 
   function loadBusinessInfoToUpdate() {
-	businessEditInfo =  {
-        businessEmail : business.email,
-        businessTelephone : business.telephone,
-        businessLocation : business.address,
-	}
-  
+    businessEditInfo = {
+      businessEmail: business.email,
+      businessTelephone: business.telephone,
+      businessLocation: business.address
+    };
+    updateFormErrors = {};
   }
 
+
   function toggleEdit() {
-    if (!editing && business) {
-      // al entrar a modo edición, copiar valores actuales
-      loadBusinessInfoToUpdate()
-      console.log(editing)
-    }
+    loadBusinessInfoToUpdate()
     editing = !editing;
-    
   }
 
   async function handleSaveBusiness() {
+    const form = new BusinessUpdateForm(
+            businessEditInfo.businessEmail,
+            businessEditInfo.businessTelephone,
+            businessEditInfo.businessLocation
+    );
+
+    const errors = form.validateBusinessUpdateForm();
+
+    if (Object.keys(errors).length > 0) {
+      updateFormErrors = errors;
+      return;
+    }
+
     try {
-      loading = true
-      // ajustá el DTO según tu API
+      loading = true;
       await updateBusiness(business.businessId, businessEditInfo);
-      // refrescamos entidad
-      //business = await getBusinessById(business.businessId);
-      console.log("Done")
-      editing = false
-    } catch {
-      loadBusinessInfoToUpdate()
-      // TODO: mostrar toaster de error
+      editing = false;
+      updateFormErrors = {};
     } finally {
-      loading = false
+      loading = false;
     }
   }
+
 
   async function handleDeleteBusiness() {
     if (!business) return;
@@ -251,6 +253,9 @@
               placeholder={$t('business-email')}
             />
           </div>
+          {#if updateFormErrors.businessEmail}
+            <p class="text-xs text-red-500 ml-8">{ $t(updateFormErrors.businessEmail) }</p>
+          {/if}
           <div class="flex items-center gap-2">
             <Icon name="phone"/>
             <input
@@ -260,6 +265,9 @@
               placeholder={$t('telephone')}
             />
           </div>
+          {#if updateFormErrors.businessTelephone}
+            <p class="text-xs text-red-500 ml-8">{ $t(updateFormErrors.businessTelephone) }</p>
+          {/if}
           <div class="flex items-center gap-2">
             <Icon name="location"/>
             <input
@@ -269,6 +277,9 @@
               placeholder={$t('address')}
             />
           </div>
+          {#if updateFormErrors.businessLocation}
+            <p class="text-xs text-red-500 ml-8">{ $t(updateFormErrors.businessLocation) }</p>
+          {/if}
 
           <div class="flex justify-center pt-2">
             <button
