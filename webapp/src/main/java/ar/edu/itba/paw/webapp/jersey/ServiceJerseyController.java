@@ -10,6 +10,7 @@ import ar.edu.itba.paw.webapp.dto.output.ServiceDto;
 import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -104,6 +105,7 @@ public class ServiceJerseyController {
 
     @POST
     @Consumes(value = CustomMediaTypes.SERVICE_CREATION)
+    @PreAuthorize("hasRole('BUSINESS') && @servinetAuthControl.isBusinessOwner(#serviceCreationDto.businessId)")
     public Response createService(@Valid final ServiceCreationDTO serviceCreationDto) {
         Categories categoryParsed = Categories.fromName(serviceCreationDto.getCategory());
         PricingTypes pricingTypeParsed = PricingTypes.fromName(serviceCreationDto.getPricingType());

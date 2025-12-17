@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,6 +39,7 @@ import java.util.List;
         "ar.edu.itba.paw.webapp.auth"
 })
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -94,6 +96,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(HttpMethod.POST,"/api/questions","/api/reviews").hasRole("USER")
 
                 .requestMatchers(HttpMethod.PATCH,"/api/questions/{questionId:\\d+}").access(authDecider::canRespondQuestion)
+                .requestMatchers(HttpMethod.POST,"/api/services").hasRole("BUSINESS") //serviceCreation con @PreAuthorize
+                .requestMatchers(HttpMethod.OPTIONS,"/api/services/{serviceId:\\d++}").permitAll()
                 .requestMatchers("/api/services/{serviceId:\\d++}").access(authDecider::canChangeService)
 
                 .requestMatchers(HttpMethod.GET,"/api/appointments").access(authDecider::canViewAppointmentList)

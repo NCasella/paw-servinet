@@ -142,7 +142,7 @@ export default {
   "services.no-search-results": "No se encontraron resultados de búsqueda, lo sentimos.",
   "services.look-for-services": "Buscar servicios",
   "services.remove-all-filters": "Restablecer filtros",
-  "service.empty-services":"No se encontraron. Intente con otros filtros.",
+  "service.empty-services":"No se encontraron servicios. Intente con otros filtros.",
 
   "appointment.create": "Contratar el servicio:",
   "appointment.home-service": "Este servicio se realiza a domicilio.",

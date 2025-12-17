@@ -37,7 +37,7 @@ public class ImageJerseyController {
     public Response getSupportedMimeTypesForServices() {
         return Response.ok()
                 .header("Allow", "GET, POST, OPTIONS")
-                .header("Accept", MediaType.MULTIPART_FORM_DATA)
+                .header("Accept",String.format("%s,%s", MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE))
                 .header("Accept-Post", MediaType.MULTIPART_FORM_DATA)
                 .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
                 .build();

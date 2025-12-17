@@ -11,7 +11,9 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check ."
+		"lint": "prettier --check .",
+		"test": "vitest",
+		"test:watch": "vitest --watch"
 	},
 	"devDependencies": {
 		"@iconify/json": "^2.2.415",
@@ -22,7 +24,11 @@
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/vite": "^4.1.17",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/svelte": "^5.2.9",
+		"@types/node": "^25.0.3",
 		"autoprefixer": "^10.4.20",
+		"jsdom": "^27.3.0",
 		"jwt-decode": "^4.0.0",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
@@ -36,6 +42,7 @@
 		"typescript": "^5.0.0",
 		"unplugin-icons": "^22.5.0",
 		"vite": "^6.0.0",
+		"vitest": "^4.0.16",
 		"zod": "^4.1.13"
 	}
 }

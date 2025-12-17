@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import type { Question } from "$models/Question";
     import { QuestionForm } from "$models/forms/QuestionCreationForm";
     import { createQuestion, getServiceQuestions } from "$services/questionService";
@@ -12,6 +11,7 @@
     import {goto} from "$app/navigation";
     import {base} from "$app/paths";
     import FormError from "$lib/components/global/forms/FormError.svelte";
+    import { page as pageStore } from "$app/stores";
 
     export let serviceId: number;
     export let isOwner: boolean = false;
@@ -28,6 +28,15 @@
     let errors: Record<string, string> = {};
     let sendError: string | null = null;
 
+    $: {
+        const urlPage = Number($pageStore.url.searchParams.get("page"));
+        page = !Number.isNaN(urlPage) && urlPage > 0 ? urlPage : 1;
+    }
+
+    $: if (serviceId) {
+        loadQuestions(page);
+    }
+
     async function loadQuestions(pageNum: number) {
         loading = true;
 
@@ -39,8 +48,6 @@
 
         loading = false;
     }
-
-    onMount(() => loadQuestions(page));
 
     async function submitQuestion() {
         if(!user) {
@@ -85,6 +92,17 @@
         const div = document.createElement("div");
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    function updatePageInUrl(newPage: number) {
+        const params = new URLSearchParams($pageStore.url.searchParams);
+        params.set("page", String(newPage));
+
+        goto(`?${params.toString()}`, {
+            replaceState: false,
+            keepfocus: true,
+            noscroll: true
+        });
     }
 </script>
 
@@ -149,8 +167,7 @@
             pageSize={1}
             {page}
             onPageChange={(event) => {
-                page = event.page;
-                loadQuestions(page);
+                updatePageInUrl(event.page);
             }}
             class="m-15 flex justify-center items-center space-x-2"
         >
@@ -165,7 +182,7 @@
                     <button
                         class={`w-8 h-8 flex items-center justify-center rounded cursor-pointer hover:shadow-lg
                         ${p === page ? 'bg-primary-500 text-white font-bold' : 'bg-gray-200 text-black'}`}
-                        on:click={() => loadQuestions(p)}
+                        on:click={() => updatePageInUrl(p)}
                     >
                         {p}
                     </button>

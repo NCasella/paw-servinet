@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.exceptions.ForbiddenOperationException;
 import ar.edu.itba.paw.model.exceptions.InvalidFilterException;
 import ar.edu.itba.paw.model.exceptions.InvalidOperationException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 
 import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.WebApplicationException;
@@ -16,7 +17,8 @@ public class ExceptionToStatusMapper {
             InvalidFilterException.class, Response.Status.BAD_REQUEST,
             NotFoundException.class, Response.Status.NOT_FOUND,
             ForbiddenOperationException.class, Response.Status.FORBIDDEN,
-            NotAllowedException.class, Response.Status.METHOD_NOT_ALLOWED
+            NotAllowedException.class, Response.Status.METHOD_NOT_ALLOWED,
+            AccessDeniedException.class, Response.Status.FORBIDDEN
 
             //AuthenticationException.class, Response.Status.UNAUTHORIZED
 

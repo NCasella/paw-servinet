@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import Icon from "$icons";
     import Spinner from "$lib/components/global/Spinner.svelte";
     import Title from "$lib/components/global/Title.svelte";
@@ -15,6 +14,8 @@
     import ReviewsBars from "$lib/components/services/ReviewsBars.svelte";
     import FormError from "$lib/components/global/forms/FormError.svelte";
     import BigButtonSecondary from "$lib/components/global/BigButtonSecondary.svelte";
+    import { page as pageStore } from '$app/stores';
+    import { derived } from 'svelte/store';
 
     export let serviceId: number;
     export let isOwner: boolean = false;
@@ -27,10 +28,24 @@
     let editRating = 0;
     let editComment = "";
 
-    let page = 1;
+    const urlPage = derived(pageStore, ($page) => {
+        const p = Number($page.url.searchParams.get('page'));
+        return Number.isNaN(p) || p < 1 ? 1 : p;
+    });
+
+    const urlOrder = derived(pageStore, ($page) =>
+        ($page.url.searchParams.get('order') as ReviewFilters) ?? ReviewFilters.DATE_DESC
+    );
+
+    $: page = $urlPage;
+    $: currentFilter = $urlOrder;
+
+    $: if (serviceId) {
+        loadReviews(page);
+    }
+
     let lastPage = 1;
 
-    let currentFilter = ReviewFilters.DATE_DESC;
     const filters = Object.values(ReviewFilters);
 
     let hasRated: Review | null = null;
@@ -78,10 +93,6 @@
         return [1, "ellipsis", page - 1, page, page + 1, "ellipsis", last];
     })();
 
-    onMount(async () => {
-        await loadReviews(page);
-    });
-
     function toggleEdit() {
         showEdit = !showEdit;
     }
@@ -94,6 +105,18 @@
         });
         await loadReviews(page);
     }
+
+    function updateUrl(params: Record<string, string | number | null>) {
+        const url = new URL(window.location.href);
+
+        Object.entries(params).forEach(([key, value]) => {
+            if (value === null) url.searchParams.delete(key);
+            else url.searchParams.set(key, String(value));
+        });
+
+        goto(url.pathname + url.search, { replaceState: true });
+    }
+
 </script>
 
 {#if loading}
@@ -205,7 +228,11 @@
                 </h4>
 
                 <select bind:value={currentFilter}
-                        on:change={() => loadReviews(1)}
+                        on:change={() =>
+                            updateUrl({
+                              order: currentFilter,
+                              page: 1
+                            })}
                         class="bg-primary-200 p-2 rounded-xl">
                     <option value="" disabled selected>
                         {$t("reviews.order-by")}
@@ -231,7 +258,7 @@
         {/if}
 
         {#each reviews as r (r.ratingId)}
-            {#if !hasRated || r.ratingId !== hasRated.ratingId}
+            {#if !(hasRated && !isOwner && r.ratingId === hasRated.ratingId)}
                 <div class="mb-3">
                     <div class="flex items-center ml-3">
                         <div class="flex mr-3">
@@ -262,8 +289,9 @@
             pageSize={1}
             {page}
             onPageChange={(event) => {
-                page = event.page;
-                loadReviews(page);
+                updateUrl({
+                  page: event.page
+                })
             }}
             class="m-15 flex justify-center items-center space-x-2"
         >
@@ -279,7 +307,7 @@
                         <button
                             class={`w-8 h-8 rounded flex items-center justify-center cursor-pointer
                             ${p === page ? 'bg-primary-500 text-white font-bold' : 'bg-gray-200'}`}
-                            on:click={() => loadReviews(p)}
+                            on:click={() => updateUrl({ page: p })}
                         >{p}</button>
                     {/if}
                 {/each}

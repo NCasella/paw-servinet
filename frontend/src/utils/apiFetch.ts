@@ -22,8 +22,13 @@ interface FetchOptions<TBody> {
   fetchFn?: typeof fetch;
 }
 
-export interface FetchError extends Error {
-  status?: number;
+export class FetchError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
 }
 
 export function isFetchError(e: unknown): e is FetchError {

@@ -1,20 +1,26 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import type {PagedResult} from "$models/PagedList";
-    import type {Service} from "$models/Service";
-    import {getServices} from "$services/serviceService";
+    import type { PagedResult } from "$models/PagedList";
+    import type { Service } from "$models/Service";
+    import { getServices } from "$services/serviceService";
     import ServiceCard from "$lib/components/services/ServiceCard.svelte";
     import { Pagination } from '@skeletonlabs/skeleton-svelte';
     import Icon from "$icons";
     import Spinner from "$lib/components/global/Spinner.svelte";
-    import {Categories, CategoriesInfo} from "$models/enums/CategoryType";
-    import {t} from "$lib/i18n/i18n"
-    import {Ratings, RatingsInfo} from "$models/enums/Rating";
+    import { Categories, CategoriesInfo } from "$models/enums/CategoryType";
+    import { Ratings, RatingsInfo } from "$models/enums/Rating";
+    import { t } from "$lib/i18n/i18n";
+
     import { page as pageStore } from '$app/stores';
+    import { goto } from '$app/navigation';
+    import {StatusCodes} from "$models/exceptions/statusCodesEnum";
 
     let loading = true;
     let page = 1;
-    let pagedList: PagedResult<Service> = { items: [], links: {} };
+
+    let pagedList: PagedResult<Service> = {
+        items: [],
+        links: {}
+    };
 
     let params = {
         businessId: undefined,
@@ -27,18 +33,50 @@
         page: 1
     };
 
-    onMount(async () => {
+    $: {
         const urlParams = $pageStore.url.searchParams;
-        params.searchQuery = urlParams.get('search') ?? '';
+
         params.category = urlParams.get('category') ?? undefined;
-        await loadServices();
-    });
+        params.neighbourhoods = urlParams.get('neighbourhoods') ?? undefined;
+        params.rating = urlParams.get('rating')
+            ? Number(urlParams.get('rating'))
+            : undefined;
+        params.searchQuery = urlParams.get('search') ?? '';
+        params.orderFilters = urlParams.get('orderFilters') ?? undefined;
+        params.homeServiceFilter =
+            urlParams.get('homeServiceFilter') === 'true' ? true : undefined;
+
+        page = urlParams.get('page')
+            ? Number(urlParams.get('page'))
+            : 1;
+
+        loadServices();
+    }
 
     async function loadServices() {
         loading = true;
         params.page = page;
-        pagedList = await getServices(params);
+        try {
+            pagedList = await getServices(params);
+        } catch (e) {
+            if(e.status === StatusCodes.BAD_REQUEST)
+                console.log("Invalid Params");
+        }
         loading = false;
+    }
+
+    function updateUrl() {
+        const searchParams = new URLSearchParams();
+
+        if (params.category) searchParams.set('category', params.category);
+        if (params.neighbourhoods) searchParams.set('neighbourhoods', params.neighbourhoods);
+        if (params.rating) searchParams.set('rating', String(params.rating));
+        if (params.searchQuery) searchParams.set('search', params.searchQuery);
+        if (params.orderFilters) searchParams.set('orderFilters', params.orderFilters);
+        if (params.homeServiceFilter) searchParams.set('homeServiceFilter', 'true');
+        if (page > 1) searchParams.set('page', String(page));
+
+        goto(`?${searchParams.toString()}`, {replaceState: true});
     }
 
     function search() {
@@ -48,7 +86,7 @@
         params.orderFilters = undefined;
         params.homeServiceFilter = undefined;
         params.page = 1;
-        loadServices();
+        updateUrl();
     }
 
     const categoryList = Object.values(Categories);
@@ -56,18 +94,16 @@
     $: lastPage = pagedList.links.last ?? 1;
 
     $: pages = (() => {
-        const last = lastPage;
-        if(last <= 5) {
-            return Array.from({ length: last }, (_, i) => i + 1);
+        if (lastPage <= 5) {
+            return Array.from({ length: lastPage }, (_, i) => i + 1);
         }
-        else if (page <= 2) {
-            return [1, 2, 'ellipsis', last];
-        } else if(page >= last-1) {
-            return [1, 'ellipsis', last-1, last];
+        if (page <= 2) {
+            return [1, 2, 'ellipsis', lastPage];
         }
-        else {
-            return [1, 'ellipsis', page-1, page, page+1, 'ellipsis', last];
+        if (page >= lastPage - 1) {
+            return [1, 'ellipsis', lastPage - 1, lastPage];
         }
+        return [1, 'ellipsis', page - 1, page, page + 1, 'ellipsis', lastPage];
     })();
 </script>
 
@@ -98,7 +134,7 @@
             bind:value={params.orderFilters}
             on:change={() => {
                 page = 1;
-                loadServices();
+                updateUrl();
             }}
         >
             <option value={undefined}>{$t('services.order-by')}</option>
@@ -132,7 +168,7 @@
                     on:change={(e) => {
                         params.homeServiceFilter = e.currentTarget.checked ? true : undefined;
                         page = 1;
-                        loadServices();
+                        updateUrl();
                     }}
                 />
                 <div class="w-11 h-6 bg-gray-300 rounded-full relative transition {params.homeServiceFilter ? 'bg-primary-500' : ''}">
@@ -147,7 +183,7 @@
                 on:click={() => {
                     params.rating = params.rating === RatingsInfo[r].minValue ? undefined : RatingsInfo[r].minValue;
                     page = 1;
-                    loadServices();
+                    updateUrl();
                 }}
                 >
                     <span>{$t(RatingsInfo[r].codeMsg)}</span>
@@ -166,7 +202,7 @@
                     on:click={() => {
                         params.category = params.category === c ? undefined : c;
                         page = 1;
-                        loadServices();
+                        updateUrl();
                     }}
                 >
                     <Icon name={CategoriesInfo[c].icon}/>
@@ -183,7 +219,7 @@
         {page}
         onPageChange={(event) => {
             page = event.page;
-            loadServices();
+            updateUrl();
         }}
         class="flex justify-center items-center space-x-2"
     >
@@ -198,7 +234,7 @@
                     <button
                         class={`w-8 h-8 flex items-center justify-center rounded cursor-pointer hover:shadow-lg
                         ${p === page ? 'bg-primary-500 text-white font-bold' : 'bg-gray-200 text-black'}`}
-                        on:click={() => { page = p; loadServices(); }}
+                        on:click={() => { page = p; updateUrl(); }}
                     >
                         {p}
                     </button>
