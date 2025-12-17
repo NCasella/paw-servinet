@@ -88,6 +88,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers("/api/users/{userId:\\d+}").access(authDecider::isCurrentUser)
 
                 .requestMatchers(HttpMethod.POST, "/api/businesses").hasRole("USER")
+                .requestMatchers("/api/businesses/{businessId:\\d+}").access(authDecider::isCurrentUserBusinessOwner)
                 .requestMatchers(HttpMethod.POST,"/api/questions","/api/reviews").hasRole("USER")
 
                 .requestMatchers(HttpMethod.PATCH,"/api/questions/{questionId:\\d+}").access(authDecider::canRespondQuestion)
