@@ -120,8 +120,8 @@
         </div>
 
         <div class="flex gap-8 mt-6">
-            <div class="w-120 rounded-lg overflow-hidden">
-                <img src={service.getServiceImageUrl()} alt="Service image" />
+            <div class="w-120 h-80 rounded-lg overflow-hidden  flex-shrink-0">
+                <img class="w-full h-full object-cover block" src={service.getServiceImageUrl()} alt="Service image" />
             </div>
 
             <div class="flex-1">
