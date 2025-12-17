@@ -1,22 +1,15 @@
 package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.services.*;
-import ar.edu.itba.paw.webapp.mediaType.CustomMediaTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 @Component
 public class ServinetAuthControl {
@@ -94,6 +87,11 @@ public class ServinetAuthControl {
             return false;
         }
         return business.getUserId() == userId;
+    }
+    @Transactional(readOnly = true)
+    public boolean isBusinessOwner(long businessId){
+        Optional<User> user =getCurrentUser();
+        return user.filter(value -> this.isBusinessOwner(businessId, value.getUserId())).isPresent();
     }
     @Transactional(readOnly = true)
     public boolean isRatingOwner(long ratingId){
