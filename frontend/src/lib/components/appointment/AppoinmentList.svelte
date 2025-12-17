@@ -51,7 +51,6 @@
     async function loadData() {
         //status = getAppointmentStatus( $page.url.searchParams.get('status'), AppointmentStatus.PENDING);
         setStatusBtn()
-        console.log(status)
         loading = true
         
         try {
@@ -100,11 +99,11 @@
     }
 
     function getConfirmLabel() {
-        return isUser? 'popup.appointment.cancel' : "popup.appointment.deny"
+        return status==AppointmentStatus.CONFIRMED || isUser? 'popup.appointment.cancel' : "popup.appointment.deny"
     }
 
     function getLabel() {
-        return   isUser? 'popup.appointment.message':'popup.deny-appointment.message'
+        return status==AppointmentStatus.CONFIRMED ||  isUser? 'popup.appointment.message':'popup.deny-appointment.message'
     }
 
 
@@ -130,10 +129,15 @@
 
   async function confirmCancel() {
     if (!selectedAppointment) return;
-    if ( status == AppointmentStatus.PENDING) 
-        await denyAppointment(selectedAppointment.appointmentId)
-    else
-        await cancelAppointment(selectedAppointment.appointmentId);
+    try {
+      loading = true
+      if ( status == AppointmentStatus.PENDING && !isUser) 
+          await denyAppointment(selectedAppointment.appointmentId)
+      else
+          await cancelAppointment(selectedAppointment.appointmentId);
+    } finally {
+      loading = false
+    }
     showCancelModal = false;
     selectedAppointment = null; // todo: desaparece? 
     removeAppointmentFromList()
@@ -141,7 +145,7 @@
 
   async function removeAppointmentFromList() {
     // todo
-    if ( !isLastPage(pageNum, appoinmentList) )
+    if ( !isLastPage(pageNum, appoinmentList) || appoinmentList.items.length == 1)
         loadData()
   }
 
