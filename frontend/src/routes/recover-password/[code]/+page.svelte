@@ -11,6 +11,7 @@
     let formErrors: ResetPasswordFormErrors = {};
     let resetPasswordForm: ResetPasswordForm; 
 	let code = ''; 
+    let email = '';
 	let password = '';
     let confirmPassword = ''; 
     let showPassword = false;
@@ -22,6 +23,7 @@
 		event.preventDefault(); 
 
         resetPasswordForm.code = $page.params.code; 
+        resetPasswordForm.email = email;
         resetPasswordForm.password = password;
         resetPasswordForm.confirmPassword = confirmPassword;
         
@@ -65,6 +67,21 @@
         {/if}
 
 		<form on:submit|preventDefault={handleSubmit} class="space-y-6">
+            <div class="flex items-center justify-between">
+				<label for="email" class="block text-sm/6 font-medium">{$t('email')}</label>
+			</div>
+            <div class="mt-2 relative">
+                <input
+                    id="email"
+                    bind:value={email}
+                    type="email"
+                    placeholder={$t('input.email')}
+                    name="email"
+                    required
+                    class="block w-full rounded-md bg-white px-3 py-1.5 pr-10 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+            </div>
+
             <div>
 				<div class="flex items-center justify-between">
 					<label for="password" class="block text-sm/6 font-medium">{$t('password')}</label>

@@ -1,9 +1,11 @@
 export class ResetPasswordForm {
+    email: string = '';
     code: string = '';
     password: string = '';
     confirmPassword: string = '';
 
-    constructor(code: string, password: string, confirmPassword: string) {
+    constructor(email: string, code: string, password: string, confirmPassword: string) {
+        this.email = email;
         this.code = code;
         this.password = password;
         this.confirmPassword = confirmPassword;
@@ -36,6 +38,11 @@ export type ResetPasswordFormErrors= {
 
 const MAX_LEN = 255;
 export const ResetPasswordFormSchema = z.object({
+    email: z
+    .string()
+    .min(1, { message: "NotEmpty.PasswordResetForm.email" })
+    .max(MAX_LEN, { message: "Size.PasswordResetForm.email" })
+    .email({ message: "Email.PasswordResetForm.email" }),
   password: z
     .string()
     .trim()
