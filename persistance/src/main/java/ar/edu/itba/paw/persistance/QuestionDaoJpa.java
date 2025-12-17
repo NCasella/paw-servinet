@@ -20,7 +20,7 @@ public class QuestionDaoJpa implements QuestionDao {
 
     @Override
     public List<Question> getAllQuestions(int page, int pageSize){
-        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions q");
+        Query nativeQuery = em.createNativeQuery("SELECT q.questionid FROM questions q ORDER BY q.date DESC");
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
 
@@ -28,7 +28,7 @@ public class QuestionDaoJpa implements QuestionDao {
         final List<Long> idList = (List<Long>) nativeQuery.getResultList()
                 .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
 
-        final TypedQuery<Question> query = em.createQuery(" from Question as q where q.questionid in :idList ", Question.class);
+        final TypedQuery<Question> query = em.createQuery(" from Question as q where q.questionid in :idList order by q.date desc", Question.class);
         query.setParameter("idList", idList);
         return query.getResultList();
     }
@@ -39,6 +39,7 @@ public class QuestionDaoJpa implements QuestionDao {
         SELECT q.questionid
         FROM questions q
         WHERE q.serviceid = :serviceid
+        ORDER BY q.date DESC
         """);
 
         Query nativeQuery = em.createNativeQuery(sql.toString()).setParameter("serviceid", serviceId);
@@ -49,7 +50,7 @@ public class QuestionDaoJpa implements QuestionDao {
         final List<Long> idList = (List<Long>) nativeQuery.getResultList()
                 .stream().map(n -> ((Number)n).longValue()).collect(Collectors.toList());
 
-        final TypedQuery<Question> query = em.createQuery(" from Question as q where q.questionid in :idList ", Question.class);
+        final TypedQuery<Question> query = em.createQuery(" from Question as q where q.questionid in :idList order by q.date desc", Question.class);
         query.setParameter("idList", idList);
         return query.getResultList();
     }
