@@ -16,11 +16,13 @@
     import BigButtonSecondary from "$lib/components/global/BigButtonSecondary.svelte";
     import BigButtonWarning from "$lib/components/global/BigButtonWarning.svelte";
     import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-    import {get} from "svelte/store";
+    import {derived, get} from "svelte/store";
     import Spinner from "$lib/components/global/Spinner.svelte";
     import Questions from "$lib/components/services/Questions.svelte";
     import Reviews from "$lib/components/services/Reviews.svelte";
-
+    import type { PageData } from './$types';
+    import {page} from "$app/stores";
+    export let data :PageData
     let serviceId :number
     let loading = true
     let isOwner :boolean
@@ -32,8 +34,15 @@
     let pricingEnum: PricingTypes;
     let categoryEnum: Categories;
 
-    import type { PageData } from './$types';
-    export let data :PageData
+    const tab = derived(page, ($page) =>
+        $page.url.searchParams.get('tab')
+    );
+
+    $: {
+        const currentTab = $tab;
+        isQuestions = currentTab !== 'reviews';
+    }
+
     const { service } = data
     serviceId = service.serviceId
     onMount(async () => {
@@ -63,11 +72,11 @@
     }
 
     function showQuestions() {
-        isQuestions = true;
+        goto(`${base}/services/${serviceId}`, { replaceState: true });
     }
 
     function showReviews() {
-        isQuestions = false;
+        goto(`${base}/services/${serviceId}?tab=reviews`, { replaceState: true });
     }
 </script>
 

@@ -12,6 +12,7 @@
 
     import { page as pageStore } from '$app/stores';
     import { goto } from '$app/navigation';
+    import {StatusCodes} from "$models/exceptions/statusCodesEnum";
 
     let loading = true;
     let page = 1;
@@ -55,7 +56,12 @@
     async function loadServices() {
         loading = true;
         params.page = page;
-        pagedList = await getServices(params);
+        try {
+            pagedList = await getServices(params);
+        } catch (e) {
+            if(e.status === StatusCodes.BAD_REQUEST)
+                console.log("Invalid Params");
+        }
         loading = false;
     }
 
