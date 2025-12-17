@@ -1,4 +1,4 @@
-import { Business, type BusinessUpdateInfo } from "$models/Business";
+import { Business } from "$models/Business";
 import type { BusinessForm } from "$models/forms/BusinessCreationForm";
 import { parsePagedResponse, type PagedResult } from "$models/PagedList";
 import type { Review } from "$models/Review";
@@ -7,6 +7,7 @@ import { POST, GET, getNewIdFromPostResponse, DELETE, PATCH } from "$utils/apiFe
 import { getAllServiceReviews, getServiceReviews } from "./reviewsService";
 import { getAllBusinessServices } from "./serviceService";
 import { getCurrentUser } from "./userService";
+import type {BusinessUpdateForm} from "$models/forms/BusinessUpdateForm";
 
 export async function createBusiness(form:BusinessForm) :Promise<number> {
     const response = await POST("businesses",form, {
@@ -58,7 +59,7 @@ export async function deleteBusiness(businessId:number) {
     await DELETE(`businesses/${businessId}`)
 }
 
-export async function updateBusiness(businessId:number, form:BusinessUpdateInfo ) {
+export async function updateBusiness(businessId:number, form: BusinessUpdateForm ) {
   await PATCH(`businesses/${businessId}`, form, {contentType:"business-update"})
 }
 
