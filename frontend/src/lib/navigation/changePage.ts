@@ -11,7 +11,7 @@ export async function setPage(newPage: number) {
   params.set('page', newPage.toString());
 
   await goto(`${$page.url.pathname}?${params.toString()}`, {
-    replaceState: true, // no ensucia el historial
+    replaceState: false,
   });
 }
 
