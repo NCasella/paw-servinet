@@ -48,8 +48,8 @@ beforeEach(() => {
 describe('businessService', () => {
 
     it('createBusiness calls POST and returns new id', async () => {
-        (POST as any).mockResolvedValue({});
-        (getNewIdFromPostResponse as any).mockReturnValue(42);
+        vi.mocked(POST).mockResolvedValue({});
+        vi.mocked(getNewIdFromPostResponse).mockReturnValue(42);
 
         const form = {} as any;
         const id = await businessService.createBusiness(form);
@@ -60,8 +60,8 @@ describe('businessService', () => {
 
     it('getUserBusinesses calls GET and parses result', async () => {
         const response = { items: [], page: 1 };
-        (GET as any).mockResolvedValue(response);
-        (parsePagedResponse as any).mockReturnValue(response);
+        vi.mocked(GET).mockResolvedValue(response);
+        vi.mocked(parsePagedResponse).mockReturnValue(response);
 
         const result = await businessService.getUserBusinesses(10, 2);
 
@@ -71,10 +71,10 @@ describe('businessService', () => {
     });
 
     it('getCurrentUserBusinesses calls GET with current user', async () => {
-        (getCurrentUser as any).mockResolvedValue({ userId: 5 });
+        vi.mocked(getCurrentUser).mockResolvedValue({ userId: 5 });
         const response = { items: [], page: 1 };
-        (GET as any).mockResolvedValue(response);
-        (parsePagedResponse as any).mockReturnValue(response);
+        vi.mocked(GET).mockResolvedValue(response);
+        vi.mocked(parsePagedResponse).mockReturnValue(response);
 
         const result = await businessService.getCurrentUserBusinesses(1);
 
@@ -84,7 +84,7 @@ describe('businessService', () => {
 
     it('getBusinessById calls GET and returns Business.fromJson', async () => {
         const mockBusiness = { id: 1 };
-        (GET as any).mockResolvedValue(mockBusiness);
+        vi.mocked(GET).mockResolvedValue(mockBusiness);
 
         vi.spyOn(Business, 'fromJson').mockImplementation((json) => ({
             businessId: json.id
@@ -108,12 +108,12 @@ describe('businessService', () => {
     });
 
     it('getBusinessReviews fetches all service reviews', async () => {
-        (serviceService.getAllBusinessServices as any).mockResolvedValue([1, 2]);
+        vi.mocked(serviceService.getAllBusinessServices).mockResolvedValue([1, 2]);
 
         const review1: Review = { id: 1 } as any;
         const review2: Review = { id: 2 } as any;
 
-        (reviewsService.getAllServiceReviews as any)
+        vi.mocked(reviewsService.getAllServiceReviews)
             .mockResolvedValueOnce([review1])
             .mockResolvedValueOnce([review2]);
 
@@ -122,6 +122,28 @@ describe('businessService', () => {
         expect(serviceService.getAllBusinessServices).toHaveBeenCalledWith(5);
         expect(reviewsService.getAllServiceReviews).toHaveBeenCalledTimes(2);
         expect(result).toEqual([review1, review2]);
+    });
+
+    it('getServiceBusinesses maps services to businesses', async () => {
+        const services = [
+            { serviceId: 1, businessId: 10 },
+            { serviceId: 2, businessId: 20 },
+            { serviceId: 3, businessId: 10 }  // Same business
+        ] as Service[];
+
+        const business10 = { businessId: 10, businessName: 'B10' };
+        const business20 = { businessId: 20, businessName: 'B20' };
+
+        vi.mocked(GET).mockResolvedValueOnce(business10).mockResolvedValueOnce(business20);
+        vi.spyOn(Business, 'fromJson')
+            .mockReturnValueOnce(business10 as any)
+            .mockReturnValueOnce(business20 as any);
+
+        const result = await businessService.getServiceBusinesses(services);
+
+        expect(result.size).toBe(2);  // Only unique businessIds
+        expect(result.get(10)).toEqual(business10);
+        expect(result.get(20)).toEqual(business20);
     });
 
 });
