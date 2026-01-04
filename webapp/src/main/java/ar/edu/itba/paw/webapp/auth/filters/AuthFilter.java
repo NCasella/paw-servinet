@@ -98,7 +98,11 @@ public class AuthFilter extends OncePerRequestFilter {
                                 Collection<GrantedAuthority> authorities;
                                 if (isPasswordRecovery){
                                     authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_PASSWORD_RESET"));
-                                    passRecoveryService.deleteCode(user.getUserId());
+                                    //passRecoveryService.deleteCode(user.getUserId());
+                                    auth = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+                                    SecurityContextHolder.getContext().setAuthentication(auth);
+                                    chain.doFilter(req, res);
+                                    return;
                                 }else{
                                     authorities = new HashSet<>(userDetails.getAuthorities());
                                 }

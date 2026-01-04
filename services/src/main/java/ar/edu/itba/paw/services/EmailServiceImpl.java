@@ -59,6 +59,7 @@ public class EmailServiceImpl implements EmailService{
         final Context ctx = new Context(locale);
 
         ctx.setVariable("user", user);
+        ctx.setVariable("id", user.getUserId());
         ctx.setVariable("token", code.getCode());
         LOGGER.info("Preparing password recovery mail for user.");
         try {

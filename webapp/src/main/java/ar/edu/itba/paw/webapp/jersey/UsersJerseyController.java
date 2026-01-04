@@ -63,13 +63,6 @@ public class UsersJerseyController {
         return Response.ok().build();
     }
 
-    @POST
-    @Consumes(value= {CustomMediaTypes.PASSWORD_RESET})
-    public Response resetPassword(@NotNull @Valid PasswordResetDTO passwordEdit){
-        passRecoveryService.changePassword(passwordEdit.getCodeAsUuid(), passwordEdit.getNewPassword());
-        return Response.ok().build();
-    }
-
     @Path("/{userid}")
     @OPTIONS
     public Response getSupportedMimeTypesForUser() {
@@ -111,6 +104,7 @@ public class UsersJerseyController {
         us.changeUserInfo(userid, profilePatch.getUsername(), profilePatch.getEmail(), profilePatch.getTelephone(), localeParsed, profilePatch.getProfilePicId());
         if (profilePatch.getPassword()!=null && !profilePatch.getPassword().isEmpty()) {
             us.changePassword(userid, profilePatch.getPassword());
+            passRecoveryService.deleteCode(userid);
         }
         User modifiedUser = us.findById(userid).orElseThrow(UserNotFoundException::new);
         return Response.ok(UserDto.fromUser(modifiedUser, uriInfo)).build();

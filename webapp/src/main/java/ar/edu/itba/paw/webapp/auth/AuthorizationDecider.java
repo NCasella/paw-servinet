@@ -33,14 +33,23 @@ public class AuthorizationDecider {
 
     }
     public AuthorizationDecision canChangePassword(Supplier<Authentication> auth, RequestAuthorizationContext context) {
-        if (!isCurrentUser(auth, context).isGranted()) {
-            return new AuthorizationDecision(false);
-        }
-        if (auth.get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_PASSWORD_RESET_USER")) && !context.getRequest().getMethod().contains("PATCH")) {
+        Authentication authentication = auth.get();
+        if (authentication == null) {
             return new AuthorizationDecision(false);
         }
 
-        return new AuthorizationDecision(true);
+        boolean hasResetRole = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_PASSWORD_RESET"));
+
+        if (hasResetRole) {
+            long requestedUserId = Long.parseLong(context.getVariables().getOrDefault("userId", "-1"));
+            Optional<User> authenticatedUser = authControl.getCurrentUser();
+            return new AuthorizationDecision(
+                    authenticatedUser.isPresent() && authenticatedUser.get().getUserId() == requestedUserId
+            );
+        }
+
+        return isCurrentUser(auth, context);
     }
     public AuthorizationDecision isCurrentUser(Supplier<Authentication> auth,RequestAuthorizationContext context){
         long userId=Long.parseLong(context.getVariables().getOrDefault("userId","-1"));
