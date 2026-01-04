@@ -46,9 +46,10 @@ export async function getServiceById(serviceId:number, fetchFn?: typeof fetch) :
 }
 
 export async function createService(form:ServiceForm, image: File | null) :Promise<number> {
-    if(image != null) form.imageId = await uploadImage(image);
+    const imageId = image != null ? await uploadImage(image) : form.imageId;
+    const payload = { ...form, imageId };  // Clone instead of mutate
 
-    const response = await POST("services",form, {
+    const response = await POST("services", payload, {
             contentType: "service-creation"
     });
     return getNewIdFromPostResponse(response)

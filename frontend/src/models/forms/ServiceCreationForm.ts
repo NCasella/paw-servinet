@@ -151,7 +151,6 @@ export const ServiceUpdateSchema = z
 export type ServiceFormCreateData = z.infer<typeof ServiceCreateSchema>;
 export type ServiceFormUpdateData = z.infer<typeof ServiceUpdateSchema>;
 
-// ✅ Keys válidas para errores (create ∪ update)
 type ServiceFormField = keyof ServiceFormCreateData | keyof ServiceFormUpdateData;
 
 export type ServiceFormErrors = Partial<Record<ServiceFormField, ServiceFormErrorKey | string>>;

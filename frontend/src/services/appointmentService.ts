@@ -7,12 +7,12 @@ import { getCurrentUser } from "./userService";
 
 export async function createAppointment(form: AppointmentForm) :Promise<number> {
     const user = await getCurrentUser()
-    form.userId = user.userId
-    
-    const response :TResponse = await POST("appointments", form, {
+    const payload = { ...form, userId: user.userId };  // Clone instead of mutate
+
+    const response :TResponse = await POST("appointments", payload, {
         contentType: "appointment-creation"
-    })   
-  
+    })
+
     return getNewIdFromPostResponse(response)
 }
 
@@ -45,7 +45,7 @@ export async function confirmAppointment(appoinmentId: number) {
     return changeAppointmentStatus(appoinmentId, AppointmentStatus.CONFIRMED)
 }
 
-async function changeAppointmentStatus(appoinmentId:number, newStatus:AppointmentStatus) {
+export async function changeAppointmentStatus(appoinmentId:number, newStatus:AppointmentStatus) {
     if ( newStatus == AppointmentStatus.FINISHED)
         throw Error("Appointment status can't be changed to finished")
 
