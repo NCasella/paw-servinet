@@ -34,26 +34,24 @@ export async function requestPasswordRecovery(form:RequestPasswordRecoveryForm) 
     return response
 }
 
-export async function resetPassword(form:ResetPasswordForm) : Promise<Boolean> {
-    const response = await loginWithBasicAuth(form.email, form.code); 
-    if (response){
-        let userId = extractUserIdFromToken()
+export async function resetPassword(form:ResetPasswordForm, userId:string) : Promise<Boolean> {
+    let updateForm:UserUpdateForm = new UserUpdateForm({
+        username: "",
+        email: "", 
+        telephone: "",
+        locale: "",
+        password: form.password});
 
-        let updateForm:UserUpdateForm = new UserUpdateForm({
-            username: "",
-            email: "", 
-            telephone: "",
-            locale: "",
-            password: form.password});
+    const basic = btoa(`${form.email}:${form.code}`);
 
-        let newresponse = await PATCH(`users/${userId}`, updateForm, {
-            contentType: "user-update"
-        });
-        return newresponse;
-    }
+    let newresponse = await PATCH(`users/${userId}`, updateForm, {
+        contentType: "user-update",
+        headers: {
+            Authorization: `Basic ${basic}`
+        }
+    });
+    return newresponse;
 
-
-    return response
 }
 
 export function getPatchFormWithModifiedFields(UserContactInfo: UserContactInfo, form: UserUpdateForm): UserUpdateForm {
@@ -103,10 +101,8 @@ export async function getCurrentUserContactInfo() :Promise<UserContactInfo> {
         if ( userid==null ) 
             throw Error("Current user not found: auth is missing");
     } else userid = currentUser.userId
-    
-    return await getUserContactInfo(userid)
-    
 
+    return await getUserContactInfo(userid)
 }
 
 function loadUser(currentUser:User) {

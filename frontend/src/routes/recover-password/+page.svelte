@@ -7,10 +7,15 @@
 	import { resetPassword } from '$services/userService';
     import FormError from "$lib/components/global/forms/FormError.svelte";
 	import { ResetPasswordForm, type ResetPasswordFormErrors } from '$models/forms/ResetPasswordForm';
+    import { loginWithBasicAuth } from '$services/authenticate';
+
+    const userId = $page.url.searchParams.get('id');
+    const code = $page.url.searchParams.get('code');
+    console.log("userId:"+userId);
+    console.log("code:"+code);
 
     let formErrors: ResetPasswordFormErrors = {};
-    let resetPasswordForm: ResetPasswordForm; 
-	let code = ''; 
+    let resetPasswordForm: ResetPasswordForm = new ResetPasswordForm("", code || "", "", ""); 
     let email = '';
 	let password = '';
     let confirmPassword = ''; 
@@ -22,7 +27,6 @@
 	async function handleSubmit(event: Event) {
 		event.preventDefault(); 
 
-        resetPasswordForm.code = $page.params.code; 
         resetPasswordForm.email = email;
         resetPasswordForm.password = password;
         resetPasswordForm.confirmPassword = confirmPassword;
@@ -39,21 +43,18 @@
 
 		loading = true;
 
-		const ok = await resetPassword(resetPasswordForm);
+		const ok = await resetPassword(resetPasswordForm, userId);
 
 		loading = false;
 
-		if (ok) {
-            goto(`${base}/profile`);
-			return; 
-		}
+        if (ok) {
+            await loginWithBasicAuth(resetPasswordForm.email, resetPasswordForm.password);
+            await goto(`${base}/profile`);
+        }
+
         errorMessage = $t('login.passwordrecovery.invalid-email');
 	}
 
-    onMount(() => {
-        code = $page.params.code;
-        resetPasswordForm = new ResetPasswordForm(code, "", ""); 
-    });
 </script>
 
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -156,7 +157,7 @@
             <div>
 				<button
 					type="submit"
-					disabled={loading || !$page.params.code}
+					disabled={loading || !code || !userId}
 					class="bg-primary-500 flex w-full justify-center rounded-md px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
 				>
                     {#if loading}
