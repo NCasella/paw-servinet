@@ -15,22 +15,48 @@
 	import { getAppointmentServices } from "$services/serviceService";
 	import type { Business } from "$models/Business";
 	import { getServiceBusinesses } from "$services/businessService";
-    $: status = getAppointmentStatus( $page.url.searchParams.get('status'), AppointmentStatus.PENDING);
+    const status = $derived(
+  getAppointmentStatus($page.url.searchParams.get("status"), AppointmentStatus.PENDING)
+);
+const pageNum = $derived(Number($page.url.searchParams.get("page") ?? 1))
+
     
     /* Params */
-    export let view :AppointmentView 
-    export let business: Business
-
-    export let pageNum :number
+    let {view, business} = $props()
     
-    let appoinmentList :PagedResult<Appointment>
+    let appoinmentList :PagedResult<Appointment> = $state({} as PagedResult<Appointment>)
     let user :User
-    $: loading = true
-    let serviceList: Map<number, Service>
+  
+    let serviceList: Map<number, Service> = $state(new Map<number, Service>)
     let businessList: Map<number,Business>
     let clientList: Map<number,ContactInfo>
     let contactInfo :ContactInfo
-    onMount( loadData )
+    
+    let loading = $state(true);
+
+// evita loops/race conditions
+let requestId = 0;
+
+$effect(() => {
+  // dependencias: pageNum y status (y view/business si aplica)
+  const p = pageNum;
+  const s = status;
+  const v = view;
+  const bId = business?.businessId;
+
+  // correr async sin bloquear el efecto
+  void (async () => {
+    const id = ++requestId;
+    loading = true;
+    try {
+      await loadData();
+    } finally {
+      // solo apagar loading si esta request sigue siendo la última
+      if (id === requestId) loading = false;
+    }
+  })();
+});
+
     
     async function loadBusinessAppointments() {
         appoinmentList = await getAppointmentsPagedList(business.businessId, status, AppointmentView.BUSINESS, pageNum )
@@ -60,9 +86,9 @@
                 await loadBusinessAppointments()
             
                 if ( appoinmentList.items.length == 0 && pageNum!=1){
-                  pageNum=1
-                  setPage(pageNum)
-                  loadData()
+                  //pageNum=1
+                  setPage(1)
+                  //loadData()
                   //const redirectUrl =`/appointments?status=${status}`
                   //if (view == AppointmentView.BUSINESS) await navTo(`/businesses/${business.businessId}${ redirectUrl}`)
                   //else await setPage(1) //navTo(redirectUrl)
@@ -119,7 +145,7 @@
 	import { text } from "@sveltejs/kit";
 	import { setPage } from "$lib/navigation/changePage";
 
-  let showCancelModal = false;
+  let showCancelModal = $state(false);
   let selectedAppointment: Appointment | null = null;
 
   function openCancel(appointment: Appointment) {
@@ -178,11 +204,11 @@ notConfirmed = !confirmed;
     url.searchParams.set('page', '1');
 
     goto(url.toString(), {
-        replaceState: false // evita agregar historial en el navegador
+        replaceState: false
     });
-    status = newStatus
-    pageNum = 1
-    await loadData()
+    //status = newStatus
+    //pageNum = 1
+    //await loadData()
   }
   
   
@@ -191,7 +217,7 @@ notConfirmed = !confirmed;
 
 {#if loading}
     <Spinner/>
-{:else if appoinmentList && serviceList}
+{:else}
 <div class="w-full flex flex-col gap-4">
     <header class="mx-8 flex place-content-between items-baseline">
   {#if history}
@@ -260,8 +286,6 @@ notConfirmed = !confirmed;
     pagedList={appoinmentList}
     page={pageNum}
     onPageChange={(newPage) => {
-        pageNum = newPage;
-        loadData();
         setPage(newPage)
     }}
     />
@@ -269,8 +293,6 @@ notConfirmed = !confirmed;
     {#if appoinmentList.items.length==0}
         <NoResults actionUrl={getPath("/")}  actionLabel={$t("services.look-for-services")}/>
     {/if}
-{:else}
- error
 {/if}
 
 <ConfirmModal

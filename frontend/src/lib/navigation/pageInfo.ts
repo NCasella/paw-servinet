@@ -30,7 +30,7 @@ export function getPath(url:string) {
 }
 
 export async function navTo(url:string) {
-    await goto(base+url)
+    await goto(base+url, {replaceState: false})
 }
 
 export function goBack(backupUrl: string) {

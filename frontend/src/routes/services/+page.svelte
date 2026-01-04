@@ -76,7 +76,7 @@
         if (params.homeServiceFilter) searchParams.set('homeServiceFilter', 'true');
         if (page > 1) searchParams.set('page', String(page));
 
-        goto(`?${searchParams.toString()}`, {replaceState: true});
+        goto(`?${searchParams.toString()}`, {replaceState: false});
     }
 
     function search() {

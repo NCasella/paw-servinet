@@ -28,9 +28,7 @@ public class JwtUtil {
     private UserDetailsService userDetailsService;
     @Value("${jwt.key}")
     private String SECRET_KEY;
-
-    private static final int TOKEN_DURATION=1000*60*60*12; //ms
-    private static final int REFRESH_TOKEN_DURATION=1000*60*60*24*7;
+    private static final String TOKEN_TYPE_HEADER_CLAIM="tokenType";
 
     public String extractUsername(String token) {
         try {
@@ -66,7 +64,8 @@ public class JwtUtil {
                 .claim("id", userId)
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_DURATION))
+                .claim(TOKEN_TYPE_HEADER_CLAIM,JwtTypes.ACCESS_TOKEN.toString())
+                .setExpiration(new Date(System.currentTimeMillis() + JwtTypes.ACCESS_TOKEN.tokenDuration))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
@@ -74,7 +73,8 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATION))
+                .claim(TOKEN_TYPE_HEADER_CLAIM,JwtTypes.REFRESH_TOKEN.toString())
+                .setExpiration(new Date(System.currentTimeMillis() + JwtTypes.REFRESH_TOKEN.tokenDuration))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
@@ -83,7 +83,14 @@ public class JwtUtil {
         String username=extractUsername(token);
         return username!=null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
-
+    public boolean isRefreshToken(String token){
+        try {
+            String tokenType = extractClaim(token, claims -> claims.get(TOKEN_TYPE_HEADER_CLAIM, String.class));
+            return tokenType.equals(JwtTypes.REFRESH_TOKEN.toString());
+        }catch (RequiredTypeException e){
+            throw new IllegalArgumentException();
+        }
+    }
     private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
@@ -105,5 +112,12 @@ public class JwtUtil {
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
         return userDetails;
+    }
+    private enum JwtTypes{
+        ACCESS_TOKEN(1000*60*60*12),
+        REFRESH_TOKEN(1000*60*60*24*7);
+
+        private final int tokenDuration;
+        JwtTypes(int tokenDuration){this.tokenDuration=tokenDuration;}
     }
 }

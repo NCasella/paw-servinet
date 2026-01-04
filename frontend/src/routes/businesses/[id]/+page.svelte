@@ -19,10 +19,12 @@
   import { setPage } from '$lib/navigation/changePage.js';
   import {BusinessUpdateForm, type BusinessUpdateFormErrors} from "$models/forms/BusinessUpdateForm";
 
+let { data } = $props();
 
-  let { data } = $props()
-  let { business, servicesList, isOwner, pageNum } = data
-  let pageNumD = $state(pageNum)
+const business = $derived(data.business);
+const isOwner = $derived(data.isOwner);
+const servicesList = $derived(data.servicesList);
+const pageNum = $derived(data.pageNum);
 
   
   //let servicesList: PagedResult<Service> | null = null;
@@ -54,7 +56,7 @@
 
   async function loadServices() {
     loading = true
-    servicesList = await getServices({businessId: business.businessId, page:pageNumD})
+   // servicesList = await getServices({businessId: business.businessId, page:pageNumD})
     loading = false
   }
 
@@ -104,7 +106,7 @@
       await deleteBusiness(business.businessId);
       showDeleteModal = false;
       // redirigimos a listado de negocios o home
-      await goto(getPath('/my-businesses'));
+      await goto(getPath('/my-businesses'), {replaceState:true});
     } catch (e) {
       console.error(e);
       // TODO: toaster de error
@@ -113,12 +115,14 @@
 
   async function moveToPage(newPage:number) {
     
-    pageNumD = newPage
+  //  pageNumD = newPage
    
-    loadServices()
+    //loadServices()
     await setPage(newPage)
    
   }
+
+  
 </script>
 
 {#if loading}
@@ -321,7 +325,7 @@
           {/each}
         </div>
         <PaginationControls 
-          page={pageNumD} 
+          page={pageNum} 
           pagedList = {servicesList}
           onPageChange={(newPage) => moveToPage(newPage)  }/>
   
