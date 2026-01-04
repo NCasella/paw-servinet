@@ -187,7 +187,7 @@ describe('apiFetch', () => {
                 expect.any(String),
                 expect.objectContaining({
                     headers: expect.objectContaining({
-                        'Authorization-Refresh-Token': 'Bearer test-refresh-token'
+                        'Authorization': 'Bearer test-refresh-token'
                     })
                 })
             );
@@ -211,7 +211,7 @@ describe('apiFetch', () => {
                 expect.any(String),
                 expect.objectContaining({
                     headers: expect.objectContaining({
-                        'Authorization-Refresh-Token': 'Bearer valid-refresh-token'
+                        'Authorization': 'Bearer valid-refresh-token'
                     })
                 })
             );
