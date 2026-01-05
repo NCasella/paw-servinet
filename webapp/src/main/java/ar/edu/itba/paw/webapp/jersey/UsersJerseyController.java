@@ -41,8 +41,7 @@ public class UsersJerseyController {
                 .header("Accept-Post",
                         String.join(", ",
                                 CustomMediaTypes.USER_REGISTRATION,
-                                CustomMediaTypes.PASSWORD_RECOVERY,
-                                CustomMediaTypes.PASSWORD_RESET))
+                                CustomMediaTypes.PASSWORD_RECOVERY))
                 .header("Access-Control-Allow-Methods", "POST, OPTIONS")
                 .build();
     }
