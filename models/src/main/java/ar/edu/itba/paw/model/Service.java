@@ -6,6 +6,7 @@ import org.hibernate.annotations.Formula;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "services")
@@ -153,4 +154,15 @@ public class Service extends BasicService {
     public void setNeighbourhoodAvailable(List<Nbservices> neighbourhoodAvailable) {
         this.neighbourhoodAvailable = neighbourhoodAvailable;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this==o)
+            return true;
+        if(!(o instanceof Service service))
+            return false;
+        return Objects.equals(this.getId() ,service.getId());
+
+    }
+
 }
