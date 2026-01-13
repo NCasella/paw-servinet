@@ -98,17 +98,17 @@ public class BusinessDaoJpa implements BusinessDao {
 
     @Override
     public Optional<String> getBusinessEmail(long businessId) {
-        return Optional.ofNullable(em.find(Business.class, businessId).getEmail());
+        return Optional.ofNullable(em.find(Business.class, businessId))
+                .map(Business::getEmail);
     }
 
     @Override
-    public boolean deleteBusiness(long businessId) {
-        final Business business = em.find(Business.class, businessId);
-        if (business != null) {
+    public void deleteBusiness(long businessId) {
+        Optional<Business> maybeBusiness = Optional.ofNullable(em.find(Business.class, businessId));
+        if (maybeBusiness.isPresent()) {
+            Business business = maybeBusiness.get();
             em.remove(business);
-            return !business.getOwnedBy().getBusinessOwned().isEmpty();
         }
-        return false;
     }
 
     @Override

@@ -149,13 +149,11 @@ public class AppointmentDaoJpa implements AppointmentDao {
     public void confirmAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
         appointment.setConfirmed();
-        em.merge(appointment);
     }
 
     @Override
     public void cancelAppointment(long appointmentid) {
         Appointment appointment = findById(appointmentid).orElseThrow(AppointmentNonExistentException::new);
         appointment.setCancelled(true);
-        em.merge(appointment);
     }
 }

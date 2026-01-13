@@ -22,7 +22,7 @@ public interface BusinessDao {
      void changeBusinessTelephone(long businessId, String value);
      void changeBusinessEmail(long businessId, String value);
 
-     boolean deleteBusiness(long businessId);
+     void deleteBusiness(long businessId);
 
      Business createBusiness(String businessName, long userId, String telephone, String email, String location);
 

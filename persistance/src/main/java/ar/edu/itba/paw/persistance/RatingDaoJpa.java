@@ -37,8 +37,8 @@ public class RatingDaoJpa implements RatingDao {
         nativeQuery.setMaxResults(pageSize);
 
         @SuppressWarnings("unchecked")
-        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream())
-                .map(Integer::longValue)
+        List<Long> idList = ((Stream<Number>) nativeQuery.getResultStream())
+                .map(Number::longValue)
                 .toList();
 
         if (idList.isEmpty()) {
@@ -73,8 +73,8 @@ public class RatingDaoJpa implements RatingDao {
         nativeQuery.setMaxResults(pageSize);
 
         @SuppressWarnings("unchecked")
-        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream())
-                .map(Integer::longValue)
+        List<Long> idList = ((Stream<Number>) nativeQuery.getResultStream())
+                .map(Number::longValue)
                 .toList();
 
         if (idList.isEmpty()) {
@@ -149,10 +149,12 @@ public class RatingDaoJpa implements RatingDao {
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
 
-        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+        @SuppressWarnings("unchecked")
+        List<Long> idList = ((Stream<Number>) nativeQuery.getResultStream()).map(Number::longValue).toList();
         TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.id IN :idList", Rating.class);
         query.setParameter("idList", idList);
-        return query.getResultList();    }
+        return query.getResultList();
+    }
 
     @Override
     public List<Rating> getAllBusinessRatingsFiltered(long businessid, int page, int pageSize, RatingsFilters filter) {
@@ -166,7 +168,7 @@ public class RatingDaoJpa implements RatingDao {
         nativeQuery.setFirstResult((page - 1) * pageSize);
         nativeQuery.setMaxResults(pageSize);
         @SuppressWarnings("unchecked")
-        List<Long> idList = ((Stream<Integer>) nativeQuery.getResultStream()).map(Integer::longValue).toList();
+        List<Long> idList = ((Stream<Number>) nativeQuery.getResultStream()).map(Number::longValue).toList();
 
         TypedQuery<Rating> query;
         if(filter.isDateType(filter)) {
