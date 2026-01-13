@@ -57,7 +57,7 @@ public class QuestionDaoJpa implements QuestionDao {
 
     @Override
     public Optional<Question> findById(long id) {
-        return Optional.of(em.find(Question.class, id));
+        return Optional.ofNullable(em.find(Question.class, id));
     }
 
     @Override
