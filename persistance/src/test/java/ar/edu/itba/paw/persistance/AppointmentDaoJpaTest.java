@@ -211,9 +211,13 @@ public class AppointmentDaoJpaTest {
 
     }
 
-    @Test(expected = AppointmentNonExistentException.class)
+    @Test
     public void testConfirmNonExistentAppointment() {
-        appointmentDao.confirmAppointment(999);
+        long nonExistentId = 999L;
+
+        Assert.assertThrows(AppointmentNonExistentException.class, () -> {
+            appointmentDao.confirmAppointment(nonExistentId);
+        });
     }
 
     @Test
@@ -232,9 +236,13 @@ public class AppointmentDaoJpaTest {
         Assert.assertFalse("The second appointment SHOULD NOT change its status to CANCELED after no changes.", secondAppointmentStatus);
     }
 
-    @Test(expected = AppointmentNonExistentException.class)
+    @Test
     public void testCancelNonExistentAppointment() {
-        appointmentDao.cancelAppointment(999);
+        long nonExistentId = 999L;
+
+        Assert.assertThrows(AppointmentNonExistentException.class, () -> {
+            appointmentDao.cancelAppointment(nonExistentId);
+        });
     }
 
     @Test

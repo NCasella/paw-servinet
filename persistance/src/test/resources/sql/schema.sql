@@ -65,7 +65,9 @@ CREATE TABLE IF NOT EXISTS appointments (
     startDate TIMESTAMP NOT NULL,
     endDate TIMESTAMP,
     location VARCHAR(255),
-    confirmed BOOLEAN NOT NULL DEFAULT FALSE
+    confirmed BOOLEAN NOT NULL DEFAULT FALSE,
+    cancelled BOOLEAN NOT NULL DEFAULT FALSE,
+    description VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS questions (
@@ -109,6 +111,28 @@ CREATE SEQUENCE IF NOT EXISTS questions_questionid_seq;
 
 -- Sequence for ratings table
 CREATE SEQUENCE IF NOT EXISTS ratings_ratingid_seq;
+
+-- Password Recovery Codes table
+CREATE TABLE IF NOT EXISTS passwordrecoverycodes (
+    id SERIAL PRIMARY KEY,
+    userid INT REFERENCES users(userid) ON DELETE CASCADE NOT NULL UNIQUE,
+    code VARCHAR(36) NOT NULL,
+    expirationDate TIMESTAMP NOT NULL
+);
+
+-- User Verification Codes table
+CREATE TABLE IF NOT EXISTS userverificationcodes (
+    id SERIAL PRIMARY KEY,
+    userid INT REFERENCES users(userid) ON DELETE CASCADE NOT NULL UNIQUE,
+    verificationCode VARCHAR(255) NOT NULL,
+    expirationDate TIMESTAMP NOT NULL
+);
+
+-- Sequence for passwordrecoverycodes table
+CREATE SEQUENCE IF NOT EXISTS passwordrecovery_codeid_seq;
+
+-- Sequence for userverificationcodes table
+CREATE SEQUENCE IF NOT EXISTS userverification_codeid_seq;
 -- insert into users(username, name, surname, email, telephone, password, isprovider) values ('solro', 'sol', 'rodri', 'solrodriguezgiana@gmail.com', '113452343', 'solro', true);
 -- insert into business (userid, businessname, businessTelephone, businessEmail, businessLocation) values (1, 'Sol nails shop', '11365335', 'solrodriguezgiana@gmail.com', 'Palermo');
 -- insert into services(businessid, servicename, servicedescription, homeservice, location, category, minimalduration, pricingtype, price, additionalcharges) values (1, 'Uñas capping', 'Servicio de uñas, multiples colores y esmaltes de todo tipo. Diseño a eleccion del cliente. Arte en uñas. Consulte por disponibilidad.', FALSE, 'Palermo', 'Belleza', 60, 'Por hora', '10000', TRUE);

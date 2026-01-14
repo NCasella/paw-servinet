@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistance;
 
 
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.exceptions.AppointmentNonExistentException;
 import ar.edu.itba.paw.model.exceptions.ServiceNotFoundException;
 import ar.edu.itba.paw.persistance.config.TestConfig;
 import org.junit.Assert;
@@ -215,9 +216,13 @@ public class ServiceDaoJpaTest {
                 0L, count);
     }
 
-    @Test(expected = ServiceNotFoundException.class)
+    @Test
     public void testDeleteNotFound() {
-        serviceDao.delete(999);
+        long nonExistentId = 999L;
+
+        Assert.assertThrows(ServiceNotFoundException.class, () -> {
+            serviceDao.delete(nonExistentId);
+        });
     }
 
     @Test
@@ -445,9 +450,14 @@ public class ServiceDaoJpaTest {
                 newName, persisted.getName());
     }
 
-    @Test(expected = ServiceNotFoundException.class)
+    @Test
     public void testEditServiceNameNotFound() {
-        serviceDao.editServiceName(999, "New Name");
+        long nonExistentId = 999L;
+        String newName = "New Name";
+
+        Assert.assertThrows(ServiceNotFoundException.class, () -> {
+            serviceDao.editServiceName(nonExistentId, newName);
+        });
     }
 
     @Test
@@ -481,9 +491,13 @@ public class ServiceDaoJpaTest {
                 newAdditionalCharges, updated.getAdditionalCharges());
     }
 
-    @Test(expected = ServiceNotFoundException.class)
+    @Test
     public void testEditServiceNotFound() {
-        serviceDao.editService(999, "desc", 30, PricingTypes.PER_TOTAL, "1000", false);
+        long nonExistentId = 999L;
+
+        Assert.assertThrows(ServiceNotFoundException.class, () -> {
+            serviceDao.editService(nonExistentId, "desc", 30, PricingTypes.PER_TOTAL, "1000", false);
+        });
     }
 
     @Test
