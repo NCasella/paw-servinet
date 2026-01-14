@@ -116,7 +116,8 @@ public class BusinessServiceImpl implements BusinessService{
             for ( Service service : servicesList)
                 serviceService.delete(service, business,false);
 
-        boolean isStillProvider = businessDao.deleteBusiness(businessId);
+        businessDao.deleteBusiness(businessId);
+        boolean isStillProvider = businessDao.getBusinessesCountByUser(business.getUserId()) > 0;
         User user = userService.findById(business.getUserId()).orElseThrow(UserNotFoundException::new);
         if (!isStillProvider) {
             userService.revokeProviderRole(user);
@@ -127,10 +128,10 @@ public class BusinessServiceImpl implements BusinessService{
     @Transactional
     @Override
     public Business createBusiness(String businessName, long userId, String telephone, String email, String location) {
-        Business business = businessDao.createBusiness(businessName,userId,telephone,email,location);
-        User user= userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        Business business = businessDao.createBusiness(businessName, userId, telephone, email, location);
         userService.makeProvider(user);
-        emailService.createdBusiness(business,user.getLocale());
+        emailService.createdBusiness(business, user.getLocale());
         return business;
     }
 
