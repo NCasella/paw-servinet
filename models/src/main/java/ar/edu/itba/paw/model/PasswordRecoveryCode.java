@@ -11,7 +11,7 @@ public class PasswordRecoveryCode {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "passwordrecovery_codeid_seq")
     @SequenceGenerator(sequenceName = "passwordrecovery_codeid_seq",name="passwordrecovery_codeid_seq",allocationSize = 1)
     private long id;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="userid")
     private User requestedBy;
     @Column(nullable = false)

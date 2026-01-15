@@ -31,6 +31,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Appointment> findById(long id) {
         return appointmentDao.findById(id);
     }

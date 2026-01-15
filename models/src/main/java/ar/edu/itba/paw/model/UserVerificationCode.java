@@ -11,7 +11,7 @@ public class UserVerificationCode {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "userverification_codeid_seq")
     @SequenceGenerator(sequenceName = "userverification_codeid_seq",name="userverification_codeid_seq",allocationSize = 1)
     private long id;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="userid")
     private User requestedBy;
     @Column(nullable = false)
