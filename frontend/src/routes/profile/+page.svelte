@@ -113,7 +113,7 @@
       
       <Avatar class="h-40 w-40">
             <Avatar.Image class="w-full h-full" src={user.profilePicture} alt="pic" />
-            <Avatar.Fallback><img class="rounded-2xl" src={User.getFallbackImage()} alt="pic"/></Avatar.Fallback>
+            <Avatar.Fallback><img class="rounded-2xl" src={User.getFallbackImage()} alt="pic" loading="lazy" /></Avatar.Fallback>
         </Avatar>
       <button onclick={handleEditImg} class="bg-surface-400 rounded-3xl p-3 z-1 -ml-16 mt-31" ><Icon name="edit"/></button>     
       <div class="flex-1 min-w-0">
@@ -181,9 +181,9 @@
         <div class="flex items-center gap-4">
           <div class="h-20 w-20 rounded-2xl overflow-hidden border bg-surface-100 flex items-center justify-center">
             {#if imgPreviewUrl}
-              <img src={imgPreviewUrl} alt="preview" class="h-full w-full object-cover" />
+              <img src={imgPreviewUrl} alt="preview" class="h-full w-full object-cover" loading="lazy" />
             {:else}
-              <img src={user.profilePicture || User.getFallbackImage()} alt="current" class="h-full w-full object-cover" />
+              <img src={user.profilePicture || User.getFallbackImage()} alt="current" class="h-full w-full object-cover" loading="lazy" />
             {/if}
           </div>
 

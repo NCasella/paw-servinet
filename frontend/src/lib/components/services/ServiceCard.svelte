@@ -20,7 +20,7 @@
 
         <div class="w-50 h-32 rounded-xl overflow-hidden flex-shrink-0">
             <div class="w-50 rounded-lg overflow-hidden">
-                <img src={service.getServiceImageUrl()} alt="Service image" />
+                <img src={service.getServiceImageUrl()} alt="Service image" loading="lazy" />
             </div>
         </div>
 

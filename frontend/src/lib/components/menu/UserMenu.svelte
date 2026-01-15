@@ -24,7 +24,7 @@
 	<Menu.Trigger class="btn" >
 		<Avatar class="h-12 w-12">
 				<Avatar.Image class="w-full h-full" src={currentUser.getProfilePictureSrc()} alt="base" />
-				<Avatar.Fallback><img class="rounded-2xl" src={UserDefaultImg} alt="pic"/></Avatar.Fallback>
+				<Avatar.Fallback><img class="rounded-2xl" src={UserDefaultImg} alt="pic" loading="lazy" /></Avatar.Fallback>
 		</Avatar>
 	</Menu.Trigger>
 	<Portal>

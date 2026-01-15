@@ -6,6 +6,7 @@
 <img
   src={src}
   alt=""
+  loading="lazy"
   on:error={(e) => {
     const img = e.currentTarget as HTMLImageElement;
     if (!img.dataset.fallback) {
