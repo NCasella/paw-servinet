@@ -38,7 +38,7 @@ export async function getBusinessById(businessId: number, fetchFn?: typeof fetch
           fetchFn: fetchFn
         }
     )
-    console.log( JSON.stringify(response))
+    //console.log( JSON.stringify(response))
     return Business.fromJson(response)
 }
 
@@ -48,7 +48,7 @@ export async function getServiceBusinesses(serviceList:Service[]) :Promise<Map<n
   const businesses = await Promise.all(
     ids.map(id => getBusinessById(id))
   );
-console.log(businesses, ids)
+//console.log(businesses, ids)
   return new Map(
     businesses.map((business, i) => [ids[i], business])
   );

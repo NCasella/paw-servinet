@@ -47,7 +47,7 @@ import type { PageData } from "./$types";
 
     saving = true;
     try {
-      console.log(serviceForm.additionalCosts)
+      //console.log(serviceForm.additionalCosts)
       await updateService(service.serviceId, {
         description: serviceForm.description,
         minimalDuration: serviceForm.minimalDuration,

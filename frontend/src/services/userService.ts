@@ -147,6 +147,6 @@ export async function updateUser(userId: number, form: UserUpdateForm) {
 
 export async function editUserProfilePic(userId: number, image: File) {
     const profilePicId = await uploadImage(image);
-    console.log(profilePicId)
+    //console.log(profilePicId)
     await PATCH(`users/${userId}`, {profilePicId}, {contentType: "user-update"})
 } 

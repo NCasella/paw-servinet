@@ -15,7 +15,7 @@ export async function load({ params, fetch }) {
     const service = await getServiceById(serviceId, fetch);
     return { service: service };
   } catch(e) {
-    console.log(e)
+    //console.log(e)
     error(404, { message: 'Service not found' });
   }
 }

@@ -25,7 +25,7 @@ export class RegisterUserForm{
             for (const issue of result.error.issues) {
                 const field = issue.path[0] as keyof RegisterUserFormData;
                 if (!errors[field]) {
-                    console.log("m"+issue.message)
+                    //console.log("m"+issue.message)
                     errors[field] = issue.message; 
                 }
             }

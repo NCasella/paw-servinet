@@ -11,8 +11,8 @@
 
     const userId = $page.url.searchParams.get('id');
     const code = $page.url.searchParams.get('code');
-    console.log("userId:"+userId);
-    console.log("code:"+code);
+    //console.log("userId:"+userId);
+    //console.log("code:"+code);
 
     let formErrors: ResetPasswordFormErrors = {};
     let resetPasswordForm: ResetPasswordForm = new ResetPasswordForm("", code || "", "", ""); 

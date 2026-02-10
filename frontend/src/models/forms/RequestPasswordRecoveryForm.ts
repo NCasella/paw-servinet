@@ -12,7 +12,7 @@ export class RequestPasswordRecoveryForm {
             for (const issue of result.error.issues) {
                 const field = issue.path[0] as keyof RequestPasswordRecoveryForm;
                 if (!errors[field]) {
-                    console.log("m"+issue.message)
+                    //console.log("m"+issue.message)
                     errors[field] = issue.message; 
                 }
             }

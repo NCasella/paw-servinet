@@ -54,6 +54,6 @@ export const NeighbourhoodsList = Object.keys(
 
 export function toNeighbourhoodEnum(value: string): string {
   const v= value.toUpperCase().replace(/ /g, "_");
-  console.log(v)
+  //console.log(v)
   return v
 }

@@ -30,7 +30,7 @@ export class UserContactInfo {
 
   static fromJson(response: TResponse): UserContactInfo {
     const obj = response.body;
-    console.log(obj)
+    //console.log(obj)
     if (isUserContactInfo(obj)) return new UserContactInfo(obj);
     throw new Error("Invalid ContactInfo JSON");
   }

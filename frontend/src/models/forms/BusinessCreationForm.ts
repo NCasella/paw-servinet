@@ -21,7 +21,7 @@ export class BusinessForm {
                 const field = issue.path[0] as keyof BusinessFormData;
                 // Usamos el primer error por campo
                 if (!errors[field]) {
-                    console.log("m"+issue.message)
+                    //console.log("m"+issue.message)
                     errors[field] = issue.message; // ya es la key: "validation.xxx"
                 }
             }

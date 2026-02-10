@@ -95,7 +95,7 @@ $effect(() => {
                   //pageNum=1
                   // loadData()
                   ////window.location.reload
-                  //console.log(pageNum)
+                  ////console.log(pageNum)
                 }
                   
         }  finally {

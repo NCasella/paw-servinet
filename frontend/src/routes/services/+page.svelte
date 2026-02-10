@@ -60,7 +60,7 @@
             pagedList = await getServices(params);
         } catch (e) {
             if(e.status === StatusCodes.BAD_REQUEST)
-                console.log("Invalid Params");
+                //console.log("Invalid Params");
         }
         loading = false;
     }
