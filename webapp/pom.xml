@@ -256,7 +256,7 @@
                 <resources>
                   <resource>
                     <directory>../frontend/build</directory>
-                    <filtering>true</filtering>
+                    <filtering>false</filtering>
                   </resource>
                 </resources>
               </configuration>
