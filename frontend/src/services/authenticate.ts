@@ -80,8 +80,3 @@ export function extractUserRolesFromToken(): string[] {
   }
   return [];
 }
-
-export function isResettingPassword(): boolean {
-    const roles = extractUserRolesFromToken();
-    return roles.includes('ROLE_PASSWORD_RESET');
-}

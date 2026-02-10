@@ -129,34 +129,4 @@ describe('authenticate', () => {
 
     });
 
-    describe('isResettingPassword', () => {
-
-        it('returns true when ROLE_PASSWORD_RESET present', () => {
-            vi.mocked(getAccessToken).mockReturnValue('valid-token');
-            vi.mocked(jwtDecode).mockReturnValue({
-                sub: 'user@test.com',
-                id: 42,
-                roles: ['ROLE_USER', 'ROLE_PASSWORD_RESET']
-            });
-
-            const result = authenticate.isResettingPassword();
-
-            expect(result).toBe(true);
-        });
-
-        it('returns false when role not present', () => {
-            vi.mocked(getAccessToken).mockReturnValue('valid-token');
-            vi.mocked(jwtDecode).mockReturnValue({
-                sub: 'user@test.com',
-                id: 42,
-                roles: ['ROLE_USER']
-            });
-
-            const result = authenticate.isResettingPassword();
-
-            expect(result).toBe(false);
-        });
-
-    });
-
 });
