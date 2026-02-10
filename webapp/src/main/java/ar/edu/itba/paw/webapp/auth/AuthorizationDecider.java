@@ -32,25 +32,6 @@ public class AuthorizationDecider {
         return new AuthorizationDecision(authControl.isBusinessOwner(businessId,currentUser.get().getUserId()));
 
     }
-    public AuthorizationDecision canChangePassword(Supplier<Authentication> auth, RequestAuthorizationContext context) {
-        Authentication authentication = auth.get();
-        if (authentication == null) {
-            return new AuthorizationDecision(false);
-        }
-
-        boolean hasResetRole = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_PASSWORD_RESET"));
-
-        if (hasResetRole) {
-            long requestedUserId = Long.parseLong(context.getVariables().getOrDefault("userId", "-1"));
-            Optional<User> authenticatedUser = authControl.getCurrentUser();
-            return new AuthorizationDecision(
-                    authenticatedUser.isPresent() && authenticatedUser.get().getUserId() == requestedUserId
-            );
-        }
-
-        return isCurrentUser(auth, context);
-    }
     public AuthorizationDecision isCurrentUser(Supplier<Authentication> auth,RequestAuthorizationContext context){
         long userId=Long.parseLong(context.getVariables().getOrDefault("userId","-1"));
         return new AuthorizationDecision(authControl.isCurrentUser(userId));

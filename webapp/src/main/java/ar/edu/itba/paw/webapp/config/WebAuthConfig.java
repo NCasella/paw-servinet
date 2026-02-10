@@ -88,7 +88,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
 
                 .requestMatchers(HttpMethod.GET,"/api/users/{userId:\\d+}").access(authDecider::canViewUserContactInfo)
-                .requestMatchers(HttpMethod.PATCH,"/api/users/{userId:\\d+}").access(authDecider::canChangePassword)
                 .requestMatchers("/api/users/{userId:\\d+}").access(authDecider::isCurrentUser)
 
                 .requestMatchers(HttpMethod.POST, "/api/businesses").hasRole("USER")
@@ -124,7 +123,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(SPA_ORIGIN));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization-access-token", "Link", "Location", "ETag", "X-Total-Count", "Authorization-Refresh-Token"));
