@@ -20,7 +20,6 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.addHeader(HttpHeaders.WWW_AUTHENTICATE,"Basic realm=realm required");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON);
         ExceptionDto dto=ExceptionDto.fromException(authException);
