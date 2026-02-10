@@ -1,14 +1,14 @@
-jwt.key = 0751a4a9897b2d5fc5288e4c2b5694e23562ddc5eda5990ca5f3cf441bfb5c0a
-spring.profiles.active=dev
+jwt.key =
+spring.profiles.active=
 
-SPA_BASE_URL=http://localhost:5173
-APP_BASE_URL=http://localhost:5173/webapp_war_exploded/
+SPA_BASE_URL=
+APP_BASE_URL=
 
-HOST=smtp.gmail.com
-PORT=587
-USERNAME=servinet.servinet.servinet@gmail.com
-PASSWORD=dzyq megr lhtb bgbf
+HOST=
+PORT=
+USERNAME=
+PASSWORD=
 
-DB_URL=jdbc:postgresql://localhost/paw
-DB_USER=root
-DB_PASSWORD=root
+DB_URL=
+DB_USER=
+DB_PASSWORD=
