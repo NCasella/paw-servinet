@@ -59,8 +59,9 @@
         try {
             pagedList = await getServices(params);
         } catch (e) {
-            if(e.status === StatusCodes.BAD_REQUEST)
+            if(e.status === StatusCodes.BAD_REQUEST) {
                 //console.log("Invalid Params");
+            }
         }
         loading = false;
     }
@@ -106,6 +107,10 @@
         return [1, 'ellipsis', page - 1, page, page + 1, 'ellipsis', lastPage];
     })();
 </script>
+
+<svelte:head>
+    <title>{$t('title.services')}</title>
+</svelte:head>
 
 {#if loading}
     <Spinner/>
