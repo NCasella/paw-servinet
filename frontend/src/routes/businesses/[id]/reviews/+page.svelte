@@ -4,7 +4,7 @@
 	import ReviewsBars from "$lib/components/services/ReviewsBars.svelte";
 	import { getParamIdFromUrl } from "$lib/navigation/pageInfo";
 	import type { Review } from "$models/Review";
-	import { getBusiness, getBusinessReviews } from "$services/businessService";
+	import { getBusinessById, getBusinessReviews } from "$services/businessService";
 	import { getServiceReviews } from "$services/reviewsService";
 	import { onMount } from "svelte";
 	import { t } from "$lib/i18n/i18n";
@@ -16,7 +16,7 @@
     onMount( async () => {
         try {
         let businessId = getParamIdFromUrl()
-        const business = await getBusiness(businessId)
+        const business = await getBusinessById(businessId)
         businessName = business.businessName
         reviews = await getBusinessReviews(businessId)
     } finally{
