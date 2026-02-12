@@ -8,5 +8,10 @@
     export let data: PageData
     let {business, service, user, appointment } = data
 </script>
+
+<svelte:head>
+    <title>{$t("title.appointment", [service?.title || appointment?.id.toString() || ''])}</title>
+</svelte:head>
+
 <Title text={$t("appointment.detail")}/>
 <AppointmentView business={business} service={service} user={user} appointment={appointment} />

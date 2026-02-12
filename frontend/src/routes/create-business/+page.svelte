@@ -34,6 +34,11 @@ onMount(() =>{
 
 
 </script>
+
+<svelte:head>
+    <title>{$t('title.register-business')}</title>
+</svelte:head>
+
 {#if businessForm}
     <div class="flex justify-center px-4 py-8">
   <form

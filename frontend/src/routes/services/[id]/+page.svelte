@@ -80,6 +80,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>{service ? $t('title.service', [service.serviceName]) : $t('title.servinet')}</title>
+</svelte:head>
+
 {#if loading}
     <Spinner/>
 {:else}

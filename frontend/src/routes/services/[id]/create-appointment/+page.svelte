@@ -35,6 +35,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>{service ? $t('title.reserve-appointment') : $t('title.servinet')}</title>
+</svelte:head>
+
 {#if service}
   <div class="flex justify-center px-4 py-8">
     <form

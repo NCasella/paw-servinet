@@ -335,6 +335,8 @@ export default {
   "title.join-servinet": "Join the Community | Servinet",
   "title.create-service": "Create Service | Servinet",
   "title.profile": "My Profile | Servinet",
+  "title.edit-profile": "Edit Profile | Servinet",
+  "title.change-password": "Change Password | Servinet",
   "title.services": "Services | Servinet",
   "title.my-appointments": "My Appointments | Servinet",
   "title.my-businesses": "My Businesses | Servinet",
@@ -343,6 +345,9 @@ export default {
   "title.edit-service": " Edit {0} | Servinet",
   "title.businessReviews": "Reviews on {0} | Servinet",
   "title.statistics": "Statistics | Servinet",
+  "title.verify-email": "Verify Email | Servinet",
+  "title.home": "Servinet - Connecting services, creating solutions",
+  "title.login": "Log in | Servinet",
 
   "popup.business.title":
     "Are you sure you want to delete this business?",

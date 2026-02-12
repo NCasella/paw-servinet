@@ -19,9 +19,14 @@
     export let data :PageData
   $: ({ pagedList, pageNum } = data)
 
-      
+
 
 </script>
+
+<svelte:head>
+    <title>{$t('title.my-businesses')}</title>
+</svelte:head>
+
 <header class="mx-8 flex place-content-between items-baseline">
     <Title text={$t("businesses.my-businesses")}/>
     <div class="flex justify-end l-4 space-x-3">

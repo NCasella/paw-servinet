@@ -50,6 +50,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>{$t('title.edit-profile')}</title>
+</svelte:head>
+
 {#if userForm}
     <div class="flex justify-center px-4 py-8">
         <form

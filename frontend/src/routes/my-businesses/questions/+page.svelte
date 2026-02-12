@@ -76,6 +76,10 @@
     onMount(() => loadQuestions(page));
 </script>
 
+<svelte:head>
+    <title>{$t('title.questions')}</title>
+</svelte:head>
+
 {#if loading}
     <Spinner />
 {:else}

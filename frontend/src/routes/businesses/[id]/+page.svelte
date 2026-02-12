@@ -122,8 +122,12 @@ const pageNum = $derived(data.pageNum);
    
   }
 
-  
+
 </script>
+
+<svelte:head>
+    <title>{business ? $t('title.business', [business.businessName]) : $t('title.servinet')}</title>
+</svelte:head>
 
 {#if loading}
   <Spinner />

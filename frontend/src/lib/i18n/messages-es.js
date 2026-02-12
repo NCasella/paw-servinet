@@ -308,6 +308,8 @@ export default {
   "questions.none": "No tienes preguntas para contestar",
 
   "title.servinet": "Servinet",
+  "title.home": "Servinet - Conectando servicios, creando soluciones",
+  "title.login": "Iniciar sesión | Servinet",
   "title.appointment": "Detalle del turno: {0} | Servinet",
   "title.business": "{0} | Servinet",
   "title.business-appointments": "Turnos | Servinet",
@@ -320,6 +322,8 @@ export default {
   "title.join-servinet": "Unite a la comunidad | Servinet",
   "title.create-service": "Crear servicio | Servinet",
   "title.profile": "Mi perfil | Servinet",
+  "title.edit-profile": "Editar perfil | Servinet",
+  "title.change-password": "Cambiar contraseña | Servinet",
   "title.services": "Servicios | Servinet",
   "title.my-appointments": "Mis turnos | Servinet",
   "title.my-businesses": "Mis negocios | Servinet",
@@ -328,6 +332,7 @@ export default {
   "title.edit-service": "Editar {0} | Servinet",
   "title.businessReviews": "Opiniones en {0} | Servinet",
   "title.statistics": "Estadísticas | Servinet",
+  "title.verify-email": "Verificar correo electrónico | Servinet",
 
   "popup.business.title": "¿Está seguro que quiere eliminar este negocio?",
   "popup.business.message":

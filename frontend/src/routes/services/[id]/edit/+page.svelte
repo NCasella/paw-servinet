@@ -64,6 +64,10 @@ import type { PageData } from "./$types";
 </script>
 
 
+<svelte:head>
+    <title>{service ? $t('title.edit-service', [service.serviceName]) : $t('title.servinet')}</title>
+</svelte:head>
+
 {#if serviceForm}
     <div class="flex justify-center px-4 py-8">
         <form class="w-full max-w-xl rounded-2xl shadow p-6 space-y-6"

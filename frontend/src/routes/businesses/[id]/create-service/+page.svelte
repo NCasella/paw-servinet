@@ -50,6 +50,10 @@
   }
 </script>
 
+<svelte:head>
+    <title>{$t('title.create-service')}</title>
+</svelte:head>
+
 {#if serviceForm}
   <div class="flex justify-center px-4 py-8">
     <form

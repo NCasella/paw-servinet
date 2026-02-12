@@ -104,6 +104,10 @@
 
 </script>
 
+<svelte:head>
+    <title>{$t('title.profile')}</title>
+</svelte:head>
+
   <div class="max-w-2xl mx-auto ">
   <section class="rounded-2xl shadow p-8 space-y-5" >
  

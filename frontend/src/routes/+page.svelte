@@ -51,6 +51,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>{$t('title.home')}</title>
+</svelte:head>
+
 {#if loading}
     <Spinner/>
 {:else}

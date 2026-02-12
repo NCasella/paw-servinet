@@ -38,6 +38,10 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+    <title>{$t('title.verify-email')}</title>
+</svelte:head>
+
 <div class="flex min-h-full flex-col justify-center items-center px-6 py-12">
     {#if verifying}
         <Spinner/>
