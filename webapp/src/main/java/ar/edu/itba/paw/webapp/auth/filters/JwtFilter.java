@@ -32,10 +32,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = authorizationHeader.substring("Bearer ".length());
 
         try {
-            if(jwtUtil.isRefreshToken(token)){
-                chain.doFilter(request,response);
-                return;
-            }
             jwtUtil.loginUser(token);
         } catch(JwtException | IllegalArgumentException e ) {
             SecurityContextHolder.clearContext();

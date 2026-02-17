@@ -58,7 +58,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
   if (token) {
     finalHeaders["Authorization"] = `Bearer ${token}`;
   }else if (refreshToken){
-    finalHeaders["Authorization"] = `Bearer ${refreshToken}`;
+    finalHeaders["Authorization-Refresh-Token"] = `Bearer ${refreshToken}`;
     usingRefresh = true;
   }
 
@@ -76,7 +76,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,
   });
 
-  const newAccessToken = response.headers.get("Authorization");
+  const newAccessToken = response.headers.get("Authorization-Access-Token");
   if (newAccessToken && newAccessToken.startsWith("Bearer ")) {
       const token = newAccessToken.substring(7);
       setTokens({ accessToken: token }); 
@@ -84,14 +84,15 @@ export async function apiFetch<TResponse = any, TBody = any>(
   if(response.status === 401 && withAuth) {
     if (!usingRefresh && refreshToken) {
       setTokens({ accessToken: null});
-      finalHeaders["Authorization"] = `Bearer ${refreshToken}`;
+      delete finalHeaders["Authorization"];
+      finalHeaders["Authorization-Refresh-Token"] = `Bearer ${refreshToken}`;
       response = await fetchFn(API_BASE_URL + "/" + url, {
         method,
         headers: finalHeaders,
         body: isFormData ? body : body ? JSON.stringify(body) : undefined,
       });
 
-      const newAccessToken = response.headers.get("Authorization");
+      const newAccessToken = response.headers.get("Authorization-Access-Token");
       const newRefreshTokenResponse=response.headers.get("Authorization-Refresh-Token");
       if (newAccessToken && newAccessToken.startsWith("Bearer ")) {
         const token = newAccessToken.substring(7);

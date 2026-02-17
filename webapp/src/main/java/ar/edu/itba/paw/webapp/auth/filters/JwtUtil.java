@@ -28,7 +28,6 @@ public class JwtUtil {
     private UserDetailsService userDetailsService;
     @Value("${jwt.key}")
     private String SECRET_KEY;
-    private static final String TOKEN_TYPE_HEADER_CLAIM="tokenType";
 
     public String extractUsername(String token) {
         try {
@@ -64,7 +63,6 @@ public class JwtUtil {
                 .claim("id", userId)
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .claim(TOKEN_TYPE_HEADER_CLAIM,JwtTypes.ACCESS_TOKEN.toString())
                 .setExpiration(new Date(System.currentTimeMillis() + JwtTypes.ACCESS_TOKEN.tokenDuration))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
@@ -73,7 +71,6 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .claim(TOKEN_TYPE_HEADER_CLAIM,JwtTypes.REFRESH_TOKEN.toString())
                 .setExpiration(new Date(System.currentTimeMillis() + JwtTypes.REFRESH_TOKEN.tokenDuration))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
@@ -83,14 +80,7 @@ public class JwtUtil {
         String username=extractUsername(token);
         return username!=null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
-    public boolean isRefreshToken(String token){
-        try {
-            String tokenType = extractClaim(token, claims -> claims.get(TOKEN_TYPE_HEADER_CLAIM, String.class));
-            return tokenType.equals(JwtTypes.REFRESH_TOKEN.toString());
-        }catch (RequiredTypeException e){
-            throw new IllegalArgumentException();
-        }
-    }
+
     private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
