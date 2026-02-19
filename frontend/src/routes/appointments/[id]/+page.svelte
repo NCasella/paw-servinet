@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-    <title>{$t("title.appointment", [service?.title || appointment?.id.toString() || ''])}</title>
+    <title>{$t("title.appointment", [service?.title || appointment?.appointmentId.toString() || ''])}</title>
 </svelte:head>
 
 <Title text={$t("appointment.detail")}/>

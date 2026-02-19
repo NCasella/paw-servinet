@@ -10,7 +10,7 @@ export async function load({url, params, fetch}) {
     if ( !appId) error(StatusCodes.NOT_FOUND)
     const user = await getCurrentUser(fetch).catch( ()=> error(StatusCodes.UNAUTHORIZED))
     
-    const appointment = await getAppointmentById(appId).catch((e)=> error(e.status))
+    const appointment = await getAppointmentById(appId).catch(() => error(StatusCodes.FORBIDDEN))
     // con buscar el appointment ya se valida si owner o user, pero solo queremos q lo vea el user:
     if (user.userId != appointment.userId) error(StatusCodes.FORBIDDEN)
     try {
