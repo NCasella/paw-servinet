@@ -515,7 +515,7 @@ export default {
     "The location cannot exceed 255 characters",
   "NotNull.appointmentForm.date": "Please select a date",
   "FutureDate.appointmentForm.date":
-    "The date must be in the future",
+    "The appointment must be scheduled at least one hour in advance",
   "FieldsValueMatch.registerUserForm.password":
     "Passwords do not match. Please try again.",
   "EmailRegistered.RequestPasswordRecoveryForm.email":

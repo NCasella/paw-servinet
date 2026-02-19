@@ -66,11 +66,14 @@ export const AppointmentFormSchema = z.object({
       (v) => v !== null && v !== undefined && v.trim() !== "",
       { message: "NotNull.appointmentForm.date" }
     )
-    // fecha en el futuro
+    // fecha en el futuro + 1 hora
     .refine(
       (v) => {
         const d = new Date(v); // "YYYY-MM-DDTHH:mm" de <input type="datetime-local">
-        return !Number.isNaN(d.getTime()) && d.getTime() > Date.now();
+        const now :Date= new Date 
+        now.setHours( now.getHours() + 1)
+        console.log(now)
+        return !Number.isNaN(d.getTime()) && d.getTime() > now.getTime();
       },
       { message: "FutureDate.appointmentForm.date" }
     ),

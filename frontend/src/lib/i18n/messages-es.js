@@ -487,7 +487,7 @@ export default {
   "NotNull.appointmentForm.date":
     "Por favor, seleccione una fecha",
   "FutureDate.appointmentForm.date":
-    "La fecha seleccionada no puede ser anterior a la fecha actual",
+    "El turno debe programarse con al menos una hora de anticipación",
   "FieldsValueMatch.registerUserForm.password":
     "Las contraseñas no coinciden",
   "EmailRegistered.RequestPasswordRecoveryForm.email":

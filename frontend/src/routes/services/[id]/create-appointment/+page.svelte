@@ -23,7 +23,7 @@
   export let data:PageData
   let { user, service, business, serviceId} = data
 
-  let appointmentForm: AppointmentForm  = new AppointmentForm({serviceId});
+  let appointmentForm: AppointmentForm  = new AppointmentForm({serviceId:serviceId?? "", address:service.address?? "" });
   let formErrors: AppointmentFormErrors = {};
   
    async function handleSubmit() { 
