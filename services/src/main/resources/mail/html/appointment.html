@@ -80,7 +80,7 @@
                     <p th:text="#{template.appointment.select-option}"/>
 
                     <div class="btn-container">
-                        <a th:href="${url}+'businesses/'+ ${business.getBusinessid()} + '/appointments?status=confirmed'">
+                        <a th:href="${url}+'businesses/'+ ${business.getBusinessid()} + '/appointments?status=pending'">
                             <button class="btn confirm" th:text="#{template.view-request}"/>
                         </a>
                     </div>
