@@ -61,7 +61,7 @@
             <span th:text="#{template.business(${businessName})}"/> <span th:switch="${type}">
                 <span th:case="'CREATED'">
                     <span th:text="#{template.operation(#{template.created})}"/>. <span th:text="#{template.id(${businessId})}"/>
-                    <span th:text="#{template.url}"/> <a th:href="${url}+'negocio/'+${businessId}" th:text="${url}+'businesses/'+${businessId}"/>.
+                    <span th:text="#{template.url}"/> <a th:href="${url}+'businesses/'+${businessId}" th:text="${url}+'businesses/'+${businessId}"/>.
                 </span>
                 <span th:case="*">
                     <span th:text="#{template.operation(#{template.deleted})}"/>. <span th:text="#{template.business.deleted-services}"/>
@@ -70,7 +70,7 @@
 
             <div th:switch="${type}">
                 <div class="btn-container" th:case="'CREATED'">
-                    <a th:href="${url}+'negocio/'+${businessId}">
+                    <a th:href="${url}+'businesses/'+${businessId}">
                         <button class="btn confirm" th:text="#{template.business.view-btn}"/>
                     </a>
                 </div>

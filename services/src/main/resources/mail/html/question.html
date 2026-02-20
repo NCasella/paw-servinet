@@ -78,16 +78,16 @@
                 <div th:case="'ASKED'">
                     <div th:switch="${isClient}">
                         <span th:case="${true}">
-                            <span th:text="#{template.question.user}"/> <a th:href="${url}+'servicio/'+${serviceId}" th:text="${serviceName}"/> <span th:text="#{template.question.created}"/>
+                            <span th:text="#{template.question.user}"/> <a th:href="${url}+'services/'+${serviceId}" th:text="${serviceName}"/> <span th:text="#{template.question.created}"/>
                         </span>
                         <div th:case="*">
-                            <span th:text="#{template.the-service}"/> <a th:href="${url}+'servicio/'+${serviceId}" th:text="${serviceName}"/> <span th:text="#{template.question.business}"/>
+                            <span th:text="#{template.the-service}"/> <a th:href="${url}+'services/'+${serviceId}" th:text="${serviceName}"/> <span th:text="#{template.question.business}"/>
                             <div class="question-or-answer-container">
                                 "<span th:text="${question}"/>"
                             </div>
                             <span th:text="#{template.question.make-response}"/>
                             <div class="btn-container">
-                                <a th:href="${url}+'negocios/consultas'">
+                                <a th:href="${url}+'my-businesses/questions'">
                                     <button class="btn confirm" th:text="#{template.view-question}"/>
                                 </a>
                             </div>
@@ -106,7 +106,7 @@
                 </div>
             </div>
             <p th:if="${isClient}">
-                <span th:text="#{template.question.view-service}"/> <a th:href="${url}+'servicio/'+${serviceId}"><span th:text="#{template.here}"/></a>.
+                <span th:text="#{template.question.view-service}"/> <a th:href="${url}+'services/'+${serviceId}"><span th:text="#{template.here}"/></a>.
             </p>
         </div>
     </div>
