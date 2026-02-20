@@ -37,7 +37,7 @@
   }
 
   async function confirmCancelAppointment() {
-    cancelAppointment(appointment.appointmentId);
+    await cancelAppointment(appointment.appointmentId);
     closeCancelPopup();
     location.reload();
   }
