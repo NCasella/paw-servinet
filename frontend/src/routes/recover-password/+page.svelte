@@ -4,7 +4,7 @@
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
     import { goto } from '$app/navigation';
-	import { resetPassword } from '$services/userService';
+	import { resetPassword, getCurrentUser } from '$services/userService';
     import FormError from "$lib/components/global/forms/FormError.svelte";
 	import { ResetPasswordForm, type ResetPasswordFormErrors } from '$models/forms/ResetPasswordForm';
     import { loginWithBasicAuth } from '$services/authenticate';
@@ -49,6 +49,7 @@
 
         if (ok) {
             await loginWithBasicAuth(resetPasswordForm.email, resetPasswordForm.password);
+            await getCurrentUser()
             await goto(`${base}/profile`);
         }
 
