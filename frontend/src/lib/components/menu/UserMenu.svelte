@@ -52,7 +52,7 @@
 				<Menu.Separator />
 				<Menu.ItemGroup>
 					{#if currentUser.isProvider}
-						<Menu.ItemGroupLabel>Business</Menu.ItemGroupLabel>
+						<Menu.ItemGroupLabel>{$t("business.business")}</Menu.ItemGroupLabel>
 						<Menu.Item value="businesses">
 							<a href="{base}/my-businesses">
 							<Menu.ItemText>{$t("navbar.businesses")}</Menu.ItemText>
