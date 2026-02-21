@@ -18,7 +18,7 @@ let formErrors :BusinessFormErrors = {businessName:""}
 
 async function handleSubmit() {
    formErrors  = businessForm.validateBusinessForm()
-    if (formErrors == null) return
+    if (Object.keys(formErrors).length > 0) return
 
     const businessId = await createBusiness(businessForm)
     goto(`${base}/businesses/${businessId}`)
@@ -27,7 +27,6 @@ async function handleSubmit() {
 
 onMount(() =>{
     getCurrentUser().then( (u)=> {
-        email = u.email;
         businessForm = new BusinessForm( email, "", "", "")
     } ).catch( () => navTo("/login"))
 })
