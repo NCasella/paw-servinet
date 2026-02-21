@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from "$app/paths";
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import {  t } from '$i18';
@@ -96,6 +97,7 @@ const pageNum = $derived(data.pageNum);
       updateFormErrors = {};
     } finally {
       loading = false;
+      goto(`${base}/businesses/${business.businessId}`);
     }
   }
 

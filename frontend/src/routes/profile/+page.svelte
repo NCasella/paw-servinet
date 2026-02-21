@@ -89,7 +89,7 @@
       // - si mandás multipart: editUser({ profilePic: imgFile })
       // - si mandás url/id: primero subís, te devuelve url/id, y después patch
       await editUserProfilePic(user.userId, imgFile);
-      window.location.reload()
+      //window.location.reload()
 
       // refrescar datos (depende de tu setup)
       await invalidateAll();

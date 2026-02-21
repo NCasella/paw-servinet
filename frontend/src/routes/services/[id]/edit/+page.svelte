@@ -6,7 +6,7 @@
   import { t } from "$i18";
 
   import FormError from "$lib/components/global/forms/FormError.svelte";
-  import BigButton from "$lib/components/global/BigButton.svelte";
+  import BigButtonWithOnClick from "$lib/components/global/BigButtonWithOnClick.svelte";
 
   import { ServiceForm, type ServiceFormErrors } from "$models/forms/ServiceCreationForm";
   import type { Service } from "$models/Service";
@@ -168,7 +168,7 @@ import type { PageData } from "./$types";
             </div>
 
             <div class="flex justify-center pt-2">
-                <BigButton title={$t('service.save-changes')} iconName="" />
+                <BigButtonWithOnClick title={$t('service.save-changes')} iconName="" onclick={goto(`${base}/services/${service.serviceId}`)} />
             </div>
         </form>
     </div>
