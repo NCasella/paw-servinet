@@ -18,6 +18,7 @@ interface FetchOptions<TBody> {
   genericContentType?: string;
   headers?: Record<string, string>;
   withAuth?: boolean; // para saltearnos AUTH
+  forceRefresh?: boolean; // forzar uso del refresh token directamente
   binary?: boolean;
   fetchFn?: typeof fetch;
 }
@@ -28,6 +29,8 @@ export class FetchError extends Error {
   constructor(status: number, message: string) {
     super(message);
     this.status = status;
+    this.name = 'FetchError';
+    Object.setPrototypeOf(this, FetchError.prototype);
   }
 }
 
@@ -47,6 +50,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
     genericContentType,
     headers = {},
     withAuth = true,
+    forceRefresh = false,
     binary = false,
     fetchFn = fetch
   } = options;
@@ -55,9 +59,14 @@ export async function apiFetch<TResponse = any, TBody = any>(
   const token = withAuth ? getAccessToken() : null;
   const refreshToken = withAuth ? getRefreshToken() : null;
   let usingRefresh = false;
-  if (token) {
+  
+  // Si forceRefresh es true, usar refresh token directamente
+  if (forceRefresh && refreshToken) {
+    finalHeaders["Authorization-Refresh-Token"] = `Bearer ${refreshToken}`;
+    usingRefresh = true;
+  } else if (token) {
     finalHeaders["Authorization"] = `Bearer ${token}`;
-  }else if (refreshToken){
+  } else if (refreshToken) {
     finalHeaders["Authorization-Refresh-Token"] = `Bearer ${refreshToken}`;
     usingRefresh = true;
   }
@@ -106,9 +115,7 @@ export async function apiFetch<TResponse = any, TBody = any>(
       if(response.status === 401) {
         removeTokens();
         window.location.href = `${base}/login`;
-        const err: FetchError = new Error(`Request failed: ${response.status}`);
-        err.status = response.status;
-        throw err;
+        throw new FetchError(response.status, `Request failed: ${response.status}`);
       }
     } else {
       removeTokens();

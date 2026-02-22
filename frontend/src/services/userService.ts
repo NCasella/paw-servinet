@@ -13,8 +13,8 @@ import type { ResetPasswordForm } from "$models/forms/ResetPasswordForm";
 import {UserUpdateForm} from "$models/forms/UserUpdateForm";
 import { uploadImage } from "./imageService";
 
-export async function getUserInfo(id: number,fetchFn?: typeof fetch ) :Promise<User> {
-    const data = await GET(`users/${id}`,{contentType:"user-info", fetchFn: fetchFn });  
+export async function getUserInfo(id: number, fetchFn?: typeof fetch, forceRefresh: boolean = false) :Promise<User> {
+    const data = await GET(`users/${id}`,{contentType:"user-info", fetchFn: fetchFn, forceRefresh });  
     let user = User.fromJson(data)
     user.setRole( currentUserIsProvider() );
     return user;
@@ -79,16 +79,16 @@ export function getPatchFormWithModifiedFields(UserContactInfo: UserContactInfo,
     return patchForm;
 }
 /* Retrieves user login data */
-export async function getCurrentUser(fetchFn?: typeof fetch) :Promise<User> {
+export async function getCurrentUser(fetchFn?: typeof fetch, forceRefresh: boolean = false) :Promise<User> {
     let currentUser = getUser()
-    if ( currentUser )
+    if ( currentUser && !forceRefresh )
         return currentUser;
 
     let id = extractUserIdFromToken();
     if ( id==null ) 
         throw Error("Current user not found: auth is missing");
 
-    currentUser = await getUserInfo(id, fetchFn);
+    currentUser = await getUserInfo(id, fetchFn, forceRefresh);
     loadUser(currentUser)
 
     return currentUser;
@@ -120,6 +120,11 @@ export function currentUserIsProvider() :boolean {
     let roles :string[] = extractUserRolesFromToken()
     return roles?.some((r) => r==="ROLE_BUSINESS")
 } 
+
+export function currentUserIsVerified() :boolean {
+    let roles :string[] = extractUserRolesFromToken()
+    return !roles?.some((r) => r==="ROLE_UNVERIFIED_USER")
+}
 
 export async function  getUserContactInfo(userId:number) :Promise<UserContactInfo> {
     const response = await GET(`users/${userId}`, 

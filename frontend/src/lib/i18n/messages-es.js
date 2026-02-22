@@ -201,7 +201,7 @@ export default {
   "error.backtohome": "Volver al inicio",
   "error.500": "Ups! Ocurrió un error en el servidor.",
   "error.notVerified":
-    "Usuario no verificado, revise su mail para acceder al link de verificación",
+    "Usuario no verificado, para continuar debe completar este paso. Revise su mail para acceder al link de verificación",
 
   "verification.error.no-user": "No hay ningún usuario conectado actualmente.",
   "verification.error.failed": "La verificación del correo electrónico falló. Por favor, inténtelo de nuevo.",

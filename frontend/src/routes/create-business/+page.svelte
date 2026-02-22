@@ -1,35 +1,58 @@
 <script lang="ts">
 	import BigButton from "$lib/components/global/BigButton.svelte";
-    import { t } from "$lib/i18n/i18n"
-	import { getCurrentUser } from "$services/userService";
+  import { t } from "$i18";
+	import { getCurrentUser, currentUserIsVerified } from "$services/userService";
 	import { onMount } from "svelte";
-    import { BusinessForm, type BusinessFormErrors } from "$models/forms/BusinessCreationForm";
+  import { BusinessForm, type BusinessFormErrors } from "$models/forms/BusinessCreationForm";
 	import { createBusiness } from "$services/businessService";
+  import { StatusCodes } from "$models/exceptions/statusCodesEnum";
 	import { isFetchError } from "$utils/apiFetch";
-    import FormError from "$lib/components/global/forms/FormError.svelte"
+  import FormError from "$lib/components/global/forms/FormError.svelte"
 	import { createToaster } from "@skeletonlabs/skeleton-svelte";
   import { base } from '$app/paths';
   import { goto } from '$app/navigation';
 	import { navTo } from "$lib/navigation/pageInfo";
+  import ErrorPage from "$lib/components/global/errors/ErrorPage.svelte";
 
 let postUrl, businessForm :BusinessForm, email =""
 const toaster = createToaster()
 let formErrors :BusinessFormErrors = {businessName:""}
+let pageError: { status: number; error: App.Error } | null = null;
 
 async function handleSubmit() {
    formErrors  = businessForm.validateBusinessForm()
     if (Object.keys(formErrors).length > 0) return
 
-    const businessId = await createBusiness(businessForm)
-    goto(`${base}/businesses/${businessId}`)
-
+    try {
+        const businessId = await createBusiness(businessForm)
+        const user = await getCurrentUser(undefined, true);
+        goto(`${base}/businesses/${businessId}`)
+    } catch (err) {
+        if (isFetchError(err) && err.status === StatusCodes.FORBIDDEN) {
+            pageError = { status: StatusCodes.FORBIDDEN, error: { message: $t('error.notVerified') } };
+        }
+    }
 }
 
-onMount(() =>{
-    getCurrentUser().then( (u)=> {
-        businessForm = new BusinessForm( email, "", "", "")
-    } ).catch( () => navTo("/login"))
-})
+onMount(async () => {
+    try {
+        const u = await getCurrentUser();
+        
+        if (!u) {
+            return navTo("/login");
+        }
+
+        if (!currentUserIsVerified()) {
+            pageError = { status: StatusCodes.FORBIDDEN, error: { message: $t('error.notVerified') } };
+            return;
+        }
+
+        businessForm = new BusinessForm(email, "", "", "");
+        
+    } catch (err) {
+        navTo("/login");
+    }
+});
 
 
 </script>
@@ -38,7 +61,9 @@ onMount(() =>{
     <title>{$t('title.register-business')}</title>
 </svelte:head>
 
-{#if businessForm}
+{#if pageError}
+    <ErrorPage status={pageError.status} error={pageError.error} />
+{:else if businessForm}
     <div class="flex justify-center px-4 py-8">
   <form
     class="w-full max-w-md rounded-2xl shadow p-6 space-y-6"
@@ -120,6 +145,7 @@ onMount(() =>{
         <FormError errorMessage={formErrors.businessLocation} />
         {/if}
     </div>
+    
 
     <!-- Submit -->
     <div class="flex justify-center pt-2">

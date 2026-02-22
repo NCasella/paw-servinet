@@ -212,7 +212,7 @@ export default {
   "error.backtohome": "Back to home",
   "error.500": "Oops! An error occurred on the server.",
   "error.notVerified":
-    "The account is not verified, please check your email for verification link",
+    "The account is not verified, to continue you need to complete this step. Please check your email for verification link",
   
   "verification.error.no-user": "No user is currently logged in.",
   "verification.error.failed": "Email verification failed. Please try again.",
