@@ -74,7 +74,6 @@
                             type="text"
                             name="name"
                             placeholder={$t('input.name')}
-                            required
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
                     </div>
@@ -92,7 +91,6 @@
                             type="text"
                             name="surname"
                             placeholder={$t('input.lastname')}
-                            required
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
                     </div>
@@ -110,7 +108,6 @@
                             type="email"
                             name="email"
                             placeholder={$t('input.email')}
-                            required
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
                     </div>
@@ -128,7 +125,6 @@
                             type="tel"
                             name="telephone"
                             placeholder={$t('input.telephone')}
-                            required
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
                     </div>
@@ -146,7 +142,6 @@
                             type="text"
                             name="username"
                             placeholder={$t('input.username')}
-                            required
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
                     </div>
@@ -164,7 +159,6 @@
                     	    type={showPassword ? "text" : "password"}
                     	    placeholder={$t('input.password')}
                     	    name="password"
-                    	    required
                     	    class="block w-full rounded-md bg-white px-3 py-1.5 pr-10 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                     	/>
                     	<button
@@ -198,7 +192,6 @@
                             type={showConfirmPassword ? "text" : "password"}
                             placeholder={$t('input.recover-repeat-password')}
                             name="confirmPassword"
-                            required
                             class="block w-full rounded-md bg-white px-3 py-1.5 pr-10 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
                         <button

@@ -109,8 +109,8 @@ export const RegisterUserFormSchema = z.object({
   confirmPassword: z
     .string()
     .trim()
-    .min(8, { message: "Size.registerUserForm.confirmPassword" })
-    .max(MAX_LEN, { message: "Size.registerUserForm.confirmPassword" })
+    .min(8, { message: "Size.registerUserForm.passwordConfirmation"})
+    .max(MAX_LEN, { message: "Size.registerUserForm.passwordConfirmation" })
 }).refine((data) => data.password === data.confirmPassword, {
   message: "FieldsValueMatch.registerUserForm.password",
   path: ["confirmPassword"], // Asocia el error con el campo 
