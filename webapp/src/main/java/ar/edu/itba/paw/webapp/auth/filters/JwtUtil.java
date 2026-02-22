@@ -104,7 +104,7 @@ public class JwtUtil {
         return userDetails;
     }
     private enum JwtTypes{
-        ACCESS_TOKEN(1000*60*60*12),
+        ACCESS_TOKEN(1000*60*15),
         REFRESH_TOKEN(1000*60*60*24*7);
 
         private final int tokenDuration;
